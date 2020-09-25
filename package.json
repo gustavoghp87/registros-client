@@ -37,6 +37,9 @@
     "redux-thunk": "^2.3.0",
     "typescript": "3.8"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "homepage": ".",
   "eslintConfig": {
     "extends": "react-app"
