@@ -1,4 +1,7 @@
-import { INCREMENT, DECREMENT, LOG_IN } from './types';
+import Axios from 'axios';
+import { INCREMENT, DECREMENT, LOG_IN, AUTH_USER } from './types';
+import { SERVER } from '../config.json';
+
 
 export const increment = () => {
     return {
@@ -17,6 +20,16 @@ export const log = () => {
     return {
         type: LOG_IN
     };
+};
+
+export const auth = async () => {
+    const axios = await Axios(`${SERVER}/api/users/auth`)  // que si está autorizado, responde json pack
+    const request = axios.data;  // pack usuario
+
+    return {
+        type: AUTH_USER,
+        payload: request
+    }
 };
 
 

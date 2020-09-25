@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
-import Axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, log } from '../_actions/user_actions';
-import { RootState } from '../_reducers/index';
 import { SERVER } from "../config.json";
-import { Link } from 'react-router-dom';
+import Axios from 'axios';
+// import { Button } from 'react-bootstrap';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { increment, decrement, log } from '../_actions/user_actions';
+// import { RootState } from '../_reducers/index';
+// import { Link } from 'react-router-dom';
 
 
 function HomePage() {
 
-    const [Territorios, setTerritorios] = useState([]);
+    interface ITerritorio {
+        _id: any
+        inner_id: string
+        cuadra_id: string
+        territorio: string
+        manzana: string
+        direccion: string
+        telefono: string
+        estado: string
+    }
+
+    type territorios = ITerritorio[]
+    
+    const [Territorios, setTerritorios] = useState<ITerritorio[]>([]);
 
     useEffect(() => {
 
@@ -25,12 +38,10 @@ function HomePage() {
 
     const territorios = () => {
         return (
-            Territorios.map(territorio => (
-
-                <a type="button" className="btn btn-danger" style={btnTerri} href={`/territorios/${territorio}`}>
+            Territorios.map((territorio, index) => (
+                <a type="button" className="btn btn-danger" style={btnTerri} href={`/territorios/${territorio}`} key={index}>
                     <h2 className="h-100 align-middle" style={{padding:'22%', fontFamily:'"Arial Black", Gadget, sans-serif'}}>{territorio}</h2>
                 </a>
-                    
             ))
         )
     };
