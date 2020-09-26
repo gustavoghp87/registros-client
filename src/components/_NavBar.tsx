@@ -3,22 +3,51 @@ import { Navbar, Nav, NavDropdown, Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import { SERVER } from '../config.json';
+import { NODE_ENV } from '../env.json';
+import { useSelector } from 'react-redux';
+
 
 function NavBar() {
+
+  const user = useSelector((state:any) => state.user.userData);
+
+  console.log("redux", user);
 
   const history = useHistory()
 
   const logoutHandle = async () => {
-    const axios = await Axios(`${SERVER}/api/users/logout`);
+    let axios;
+    if (NODE_ENV==="development") {
+      axios = await Axios(`${SERVER}/api/users/logout`, {withCredentials:true});
+    } else {
+      alert("PRODUCCIÓN")
+      axios = await Axios(`${SERVER}/api/users/logout`);
+    };
     const response = axios.data.response;
     if (response==="ok") {      
       alert("Sesión de usuario cerrada con éxito");
       history.push("/login");
     } else {
       alert("Algo falló y no cerró sesión");
-    }
+    };
   };
 
+  
+  const cerrarSesion = () => {
+    try {
+      console.log(user.userData.isAuth);
+      if (user.userData.isAuth) {
+        return (
+          <Nav>
+              <Form inline>
+                {/* <FormControl type="text" placeholder="Buscar..." className="mr-sm-2" /> */}
+                <Button variant="outline-info" onClick={()=>logoutHandle()}>CERRAR SESIÓN</Button>
+              </Form>
+            </Nav>
+        )
+      };
+    } catch {}
+  };
 
   return (
 
@@ -29,7 +58,7 @@ function NavBar() {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
           
-            <Nav.Link href="/territorios">&nbsp; &nbsp;Territorios&nbsp; &nbsp;</Nav.Link>
+            <Nav.Link href="/index">&nbsp; &nbsp;Territorios&nbsp; &nbsp;</Nav.Link>
             <Nav.Link href="/salas">&nbsp; &nbsp;Salas&nbsp; &nbsp;</Nav.Link>
             <Nav.Link href="/estadisticas">&nbsp; &nbsp;Estadísticas&nbsp; &nbsp;</Nav.Link>
             <Nav.Link href="/admins">&nbsp; &nbsp;Administradores&nbsp; &nbsp;</Nav.Link>
@@ -42,12 +71,8 @@ function NavBar() {
             </NavDropdown>
           </Nav>
 
-          <Nav>
-            <Form inline>
-              {/* <FormControl type="text" placeholder="Buscar..." className="mr-sm-2" /> */}
-              <Button variant="outline-info" onClick={()=>logoutHandle()}>CERRAR SESIÓN</Button>
-            </Form>
-          </Nav>
+          {cerrarSesion()}
+
         </Navbar.Collapse>
       </Navbar>
     </div>

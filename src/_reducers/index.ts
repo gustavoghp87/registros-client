@@ -1,11 +1,12 @@
-import {counterReducer, logReducer} from './user_reducers';
+import { counterReducer, logReducer, user } from './user_reducers';
 import { combineReducers } from 'redux';
 
-const rootReducer = combineReducers({
+const rootReducer:any = combineReducers({
     counter: counterReducer,
-    login: logReducer
+    login: logReducer,
+    user
 });
 
 export default rootReducer;
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<any>

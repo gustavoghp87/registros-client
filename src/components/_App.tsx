@@ -6,6 +6,7 @@ import Auth from '../auth/auth';
 import LoginPage from './LoginPage';
 import RegisterPage from "./RegisterPage";
 import HomePage from "./HomePage";
+import IndexPage from "./IndexPage"
 import TerritoriosPage from "./TerritoriosPage";
 import EstadisticasPage from "./EstadisticasPage";
 import UserPage from "./UserPage";
@@ -28,8 +29,7 @@ function App() {
           <Route exact path="/" component={Auth(HomePage, false)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
-          <Route exact path="/home" component={Auth(HomePage, false)} />
-          <Route exact path="/territorios" component={Auth(HomePage, true)} />
+          <Route exact path="/index" component={Auth(IndexPage, true)} />
           <Route exact path="/territorios/:territorio" component={Auth(TerritoriosPage, true)} />
           <Route exact path="/estadisticas" component={Auth(EstadisticasPage, false)} />
           <Route exact path="/user" component={Auth(UserPage, false)} />

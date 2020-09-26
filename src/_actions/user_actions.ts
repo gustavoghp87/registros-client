@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import { INCREMENT, DECREMENT, LOG_IN, AUTH_USER } from './types';
 import { SERVER } from '../config.json';
+import { NODE_ENV } from './env.json';
 
 
 export const increment = () => {
@@ -23,12 +24,22 @@ export const log = () => {
 };
 
 export const auth = async () => {
-    const axios = await Axios(`${SERVER}/api/users/auth`)  // que si está autorizado, responde json pack
-    const request = axios.data;  // pack usuario
+    if (NODE_ENV==="development") {
+        const axios = await Axios(`${SERVER}/api/users/auth`, {withCredentials:true})
+        const request = axios.data;  // pack usuario
 
-    return {
-        type: AUTH_USER,
-        payload: request
+        return {
+            type: AUTH_USER,
+            payload: request
+        };
+    } else {
+        const axios = await Axios(`${SERVER}/api/users/auth`)
+        const request = axios.data;  // pack usuario
+
+        return {
+            type: AUTH_USER,
+            payload: request
+        };
     }
 };
 

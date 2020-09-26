@@ -1,4 +1,5 @@
 {
-    "SERVER": "https://registros-rest-api.herokuapp.com",
-    "SERVER1": "http://localhost:4005"
+    "SERVER1": "https://registros-rest-api.herokuapp.com",
+    "SERVER": "http://localhost:4005",
+    "SERVER3": ""
 }

@@ -6,6 +6,7 @@ import { increment, decrement, log } from '../_actions/user_actions';
 import { RootState } from '../_reducers/index';
 import { SERVER } from "../config.json";
 import { useHistory } from 'react-router-dom';
+import { NODE_ENV } from '../env.json';
 
 
 function LoginPage() {
@@ -24,12 +25,21 @@ function LoginPage() {
 
     const loginHandle = async () => {
         console.log("log in...");
-        const axios = await Axios.post(`${SERVER}/api/users/login`, {email, password});
+        let axios;
+        if (NODE_ENV==="development") {
+            axios = await Axios.post(
+                `${SERVER}/api/users/login`,
+                {email, password}, {withCredentials:true}
+            );
+        } else {
+            alert("PRODUCTION")
+            axios = await Axios.post(`${SERVER}/api/users/login`, {email, password});
+        }
         const loginSuccess = axios.data.loginSuccess;
         console.log(loginSuccess);
-        
+
         if (loginSuccess) {
-            history.push("/home");
+            history.push("/index");
         } else {
             alert("Datos incorrectos");
         }
