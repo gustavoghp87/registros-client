@@ -40,7 +40,7 @@
     "typescript": "3.8"
   },
   "engines": {
-    "node": "14.x"
+    "node": "10.x"
   },
   "homepage": ".",
   "eslintConfig": {
