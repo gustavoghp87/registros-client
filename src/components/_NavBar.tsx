@@ -3,8 +3,8 @@ import { Navbar, Nav, NavDropdown, Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import { SERVER } from '../config.json';
-import { NODE_ENV } from '../env.json';
 import { useSelector } from 'react-redux';
+const NODE_ENV = process.env.NODE_ENV;
 
 
 function NavBar() {

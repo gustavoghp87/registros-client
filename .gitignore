@@ -2,8 +2,7 @@
 /node_modules
 /.pnp
 .pnp.js
-
-
+env.json
 .env
 .DS_Store
 .env.local

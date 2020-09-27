@@ -6,7 +6,7 @@ import { increment, decrement, log } from '../_actions/user_actions';
 import { RootState } from '../_reducers/index';
 import { SERVER } from "../config.json";
 import { useHistory } from 'react-router-dom';
-import { NODE_ENV } from '../env.json';
+const NODE_ENV = process.env.NODE_ENV;
 
 
 function LoginPage() {

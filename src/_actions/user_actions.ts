@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import { INCREMENT, DECREMENT, LOG_IN, AUTH_USER } from './types';
 import { SERVER } from '../config.json';
-import { NODE_ENV } from './env.json';
+const NODE_ENV = process.env.NODE_ENV;
 
 
 export const increment = () => {
