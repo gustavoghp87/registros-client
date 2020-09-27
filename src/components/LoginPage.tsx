@@ -26,7 +26,7 @@ function LoginPage() {
     const loginHandle = async () => {
         console.log("log in...");
         let axios;
-        if (NODE_ENV!=="development") {
+        if (NODE_ENV==="development") {
             axios = await Axios.post(
                 `${SERVER}/api/users/login`,
                 {email, password}, {withCredentials:true}
@@ -34,7 +34,7 @@ function LoginPage() {
         } else {
             alert("PRODUCTION")
             axios = await Axios.post(`${SERVER}/api/users/login`, {email, password});
-        }
+        };
         const loginSuccess = axios.data.loginSuccess;
         console.log(loginSuccess);
 
@@ -45,9 +45,14 @@ function LoginPage() {
         }
     };
     
-
-    // Axios.post(`${SERVER}/post`, {data:{dato:"ok"}})
-    //     .then( resp => {console.log("All right", resp)} );
+    if (window.location.pathname==='/login') {
+        document.addEventListener('keydown', function init(event){
+            if (event.keyCode === 13) {
+                const loginBtn:any = document.getElementById('login')
+                loginBtn.click();
+            }
+        })
+    };
 
     setTimeout(() => {if (window.screen.width<=767) {setMobile(true)}; console.log("Mobile", Mobile);}, 1000)
 
@@ -91,6 +96,7 @@ function LoginPage() {
                             data-callback='onSubmit'
                             data-action='submit'
                             onClick={()=>loginHandle()}
+                            id="login"
                         >
                             ENTRAR
                         </button>

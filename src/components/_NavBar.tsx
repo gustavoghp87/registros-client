@@ -17,7 +17,7 @@ function NavBar() {
 
   const logoutHandle = async () => {
     let axios;
-    if (NODE_ENV!=="development") {
+    if (NODE_ENV==="development") {
       axios = await Axios(`${SERVER}/api/users/logout`, {withCredentials:true});
     } else {
       alert("PRODUCCIÓN")
