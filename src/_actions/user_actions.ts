@@ -24,7 +24,7 @@ export const log = () => {
 };
 
 export const auth = async () => {
-    if (NODE_ENV==="development") {
+    if (NODE_ENV!=="development") {
         const axios = await Axios(`${SERVER}/api/users/auth`, {withCredentials:true})
         const request = axios.data;  // pack usuario
 

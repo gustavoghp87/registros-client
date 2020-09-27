@@ -26,7 +26,7 @@ function LoginPage() {
     const loginHandle = async () => {
         console.log("log in...");
         let axios;
-        if (NODE_ENV==="development") {
+        if (NODE_ENV!=="development") {
             axios = await Axios.post(
                 `${SERVER}/api/users/login`,
                 {email, password}, {withCredentials:true}
