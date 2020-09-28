@@ -1,42 +1,29 @@
 import React, { useState, useEffect } from 'react';
-// import { Button } from 'react-bootstrap';
-import Axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, log } from '../_actions/user_actions';
-import { RootState } from '../_reducers/index';
 import { SERVER } from "../config.json";
 import { useHistory } from 'react-router-dom';
-const NODE_ENV = process.env.NODE_ENV;
 
 
 function LoginPage() {
 
     const history = useHistory();
 
-    const [Mobile, setMobile] = useState(false);
     const [email, setemail] = useState('');
     const [password, setpassword] = useState('')
 
-    useEffect(() => {
-        if (window.screen.width<=767) {setMobile(true)};
-    }, [Mobile])
-
-    // let presentation = Mobile ? {background:'red'} : {background:'green'};
-
     const loginHandle = async () => {
-        console.log("log in...");
-        let axios;
-        if (NODE_ENV==="development") {
-            axios = await Axios.post(
-                `${SERVER}/api/users/login`,
-                {email, password}, {withCredentials:true}
-            );
-        } else {
-            alert("PRODUCTION")
-            axios = await Axios.post(`${SERVER}/api/users/login`, {email, password});
-        };
-        const loginSuccess = axios.data.loginSuccess;
-        console.log(loginSuccess);
+        console.log("log in...", email, password);
+        let axios, loginSuccess;
+        const fetchy = await fetch(`${SERVER}/api/users/login`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            body: JSON.stringify({email, password})
+        });
+        axios = await fetchy.json();
+        loginSuccess = axios.loginSuccess;
+        const token = axios.newtoken;
+        document.cookie = `newtoken = ${token}`;
+
+        console.log("Éxito en loguear:", loginSuccess, "doc.cookie:", document.cookie);
 
         if (loginSuccess) {
             history.push("/index");
@@ -44,22 +31,25 @@ function LoginPage() {
             alert("Datos incorrectos");
         }
     };
-    
-    if (window.location.pathname==='/login') {
-        document.addEventListener('keydown', function init(event){
-            if (event.keyCode === 13) {
-                const loginBtn:any = document.getElementById('login')
-                loginBtn.click();
-            }
-        })
+
+    const loginHandle2 = (e:any) => {
+        if (e.key === 'Enter') {
+            loginHandle()
+            console.log(email, password);
+        }
+        
+        
     };
-
-    setTimeout(() => {if (window.screen.width<=767) {setMobile(true)}; console.log("Mobile", Mobile);}, 1000)
-
-    const counter = useSelector((state:RootState) => state.counter);
-    const login = useSelector((state:RootState) => state.login);
-    const dispatch = useDispatch();
     
+    // if (window.location.pathname==='/login') {
+    //     document.addEventListener('keydown', function init(event){
+    //         if (event.keyCode === 13) {
+    //             const loginBtn:any = document.getElementById('login')
+    //             loginBtn.click();
+    //         }
+    //     })
+    // };
+
     
     return (
 
@@ -87,7 +77,7 @@ function LoginPage() {
 
                         <input className="form-control" type="email" name="email" style={{marginBottom:'12px'}} placeholder="Correo electrónico" autoFocus onChange={e => setemail((e.target as HTMLInputElement).value)} />
 
-                        <input className="form-control" type="password" name="password" style={{marginBottom:'30px'}} placeholder="Contraseña" onChange={e => setpassword((e.target as HTMLInputElement).value)} />
+                        <input className="form-control" type="password" name="password" style={{marginBottom:'30px'}} placeholder="Contraseña" onChange={e => setpassword((e.target as HTMLInputElement).value)} onKeyDown={(es)=> loginHandle2(es)} />
 
                         <button
                             className="btn btn-success g-recaptcha"
@@ -104,7 +94,6 @@ function LoginPage() {
                     </div>
 
 
-
                     <a href={"/register"}>
                         <p style={{fontSize:'1rem', padding:'15px 0px', textAlign:'end'}}>
                             Registrar una cuenta
@@ -116,22 +105,8 @@ function LoginPage() {
 
             <br/><br/><br/><br/><br/>
 
-
-            <h2 style={{textAlign:'center'}}> All right! </h2>
-
-            <br/><br/>
-
-            <h1>Contador: {counter}</h1>
-
-            <button onClick={() => dispatch(increment())}>+1</button>
-            <button onClick={() => dispatch(decrement(1))}>-1</button>
-            <button onClick={() => dispatch(decrement(2))}>-2</button>
-
-            {login ? <h2>Está logueado</h2> : <h2>No está logueado</h2>}
-
-            <button onClick={() => dispatch(log())}>LogIn/LogOut</button>
-
         </div>
+        
     )
 };
 

@@ -12,14 +12,14 @@ export default function (ComposedClass:any, reload:boolean) {
 
         useEffect(() => {
             dispatch(auth()).then(async response => {
-                console.log("AUTHENTICATION", response.payload.userData.isAuth, "&&", reload);
-                if (!response.payload.userData.isAuth && reload) {
-                    if (reload) {
-                        props.history.push('/login')
-                    }
-                }
+
+                console.log("USUARIO EN AUTH", response.payload.userData);
+                console.log("AUTHENTICATION, auth", response.payload.userData.isAuth, "&& requerido", reload);
+
+                if (!response.payload.userData.isAuth && reload) 
+                    props.history.push('/login');
             })
-            
+
         }, [dispatch, props.history])
 
         return (

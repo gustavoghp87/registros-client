@@ -1,46 +1,24 @@
-import Axios from 'axios';
-import { INCREMENT, DECREMENT, LOG_IN, AUTH_USER } from './types';
+//import Axios from 'axios';
+import { AUTH_USER } from './types';
 import { SERVER } from '../config.json';
-const NODE_ENV = process.env.NODE_ENV;
 
-
-export const increment = () => {
-    return {
-        type: INCREMENT
-    };
-};
-
-export const decrement = (nr:number) => {
-    return {
-        type: DECREMENT,
-        payload: nr
-    };
-};
-
-export const log = () => {
-    return {
-        type: LOG_IN
-    };
-};
 
 export const auth = async () => {
-    if (NODE_ENV==="development") {
-        const axios = await Axios(`${SERVER}/api/users/auth`, {withCredentials:true})
-        const request = axios.data;  // pack usuario
+
+        console.log("Llamando a auth desde desarrollo");
+
+        const axios = await fetch(`${SERVER}/api/users/auth`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            body: JSON.stringify({token:document.cookie})
+        });
+        const request = await axios.json();
 
         return {
             type: AUTH_USER,
             payload: request
         };
-    } else {
-        const axios = await Axios(`${SERVER}/api/users/auth`)
-        const request = axios.data;  // pack usuario
 
-        return {
-            type: AUTH_USER,
-            payload: request
-        };
-    }
 };
 
 

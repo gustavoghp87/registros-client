@@ -1,6 +1,7 @@
 import React from 'react';
 
 
+
 function Footer() {
     
     interface IEstilo1 {
@@ -23,7 +24,9 @@ function Footer() {
     return (
 
         <>
+        
         <div className="main-footer" style={estilo1}>
+        
 
             <div style={{display:'flex', margin:'auto', textAlign:'center', alignItems:'center', justifyContent:'center'}}>
 

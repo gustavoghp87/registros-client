@@ -4,10 +4,11 @@ import { useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import { SERVER } from '../config.json';
 import { useSelector } from 'react-redux';
-const NODE_ENV = process.env.NODE_ENV;
 
 
 function NavBar() {
+
+  console.log("document.cookie desde navbar:", document.cookie);
 
   const user = useSelector((state:any) => state.user.userData);
 
@@ -17,14 +18,11 @@ function NavBar() {
 
   const logoutHandle = async () => {
     let axios;
-    if (NODE_ENV==="development") {
-      axios = await Axios(`${SERVER}/api/users/logout`, {withCredentials:true});
-    } else {
-      alert("PRODUCCIÓN")
-      axios = await Axios(`${SERVER}/api/users/logout`);
-    };
+
+      axios = await Axios.post(`${SERVER}/api/users/logout`, {token:document.cookie});
+
     const response = axios.data.response;
-    if (response==="ok") {      
+    if (response==="ok") {
       alert("Sesión de usuario cerrada con éxito");
       history.push("/login");
     } else {

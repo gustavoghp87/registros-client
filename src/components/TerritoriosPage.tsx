@@ -31,7 +31,9 @@ function TerritoriosPage() {
     }]});
 
     const call = async (territorio:string) => {
-        const axios = await Axios(`${SERVER}/api/buildings/getBuildings/${territorio}`);
+        const axios = await Axios.post(`${SERVER}/api/buildings/getBuildings/${territorio}`, {
+            token: document.cookie
+        });
         setviviendas(axios.data)
     };
 
