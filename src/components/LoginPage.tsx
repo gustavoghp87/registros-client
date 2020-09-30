@@ -1,54 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { SERVER } from "../config.json";
-import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react'
+import { SERVER } from "../config.json"
+import { useHistory } from 'react-router-dom'
 
 
 function LoginPage() {
 
-    const history = useHistory();
+    const history = useHistory()
 
-    const [email, setemail] = useState('');
+    const [email, setemail] = useState('')
     const [password, setpassword] = useState('')
 
     const loginHandle = async () => {
-        console.log("log in...", email, password);
-        let axios, loginSuccess;
+        let axios, loginSuccess
         const fetchy = await fetch(`${SERVER}/api/users/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
             body: JSON.stringify({email, password})
-        });
-        axios = await fetchy.json();
-        loginSuccess = axios.loginSuccess;
+        })
+        axios = await fetchy.json()
+        loginSuccess = axios.loginSuccess
         const token = axios.newtoken;
-        document.cookie = `newtoken = ${token}`;
+        document.cookie = `newtoken = ${token}`
 
-        console.log("Éxito en loguear:", loginSuccess, "doc.cookie:", document.cookie);
+        console.log("Éxito en loguear:", loginSuccess, "doc.cookie:", document.cookie)
 
         if (loginSuccess) {
-            history.push("/index");
+            history.push("/index")
         } else {
-            alert("Datos incorrectos");
+            alert("Datos incorrectos")
         }
-    };
+    }
 
     const loginHandle2 = (e:any) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter')
             loginHandle()
-            console.log(email, password);
-        }
-        
-        
-    };
-    
-    // if (window.location.pathname==='/login') {
-    //     document.addEventListener('keydown', function init(event){
-    //         if (event.keyCode === 13) {
-    //             const loginBtn:any = document.getElementById('login')
-    //             loginBtn.click();
-    //         }
-    //     })
-    // };
+    }
 
     
     return (
@@ -107,7 +93,7 @@ function LoginPage() {
         </div>
         
     )
-};
+}
 
 
-export default LoginPage;
+export default LoginPage

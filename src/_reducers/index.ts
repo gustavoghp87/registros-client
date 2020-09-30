@@ -1,10 +1,11 @@
-import { user } from './user_reducers';
-import { combineReducers } from 'redux';
+import { user } from './user_reducers'
+import { combineReducers } from 'redux'
 
-const rootReducer:any = combineReducers({
+
+type RootState = ReturnType<any>
+
+const rootReducer:RootState = combineReducers({
     user
-});
+})
 
-export default rootReducer;
-
-export type RootState = ReturnType<any>
+export default rootReducer

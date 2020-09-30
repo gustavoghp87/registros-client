@@ -14,8 +14,6 @@ function AdminsPage(props:any) {
     useEffect(() => {
         (async () => {
             const axios = await Axios.post(`${SERVER}/api/users/getUsers`, {token:document.cookie})
-            console.log(axios); 
-            
             setUsuarios({usuarios: axios.data.users})
         })()
     }, [])

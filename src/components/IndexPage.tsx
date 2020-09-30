@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { SERVER } from "../config.json";
-import Axios from 'axios';
-import { useSelector } from 'react-redux';
-import { ITerritorio, IState, IUser } from '../types/types';
-import { Loading } from './_Loading';
-import { ReturnBtn } from './_Return';
+import React, { useState, useEffect } from 'react'
+import { SERVER } from "../config.json"
+import Axios from 'axios'
+import { useSelector } from 'react-redux'
+import { ITerritorio, IState, IUser } from '../types/types'
+import { Loading } from './_Loading'
+import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
 
 
 function IndexPage(props:any) {
 
-    const user:IUser = useSelector((state:IState) => state.user.userData);
+    const user:IUser = useSelector((state:IState) => state.user.userData)
 
-    const [Territorios, setTerritorios] = useState<ITerritorio[]>([]);
+    const [Territorios, setTerritorios] = useState<ITerritorio[]>([])
 
     useEffect(() => {
         (async () => {
@@ -22,7 +22,6 @@ function IndexPage(props:any) {
                 })
                 let asignados = datos.data.territorios;
                 asignados.sort((a:number, b:number) => a - b)
-                console.log("Territorios asignados:", asignados)
                 setTerritorios(asignados)
             } catch(error) {console.log("No se pudieron recuperar los territorios asignados", error)}
         })()
@@ -42,8 +41,8 @@ function IndexPage(props:any) {
                             </h2>
                         </a>
                     ))
-                );
-            else return (<Loading />);
+                )
+            else return (<Loading />)
         } catch {
             return (<Loading />)
         }
@@ -56,25 +55,26 @@ function IndexPage(props:any) {
         marginBottom: '40px',
     }
 
+
     return (
         <>
-        {ReturnBtn(props)}
-    
-        <H2> SELECCIONE UN TERRITORIO </H2>
+            {ReturnBtn(props)}
+        
+            <H2> SELECCIONE UN TERRITORIO </H2>
 
 
-        <div className="container" style={{paddingTop:'40px', marginBottom:'50px'}}>
+            <div className="container" style={{paddingTop:'40px', marginBottom:'50px'}}>
 
-            <div className="row" style={{padding:'40px', justifyContent:'space-evenly'}}>
-            
-                {territorios()}
-            
+                <div className="row" style={{padding:'40px', justifyContent:'space-evenly'}}>
+                
+                    {territorios()}
+                
+                </div>
+
             </div>
-
-        </div>
         </>
     )
-};
+}
 
 
-export default IndexPage;
+export default IndexPage

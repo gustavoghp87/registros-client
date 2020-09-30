@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Dropdown, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import Axios from 'axios'
-import { SERVER } from "../config.json"
-import { useParams } from "react-router"
+import { SERVER } from '../config.json'
+import { useParams } from 'react-router'
 import { ParamTypes, ITerritorio, IVivienda } from '../types/types'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
@@ -11,27 +11,26 @@ import { H2 } from './css/css'
 
 function TerritoriosPage(props:any) {
 
-    let { territorio } = useParams<ParamTypes>();
+    const [viviendas, setviviendas] = useState<ITerritorio>({unterritorio:[]})
+    const [radioValue, setRadioValue] = useState('1')
 
-    const [viviendas, setviviendas] = useState<ITerritorio>({unterritorio:[]});
-    const [radioValue, setRadioValue] = useState('1');
-  
     const radios = [
       { name: 'Viendo no predicados', value: '1' },
       { name: 'Ver todos', value: '2' },
       { name: 'Ver estadísticas', value: '3' },
     ]
 
-    const call = async (territorio:string) => {
-        const axios = await Axios.post(`${SERVER}/api/buildings/getBuildings/${territorio}`, {
-            token: document.cookie
-        });
-        setviviendas(axios.data)
-    };
+    let { territorio } = useParams<ParamTypes>()
 
     useEffect(() => {
+        const call = async (territorio:string) => {
+            const axios = await Axios.post(`${SERVER}/api/buildings/getBuildings/${territorio}`, {
+                token: document.cookie
+            });
+            setviviendas(axios.data)
+        }
         call(territorio)
-    }, [])
+    }, [territorio])
 
     const formatTime = (timestamp:string) => {
         try {
@@ -47,11 +46,7 @@ function TerritoriosPage(props:any) {
                 <ButtonGroup toggle>
                     {radios.map((radio, idx) => (
                         <ToggleButton
-                            key={idx}
-                            type="radio"
-                            variant="dark"
-                            name="radio"
-                            value={radio.value}
+                            key={idx} type="radio" variant="dark" name="radio" value={radio.value}
                             checked={radioValue === radio.value}
                             onChange={(e) => setRadioValue(e.currentTarget.value)}
                         >
@@ -174,7 +169,7 @@ function TerritoriosPage(props:any) {
 
         </>
     )
-};
+}
 
 
-export default TerritoriosPage;
+export default TerritoriosPage
