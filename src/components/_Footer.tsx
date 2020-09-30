@@ -13,11 +13,11 @@ function Footer() {
     };
 
     var estilo1:IEstilo1 = {
-        fontSize: window.screen.width>767 ? '2rem' : '1rem',
+        fontSize: window.screen.width>767 ? '1.8rem' : '1rem',
         paddingTop: '20px',
         paddingBottom: '20px',
         backgroundColor: '#343a40',
-        height: '200px',
+        height: '100px',
         marginTop: '200px'
     };
     

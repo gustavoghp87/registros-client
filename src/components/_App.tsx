@@ -14,14 +14,17 @@ import RoomsPage from "./RoomsPage";
 import NavBar from './_NavBar';
 import Footer from './_Footer'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3"
 
 
 function App() {
 
   return (
     <Suspense fallback={(<div> Cargando... </div>)}>
+      <GoogleReCaptchaProvider reCaptchaKey="6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9">
       <NavBar />
       <div style={{maxWidth:'90%', paddingTop:'75px', margin:'auto', minHeight:'calc(100vh - 80px)'}}>
+
         <Switch>
           {/* <Redirect exact strict from="/" to="/login" /> */}
           <Route exact path="/" component={Auth(HomePage, false)} />
@@ -35,8 +38,10 @@ function App() {
           <Route exact path="/salas" component={Auth(RoomsPage, true)} />
           <Route path="/" component={Auth(LoginPage, false)} />
         </Switch>
+        
       </div>
       <Footer />
+      </GoogleReCaptchaProvider>
     </Suspense>
   )
 }

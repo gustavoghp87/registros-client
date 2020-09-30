@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button } from 'react-bootstrap';
+import React from 'react'
+import { Button } from 'react-bootstrap'
 
 
 export const ReturnBtn = (props:any) => {
@@ -10,5 +10,5 @@ export const ReturnBtn = (props:any) => {
                 <Button size="lg" variant="danger" onClick={()=>props.history.goBack()}> VOLVER </Button>
             </div>
         </>
-    );
-};
+    )
+}

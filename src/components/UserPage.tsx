@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { IUser, IState } from '../types/types'
 import { Card, Button } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
+import { H2 } from './css/css'
 
 
 function UserPage(props:any) {
@@ -19,7 +20,7 @@ function UserPage(props:any) {
         var date = a.getDate()
         var hour = a.getHours()
         var min = a.getMinutes()<10? "0" + a.getMinutes() : a.getMinutes()
-        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min
+        var time = date + ' ' + month + ' ' + year + ' - ' + hour + ':' + min + ' hs'
         return time;
     }
 
@@ -27,7 +28,7 @@ function UserPage(props:any) {
     return (
         <>
         {ReturnBtn(props)}
-        <h2 style={{textAlign:'center'}}> Usuario </h2>
+        <H2 style={{textAlign:'center'}}> Usuario </H2>
 
         <br/><br/>
 
@@ -47,18 +48,18 @@ function UserPage(props:any) {
         <br/>
 
         <div style={{textAlign:'center'}}>
-        {user && user.actividad && user.actividad.length &&
-            <Button onClick={()=>setshow(!show)} variant="dark">
-                {show? "Ocultar actividad" : "Ver actividad"}
-            </Button>
-        }
+            {user && user.actividad && user.actividad.length &&
+                <Button onClick={()=>setshow(!show)} variant="dark">
+                    {show? "Ocultar actividad" : "Ver actividad"}
+                </Button>
+            }
         </div>
 
         <div className="row" style={{paddingTop:'40px', justifyContent:'space-evenly'}}>
 
             {user && user.actividad &&
-                user.actividad.map((actividad, index) => (
-                    <Card key={index} style={{display: show? 'block' : 'none', width:'230px', margin:'15px', padding:'15px', backgroundColor:'#b4e999'}} >
+                user.actividad.map((actividad) => (
+                    <Card key={actividad.fechaUlt} style={{display: show? 'block' : 'none', width:'230px', margin:'15px', padding:'15px', backgroundColor:'#b4e999'}} >
                         <h6> {actividad.fechaUlt? timeConverter(actividad.fechaUlt) : ""} </h6>
                         <h5> Territorio {actividad.territorio} {actividad.manzana? `manz ${actividad.manzana}` : ""} </h5>
                         <h5> {actividad.direccion} </h5>
@@ -70,12 +71,9 @@ function UserPage(props:any) {
             }
         </div>
 
-        <br/><br/><br/><br/>
-
-            
         </>
     )
-};
+}
 
 
-export default UserPage;
+export default UserPage

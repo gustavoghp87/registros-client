@@ -5,6 +5,7 @@ import { Card, Button} from 'react-bootstrap'
 //import { IUsers, IUser } from '../types/types'
 import { SERVER } from '../config.json'
 import { H2 } from './css/css'
+import { Loading } from './_Loading'
 
 
 function AdminsPage(props:any) {
@@ -26,19 +27,31 @@ function AdminsPage(props:any) {
             <br/><br/>
 
             <div style={{display:'block', margin:'auto'}}>
-            {Usuarios.usuarios.length &&
+
+            {!Usuarios.usuarios.length && <Loading />}
+
+            {Usuarios.usuarios &&
                 Usuarios.usuarios.map((usuario:any, index:any) => (
 
-                    <Card key={index} style={{width:'25rem', margin:'20px auto'}}>
+                    <Card key={index} style={{width:'25rem', margin:'30px auto'}}>
                         <Card.Body>
                             <Card.Title style={{textAlign:'center'}}> {usuario.email} </Card.Title>
                             <br/>
-                            
-                            <Card.Text>
+
+                            <Card.Text style={{textAlign:'center', fontSize:'1.2rem', fontWeight:600}}>
+                                Grupo: {usuario.group} &nbsp;
+                                <Button variant="success" style={{}}>
+                                    CAMBIAR GRUPO
+                                </Button>
+                            </Card.Text>
+
+                            <hr/>
+                        
+                            <Card.Text style={{fontWeight:500, fontSize:'1.2rem', textAlign:'center'}}>
                                 Territorios asignados: &nbsp;
                                 {usuario.asign &&
                                     usuario.asign.map((asign:number) => (
-                                        <h6 key={asign} className="d-inline-block"> {asign} &nbsp; </h6>
+                                        <span key={asign} className="d-inline-block"> {asign} &nbsp; </span>
                                     ))
                                 }
                             </Card.Text>
@@ -46,7 +59,7 @@ function AdminsPage(props:any) {
                             <Button block variant="success" style={{marginTop:'10px'}}>
                                 Cambiar asignaciones
                             </Button>
-                            <br/>
+                            <hr/>
                             
                             <Button block variant={usuario.estado==="activado" ? 'danger' : 'primary'}>
                                 {usuario.estado==="activado" ? "DESACTIVAR" : "ACTIVAR"}

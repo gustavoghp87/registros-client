@@ -1,34 +1,42 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SERVER } from "../config.json"
 import { useHistory } from 'react-router-dom'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 
 
 function LoginPage() {
 
     const history = useHistory()
+    const [email, setemail] = useState<string>('')
+    const [password, setpassword] = useState<string>('')
+    const [recaptchaToken, setRecaptchaToken ] = useState<string|null>('')
+    const { executeRecaptcha } = useGoogleReCaptcha();
 
-    const [email, setemail] = useState('')
-    const [password, setpassword] = useState('')
+    useEffect(() => {
+        (async () => {
+            if (!executeRecaptcha) return
+            const result = await executeRecaptcha("");
+            setRecaptchaToken(result);
+        })()
+    }, [executeRecaptcha])
 
     const loginHandle = async () => {
         let axios, loginSuccess
         const fetchy = await fetch(`${SERVER}/api/users/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-            body: JSON.stringify({email, password})
+            body: JSON.stringify({email, password, recaptchaToken})
         })
         axios = await fetchy.json()
         loginSuccess = axios.loginSuccess
         const token = axios.newtoken;
         document.cookie = `newtoken = ${token}`
-
         console.log("Éxito en loguear:", loginSuccess, "doc.cookie:", document.cookie)
 
-        if (loginSuccess) {
-            history.push("/index")
-        } else {
-            alert("Datos incorrectos")
-        }
+        if (loginSuccess) history.push("/index")
+        else if (axios.recaptchaFails) alert("Problemas, refresque la página")
+        else if (axios.disable) alert("Usuario aun no habilitado por el grupo de territorios... avisarles")
+        else alert("Datos incorrectos")
     }
 
     const loginHandle2 = (e:any) => {
@@ -39,39 +47,24 @@ function LoginPage() {
     
     return (
 
-        <div className="container" style={{maxWidth:'95%'}}>
+        <div className="container" style={{maxWidth:'95%', marginTop:'50px'}}>
 
-            <br/> <br/>
-
-            <div className="container" style={{paddingTop:'30px', marginBottom:'50px', border:'black 1px solid', borderRadius:'12px', maxWidth:'600px'}}>
+            <div className="container" style={{paddingTop:'50px', marginBottom:'50px', border:'black 1px solid', borderRadius:'12px', maxWidth:'600px', boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}>
             
-                <h2 style={{textAlign:'center'}}> INGRESAR </h2>
-                <br/>
+                <h2 style={{textAlign:'center', textShadow:'0 0 1px gray'}}> INGRESAR </h2>
 
+                <div className="container" style={{paddingTop:'35px', display:'block', margin:'auto', maxWidth:'500px'}}>
 
-                {/* <script src="https://www.google.com/recaptcha/api.js"></script>
-                <script>
-                    function onSubmit(token) { document.getElementById("demo-form").submit(); };
-                </script> */}
-
-                <div className="container" style={{paddingTop:'15px', display:'block', margin:'auto', maxWidth:'500px'}}>
-
-
-
-                    <div style={{display:'block', margin:'auto'}} id="demo-form">
+                    <div style={{display:'block', margin:'auto'}}>
 
                         <input className="form-control" type="email" name="email" style={{marginBottom:'12px'}} placeholder="Correo electrónico" autoFocus onChange={e => setemail((e.target as HTMLInputElement).value)} />
 
                         <input className="form-control" type="password" name="password" style={{marginBottom:'30px'}} placeholder="Contraseña" onChange={e => setpassword((e.target as HTMLInputElement).value)} onKeyDown={(es)=> loginHandle2(es)} />
 
                         <button
-                            className="btn btn-success g-recaptcha"
+                            className="btn btn-success"
                             style={{width:'100%', display:'block', margin:'auto'}}
-                            data-sitekey="6LefBLcZAAAAANjU9eswkE-TMmarZL72OzW_ZlSz"
-                            data-callback='onSubmit'
-                            data-action='submit'
                             onClick={()=>loginHandle()}
-                            id="login"
                         >
                             ENTRAR
                         </button>
@@ -80,15 +73,14 @@ function LoginPage() {
 
 
                     <a href={"/register"}>
-                        <p style={{fontSize:'1rem', padding:'15px 0px', textAlign:'end'}}>
+                        <p style={{fontSize:'1rem', margin:'15px 0 30px', textAlign:'end'}}>
                             Registrar una cuenta
                         </p>
                     </a>
+                    
                 </div>
 
             </div>
-
-            <br/><br/><br/><br/><br/>
 
         </div>
         
