@@ -149,7 +149,8 @@ function TerritoriosPage(props:any) {
         } else {
             return <Loading />
         }
-    };
+    }
+    
 
     return (
         <>
