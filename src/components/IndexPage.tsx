@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { ITerritorio, IState, IUser } from '../types/types';
 import { Loading } from './_Loading';
 import { ReturnBtn } from './_Return';
+import { H2 } from './css/css'
 
 
 function IndexPage(props:any) {
@@ -18,13 +19,13 @@ function IndexPage(props:any) {
             try {
                 const datos = await Axios.post(`${SERVER}/api/buildings/territorios`, {
                     token:document.cookie
-                });
+                })
                 let asignados = datos.data.territorios;
-                asignados.sort((a:number, b:number) => a - b);
-                console.log("Territorios asignados:", asignados);
+                asignados.sort((a:number, b:number) => a - b)
+                console.log("Territorios asignados:", asignados)
                 setTerritorios(asignados)
-            } catch(error) {console.log("No se pudieron recuperar los territorios asignados", error)};
-        })();
+            } catch(error) {console.log("No se pudieron recuperar los territorios asignados", error)}
+        })()
     }, [])
 
 
@@ -45,29 +46,26 @@ function IndexPage(props:any) {
             else return (<Loading />);
         } catch {
             return (<Loading />)
-        };
-    };
+        }
+    }
 
     const btnTerri = {
         width: '120px',
         height: '100px',
         borderRadius: '15px',
         marginBottom: '40px',
-    };
+    }
 
     return (
         <>
         {ReturnBtn(props)}
-        <div className="container" style={{paddingTop:'60px', marginBottom:'50px'}}>
+    
+        <H2> SELECCIONE UN TERRITORIO </H2>
 
-            <div className="row" style={{marginBottom:'20px'}}>
-                <h1 style={{display:'block', margin:'auto', textAlign:'center'}}>
-                    SELECCIONE UN TERRITORIO
-                </h1>
-            </div>
 
-            <div className="row" style={{padding:'60px', paddingTop:'40px',
-             justifyContent:'space-evenly'}}>
+        <div className="container" style={{paddingTop:'40px', marginBottom:'50px'}}>
+
+            <div className="row" style={{padding:'40px', justifyContent:'space-evenly'}}>
             
                 {territorios()}
             

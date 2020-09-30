@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Dropdown } from 'react-bootstrap';
-import Axios from 'axios';
-import { SERVER } from "../config.json";
-import { useParams } from "react-router";
-import { ParamTypes, ITerritorio, IVivienda } from '../types/types';
-import { Loading } from './_Loading';
-import { ReturnBtn } from './_Return';
+import React, { useState, useEffect } from 'react'
+import { Dropdown, ButtonGroup, ToggleButton } from 'react-bootstrap'
+import Axios from 'axios'
+import { SERVER } from "../config.json"
+import { useParams } from "react-router"
+import { ParamTypes, ITerritorio, IVivienda } from '../types/types'
+import { Loading } from './_Loading'
+import { ReturnBtn } from './_Return'
+import { H2 } from './css/css'
 
 
 function TerritoriosPage(props:any) {
@@ -13,6 +14,13 @@ function TerritoriosPage(props:any) {
     let { territorio } = useParams<ParamTypes>();
 
     const [viviendas, setviviendas] = useState<ITerritorio>({unterritorio:[]});
+    const [radioValue, setRadioValue] = useState('1');
+  
+    const radios = [
+      { name: 'Viendo no predicados', value: '1' },
+      { name: 'Ver todos', value: '2' },
+      { name: 'Ver estadísticas', value: '3' },
+    ]
 
     const call = async (territorio:string) => {
         const axios = await Axios.post(`${SERVER}/api/buildings/getBuildings/${territorio}`, {
@@ -27,10 +35,33 @@ function TerritoriosPage(props:any) {
 
     const formatTime = (timestamp:string) => {
         try {
-            let time = new Date(parseInt(timestamp)).toString().split("GMT")[0];
-            return time;    
-        } catch {};
-    };
+            let time = new Date(parseInt(timestamp)).toString().split("GMT")[0]
+            return time
+        } catch {}
+    }
+
+    const renderButtons = () => {
+        if (viviendas.unterritorio.length)
+            return (
+            <div style={{textAlign:'center'}}>
+                <ButtonGroup toggle>
+                    {radios.map((radio, idx) => (
+                        <ToggleButton
+                            key={idx}
+                            type="radio"
+                            variant="dark"
+                            name="radio"
+                            value={radio.value}
+                            checked={radioValue === radio.value}
+                            onChange={(e) => setRadioValue(e.currentTarget.value)}
+                        >
+                            {radio.name}
+                        </ToggleButton>
+                    ))}
+                </ButtonGroup>
+                <br/><br/>
+            </div>)
+    }
 
 
     const rendering = () => {
@@ -127,11 +158,12 @@ function TerritoriosPage(props:any) {
     return (
         <>
             {ReturnBtn(props)}
-            <h2 style={{textAlign:'center', marginTop:'80px'}}> Territorios </h2>
-            <h2 style={{textAlign:'center'}}> Territorio {territorio} </h2>
+            <H2 style={{textAlign:'center', margin:'80px 0px 30px 0'}}> TERRITORIOS </H2>
+            <h2 style={{textAlign:'center'}}> TERRITORIO {territorio} </h2>
             <br/>
             <br/>
 
+            {renderButtons()}
             {rendering()}
 
             <br/>

@@ -55,14 +55,13 @@ function LoginPage() {
 
         <div className="container" style={{maxWidth:'95%'}}>
 
+            <br/> <br/>
+
             <div className="container" style={{paddingTop:'30px', marginBottom:'50px', border:'black 1px solid', borderRadius:'12px', maxWidth:'600px'}}>
             
-                <div className="row" style={{marginBottom:'0px'}}>
-                    <h2 style={{display:'block', margin:'auto'}}>
-                        INGRESAR
-                    </h2>
-                    <br/>
-                </div>
+                <h2 style={{textAlign:'center'}}> INGRESAR </h2>
+                <br/>
+
 
                 {/* <script src="https://www.google.com/recaptcha/api.js"></script>
                 <script>

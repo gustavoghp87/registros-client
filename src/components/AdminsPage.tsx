@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { ReturnBtn } from './_Return'
 import Axios from 'axios'
 import { Card, Button} from 'react-bootstrap'
-import { IUsers, IUser } from '../types/types'
+//import { IUsers, IUser } from '../types/types'
 import { SERVER } from '../config.json'
+import { H2 } from './css/css'
 
 
 function AdminsPage(props:any) {
@@ -23,7 +24,7 @@ function AdminsPage(props:any) {
     return (
         <>
             {ReturnBtn(props)}
-            <h2 style={{textAlign:'center', marginTop:'40px'}}> Administradores </h2>
+            <H2> ADMINISTRADORES </H2>
             <br/><br/>
 
             <div style={{display:'block', margin:'auto'}}>

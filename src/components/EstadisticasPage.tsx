@@ -1,11 +1,12 @@
 import React from 'react';
+import { H2 } from './css/css'
 
 
 function EstadisticasPage() {
 
 
     return (
-        <h2 style={{textAlign:'center', marginTop:'80px'}}> Estadísticas </h2>
+        <H2> ESTADÍSTICAS </H2>
     )
 }
 
