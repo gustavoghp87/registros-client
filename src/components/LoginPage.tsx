@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { SERVER } from "../config.json"
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 
 
@@ -72,11 +72,11 @@ function LoginPage() {
                     </div>
 
 
-                    <a href={"/register"}>
+                    <Link to={"/register"}>
                         <p style={{fontSize:'1rem', margin:'15px 0 30px', textAlign:'end'}}>
                             Registrar una cuenta
                         </p>
-                    </a>
+                    </Link>
                     
                 </div>
 

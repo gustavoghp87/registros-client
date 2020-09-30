@@ -3,6 +3,7 @@ import { Dropdown, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import Axios from 'axios'
 import { SERVER } from '../config.json'
 import { useParams } from 'react-router'
+import { Link } from 'react-router-dom'
 import { ParamTypes, ITerritorio, IVivienda } from '../types/types'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
@@ -88,7 +89,7 @@ function TerritoriosPage(props:any) {
                                         <h4 style={{textAlign:"center", display:"block", margin:"auto"}}>
                                         Teléfono:
                                             <div style={{marginTop:'7px'}}>
-                                                <a href={`tel:${vivienda.telefono}`}> {vivienda.telefono} </a>
+                                                <Link to={`tel:${vivienda.telefono}`}> {vivienda.telefono} </Link>
                                             </div>
                                         </h4>
                                     </div>

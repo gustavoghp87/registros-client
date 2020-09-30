@@ -1,18 +1,12 @@
-import React from 'react';
-// import { Button } from 'react-bootstrap';
-// import Axios from 'axios';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { increment, decrement, log } from '../_actions/user_actions';
-// import { RootState } from '../_reducers/index';
-// import { SERVER } from "../config.json";
-
+import React from 'react'
+import { H2 } from './css/css'
 
 function RoomsPage() {
     
     return (
-        <h2> Rooms Page </h2>
+        <H2> Rooms Page </H2>
     )
-};
+}
 
 
-export default RoomsPage;
+export default RoomsPage

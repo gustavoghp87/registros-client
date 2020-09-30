@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { SERVER } from "../config.json"
 import Axios from 'axios'
 import { useSelector } from 'react-redux'
@@ -33,13 +34,13 @@ function IndexPage(props:any) {
             if (user.isAuth) 
                 return (
                     Territorios.map((territorio, index) => (
-                        <a type="button" className="btn btn-danger" style={btnTerri}
-                        href={`/territorios/${territorio}`} key={index}>
+                        <Link type="button" className="btn btn-danger" style={btnTerri}
+                        to={`/territorios/${territorio}`} key={index}>
                             <h2 className="h-100 align-middle"
                             style={{padding:'22%', fontFamily:'"Arial Black", Gadget, sans-serif'}}>
                                 {territorio}
                             </h2>
-                        </a>
+                        </Link>
                     ))
                 )
             else return (<Loading />)

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import Axios from 'axios';
 import { SERVER } from "../config.json";
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 
 function RegisterPage() {
@@ -66,11 +66,11 @@ function RegisterPage() {
                         REGISTRARSE
                     </button>
 
-                    <a href={"/login"}>
+                    <Link to={"/login"}>
                         <p style={{fontSize:'1.1rem', margin:'15px 0 20px 0', textAlign:'end'}}>
                             Volver a ingreso
                         </p>
-                    </a>
+                    </Link>
 
                 </div>
             </div>
