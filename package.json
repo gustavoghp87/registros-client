@@ -1,6 +1,5 @@
 {
   "name": "registros",
-  "homepage": ".",
   "version": "0.1.0",
   "engines": {
     "node": "14.x"
