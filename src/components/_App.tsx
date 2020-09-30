@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
-import Auth from '../auth/auth';
+import Auth from '../hoc/auth';
 
 import LoginPage from './LoginPage';
 import RegisterPage from "./RegisterPage";
@@ -31,10 +31,10 @@ function App() {
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
           <Route exact path="/index" component={Auth(IndexPage, true)} />
           <Route exact path="/territorios/:territorio" component={Auth(TerritoriosPage, true)} />
-          <Route exact path="/estadisticas" component={Auth(EstadisticasPage, false)} />
-          <Route exact path="/user" component={Auth(UserPage, false)} />
-          <Route exact path="/admins" component={Auth(AdminsPage, false)} />
-          <Route exact path="/salas" component={Auth(RoomsPage, false)} />
+          <Route exact path="/estadisticas" component={Auth(EstadisticasPage, true, true)} />
+          <Route exact path="/user" component={Auth(UserPage, true)} />
+          <Route exact path="/admins" component={Auth(AdminsPage, true, true)} />
+          <Route exact path="/salas" component={Auth(RoomsPage, true)} />
           <Route path="/" component={Auth(LoginPage, false)} />
         </Switch>
       </div>

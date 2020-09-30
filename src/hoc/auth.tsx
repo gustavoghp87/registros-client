@@ -3,7 +3,7 @@ import { auth } from '../_actions/user_actions';
 import { useSelector, useDispatch } from "react-redux";
 
 
-export default function (ComposedClass:any, reload:boolean) {
+export default function (ComposedClass:any, reload:boolean, reloadAdmin:boolean=false) {
 
     function AuthenticationCheck(props:any) {
 
@@ -13,10 +13,10 @@ export default function (ComposedClass:any, reload:boolean) {
         useEffect(() => {
             dispatch(auth()).then(async response => {
 
-                console.log("USUARIO EN AUTH", response.payload.userData);
-                console.log("AUTHENTICATION, auth", response.payload.userData.isAuth, "&& requerido", reload);
+                if (!response.payload.isAuth && reload) 
+                    props.history.push('/login');
 
-                if (!response.payload.userData.isAuth && reload) 
+                if (response.payload.role!==1 && reloadAdmin) 
                     props.history.push('/login');
             })
 

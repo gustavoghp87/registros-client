@@ -5,9 +5,10 @@ import { SERVER } from "../config.json";
 import { useParams } from "react-router";
 import { ParamTypes, ITerritorio, IVivienda } from '../types/types';
 import { Loading } from './_Loading';
+import { ReturnBtn } from './_Return';
 
 
-function TerritoriosPage() {
+function TerritoriosPage(props:any) {
 
     let { territorio } = useParams<ParamTypes>();
 
@@ -125,7 +126,8 @@ function TerritoriosPage() {
 
     return (
         <>
-            <h2 style={{textAlign:'center'}}> Territorios Page </h2>
+            {ReturnBtn(props)}
+            <h2 style={{textAlign:'center', marginTop:'80px'}}> Territorios </h2>
             <h2 style={{textAlign:'center'}}> Territorio {territorio} </h2>
             <br/>
             <br/>

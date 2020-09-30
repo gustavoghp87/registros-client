@@ -1,7 +1,6 @@
 import React from 'react';
 
 
-
 function Footer() {
     
     interface IEstilo1 {
@@ -10,6 +9,7 @@ function Footer() {
         paddingBottom: string,
         backgroundColor: string,
         height: string
+        marginTop: string
     };
 
     var estilo1:IEstilo1 = {
@@ -17,7 +17,8 @@ function Footer() {
         paddingTop: '20px',
         paddingBottom: '20px',
         backgroundColor: '#343a40',
-        height: '200px'
+        height: '200px',
+        marginTop: '200px'
     };
     
     

@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { SERVER } from "../config.json";
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
-import { ITerritorio, IState, IUserData, IUser } from '../types/types';
+import { ITerritorio, IState, IUser } from '../types/types';
 import { Loading } from './_Loading';
+import { ReturnBtn } from './_Return';
 
 
-function IndexPage() {
+function IndexPage(props:any) {
 
-    const user:any = useSelector((state:IState) => state.user.userData);
-    console.log("°!!!!!!!!!!!!!!!!!!!!!", user);
-    
-    
+    const user:IUser = useSelector((state:IState) => state.user.userData);
+
     const [Territorios, setTerritorios] = useState<ITerritorio[]>([]);
 
     useEffect(() => {
@@ -31,7 +30,7 @@ function IndexPage() {
 
     const territorios = () => {
         try {
-            if (user.userData.isAuth) 
+            if (user.isAuth) 
                 return (
                     Territorios.map((territorio, index) => (
                         <a type="button" className="btn btn-danger" style={btnTerri}
@@ -55,9 +54,10 @@ function IndexPage() {
         borderRadius: '15px',
         marginBottom: '40px',
     };
-    
-    return (
 
+    return (
+        <>
+        {ReturnBtn(props)}
         <div className="container" style={{paddingTop:'60px', marginBottom:'50px'}}>
 
             <div className="row" style={{marginBottom:'20px'}}>
@@ -66,13 +66,15 @@ function IndexPage() {
                 </h1>
             </div>
 
-            <div className="row" style={{padding:'60px', paddingTop:'40px', justifyContent:'space-evenly'}} id="columna">
+            <div className="row" style={{padding:'60px', paddingTop:'40px',
+             justifyContent:'space-evenly'}}>
             
                 {territorios()}
             
             </div>
 
         </div>
+        </>
     )
 };
 
