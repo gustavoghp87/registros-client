@@ -31,7 +31,7 @@ function App() {
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
           <Route exact path="/index" component={Auth(IndexPage, true)} />
-          <Route exact path="/territorios/:territorios" component={Auth(TerritoriosPage, true)} />
+          <Route exact path="/territorios/:territorio" component={Auth(TerritoriosPage, true)} />
           <Route exact path="/estadisticas" component={Auth(EstadisticasPage, true, true)} />
           <Route exact path="/user" component={Auth(UserPage, true)} />
           <Route exact path="/admins" component={Auth(AdminsPage, true, true)} />

@@ -24,6 +24,8 @@ function TerritoriosPage(props:any) {
     let { territorio } = useParams<ParamTypes>()
 
     useEffect(() => {
+        console.log(territorio);
+        
         const call = async (territorio:string) => {
             const axios = await Axios.post(`${SERVER}/api/buildings/getBuildings/${territorio}`, {
                 token: document.cookie
