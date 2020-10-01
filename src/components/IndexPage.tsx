@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { SERVER } from "../config.json"
 import Axios from 'axios'
 import { useSelector } from 'react-redux'
-import { ITerritorio, IState, IUser } from '../types/types'
+import { ITerritorio, IState, IUser } from '../hoc/types'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'

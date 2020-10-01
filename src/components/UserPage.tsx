@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { IUser, IState } from '../types/types'
+import { IUser, IState } from '../hoc/types'
 import { Card, Button } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
+import { timeConverter } from '../hoc/functions'
 
 
 function UserPage(props:any) {
@@ -11,19 +12,7 @@ function UserPage(props:any) {
     const user:IUser = useSelector((state:IState) => state.user.userData)
 
     const [show, setshow] = useState(false)
-
-    const timeConverter = (UNIX_timestamp:string) => {
-        var a = new Date(UNIX_timestamp)
-        var months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
-        var year = a.getFullYear()
-        var month = months[a.getMonth()]
-        var date = a.getDate()
-        var hour = a.getHours()
-        var min = a.getMinutes()<10? "0" + a.getMinutes() : a.getMinutes()
-        var time = date + ' ' + month + ' ' + year + ' - ' + hour + ':' + min + ' hs'
-        return time;
-    }
-
+    
     
     return (
         <>
@@ -60,7 +49,7 @@ function UserPage(props:any) {
             {user && user.actividad &&
                 user.actividad.map((actividad) => (
                     <Card key={actividad.fechaUlt} style={{display: show? 'block' : 'none', width:'230px', margin:'15px', padding:'15px', backgroundColor:'#b4e999'}} >
-                        <h6> {actividad.fechaUlt? timeConverter(actividad.fechaUlt) : ""} </h6>
+                        <h6> {actividad.fechaUlt? timeConverter(actividad.fechaUlt, false) : ""} </h6>
                         <h5> Territorio {actividad.territorio} {actividad.manzana? `manz ${actividad.manzana}` : ""} </h5>
                         <h5> {actividad.direccion} </h5>
                         <h5> {actividad.telefono} </h5>

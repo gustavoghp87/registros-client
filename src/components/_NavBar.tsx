@@ -4,13 +4,11 @@ import { useHistory } from 'react-router-dom'
 import Axios from 'axios'
 import { SERVER } from '../config.json'
 import { useSelector } from 'react-redux'
-import { IUser, IState } from '../types/types'
+import { IUser, IState } from '../hoc/types'
 import { FaUserAlt } from 'react-icons/fa'
 
 
 function NavBar() {
-
-  console.log("document.cookie desde navbar:", document.cookie)
 
   const user:IUser = useSelector((state:IState) => state.user.userData)
 
@@ -27,55 +25,6 @@ function NavBar() {
     }
   }
 
-  const showTerritorios = () => {
-    try {
-      if (user.isAuth) 
-        return (<Nav.Link href="/index">&nbsp; &nbsp;Territorios&nbsp; &nbsp;</Nav.Link>)
-      else
-        return (<Nav.Link href="/login">&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>)
-    } catch {
-      return (<Nav.Link href="/login">&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>)
-    }
-  }
-
-  const showAdmins = () => {
-    try {
-      if (user.role===1)
-        return (
-          <>
-            <Nav.Link href="/estadisticas">&nbsp; &nbsp;Estadísticas&nbsp; &nbsp;</Nav.Link>
-            {window.screen.width<989 ? "<br/>" : ""}
-            {window.screen.width<989 ? "<br/>" : ""}
-            {window.screen.width<989 ? "<br/>" : ""}
-            <Nav.Link href="/admins">&nbsp; &nbsp;Administradores&nbsp; &nbsp;</Nav.Link>
-          </>
-        )
-    } catch {}
-  }
-  
-  const showCerrarSesion = () => {
-    try {
-      if (user.isAuth)
-        return (
-          <>
-          
-            <Nav.Link href="/user" style={{display:'flex', alignItems:'center', marginBottom: window.screen.width<992 ? '12px' : '0'}}>
-              <FaUserAlt size="17px" color="gray" />
-              &nbsp; Mi Usuario &nbsp;
-            </Nav.Link>
-
-            <Nav>
-              <Form inline>
-                {/* <FormControl type="text" placeholder="Buscar..." className="mr-sm-2" /> */}
-                <Button variant="outline-info" onClick={()=>logoutHandle()}>CERRAR SESIÓN</Button>
-              </Form>
-            </Nav>
-
-          </>
-        )
-    } catch {}
-  }
-
 
   return (
     <div style={{position:'fixed', width:'100%', zIndex:2}}>
@@ -85,15 +34,48 @@ function NavBar() {
         <Navbar.Collapse id="responsive-navbar-nav">
 
           <Nav className="mr-auto">
-            {showTerritorios()}
-            {showAdmins()}
+
+            {user && user.isAuth &&
+              <Nav.Link href="/index">&nbsp; &nbsp;Territorios&nbsp; &nbsp;</Nav.Link>
+            }
+
+            {user && !user.isAuth &&
+              <Nav.Link href="/login">&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>
+            }
+
+            {!user &&
+              <Nav.Link href="/login">&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>
+            }
+
+            {user && user.role===1 &&
+              <>
+              <Nav.Link href="/estadisticas" style={{margin: window.screen.width<989 ? '8px 0' : '0'}}>
+                &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
+              </Nav.Link>
+              <Nav.Link href="/admins">&nbsp; &nbsp;Administradores&nbsp; &nbsp;</Nav.Link>
+              </>
+            }
           </Nav>
 
-          {showCerrarSesion()}
+          {user && user.isAuth &&
+            <>
+            <Nav.Link href="/user" style={{display:'flex', alignItems:'center', marginBottom: window.screen.width<992 ? '12px' : '0'}}>
+              <FaUserAlt size="17px" color="gray" />
+              &nbsp; Mi Usuario &nbsp;
+            </Nav.Link>
+
+            <Nav>
+              <Form inline>
+                <Button variant="outline-info" onClick={()=>logoutHandle()}>CERRAR SESIÓN</Button>
+              </Form>
+            </Nav>
+            </>
+          }
 
         </Navbar.Collapse>
       </Navbar>
       
+
       {user && user.isAuth &&
         <div style={{position:'fixed', right:'0', marginRight:'18px', marginTop:'5px', zIndex:1}}>
           <p style={{textAlign:'right', marginBottom:'0'}}> {user.email} </p>
