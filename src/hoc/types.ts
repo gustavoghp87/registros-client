@@ -1,11 +1,11 @@
 
 export interface ParamTypes {
     territorio: string
-};
+}
 
 export interface ITerritorio {
     unterritorio: IVivienda[]
-};
+}
 
 export interface IVivienda {
     _id: Object
@@ -18,7 +18,7 @@ export interface IVivienda {
     estado: string
     noAbonado: boolean
     fechaUlt?: string
-};
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,7 +50,7 @@ export interface IState {
             asign?: number[]
         }
     }
-};
+}
 
 export type ActividadType = IActividad[]
 

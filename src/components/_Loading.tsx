@@ -1,5 +1,5 @@
-import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import React from 'react'
+import { Spinner } from 'react-bootstrap'
 
 
 export const Loading = () => {
@@ -13,10 +13,10 @@ export const Loading = () => {
             <Spinner animation="grow" role="status" /> &nbsp; &nbsp;
             <Spinner animation="grow" role="status" />
             <br/><br/>
-            <span style={{fontWeight:'bolder'}}>Cargando...</span>
+            <span style={{fontWeight:'bolder'}}> Cargando... </span>
         </div>
         </>
-    );
-};
+    )
+}
 
 

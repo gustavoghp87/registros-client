@@ -42,7 +42,7 @@ function TerritoriosPage(props:any) {
             <br/>
             <br/>
 
-            {viviendas.unterritorio.length &&
+            {viviendas && !!viviendas.unterritorio.length &&
                 <div style={{textAlign:'center'}}>
                     <ButtonGroup toggle>
                         {radios.map((radio, idx) => (
@@ -60,7 +60,7 @@ function TerritoriosPage(props:any) {
                 </div>
             }
 
-            {viviendas.unterritorio.length &&
+            {viviendas && !!viviendas.unterritorio.length &&
                 viviendas.unterritorio.map((vivienda:IVivienda) => (
                     <div className="card" key={vivienda.inner_id} style={{marginBottom:'50px'}}>
                         <div className="card-body" style={{paddingTop:'15px', paddingBottom:'15px'}}>

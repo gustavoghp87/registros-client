@@ -33,7 +33,7 @@ function AdminsPage(props:any) {
             {Usuarios.usuarios &&
                 Usuarios.usuarios.map((usuario:any, index:any) => (
 
-                    <Card key={index} style={{width:'25rem', margin:'30px auto'}}>
+                    <Card key={index} style={{width:'25rem', margin:'30px auto 60px auto'}}>
                         <Card.Body>
                             <Card.Title style={{textAlign:'center'}}> {usuario.email} </Card.Title>
                             <br/>
