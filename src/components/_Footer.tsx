@@ -16,7 +16,7 @@ function Footer() {
         fontSize: window.screen.width>767 ? '1.8rem' : '1rem',
         paddingTop: '20px',
         paddingBottom: '20px',
-        backgroundColor: '#343a40',
+        backgroundColor: '#4a6da7',
         height: '100px',
         marginTop: '200px'
     };
@@ -25,7 +25,7 @@ function Footer() {
     return (
         <>
             <div className="main-footer" style={estilo1}>
-                <div style={{display:'flex', height:'100%', margin:'auto', textAlign:'center', alignItems:'center', justifyContent:'center'}}>
+                <div style={{display:'flex', height:'100%', width:'100%', margin:'auto', textAlign:'center', alignItems:'center', justifyContent:'center'}}>
                     <a href="https://misericordiaweb.com/" style={{color:'white', fontWeight:'bolder'}}>
                         misericordiaweb.com
                     </a>

@@ -15,32 +15,41 @@ import NavBar from './_NavBar';
 import Footer from './_Footer'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3"
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
+import { SERVER } from '../config.json'
 
+
+const client = new ApolloClient({
+  uri: `${SERVER}/api/graphql`,
+  cache: new InMemoryCache()
+})
 
 function App() {
 
   return (
     <Suspense fallback={(<div> Cargando... </div>)}>
       <GoogleReCaptchaProvider reCaptchaKey="6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9">
-      <NavBar />
-      <div style={{maxWidth:'90%', paddingTop:'75px', margin:'auto', minHeight:'calc(100vh - 80px)'}}>
+      <ApolloProvider client={client}>
+        <NavBar />
+        <div style={{maxWidth:'90%', paddingTop:'75px', margin:'auto', minHeight:'calc(100vh - 80px)'}}>
 
-        <Switch>
-          {/* <Redirect exact strict from="/" to="/login" /> */}
-          <Route exact path="/" component={Auth(HomePage, false)} />
-          <Route exact path="/login" component={Auth(LoginPage, false)} />
-          <Route exact path="/register" component={Auth(RegisterPage, false)} />
-          <Route exact path="/index" component={Auth(IndexPage, true)} />
-          <Route exact path="/territorios/:territorio" component={Auth(TerritoriosPage, true)} />
-          <Route exact path="/estadisticas" component={Auth(EstadisticasPage, true, true)} />
-          <Route exact path="/user" component={Auth(UserPage, true)} />
-          <Route exact path="/admins" component={Auth(AdminsPage, true, true)} />
-          <Route exact path="/salas" component={Auth(RoomsPage, true)} />
-          <Route path="/" component={Auth(LoginPage, false)} />
-        </Switch>
-        
-      </div>
-      <Footer />
+          <Switch>
+            {/* <Redirect exact strict from="/" to="/login" /> */}
+            <Route exact path="/" component={Auth(HomePage, false)} />
+            <Route exact path="/login" component={Auth(LoginPage, false)} />
+            <Route exact path="/register" component={Auth(RegisterPage, false)} />
+            <Route exact path="/index" component={Auth(IndexPage, true)} />
+            <Route exact path="/territorios/:territorio" component={Auth(TerritoriosPage, true)} />
+            <Route exact path="/estadisticas" component={Auth(EstadisticasPage, true, true)} />
+            <Route exact path="/user" component={Auth(UserPage, true)} />
+            <Route exact path="/admins" component={Auth(AdminsPage, true, true)} />
+            <Route exact path="/salas" component={Auth(RoomsPage, true)} />
+            <Route path="/" component={Auth(LoginPage, false)} />
+          </Switch>
+          
+        </div>
+        <Footer />
+      </ApolloProvider>
       </GoogleReCaptchaProvider>
     </Suspense>
   )

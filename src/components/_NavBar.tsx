@@ -28,31 +28,31 @@ function NavBar() {
 
   return (
     <div style={{position:'fixed', width:'100%', zIndex:2}}>
-      <Navbar bg="dark" variant="dark" collapseOnSelect expand="lg">
-        <Navbar.Brand href="/">&nbsp; INICIO</Navbar.Brand>
+      <Navbar style={{backgroundColor:"#4a6da7"}} collapseOnSelect expand="lg">
+        <Navbar.Brand href="/" style={{color:'#fbfbfb'}}>&nbsp; INICIO</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
 
           <Nav className="mr-auto">
 
             {user && user.isAuth &&
-              <Nav.Link href="/index">&nbsp; &nbsp;Territorios&nbsp; &nbsp;</Nav.Link>
+              <Nav.Link href="/index" style={{color:'#fbfbfb'}}>&nbsp; &nbsp;Territorios&nbsp; &nbsp;</Nav.Link>
             }
 
             {user && !user.isAuth &&
-              <Nav.Link href="/login">&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>
+              <Nav.Link href="/login" style={{color:'#fbfbfb'}}>&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>
             }
 
             {!user &&
-              <Nav.Link href="/login">&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>
+              <Nav.Link href="/login" style={{color:'#fbfbfb'}}>&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>
             }
 
             {user && user.role===1 &&
               <>
-              <Nav.Link href="/estadisticas" style={{margin: window.screen.width<989 ? '8px 0' : '0'}}>
+              <Nav.Link href="/estadisticas" style={{color:'#fbfbfb', margin: window.screen.width<989 ? '8px 0' : '0'}}>
                 &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
               </Nav.Link>
-              <Nav.Link href="/admins">&nbsp; &nbsp;Administradores&nbsp; &nbsp;</Nav.Link>
+              <Nav.Link href="/admins" style={{color:'#fbfbfb'}}>&nbsp; &nbsp;Administradores&nbsp; &nbsp;</Nav.Link>
               </>
             }
           </Nav>
@@ -60,13 +60,13 @@ function NavBar() {
           {user && user.isAuth &&
             <>
             <Nav.Link href="/user" style={{display:'flex', alignItems:'center', marginBottom: window.screen.width<992 ? '12px' : '0'}}>
-              <FaUserAlt size="17px" color="gray" />
-              &nbsp; Mi Usuario &nbsp;
+              <FaUserAlt size="17px" color="lightgray" />
+              &nbsp;&nbsp; <span style={{color:'#fbfbfb'}}> Mi Usuario </span> &nbsp;
             </Nav.Link>
 
             <Nav>
               <Form inline>
-                <Button variant="outline-info" onClick={()=>logoutHandle()}>CERRAR SESIÓN</Button>
+                <Button variant="outline-info" style={{color:'#fbfbfb', borderColor:'#fbfbfb'}} onClick={()=>logoutHandle()}>CERRAR SESIÓN</Button>
               </Form>
             </Nav>
             </>
