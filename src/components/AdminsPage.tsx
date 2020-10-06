@@ -18,6 +18,8 @@ function AdminsPage(props:any) {
     const { loading, error, data } = useQuery(graphql.GETUSERS, {
         variables: {token:document.cookie}
     })
+    if (loading) console.log("Loading graphql", loading)
+    if (error) console.log("Error graphql")
     console.log(document.cookie);
     
     
@@ -58,12 +60,6 @@ function AdminsPage(props:any) {
     
     
     useEffect(() => {
-        // (async () => {
-            // const axios = await Axios.post(`${SERVER}/api/users/getUsers`, {token:document.cookie})
-            // setUsuarios({usuarios: axios.data.users})
-        // })()
-        if (loading) console.log("Loading graphql", loading)
-        if (error) console.log("Error graphql")
         if (data) setUsuarios({usuarios: data.getUsers})
         if (change) window.location.reload()
         setChange(false)

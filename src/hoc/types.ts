@@ -8,16 +8,17 @@ export interface ITerritorio {
 }
 
 export interface IVivienda {
-    _id: Object
+    _id?: Object
     inner_id: string
     territorio: string
     manzana: string
     cuadra: string
     direccion: string
     telefono: string
-    estado: string
+    estado:  "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | "No llamar"
     noAbonado: boolean
     fechaUlt?: string
+    variante: "success" | "dark" | "primary" | "danger" | "warning" | "light"
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

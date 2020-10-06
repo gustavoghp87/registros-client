@@ -24,6 +24,9 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
+export let mobile = window.screen.width <990 ? true : false
+
+
 function App() {
 
   return (

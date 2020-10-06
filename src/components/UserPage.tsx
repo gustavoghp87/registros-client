@@ -36,7 +36,7 @@ function UserPage(props:any) {
         }
         <br/>
 
-        <div style={{textAlign:'center'}}>
+        <div style={{textAlign:'center', display: 'none'}}>
             {user && user.actividad && user.actividad.length &&
                 <Button onClick={()=>setshow(!show)} variant="dark">
                     {show? "Ocultar actividad" : "Ver actividad"}
