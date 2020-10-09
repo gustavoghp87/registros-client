@@ -105,15 +105,19 @@ export const deshacerAdmin = gql`mutation deshacerAdmin($user_id: String!, $toke
     }
 }`
 
-export const changeState = gql`mutation changeState($inner_id:String!, $estado:String!, $token:String!) {
-    cambiarEstado (input: {
-        inner_id: $inner_id
-        estado: $estado
-        token: $token
-    }) {
-        inner_id
-        estado
-        fechaUlt
+export const changeState = gql`mutation
+    changeState($inner_id:String!, $estado:String!, $noAbonado:Boolean!, $token:String!) {
+        cambiarEstado (input: {
+            inner_id: $inner_id
+            estado: $estado
+            noAbonado: $noAbonado
+            token: $token
+        }) {
+            inner_id
+            estado
+            noAbonado
+            fechaUlt
+        }
     }
-}`
+`
 

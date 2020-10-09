@@ -19,7 +19,7 @@ function NavBar() {
     const response = axios.data.response
     if (response==="ok") {
       alert("Sesión de usuario cerrada con éxito")
-      document.cookie = ""
+      document.cookie = "newtoken ="
       history.push("/login")
     } else {
       alert("Algo falló y no cerró sesión")

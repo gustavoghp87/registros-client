@@ -28,17 +28,22 @@ function UserPage(props:any) {
         <br/><br/>
 
         {user &&
-            <Card style={{padding:'15px'}}>
-                Usuario: {user.email}
-                <div className="d-inline-block"> Territorios asignados: &nbsp; &nbsp;
+            <Card style={{padding:'20px'}}>
+                
+                <h3> Usuario: {user.email} </h3>
+                
+                <div className="d-inline-block">
+                    <h3 className="d-inline-block"> Territorios asignados: &nbsp; &nbsp; </h3>
                     {user.asign &&
                         asignOrdenados().map((territorio:number, index:number) => (
-                            <div key={index} className="d-inline-block"> {territorio} &nbsp; &nbsp; </div>
+                            <h3 key={index} className="d-inline-block"> {territorio} &nbsp; &nbsp; </h3>
                         ))
                     }
                 </div>
+
             </Card>
         }
+
         <br/>
 
         <div style={{textAlign:'center', display: 'none'}}>

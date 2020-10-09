@@ -16,7 +16,7 @@ import Footer from './_Footer'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3"
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
-import { SERVER } from '../config.json'
+import { SERVER, SERVERSUBS } from '../config.json'
 import { split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
@@ -27,7 +27,7 @@ const httpLink = new HttpLink({
 })
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4006/graphql`,
+  uri: `ws://${SERVERSUBS}/graphql`,
   options: {reconnect:true}
 })
 
