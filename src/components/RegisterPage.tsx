@@ -3,6 +3,7 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import Axios from 'axios';
 import { SERVER } from "../config.json";
 import { Link, useHistory } from 'react-router-dom'
+import { mobile } from './_App'
 
 
 function RegisterPage() {
@@ -44,11 +45,11 @@ function RegisterPage() {
 
 
     return (
-        <div className="container container2" style={{maxWidth: '95%', marginTop:'50px'}}>
+        <div className="container container2" style={{maxWidth:'95%', marginTop:'50px', padding:'0'}}>
 
-            <div className="container" style={{paddingTop:'30px', marginBottom:'50px', border:'gray 1px solid', borderRadius:'12px', maxWidth:'600px', boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}>
+            <div className="container" style={{paddingTop:'40px', marginBottom:'40px', border:'gray 1px solid', borderRadius:'12px', maxWidth:'600px', boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}>
 
-                <h2 style={{textAlign:'center', textShadow:'0 0 1px gray'}}> REGISTRARSE </h2>
+                <h2 style={{textAlign:'center', textShadow:'0 0 1px gray', fontSize: mobile ? '1.6rem' : '2rem'}}> REGISTRARSE </h2>
 
                 <div className="container" style={{paddingTop:'35px', display:'block', margin:'auto', maxWidth:'500px'}}>
 

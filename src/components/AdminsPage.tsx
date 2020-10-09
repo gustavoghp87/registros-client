@@ -20,7 +20,6 @@ function AdminsPage(props:any) {
     })
     if (loading) console.log("Loading graphql", loading)
     if (error) console.log("Error graphql")
-    console.log(document.cookie);
     
     
     const [activarUsuario] = useMutation(graphql.activar)

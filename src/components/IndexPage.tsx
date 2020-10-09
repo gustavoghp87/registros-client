@@ -7,6 +7,7 @@ import { ITerritorio, IState, IUser } from '../hoc/types'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
+import { mobile } from './_App'
 
 
 function IndexPage(props:any) {
@@ -53,7 +54,7 @@ function IndexPage(props:any) {
         width: '120px',
         height: '100px',
         borderRadius: '15px',
-        marginBottom: '40px',
+        margin: '0 1% 40px 1%',
     }
 
 
@@ -64,9 +65,9 @@ function IndexPage(props:any) {
             <H2> SELECCIONE UN TERRITORIO </H2>
 
 
-            <div className="container" style={{paddingTop:'40px', marginBottom:'50px'}}>
+            <div className="container" style={{paddingTop:'0', marginBottom:'50px'}}>
 
-                <div className="row" style={{padding:'40px', justifyContent:'space-evenly'}}>
+                <div className="row" style={{padding: mobile ? '40px' : '70px 40px', justifyContent:'space-evenly'}}>
                 
                     {territorios()}
                 

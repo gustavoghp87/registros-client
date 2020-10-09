@@ -1,6 +1,23 @@
 import { gql } from '@apollo/client'
 
 
+
+////////    SUBSCRIPTIONS    ////////
+
+export const ESCUCHARCAMBIODEESTADO = gql`subscription escucharCambioDeEstado {
+    escucharCambioDeEstado {
+        estado
+        inner_id
+        territorio
+        manzana
+        direccion
+        telefono
+        noAbonado
+        fechaUlt
+    }
+}`
+
+
 ////////    QUERIES    ////////
 
 export const COUNTBLOCKS = gql`query countBlocks($terr:String!) {
@@ -47,6 +64,7 @@ export const GETUSERS = gql`query usuarios($token: String!) {
 export const activar = gql`mutation activar($user_id: String!, $token: String!) {
     activar (input: {
         user_id: $user_id
+        token: $token
     }) {
         email
         estado
@@ -57,6 +75,7 @@ export const activar = gql`mutation activar($user_id: String!, $token: String!) 
 export const desactivar = gql`mutation desactivar($user_id: String!, $token: String!) {
     desactivar (input: {
         user_id: $user_id
+        token: $token
     }) {
         email
         estado
@@ -67,6 +86,7 @@ export const desactivar = gql`mutation desactivar($user_id: String!, $token: Str
 export const hacerAdmin = gql`mutation hacerAdmin($user_id: String!, $token: String!) {
     hacerAdmin (input: {
         user_id: $user_id
+        token: $token
     }) {
         email
         role
@@ -77,6 +97,7 @@ export const hacerAdmin = gql`mutation hacerAdmin($user_id: String!, $token: Str
 export const deshacerAdmin = gql`mutation deshacerAdmin($user_id: String!, $token: String!) {
     deshacerAdmin (input: {
         user_id: $user_id
+        token: $token
     }) {
         email
         role

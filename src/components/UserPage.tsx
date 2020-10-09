@@ -13,7 +13,13 @@ function UserPage(props:any) {
 
     const [show, setshow] = useState(false)
     
-    
+    const asignOrdenados = () => {
+        let ordenados = [0]
+        if (user.asign)
+            ordenados = user.asign.sort((a:number, b:number) => a - b)
+        return ordenados
+    }
+
     return (
         <>
         {ReturnBtn(props)}
@@ -26,12 +32,11 @@ function UserPage(props:any) {
                 Usuario: {user.email}
                 <div className="d-inline-block"> Territorios asignados: &nbsp; &nbsp;
                     {user.asign &&
-                        user.asign.map((territorio, index) => (
+                        asignOrdenados().map((territorio:number, index:number) => (
                             <div key={index} className="d-inline-block"> {territorio} &nbsp; &nbsp; </div>
                         ))
                     }
                 </div>
-
             </Card>
         }
         <br/>

@@ -17,15 +17,42 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3"
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { SERVER } from '../config.json'
+import { split, HttpLink } from '@apollo/client'
+import { getMainDefinition } from '@apollo/client/utilities'
+import { WebSocketLink } from '@apollo/client/link/ws'
 
+
+const httpLink = new HttpLink({
+  uri: `${SERVER}/api/graphql/`
+})
+
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:4006/graphql`,
+  options: {reconnect:true}
+})
+
+// * A function that's called for each operation to execute
+// * The Link to use for an operation if the function returns a "truthy" value
+// * The Link to use for an operation if the function returns a "falsy" value
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    )
+  },
+  wsLink,
+  httpLink
+)
 
 const client = new ApolloClient({
-  uri: `${SERVER}/api/graphql`,
+  link: splitLink,
   cache: new InMemoryCache()
 })
 
-export let mobile = window.screen.width <990 ? true : false
 
+export let mobile = window.screen.width<990 ? true : false
 
 function App() {
 
@@ -34,7 +61,7 @@ function App() {
       <GoogleReCaptchaProvider reCaptchaKey="6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9">
       <ApolloProvider client={client}>
         <NavBar />
-        <div style={{maxWidth:'90%', paddingTop:'75px', margin:'auto', minHeight:'calc(100vh - 80px)'}}>
+        <div style={{maxWidth: mobile ? '95%' : '90%', paddingTop:'75px', margin:'auto', minHeight:'calc(100vh - 80px)'}}>
 
           <Switch>
             {/* <Redirect exact strict from="/" to="/login" /> */}

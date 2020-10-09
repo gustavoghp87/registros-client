@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { SERVER } from "../config.json"
 import { Link, useHistory } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { mobile } from './_App'
 
 
 function LoginPage() {
@@ -47,11 +48,11 @@ function LoginPage() {
     
     return (
 
-        <div className="container" style={{maxWidth:'95%', marginTop:'50px'}}>
+        <div className="container" style={{maxWidth:'100%', marginTop:'50px', padding:'0'}}>
 
             <div className="container" style={{paddingTop:'50px', marginBottom:'50px', border:'black 1px solid', borderRadius:'12px', maxWidth:'600px', boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}>
             
-                <h2 style={{textAlign:'center', textShadow:'0 0 1px gray'}}> INGRESAR </h2>
+                <h2 style={{textAlign:'center', textShadow:'0 0 1px gray', fontSize: mobile ? '1.7rem' : '2rem'}}> INGRESAR </h2>
 
                 <div className="container" style={{paddingTop:'35px', display:'block', margin:'auto', maxWidth:'500px'}}>
 

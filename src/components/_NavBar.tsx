@@ -19,15 +19,18 @@ function NavBar() {
     const response = axios.data.response
     if (response==="ok") {
       alert("Sesión de usuario cerrada con éxito")
+      document.cookie = ""
       history.push("/login")
     } else {
       alert("Algo falló y no cerró sesión")
     }
   }
 
+  console.log(document.cookie)
+
 
   return (
-    <div style={{position:'fixed', width:'100%', zIndex:2}}>
+    <div style={{position:'fixed', width:'100%', zIndex:4}}>
       <Navbar style={{backgroundColor:"#4a6da7"}} collapseOnSelect expand="lg">
         <Navbar.Brand href="/" style={{color:'#fbfbfb'}}>&nbsp; INICIO</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />

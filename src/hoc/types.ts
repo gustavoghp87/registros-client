@@ -12,7 +12,6 @@ export interface IVivienda {
     inner_id: string
     territorio: string
     manzana: string
-    cuadra: string
     direccion: string
     telefono: string
     estado:  "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | "No llamar"

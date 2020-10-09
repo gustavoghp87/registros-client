@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Dropdown, Button, ButtonGroup, ToggleButton, Col } from 'react-bootstrap'
-//import Axios from 'axios'
-//import { SERVER } from '../config.json'
+import { Dropdown, Button, Card, ButtonGroup, ToggleButton, Col, Row } from 'react-bootstrap'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
 import { ParamTypes, ITerritorio, IVivienda } from '../hoc/types'
@@ -9,8 +7,9 @@ import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { mobile } from './_App'
 import { timeConverter } from '../hoc/functions'
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation, useSubscription } from '@apollo/client'
 import * as graphql from '../hoc/graphql'
+import { useSelector } from 'react-redux'
 
 
 function TerritoriosPage(props:any) {
@@ -21,7 +20,6 @@ function TerritoriosPage(props:any) {
     const [radioMValue, setRadioMValue] = useState('1')
     const [manzana, setManzana] = useState('1')
     const [showMap, setShowMap] = useState(false)
-    const [change, setChange] = useState(false)
 
     let variables = {terr:territorio, manzana, token: document.cookie}
     if (radioMValue==='1') variables = {terr:territorio, manzana:'1', token: document.cookie}
@@ -32,22 +30,43 @@ function TerritoriosPage(props:any) {
     if (radioMValue==='6') variables = {terr:territorio, manzana:'6', token: document.cookie}
 
     const count = useQuery(graphql.COUNTBLOCKS, {variables: {terr:territorio}}).data
-    const { loading, error, data } = useQuery(graphql.GETTERRITORY, {variables})
-    if (loading) console.log("Loading graphql", loading)
-    if (error) console.log("Error graphql")
-    //console.log(count)
+    const { data } = useQuery(graphql.GETTERRITORY, {variables})
+    //if (loading) console.log("Loading graphql", loading)
+    //if (error) console.log("Error graphql")
 
-    const radios = mobile ? 
-    [
-        { name: radioValue==='1' ? 'Viendo no pred' : 'Ver no pred', value: '1' },
-        { name: radioValue==='2' ? 'Viendo todos' : 'Ver todos', value: '2' },
-        { name: radioValue==='3' ? 'Viendo estad' : 'Ver estad', value: '3' },
-    ]
-    : [
-        { name: radioValue==='1' ? 'Viendo no predicados' : 'Ver no predicados', value: '1' },
-        { name: radioValue==='2' ? 'Viendo todos' : 'Ver todos', value: '2' },
-        { name: radioValue==='3' ? 'Viendo estadísticas' : 'Ver estadísticas', value: '3' }
-    ]
+    const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEESTADO)
+    if (escuchar.data) {
+        console.log("ESCUCHO", escuchar.data)
+        
+    }
+
+    const user = useSelector((state:any) => state.user)
+    let radios = []
+    
+    if (mobile)
+        radios = user && user.userData && user.userData.isAdmin ? 
+            [
+                { name: radioValue==='1' ? 'Viendo no pred' : 'Ver no pred', value: '1' },
+                { name: radioValue==='2' ? 'Viendo todos' : 'Ver todos', value: '2' },
+                { name: radioValue==='3' ? 'Viendo estad' : 'Ver estad', value: '3' }
+            ]
+            : [
+                { name: radioValue==='1' ? 'Viendo no predicados' : 'Ver no predicados', value: '1' },
+                { name: radioValue==='2' ? 'Viendo todos' : 'Ver todos', value: '2' }
+            ]
+    else
+        radios = user && user.userData && user.userData.isAdmin ?
+            [
+                { name: radioValue==='1' ? 'Viendo no pred' : 'Ver no pred', value: '1' },
+                { name: radioValue==='2' ? 'Viendo todos' : 'Ver todos', value: '2' },
+                { name: radioValue==='3' ? 'Viendo estadísticas' : 'Ver estadísticas', value: '3' }
+            ]
+            : [
+                { name: radioValue==='1' ? 'Viendo no predicados' : 'Ver no predicados', value: '1' },
+                { name: radioValue==='2' ? 'Viendo todos' : 'Ver todos', value: '2' }
+            ]
+
+
 
     let radiosM = [
         { name: mobile ? 'Manz 1' : 'Manzana 1', value: '1' }
@@ -68,28 +87,52 @@ function TerritoriosPage(props:any) {
                 const inner_id = await response.data.cambiarEstado.inner_id
                 const estadoNuevo = await response.data.cambiarEstado.estado
                 const fechaUlt = await response.data.cambiarEstado.fechaUlt
-                let nuevoViviendas = viviendas
-                setviviendas(nuevoViviendas)
-
-                //console.log(viviendas)
+                console.log(inner_id, estadoNuevo, fechaUlt)
             }
         )
     }
 
-console.log(props);
-
-
     useEffect(() => {
-        if (data) setviviendas({unterritorio: data.getApartmentsByTerritory}) 
-        setChange(false)
-    }, [data, change])
+        if (data) setviviendas({unterritorio: data.getApartmentsByTerritory})
+        if (escuchar.data) {
+            let nuevoTodo:any = {unterritorio: []}
+            viviendas.unterritorio.forEach((vivienda:IVivienda, index:number) => {
+                if (vivienda.inner_id === escuchar.data.escucharCambioDeEstado.inner_id) {
+                    nuevoTodo.unterritorio.push({
+                        estado: escuchar.data.escucharCambioDeEstado.estado,
+                        inner_id: escuchar.data.escucharCambioDeEstado.inner_id,
+                        territorio: escuchar.data.escucharCambioDeEstado.territorio,
+                        manzana: escuchar.data.escucharCambioDeEstado.manzana,
+                        direccion: escuchar.data.escucharCambioDeEstado.direccion,
+                        telefono: escuchar.data.escucharCambioDeEstado.telefono,
+                        noAbonado: escuchar.data.escucharCambioDeEstado.noAbonado,
+                        fechaUlt: escuchar.data.escucharCambioDeEstado.fechaUlt
+                    })
+                } else {
+                    nuevoTodo.unterritorio.push({
+                        estado: viviendas.unterritorio[index].estado,
+                        inner_id: viviendas.unterritorio[index].inner_id,
+                        territorio: viviendas.unterritorio[index].territorio,
+                        manzana: viviendas.unterritorio[index].manzana,
+                        direccion: viviendas.unterritorio[index].direccion,
+                        telefono: viviendas.unterritorio[index].telefono,
+                        noAbonado: viviendas.unterritorio[index].noAbonado,
+                        fechaUlt: viviendas.unterritorio[index].fechaUlt
+                    })
+                }
+                console.log(nuevoTodo);
+                
+            })
+            setviviendas(nuevoTodo)
+        }
+    }, [data, escuchar.data])
 
 
     return (
         <>
             {ReturnBtn(props)}
 
-            <h1 style={{textAlign:'center', margin: mobile ? '80px auto 20px auto' : '60px auto 40px auto', fontSize: mobile ? '1.9rem' : '2.8rem', fontWeight:'bolder'}}>
+            <h1 style={{textAlign:'center', margin: mobile ? '80px auto 20px auto' : '60px auto 40px auto', fontSize: mobile ? '2.3rem' : '2.8rem', fontWeight:'bolder'}}>
                 TERRITORIO {territorio}
             </h1>
 
@@ -143,44 +186,45 @@ console.log(props);
                     if (vivienda.estado==="No llamar") vivienda = {...vivienda, variante: "dark"}
                     //console.log(vivienda)
 
-                return (<div key={vivienda.inner_id}>
-                    <div className="card" style={{marginBottom:'50px'}}>
+                return (
+                
+                <div key={vivienda.inner_id}>
+                    <Card style={{marginBottom:'50px', border:'1px solid gray', boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}>
                         <div className="card-body" style={{paddingTop:'15px', paddingBottom:'15px'}}>
-                            <div className="row" style={{margin:'25px'}}>
+                            <Row style={{margin:'0 25px'}}>
 
-                    <div className="col-lg-2" style={{margin:'auto'}}>
-
-                        <h4 style={{textAlign:'center', fontSize:'1.1rem'}}>
+                    <Col style={{margin:'auto'}}>
+                        <h4 style={{textAlign:'center', fontSize: mobile ? '1.1rem' : '1.3rem'}}>
                             Territorio {vivienda.territorio} <br/>
                             Manzana {vivienda.manzana} <br/>
                             Vivienda {vivienda.inner_id}
                         </h4>
-                    </div>
+                    </Col>
 
-                    <div className="col-lg-4" style={{ marginBottom: '20px' }}>
+                    <Col style={{margin: mobile ? '0' : '20px 0px', padding: mobile ? '0' : '20px'}}>
                         <div className="row" style={{ paddingBottom: '10px' }}>
                             <h4 style={{textAlign:'center', display:'block', margin:'auto', fontSize:'1.9rem'}}>
                                 Dirección: {vivienda.direccion}
                             </h4>
                         </div>
                         <div className="row" style={{padding:'20px 0 1% 0'}}>
-                            <h4 style={{textAlign:"center", display:"block", margin:"auto", fontSize:'2.1rem'}}>
+                            <h4 style={{textAlign:"center", display:"block", margin:"auto", fontSize: mobile ? '2.3rem' : '2.1rem'}}>
                             Teléfono:
                             <div style={{marginTop:'7px'}}>
                                 <Link to={`tel:${vivienda.telefono}`}> {vivienda.telefono} </Link>
                             </div>
                             </h4>
                         </div>
-                    </div>
+                    </Col>
 
 
-                    <div className="col-lg-3">
+                    <Col style={{margin:'0 30px'}}>
 
-                        <div className="row" style={{textAlign:"center", height:"50%", margin: mobile ? '50 auto' : '0 auto'}}>
+                        <Row style={{textAlign:"center", height:"30%", margin: mobile ? '50 auto' : '20px auto 0 auto'}}>
 
     <Dropdown style={{width:'100%', margin: mobile ? '25px auto' : '30px auto'}}>
 
-        <Dropdown.Toggle id="dropdown-basic" style={{width:'80%'}} variant={vivienda.variante}>
+        <Dropdown.Toggle id="dropdown-basic" style={{width:'80%', border:'1px solid black'}} variant={vivienda.variante}>
             {vivienda.estado}
         </Dropdown.Toggle>
 
@@ -193,13 +237,13 @@ console.log(props);
         </Dropdown.Menu>
     </Dropdown>
 
-                        </div>
+                        </Row>
                                     
-                        <div className="row" style={{ height: "50%" }}>
+                        <Row style={{ height:'40%'}}>
                             {vivienda.fechaUlt ?
-                                <div className="card border-dark mb-3" style={{ maxWidth: "18rem", backgroundColor: "rgb(214, 214, 214)", margin: "auto" }}>
-                                    <div className="card-header" style={{ padding: "0.2rem 0.5rem" }}>
-                                        <p className="card-text">
+                                <div className="card border-dark mb-3" style={{maxWidth:'18rem', backgroundColor:'rgb(214, 214, 214)', margin:'auto'}}>
+                                    <div className='card-header' style={{padding:'0.2rem 0.5rem'}}>
+                                        <p className='card-text'>
                                             Se llamó el {timeConverter(vivienda.fechaUlt, true)}
                                         </p>
                                     </div>
@@ -207,23 +251,22 @@ console.log(props);
                                 :
                                 <div></div>
                             }
-                        </div>
-                    </div>
+                        </Row>
+                    </Col>
 
-                    <div className="col-lg-3">
-                        <div className="row" style={{textAlign:"center", height:"100%", marginLeft:'20px'}}>
+                    <Col>
+                        <Row style={{textAlign:"center", height:"100%"}}>
                             <div className="form-check" style={{display:"block", margin: "auto" }}>
-                                <input className="form-check-input" type="checkbox" id="checkbox{{inner_id}}" style={{ marginTop: "0.5rem", transform: "scale(1.5)", padding: 5, marginLeft: "0rem" }} onClick={()=>alert()} />
-                                <label className="form-check-label" htmlFor="defaultCheck1" style={{fontSize:"1.1rem", fontWeight:600}}>
+                                <input className="form-check-input" type="checkbox" style={{marginTop:"0.5rem", transform:"scale(1.5)", padding:5, marginLeft:"0rem"}} onClick={()=>alert(`No abonado vivienda ${vivienda.inner_id}`)} />
+                                <label className="form-check-label" htmlFor="defaultCheck1" style={{fontSize: mobile ? '1.3rem' : '1.1rem', fontWeight:600}}>
                                     &nbsp; &nbsp; Teléfono no abonado en servicio
                                 </label>
                             </div>
-                        </div>
-
-                                </div>
-                            </div>
-                        </div>
+                        </Row>
+                    </Col>
+                    </Row>
                     </div>
+                    </Card>
                 </div>)})
             }
 
