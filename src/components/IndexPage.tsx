@@ -40,8 +40,8 @@ function IndexPage(props:any) {
             <div className="container" style={{paddingTop:'0', marginBottom:'50px'}}>
 
                 <Row style={{padding: mobile ? '40px' : '70px 40px', justifyContent:'space-evenly'}}>
-                
-                    {user && user.isAuth
+
+                    {user && user.isAuth && user.asign && !!user.asign.length
                     ?
                         Territorios.map((territorio, index) => (
                             <Link type="button" className="btn btn-danger" style={btnTerri}
@@ -54,6 +54,10 @@ function IndexPage(props:any) {
                         ))
                     :
                         <Loading />
+                    }
+
+                    {user && user.isAuth && user.asign && !user.asign.length &&
+                        <h3>No hay territorios asignados <br/> Hablar con el grupo de territorios</h3>
                     }
 
                 </Row>

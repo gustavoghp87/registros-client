@@ -17,7 +17,10 @@ export const Col4:any = (props:any) => {
                 <input className="form-check-input" type="checkbox"
                     checked={vivienda.noAbonado}
                     style={{marginTop:"0.5rem", transform:"scale(1.5)", padding:5, marginLeft:"0rem"}}
-                    onClick={ () => props.cambiarEstado(vivienda.inner_id, vivienda.estado, !vivienda.noAbonado) }
+                    onClick={ () => props.cambiarEstado(
+                        vivienda.inner_id, vivienda.estado, !vivienda.noAbonado
+                    )}
+                    onChange={() => {}}
                 />
 
                 <label className="form-check-label" htmlFor="defaultCheck1" style={{fontSize: mobile ? '1.3rem' : '1.1rem', fontWeight:600}}>

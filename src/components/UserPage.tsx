@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import { typeUser, typeState } from '../hoc/types'
 import { Card } from 'react-bootstrap'
@@ -24,7 +24,7 @@ function UserPage(props:any) {
             <H2 style={{textAlign:'center'}}> Usuario </H2>
 
             {user &&
-                <Card style={{padding:'20px'}}>
+                <Card style={{padding:'25px', margin:'30px auto'}}>
                     
                     <h3> Usuario: {user.email} </h3>
                     

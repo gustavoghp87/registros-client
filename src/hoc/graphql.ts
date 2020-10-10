@@ -16,6 +16,17 @@ export const ESCUCHARCAMBIODEESTADO = gql`subscription escucharCambioDeEstado {
     }
 }`
 
+export const ESCUCHARCAMBIODEUSUARIO = gql`subscription escucharCambioDeUsuario {
+    escucharCambioDeUsuario {
+        _id
+        role
+        estado
+        email
+        group
+        asign
+    }
+}`
+
 
 ////////    QUERIES    ////////
 
@@ -58,7 +69,9 @@ export const GETUSERS = gql`query usuarios($token: String!) {
 
 ////////    MUTATIONS    ////////
 
-export const CONTROLARUSUARIO = gql`mutation controlarU($token:String!, $user_id:String!, $estado:Boolean!, $role:Int!, $group:Int!) {
+export const CONTROLARUSUARIO = gql`mutation
+    controlarU($token:String!, $user_id:String!, $estado:Boolean!, $role:Int!, $group:Int!) {
+
         controlarUsuario (input: {
             token: $token
             user_id: $user_id
@@ -71,12 +84,34 @@ export const CONTROLARUSUARIO = gql`mutation controlarU($token:String!, $user_id
             estado
             email
             group
+            asign
+        }
+    }
+`
+
+export const ASIGNAR = gql`mutation
+    asignarT($token:String!, $user_id:String!, $asignar:Int, $desasignar:Int, $all:Boolean) {
+
+        asignar (input: {
+            token: $token
+            user_id: $user_id
+            asignar: $asignar
+            desasignar: $desasignar
+            all: $all
+        }) {
+            _id
+            role
+            estado
+            email
+            group
+            asign
         }
     }
 `
 
 export const CHANGESTATE = gql`mutation
     changeState($inner_id:String!, $estado:String!, $noAbonado:Boolean!, $token:String!) {
+
         cambiarEstado (input: {
             inner_id: $inner_id
             estado: $estado

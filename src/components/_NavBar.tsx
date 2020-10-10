@@ -26,7 +26,7 @@ function NavBar() {
     }
   }
 
-  console.log(document.cookie)
+  //console.log(document.cookie)
 
 
   return (
