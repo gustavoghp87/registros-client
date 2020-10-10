@@ -20,7 +20,7 @@ import { SERVER } from '../config.json'
 import { split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
-
+import { isLocalhost } from '../hoc/functions'
 
 export let mobile = window.screen.width<990 ? true : false
 
@@ -28,10 +28,14 @@ const httpLink = new HttpLink({
   uri: `${SERVER}/api/graphql/`
 })
 
+const secure = isLocalhost ? '' : 's'
+
 const wsLink = new WebSocketLink({
-  uri: `wss://${SERVER.split('//')[1]}/graphql`,
+  uri: `ws${secure}://${SERVER.split('//')[1]}/graphql`,
   options: {reconnect:true}
 })
+console.log(`ws${secure}://${SERVER.split('//')[1]}/graphql`);
+
 
 const splitLink = split(
   ({ query }) => {

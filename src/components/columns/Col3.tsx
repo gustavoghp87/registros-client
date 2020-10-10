@@ -59,7 +59,7 @@ export const Col3:any = (props:any) => {
 
         </Row>
 
-        <Row style={{ height:'40%'}}>
+        <Row style={{height:'40%', marginTop:'15px'}}>
             {vivienda.fechaUlt
             ?
                 <div className="card border-dark mb-3"
@@ -69,7 +69,7 @@ export const Col3:any = (props:any) => {
                         display: vivienda.estado==='No predicado' ? 'none' : 'block',
                         margin:'auto'
                     }}
-                >
+                    >
                     
                     <div className='card-header' style={{padding:'0.2rem 0.5rem'}}>
                         <p className='card-text'>

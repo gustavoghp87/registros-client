@@ -39,6 +39,7 @@ function TerritoriosPage(props:any) {
 
     const [changeState] = useMutation(graphql.CHANGESTATE)
     const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null) => {
+        if (!noAbonado) noAbonado = false
         changeState({ variables: {inner_id, estado, noAbonado, token:document.cookie} })
     }
 

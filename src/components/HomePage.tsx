@@ -15,10 +15,14 @@ function HomePage() {
             </div>
 
             <div style={{textAlign:'center', backgroundColor:'lightgray', padding:'50px 0'}}>
-                <a href="https://jw.org/es" target="_blank" style={{textDecoration:'none'}}>
+                <a href="https://jw.org/es" target="_blank" rel="noopener noreferrer"
+                    style={{textDecoration:'none'}}>
+                    
                     <h2> VISITAR JW.ORG </h2>
+                
                     <img src="/img/jw.png" alt="world"
                         style={{margin:'15px auto', maxWidth: mobile ? '100%' : '100%'}} />
+                
                 </a>
             </div>
 

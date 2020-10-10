@@ -53,7 +53,7 @@ export const GETTERRITORY = gql`query busqueda($token:String!, $terr:String!, $m
     }
 }`
 
-export const GETUSERS = gql`query usuarios($token: String!) {
+export const GETUSERS = gql`query usuarios($token:String!) {
     getUsers (
         token: $token
     ) {
@@ -65,6 +65,18 @@ export const GETUSERS = gql`query usuarios($token: String!) {
         asign
     }
 }`
+
+export const GETSTATISTICS = gql`query statistics($token:String!) {
+    getGlobalStatistics (token:$token) {
+        count
+        countContesto
+        countNoContesto
+        countDejarCarta
+        countNoLlamar
+        countNoAbonado
+    }
+}
+`
 
 
 ////////    MUTATIONS    ////////
