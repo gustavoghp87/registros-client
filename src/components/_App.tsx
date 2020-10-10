@@ -1,39 +1,38 @@
-import React, { Suspense } from 'react';
-import './css/App.css';
-import { Route, Switch } from 'react-router-dom';
-import Auth from '../hoc/auth';
-import LoginPage from './LoginPage';
-import RegisterPage from "./RegisterPage";
-import HomePage from "./HomePage";
-import IndexPage from "./IndexPage"
-import TerritoriosPage from "./TerritoriosPage";
-import EstadisticasPage from "./EstadisticasPage";
-import UserPage from "./UserPage";
-import AdminsPage from "./AdminsPage";
-import RoomsPage from "./RoomsPage";
-import NavBar from './_NavBar';
+import React, { Suspense } from 'react'
+import './css/App.css'
+import { Route, Switch } from 'react-router-dom'
+import Auth from '../hoc/auth'
+import LoginPage from './LoginPage'
+import RegisterPage from './RegisterPage'
+import HomePage from './HomePage'
+import IndexPage from './IndexPage'
+import TerritoriosPage from './TerritoriosPage'
+import EstadisticasPage from './EstadisticasPage'
+import UserPage from './UserPage'
+import AdminsPage from './AdminsPage'
+import RoomsPage from './RoomsPage'
+import NavBar from './_NavBar'
 import Footer from './_Footer'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3"
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
-import { SERVER, SERVERSUBS } from '../config.json'
+import { SERVER } from '../config.json'
 import { split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
 
+
+export let mobile = window.screen.width<990 ? true : false
 
 const httpLink = new HttpLink({
   uri: `${SERVER}/api/graphql/`
 })
 
 const wsLink = new WebSocketLink({
-  uri: `ws://${SERVERSUBS}/graphql`,
+  uri: `ws://${SERVER.split('//')[1]}/graphql`,
   options: {reconnect:true}
 })
 
-// * A function that's called for each operation to execute
-// * The Link to use for an operation if the function returns a "truthy" value
-// * The Link to use for an operation if the function returns a "falsy" value
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query)
@@ -41,9 +40,7 @@ const splitLink = split(
       definition.kind === 'OperationDefinition' &&
       definition.operation === 'subscription'
     )
-  },
-  wsLink,
-  httpLink
+  }, wsLink, httpLink
 )
 
 const client = new ApolloClient({
@@ -51,17 +48,23 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-
-export let mobile = window.screen.width<990 ? true : false
-
 function App() {
 
   return (
+
     <Suspense fallback={(<div> Cargando... </div>)}>
+
       <GoogleReCaptchaProvider reCaptchaKey="6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9">
       <ApolloProvider client={client}>
+
         <NavBar />
-        <div style={{maxWidth: mobile ? '95%' : '90%', paddingTop:'75px', margin:'auto', minHeight:'calc(100vh - 80px)'}}>
+
+        <div style={{
+          maxWidth: mobile ? '95%' : '90%',
+          paddingTop:'75px',
+          margin:'auto',
+          minHeight:'calc(100vh - 80px)'
+        }}>
 
           <Switch>
             {/* <Redirect exact strict from="/" to="/login" /> */}
@@ -78,9 +81,12 @@ function App() {
           </Switch>
           
         </div>
+
         <Footer />
+
       </ApolloProvider>
       </GoogleReCaptchaProvider>
+      
     </Suspense>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Card, Row } from 'react-bootstrap'
 import { useParams } from 'react-router'
-import { ParamTypes, ITerritorio, IVivienda } from '../hoc/types'
+import { typeParam, typeTerritorio, typeVivienda } from '../hoc/types'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { mobile } from './_App'
@@ -16,8 +16,8 @@ import { Col4 } from './columns/Col4'
 
 function TerritoriosPage(props:any) {
 
-    const { territorio } = useParams<ParamTypes>()
-    const [viviendas, setviviendas] = useState<ITerritorio>({unterritorio:[]})
+    const { territorio } = useParams<typeParam>()
+    const [viviendas, setviviendas] = useState<typeTerritorio>({unterritorio:[]})
     const [manzana, setManzana] = useState('1')
     const [showMap, setShowMap] = useState(false)
     const [radioMValue, setRadioMValue] = useState('1')
@@ -37,7 +37,7 @@ function TerritoriosPage(props:any) {
     if (escuchar.data) console.log("ESCUCHO", escuchar.data)
 
 
-    const [changeState] = useMutation(graphql.changeState)
+    const [changeState] = useMutation(graphql.CHANGESTATE)
     const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null) => {
         changeState({ variables: {inner_id, estado, noAbonado, token:document.cookie} })
     }
@@ -46,7 +46,7 @@ function TerritoriosPage(props:any) {
         if (data) setviviendas({unterritorio: data.getApartmentsByTerritory})
         if (escuchar.data) {
             let nuevoTodo:any = {unterritorio: []}
-            viviendas.unterritorio.forEach((vivienda:IVivienda, index:number) => {
+            viviendas.unterritorio.forEach((vivienda:typeVivienda, index:number) => {
                 if (vivienda.inner_id === escuchar.data.escucharCambioDeEstado.inner_id) {
                     nuevoTodo.unterritorio.push({
                         estado: escuchar.data.escucharCambioDeEstado.estado,
@@ -127,7 +127,7 @@ function TerritoriosPage(props:any) {
 
 
             {viviendas && viviendas.unterritorio && !!viviendas.unterritorio.length &&
-                viviendas.unterritorio.map((vivienda:IVivienda) => {
+                viviendas.unterritorio.map((vivienda:typeVivienda) => {
 
                     if (vivienda.estado==="No predicado") vivienda = {...vivienda, variante: "success"}
                     if (vivienda.estado==="Contestó") vivienda = {...vivienda, variante: "primary"}

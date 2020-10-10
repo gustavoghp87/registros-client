@@ -4,13 +4,13 @@ import { useHistory } from 'react-router-dom'
 import Axios from 'axios'
 import { SERVER } from '../config.json'
 import { useSelector } from 'react-redux'
-import { IUser, IState } from '../hoc/types'
+import { typeUser, typeState } from '../hoc/types'
 import { FaUserAlt } from 'react-icons/fa'
 
 
 function NavBar() {
 
-  const user:IUser = useSelector((state:IState) => state.user.userData)
+  const user:typeUser = useSelector((state:typeState) => state.user.userData)
 
   const history = useHistory()
 

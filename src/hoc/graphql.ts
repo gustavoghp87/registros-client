@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client'
 
 
-
 ////////    SUBSCRIPTIONS    ////////
 
 export const ESCUCHARCAMBIODEESTADO = gql`subscription escucharCambioDeEstado {
@@ -53,59 +52,30 @@ export const GETUSERS = gql`query usuarios($token: String!) {
         email
         group
         asign
-
     }
 }`
-
 
 
 ////////    MUTATIONS    ////////
 
-export const activar = gql`mutation activar($user_id: String!, $token: String!) {
-    activar (input: {
-        user_id: $user_id
-        token: $token
-    }) {
-        email
-        estado
-        _id
+export const CONTROLARUSUARIO = gql`mutation controlarU($token:String!, $user_id:String!, $estado:Boolean!, $role:Int!, $group:Int!) {
+        controlarUsuario (input: {
+            token: $token
+            user_id: $user_id
+            estado: $estado
+            role: $role
+            group: $group
+        }) {
+            _id
+            role
+            estado
+            email
+            group
+        }
     }
-}`
+`
 
-export const desactivar = gql`mutation desactivar($user_id: String!, $token: String!) {
-    desactivar (input: {
-        user_id: $user_id
-        token: $token
-    }) {
-        email
-        estado
-        _id
-    }
-}`
-
-export const hacerAdmin = gql`mutation hacerAdmin($user_id: String!, $token: String!) {
-    hacerAdmin (input: {
-        user_id: $user_id
-        token: $token
-    }) {
-        email
-        role
-        _id
-    }
-}`
-
-export const deshacerAdmin = gql`mutation deshacerAdmin($user_id: String!, $token: String!) {
-    deshacerAdmin (input: {
-        user_id: $user_id
-        token: $token
-    }) {
-        email
-        role
-        _id
-    }
-}`
-
-export const changeState = gql`mutation
+export const CHANGESTATE = gql`mutation
     changeState($inner_id:String!, $estado:String!, $noAbonado:Boolean!, $token:String!) {
         cambiarEstado (input: {
             inner_id: $inner_id

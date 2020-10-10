@@ -1,13 +1,13 @@
 
-export interface ParamTypes {
+export type typeParam = {
     territorio: string
 }
 
-export interface ITerritorio {
-    unterritorio: IVivienda[]
+export type typeTerritorio = {
+    unterritorio: typeVivienda[]
 }
 
-export interface IVivienda {
+export type typeVivienda = {
     _id?: Object
     inner_id: string
     territorio: string
@@ -20,28 +20,27 @@ export interface IVivienda {
     variante: "success" | "dark" | "primary" | "danger" | "warning" | "light"
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////////
 
-export interface IUser {
+export type typeUser = {
     _id: Object
     role: number
-    estado: string
-    actividad?: IActividad[]
+    estado: boolean
     email: string
-    password: string
+    password?: string
     __v?: number
     group: number
     isAuth?: boolean
     asign?: number[]
 }
 
-export interface IState {
+export type typeState = {
     user: {
         userData: {
             _id: Object
             role: number
-            estado: string
-            actividad: Object[]
+            estado: boolean
             email: string
             password: string
             __v?: number
@@ -52,20 +51,6 @@ export interface IState {
     }
 }
 
-export type ActividadType = IActividad[]
-
-interface IActividad {
-    inner_id?: string
-    territorio?: string
-    manzana?: string
-    cuadra?: string
-    direccion?: string
-    telefono?: string
-    estado?: string
-    noAbonado?: boolean
-    fechaUlt?: string
-}
-
-export interface IUsers {
-    usuarios: IUser[]
+export type typeUsers = {
+    usuarios: typeUser[]
 }

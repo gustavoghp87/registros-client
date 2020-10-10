@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { IState, IUser } from '../hoc/types'
+import { typeState, typeUser } from '../hoc/types'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
@@ -11,7 +11,7 @@ import { Row } from 'react-bootstrap'
 
 function IndexPage(props:any) {
 
-    const user:IUser = useSelector((state:IState) => state.user.userData)
+    const user:typeUser = useSelector((state:typeState) => state.user.userData)
     const [Territorios, setTerritorios] = useState([0])
 
     useEffect(() => {
