@@ -6,6 +6,7 @@ import { SERVER } from '../config.json'
 import { useSelector } from 'react-redux'
 import { typeUser, typeState } from '../hoc/types'
 import { FaUserAlt } from 'react-icons/fa'
+import { mobile } from './_App'
 
 
 function NavBar() {
@@ -63,8 +64,12 @@ function NavBar() {
           {user && user.isAuth &&
             <>
             <Nav.Link href="/user" style={{display:'flex', alignItems:'center', marginBottom: window.screen.width<992 ? '12px' : '0'}}>
-              <FaUserAlt size="17px" color="lightgray" />
-              &nbsp;&nbsp; <span style={{color:'#fbfbfb'}}> Mi Usuario </span> &nbsp;
+              <span style={{display: mobile ? 'none' : 'block'}}>
+                <FaUserAlt size="17px" color="lightgray" />
+                &nbsp;&nbsp;
+              </span>
+              
+              <span style={{color:'#fbfbfb'}}> Mi Usuario </span> &nbsp;
             </Nav.Link>
 
             <Nav>

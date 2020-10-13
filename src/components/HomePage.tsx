@@ -1,5 +1,5 @@
 import React from 'react';
-import { H2 } from './css/css'
+import { H2, LINK2 } from './css/css'
 import { mobile } from './_App'
 
 
@@ -7,9 +7,22 @@ function HomePage() {
     
     return (
         <>
-            <H2> BIENVENIDOS </H2>
+            <H2 style={{marginTop:'50px'}}> BIENVENIDOS </H2>
 
-            <div style={{textAlign:'center', marginTop: mobile ? '20px' : '40px'}}>
+            <LINK2 to={'/index'}>
+                <h3 style={{
+                    display: mobile ? 'block' : 'none',
+                    margin: '15px auto',
+                    color:'#4a6da7',
+                    textAlign:'center',
+                    backgroundColor: 'lightgray',
+                    padding: '12px 0'
+                }}>
+                    ENTRAR
+                </h3>
+            </LINK2>
+
+            <div style={{textAlign:'center', marginTop: mobile ? '30px' : '40px'}}>
                 
                 <img src="/img/world.png" alt="world"
                     style={{margin:'15px auto 0 auto', maxWidth: '100%'}} />

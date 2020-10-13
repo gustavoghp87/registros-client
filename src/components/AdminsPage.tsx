@@ -100,7 +100,7 @@ function AdminsPage(props:any) {
 
                     <Card key={index} 
                         style={{
-                            width:'25rem',
+                            width:'27rem',
                             margin:'30px auto 60px auto',
                             backgroundColor:'#f6f6f8'
                         }}>
@@ -195,7 +195,9 @@ function AdminsPage(props:any) {
 
                             <div style={{display: groupVisible ? 'block' : 'none'}}>
 
-                                <Pagination size="lg"> {items} </Pagination>
+                                <Pagination size="lg" style={{textAlign:'center'}}>
+                                    {items}
+                                </Pagination>
 
                             </div>
                         

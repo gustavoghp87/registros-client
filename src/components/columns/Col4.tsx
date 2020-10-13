@@ -24,7 +24,7 @@ export const Col4:any = (props:any) => {
                 />
 
                 <label className="form-check-label" htmlFor="defaultCheck1" style={{fontSize: mobile ? '1.3rem' : '1.1rem', fontWeight:600}}>
-                    &nbsp; Teléfono no abonado en servicio
+                    &nbsp; &nbsp; Teléfono no abonado en servicio
                 </label>
 
             </div>
