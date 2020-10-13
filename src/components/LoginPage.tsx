@@ -3,15 +3,21 @@ import { SERVER } from "../config.json"
 import { Link, useHistory } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { mobile } from './_App'
+import { Form } from 'react-bootstrap'
 
 
 function LoginPage() {
 
     const history = useHistory()
-    const [email, setemail] = useState<string>('')
-    const [password, setpassword] = useState<string>('')
+    const [email, setemail] = useState<any>(localStorage.getItem('rememberMeMW') ? localStorage.getItem('rememberMeMW') : '')
+    const [password, setpassword] = useState<any>(localStorage.getItem('rememberMePSMW') ? localStorage.getItem('rememberMePSMW') : '')
     const [recaptchaToken, setRecaptchaToken ] = useState<string|null>('')
-    const { executeRecaptcha } = useGoogleReCaptcha();
+    const { executeRecaptcha } = useGoogleReCaptcha()
+
+    const rememberMeMWChecked = localStorage.getItem("rememberMeMW") ? true : false
+    const [rememberMeMW, setRememberMeMW] = useState(rememberMeMWChecked)
+    
+console.log(rememberMeMW, rememberMeMWChecked, email);
 
     useEffect(() => {
         (async () => {
@@ -58,9 +64,34 @@ function LoginPage() {
 
                     <div style={{display:'block', margin:'auto'}}>
 
-                        <input className="form-control" type="email" name="email" style={{marginBottom:'12px'}} placeholder="Correo electrónico" autoFocus onChange={e => setemail((e.target as HTMLInputElement).value)} />
+                        <input className="form-control" type="email" name="email"
+                            value={email}
+                            style={{marginBottom:'12px'}} placeholder="Correo electrónico" autoFocus
+                            onChange={e => setemail((e.target as HTMLInputElement).value)}
+                        />
 
-                        <input className="form-control" type="password" name="password" style={{marginBottom:'30px'}} placeholder="Contraseña" onChange={e => setpassword((e.target as HTMLInputElement).value)} onKeyDown={(es)=> loginHandle2(es)} />
+                        <input className="form-control" type="password" name="password"
+                            value={password}
+                            style={{marginBottom:'30px'}} placeholder="Contraseña"
+                            onChange={e => setpassword((e.target as HTMLInputElement).value)}
+                            onKeyDown={(es)=> loginHandle2(es)}
+                        />
+
+                        <Form.Group controlId="formBasicCheckbox">
+                            <Form.Check type="checkbox" label="Recordarme" checked={rememberMeMW}
+                                onChange={() => {
+                                    if (rememberMeMW) {
+                                        localStorage.removeItem('rememberMeMW')
+                                        localStorage.removeItem('rememberMePSMW')
+                                        setRememberMeMW(false)
+                                    } else {
+                                        localStorage.setItem('rememberMeMW', email)
+                                        localStorage.setItem('rememberMePSMW', password)
+                                        setRememberMeMW(!rememberMeMW)} 
+                                    }
+                                }
+                            />
+                        </Form.Group>
 
                         <button
                             className="btn btn-success"
