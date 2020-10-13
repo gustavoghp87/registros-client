@@ -9,7 +9,7 @@ export const Col1:any = (props:any) => {
 
     return (
 
-        <Col style={{margin:'auto'}}>
+        <Col xs={12} md={2} style={{margin: mobile ? '20px auto' : 'auto'}}>
 
             <h4 style={{textAlign:'center', fontSize: mobile ? '1.1rem' : '1.3rem'}}>
 

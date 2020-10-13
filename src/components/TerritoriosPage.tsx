@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, Row } from 'react-bootstrap'
+import { Button, Card, Container, Row } from 'react-bootstrap'
 import { useParams } from 'react-router'
 import { typeParam, typeTerritorio, typeVivienda } from '../hoc/types'
 import { Loading } from './_Loading'
@@ -150,30 +150,33 @@ function TerritoriosPage(props:any) {
                             marginBottom:'50px',
                             border:'1px solid gray',
                             boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-                        }}>
+                        }}
+                    >
+                        <Container fluid="lg">
 
-                        <Row style={{margin:'0 25px', paddingTop:'15px', paddingBottom:'15px'}}>
+                            <Row style={{margin:'0 25px', paddingTop:'15px', paddingBottom:'15px'}}>
 
-                            <Col1
-                                vivienda={vivienda}
-                            />
+                                <Col1
+                                    vivienda={vivienda}
+                                />
 
-                            <Col2
-                                vivienda={vivienda}
-                            />
+                                <Col2
+                                    vivienda={vivienda}
+                                />
 
 
-                            <Col3
-                                vivienda={vivienda}
-                                cambiarEstado={cambiarEstado}
-                            />
+                                <Col3
+                                    vivienda={vivienda}
+                                    cambiarEstado={cambiarEstado}
+                                />
 
-                            <Col4
-                                vivienda={vivienda}
-                                cambiarEstado={cambiarEstado}
-                            />
+                                <Col4
+                                    vivienda={vivienda}
+                                    cambiarEstado={cambiarEstado}
+                                />
 
-                        </Row>
+                            </Row>
+                        </Container>
                     </Card>
                 )
             })}

@@ -9,11 +9,11 @@ export const Col2:any = (props:any) => {
 
     return (
 
-    <Col style={{margin: mobile ? '0' : '20px 0px', padding: mobile ? '0' : '20px'}}>
+    <Col xs={12} md={4} style={{margin: mobile ? '0' : '20px 0px', padding: mobile ? '0' : '20px'}}>
 
         <Row style={{ paddingBottom: '10px' }}>
             <h4 style={{textAlign:'center', display:'block', margin:'auto', fontSize:'1.9rem'}}>
-                Dirección: {vivienda.direccion}
+                Dirección:<br/>{vivienda.direccion}
             </h4>
         </Row>
 

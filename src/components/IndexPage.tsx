@@ -47,8 +47,12 @@ function IndexPage(props:any) {
                             <Link type="button" className="btn btn-danger" style={btnTerri}
                                 to={`/territorios/${territorio}/1`} key={index}>
 
-                                <h2 className="h-100 align-middle"
-                                style={{padding:'22%', fontFamily:'"Arial Black", Gadget, sans-serif'}}>
+                                <h2 className="h-100 align-middle" style={{
+                                    padding: '22%',
+                                    margin: 'auto',
+                                    fontFamily: '"Arial Black", Gadget, sans-serif',
+                                    fontSize: mobile ? '2.3rem' : ''
+                                }}>
                                     {territorio}
                                 </h2>
 

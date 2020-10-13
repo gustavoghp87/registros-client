@@ -9,10 +9,10 @@ export const Col4:any = (props:any) => {
 
     return (
 
-    <Col>
+    <Col xs={12} md={2}>
         <Row style={{textAlign:'center', height:'100%'}}>
 
-            <div style={{display:"block", margin: "auto" }}>
+            <div style={{display:"block", margin: mobile ? '20px auto' : 'auto' }}>
 
                 <input className="form-check-input" type="checkbox"
                     checked={vivienda.noAbonado}
@@ -24,9 +24,9 @@ export const Col4:any = (props:any) => {
                 />
 
                 <label className="form-check-label" htmlFor="defaultCheck1" style={{fontSize: mobile ? '1.3rem' : '1.1rem', fontWeight:600}}>
-                    &nbsp; &nbsp; Teléfono no abonado en servicio
+                    &nbsp; Teléfono no abonado en servicio
                 </label>
-                
+
             </div>
 
         </Row>

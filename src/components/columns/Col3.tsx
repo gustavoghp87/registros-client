@@ -10,7 +10,7 @@ export const Col3:any = (props:any) => {
 
     return (
     
-    <Col style={{margin:'0 30px'}}>
+    <Col xs={12} md={3} style={{margin: mobile ? 'auto' : '0 30px'}}>
 
         <Row style={{textAlign:"center", height:"30%", margin: mobile ? '50 auto' : '20px auto 0 auto'}}>
 
