@@ -1,21 +1,21 @@
-import React from 'react';
+import React from 'react'
 import { H2 } from './css/css'
 import { Card } from 'react-bootstrap'
 import { useQuery } from '@apollo/client'
 import * as graphql from '../hoc/graphql'
 import { Loading } from './_Loading'
 import { mobile } from './_App'
+import { ReturnBtn } from './_Return'
 
 
-function EstadisticasPage() {
+function EstadisticasPage(props:any) {
 
     const datos = useQuery(graphql.GETSTATISTICS, {variables: {token:document.cookie}}).data
-    if (datos) console.log("Llegó", datos);
     
-
     return (
         <>
-        <H2> ESTADÍSTICAS </H2>
+        {ReturnBtn(props)}
+        <H2> ESTADÍSTICAS GLOBALES </H2>
 
         {datos
         ?
@@ -25,6 +25,10 @@ function EstadisticasPage() {
                 <Card style={{padding:'35px', textAlign: mobile ? 'center' : 'left'}}>
 
                     <h4>{`Hay ${datos.getGlobalStatistics.count} viviendas`} </h4>
+
+                    <br/>
+
+                    <h4>{`Predicadas: ${datos.getGlobalStatistics.countContesto + datos.getGlobalStatistics.countNoLlamar + datos.getGlobalStatistics.countDejarCarta} viviendas (${Math.round((datos.getGlobalStatistics.countContesto + datos.getGlobalStatistics.countNoLlamar + datos.getGlobalStatistics.countDejarCarta)*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
 
                     <br/>
 

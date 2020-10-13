@@ -8,6 +8,7 @@ import HomePage from './HomePage'
 import IndexPage from './IndexPage'
 import TerritoriosPage from './TerritoriosPage'
 import EstadisticasPage from './EstadisticasPage'
+import EstadisticasLocalPage from './EstadisticasLocalPage'
 import UserPage from './UserPage'
 import AdminsPage from './AdminsPage'
 import RoomsPage from './RoomsPage'
@@ -22,6 +23,7 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { isLocalhost } from '../hoc/functions'
 
+
 export let mobile = window.screen.width<990 ? true : false
 
 const httpLink = new HttpLink({
@@ -34,8 +36,6 @@ const wsLink = new WebSocketLink({
   uri: `ws${secure}://${SERVER.split('//')[1]}/graphql`,
   options: {reconnect:true}
 })
-console.log(`ws${secure}://${SERVER.split('//')[1]}/graphql`);
-
 
 const splitLink = split(
   ({ query }) => {
@@ -76,8 +76,10 @@ function App() {
             <Route exact path="/login" component={Auth(LoginPage, false)} />
             <Route exact path="/register" component={Auth(RegisterPage, false)} />
             <Route exact path="/index" component={Auth(IndexPage, true)} />
-            <Route exact path="/territorios/:territorio" component={Auth(TerritoriosPage, true)} />
+            <Route exact path="/territorios/:territorio/:manzana" component={Auth(TerritoriosPage, true)} />
+            <Route exact path="/territorios/:territorio/:manzana/:todo" component={Auth(TerritoriosPage, true)} />
             <Route exact path="/estadisticas" component={Auth(EstadisticasPage, true, true)} />
+            <Route exact path="/estadisticas/:territorio" component={Auth(EstadisticasLocalPage, true, true)} />
             <Route exact path="/user" component={Auth(UserPage, true)} />
             <Route exact path="/admins" component={Auth(AdminsPage, true, true)} />
             <Route exact path="/salas" component={Auth(RoomsPage, true)} />

@@ -7,7 +7,8 @@ import { ReturnBtn } from './_Return'
 import { mobile } from './_App'
 import { useQuery, useMutation, useSubscription } from '@apollo/client'
 import * as graphql from '../hoc/graphql'
-import { Col0 } from './columns/Col0'
+import { Col0a } from './columns/Col0a'
+import { Col0b } from './columns/Col0b'
 import { Col1 } from './columns/Col1'
 import { Col2 } from './columns/Col2'
 import { Col3 } from './columns/Col3'
@@ -16,28 +17,31 @@ import { Col4 } from './columns/Col4'
 
 function TerritoriosPage(props:any) {
 
-    const { territorio } = useParams<typeParam>()
+    const { territorio, manzana, todo } = useParams<typeParam>()
     const [viviendas, setviviendas] = useState<typeTerritorio>({unterritorio:[]})
-    const [manzana, setManzana] = useState('1')
     const [showMap, setShowMap] = useState(false)
     const [radioMValue, setRadioMValue] = useState('1')
 
-    let variables = {terr:territorio, manzana, token: document.cookie}
-    if (radioMValue==='1') variables = {terr:territorio, manzana:'1', token: document.cookie}
-    if (radioMValue==='2') variables = {terr:territorio, manzana:'2', token: document.cookie}
-    if (radioMValue==='3') variables = {terr:territorio, manzana:'3', token: document.cookie}
-    if (radioMValue==='4') variables = {terr:territorio, manzana:'4', token: document.cookie}
-    if (radioMValue==='5') variables = {terr:territorio, manzana:'5', token: document.cookie}
-    if (radioMValue==='6') variables = {terr:territorio, manzana:'6', token: document.cookie}
+    const isTodo = todo==='todo' ? true : false
+
+    let variables = {terr:territorio, manzana, token:document.cookie, todo:isTodo}
+    if (manzana==='1') variables = {terr:territorio, manzana:'1', token:document.cookie, todo:isTodo}
+    if (manzana==='2') variables = {terr:territorio, manzana:'2', token:document.cookie, todo:isTodo}
+    if (manzana==='3') variables = {terr:territorio, manzana:'3', token:document.cookie, todo:isTodo}
+    if (manzana==='4') variables = {terr:territorio, manzana:'4', token:document.cookie, todo:isTodo}
+    if (manzana==='5') variables = {terr:territorio, manzana:'5', token:document.cookie, todo:isTodo}
+    if (manzana==='6') variables = {terr:territorio, manzana:'6', token:document.cookie, todo:isTodo}
+
+
+    const data = useQuery(graphql.GETTERRITORY, {variables}).data
+
+    try {console.log("PARAMS", territorio, manzana, todo, data)} catch {}
+
 
     const count = useQuery(graphql.COUNTBLOCKS, {variables: {terr:territorio}}).data
-    const { data } = useQuery(graphql.GETTERRITORY, {variables})
-
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEESTADO)
-    if (escuchar.data) console.log("ESCUCHO", escuchar.data)
-
-
     const [changeState] = useMutation(graphql.CHANGESTATE)
+    
     const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null) => {
         if (!noAbonado) noAbonado = false
         changeState({ variables: {inner_id, estado, noAbonado, token:document.cookie} })
@@ -78,13 +82,10 @@ function TerritoriosPage(props:any) {
         }
     }, [data, escuchar.data])
 
-
-
+    console.log("manzana", manzana, "isTodo", isTodo)
     return (
         <>
-
             {ReturnBtn(props)}
-
 
             <h1 style={{
                 textAlign:'center',
@@ -115,15 +116,21 @@ function TerritoriosPage(props:any) {
                     padding: mobile ? '10px' : '20px'
                 }}
             />
+    
 
-
-            <Col0
+            <Col0a
                 territorio={territorio}
                 count={count}
                 radioMValue={radioMValue}
                 setRadioMValue={setRadioMValue}
-                setManzana={setManzana}
-                viviendas={viviendas}
+                manzana={manzana}
+                props2={props}
+            />
+
+            <Col0b
+                territorio={territorio}
+                manzana={manzana}
+                isTodo={isTodo}
             />
 
 

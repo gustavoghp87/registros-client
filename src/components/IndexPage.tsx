@@ -45,11 +45,13 @@ function IndexPage(props:any) {
                     ?
                         Territorios.map((territorio, index) => (
                             <Link type="button" className="btn btn-danger" style={btnTerri}
-                            to={`/territorios/${territorio}`} key={index}>
+                                to={`/territorios/${territorio}/1`} key={index}>
+
                                 <h2 className="h-100 align-middle"
                                 style={{padding:'22%', fontFamily:'"Arial Black", Gadget, sans-serif'}}>
                                     {territorio}
                                 </h2>
+
                             </Link>
                         ))
                     :

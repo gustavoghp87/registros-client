@@ -38,20 +38,23 @@ export const COUNTBLOCKS = gql`query countBlocks($terr:String!) {
     }
 }`
 
-export const GETTERRITORY = gql`query busqueda($token:String!, $terr:String!, $manzana:String!) {
-    getApartmentsByTerritory (
-        terr: $terr, token: $token, manzana: $manzana
+export const GETTERRITORY = gql`query busqueda(
+        $token:String!, $terr:String!, $manzana:String!, $todo:Boolean!
     ) {
-        inner_id
-        territorio
-        manzana
-        direccion
-        telefono
-        estado
-        noAbonado
-        fechaUlt
+        getApartmentsByTerritory (
+            terr: $terr, token: $token, manzana: $manzana, todo: $todo
+        ) {
+            inner_id
+            territorio
+            manzana
+            direccion
+            telefono
+            estado
+            noAbonado
+            fechaUlt
+        }
     }
-}`
+`
 
 export const GETUSERS = gql`query usuarios($token:String!) {
     getUsers (
@@ -68,6 +71,18 @@ export const GETUSERS = gql`query usuarios($token:String!) {
 
 export const GETSTATISTICS = gql`query statistics($token:String!) {
     getGlobalStatistics (token:$token) {
+        count
+        countContesto
+        countNoContesto
+        countDejarCarta
+        countNoLlamar
+        countNoAbonado
+    }
+}
+`
+
+export const GETLOCALSTATISTICS = gql`query statistics($token:String!, $territorio:String!) {
+    getLocalStatistics (token:$token, territorio:$territorio) {
         count
         countContesto
         countNoContesto
