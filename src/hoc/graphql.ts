@@ -39,10 +39,10 @@ export const COUNTBLOCKS = gql`query countBlocks($terr:String!) {
 }`
 
 export const GETTERRITORY = gql`query busqueda(
-        $token:String!, $terr:String!, $manzana:String!, $todo:Boolean!
+        $token:String!, $terr:String!, $manzana:String!, $todo:Boolean!, $traidos:Int!, $traerTodos:Boolean!
     ) {
         getApartmentsByTerritory (
-            terr: $terr, token: $token, manzana: $manzana, todo: $todo
+            terr:$terr, token:$token, manzana:$manzana, todo:$todo, traidos:$traidos, traerTodos:$traerTodos
         ) {
             inner_id
             territorio

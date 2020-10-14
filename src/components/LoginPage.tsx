@@ -40,10 +40,19 @@ console.log(rememberMeMW, rememberMeMWChecked, email);
         document.cookie = `newtoken = ${token}`
         console.log("Éxito en loguear:", loginSuccess, "doc.cookie:", document.cookie)
 
-        if (loginSuccess) history.push("/index")
+        if (loginSuccess) {
+            if (rememberMeMW) {
+                localStorage.setItem('rememberMeMW', email)
+                localStorage.setItem('rememberMePSMW', password)
+            } else {
+                localStorage.removeItem('rememberMeMW')
+                localStorage.removeItem('rememberMePSMW')
+            }
+            history.push("/index")
+        }
         else if (axios.recaptchaFails) alert("Problemas, refresque la página")
         else if (axios.disable) alert("Usuario aun no habilitado por el grupo de territorios... avisarles")
-        else alert("Datos incorrectos")
+        else {alert("Datos incorrectos"); window.location.reload()}
     }
 
     const loginHandle2 = (e:any) => {
@@ -79,17 +88,7 @@ console.log(rememberMeMW, rememberMeMWChecked, email);
 
                         <Form.Group controlId="formBasicCheckbox">
                             <Form.Check type="checkbox" label="Recordarme" checked={rememberMeMW}
-                                onChange={() => {
-                                    if (rememberMeMW) {
-                                        localStorage.removeItem('rememberMeMW')
-                                        localStorage.removeItem('rememberMePSMW')
-                                        setRememberMeMW(false)
-                                    } else {
-                                        localStorage.setItem('rememberMeMW', email)
-                                        localStorage.setItem('rememberMePSMW', password)
-                                        setRememberMeMW(!rememberMeMW)} 
-                                    }
-                                }
+                                onChange={ () => {setRememberMeMW(!rememberMeMW)} }
                             />
                         </Form.Group>
 

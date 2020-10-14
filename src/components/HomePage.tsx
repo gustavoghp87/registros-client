@@ -11,12 +11,13 @@ function HomePage() {
 
             <LINK2 to={'/index'}>
                 <h3 style={{
-                    display: mobile ? 'block' : 'none',
+                    //display: mobile ? 'block' : 'none',
                     margin: '15px auto',
                     color:'#4a6da7',
                     textAlign:'center',
                     backgroundColor: 'lightgray',
-                    padding: '12px 0'
+                    padding: '12px 0',
+                    maxWidth: mobile ? '100%' : '1136px'
                 }}>
                     ENTRAR
                 </h3>

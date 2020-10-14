@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, Container, Row } from 'react-bootstrap'
+import { Button, Card, Container, Row, Pagination } from 'react-bootstrap'
 import { useParams } from 'react-router'
 import { typeParam, typeTerritorio, typeVivienda } from '../hoc/types'
 import { Loading } from './_Loading'
@@ -20,24 +20,33 @@ function TerritoriosPage(props:any) {
     const { territorio, manzana, todo } = useParams<typeParam>()
     const [viviendas, setviviendas] = useState<typeTerritorio>({unterritorio:[]})
     const [showMap, setShowMap] = useState(false)
-    const [radioMValue, setRadioMValue] = useState('1')
+    const [traidos, setTraidos] = useState(10)
+    const [traerTodos, setTraerTodos] = useState(false)
 
     const isTodo = todo==='todo' ? true : false
 
-    let variables = {terr:territorio, manzana, token:document.cookie, todo:isTodo}
-    if (manzana==='1') variables = {terr:territorio, manzana:'1', token:document.cookie, todo:isTodo}
-    if (manzana==='2') variables = {terr:territorio, manzana:'2', token:document.cookie, todo:isTodo}
-    if (manzana==='3') variables = {terr:territorio, manzana:'3', token:document.cookie, todo:isTodo}
-    if (manzana==='4') variables = {terr:territorio, manzana:'4', token:document.cookie, todo:isTodo}
-    if (manzana==='5') variables = {terr:territorio, manzana:'5', token:document.cookie, todo:isTodo}
-    if (manzana==='6') variables = {terr:territorio, manzana:'6', token:document.cookie, todo:isTodo}
+    let variables = {terr:territorio, manzana, token:document.cookie, todo:isTodo, traidos, traerTodos}
+    if (manzana==='1') variables = {
+        terr:territorio, manzana:'1', token:document.cookie, todo:isTodo, traidos, traerTodos
+    }
+    if (manzana==='2') variables = {
+        terr:territorio, manzana:'2', token:document.cookie, todo:isTodo, traidos, traerTodos
+    }
+    if (manzana==='3') variables = {
+        terr:territorio, manzana:'3', token:document.cookie, todo:isTodo, traidos, traerTodos
+    }
+    if (manzana==='4') variables = {
+        terr:territorio, manzana:'4', token:document.cookie, todo:isTodo, traidos, traerTodos
+    }
+    if (manzana==='5') variables = {
+        terr:territorio, manzana:'5', token:document.cookie, todo:isTodo, traidos, traerTodos
+    }
+    if (manzana==='6') variables = {
+        terr:territorio, manzana:'6', token:document.cookie, todo:isTodo, traidos, traerTodos
+    }
 
 
     const data = useQuery(graphql.GETTERRITORY, {variables}).data
-
-    try {console.log("PARAMS", territorio, manzana, todo, data)} catch {}
-
-
     const count = useQuery(graphql.COUNTBLOCKS, {variables: {terr:territorio}}).data
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEESTADO)
     const [changeState] = useMutation(graphql.CHANGESTATE)
@@ -47,12 +56,17 @@ function TerritoriosPage(props:any) {
         changeState({ variables: {inner_id, estado, noAbonado, token:document.cookie} })
     }
 
+    const traerDiezMas = () => {
+        setTraidos(traidos+10)
+    }
+
+
     useEffect(() => {
         if (data) setviviendas({unterritorio: data.getApartmentsByTerritory})
         if (escuchar.data) {
             let nuevoTodo:any = {unterritorio: []}
             viviendas.unterritorio.forEach((vivienda:typeVivienda, index:number) => {
-                if (vivienda.inner_id === escuchar.data.escucharCambioDeEstado.inner_id) {
+                if (vivienda.inner_id === escuchar.data.escucharCambioDeEstado.inner_id)
                     nuevoTodo.unterritorio.push({
                         estado: escuchar.data.escucharCambioDeEstado.estado,
                         inner_id: escuchar.data.escucharCambioDeEstado.inner_id,
@@ -63,7 +77,7 @@ function TerritoriosPage(props:any) {
                         noAbonado: escuchar.data.escucharCambioDeEstado.noAbonado,
                         fechaUlt: escuchar.data.escucharCambioDeEstado.fechaUlt
                     })
-                } else {
+                else 
                     nuevoTodo.unterritorio.push({
                         estado: viviendas.unterritorio[index].estado,
                         inner_id: viviendas.unterritorio[index].inner_id,
@@ -74,15 +88,14 @@ function TerritoriosPage(props:any) {
                         noAbonado: viviendas.unterritorio[index].noAbonado,
                         fechaUlt: viviendas.unterritorio[index].fechaUlt
                     })
-                }
-                console.log(nuevoTodo);
-                
             })
             setviviendas(nuevoTodo)
         }
-    }, [data, escuchar.data])
+    }, [data, escuchar.data, traidos])
 
-    console.log("manzana", manzana, "isTodo", isTodo)
+    console.log(traidos);
+    
+
     return (
         <>
             {ReturnBtn(props)}
@@ -121,10 +134,7 @@ function TerritoriosPage(props:any) {
             <Col0a
                 territorio={territorio}
                 count={count}
-                radioMValue={radioMValue}
-                setRadioMValue={setRadioMValue}
                 manzana={manzana}
-                props2={props}
             />
 
             <Col0b
@@ -180,6 +190,17 @@ function TerritoriosPage(props:any) {
                     </Card>
                 )
             })}
+
+            {isTodo &&
+                <Pagination size='lg' style={{
+                    alignItems:'center', justifyContent:'center', marginTop:'80px'
+                }}>
+
+                    <Pagination.Item active onClick={()=>traerDiezMas()}> Traer 10 más </Pagination.Item>
+                    <Pagination.Item onClick={()=>setTraerTodos(!traerTodos)}> Traer todos </Pagination.Item>
+
+                </Pagination>
+            }
 
             {viviendas && viviendas.unterritorio && !viviendas.unterritorio.length && <Loading />}
 

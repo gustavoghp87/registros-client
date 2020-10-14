@@ -4,6 +4,7 @@ import { typeUser, typeState } from '../hoc/types'
 import { Card } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
+import { mobile } from './_App'
 
 
 function UserPage(props:any) {
@@ -25,23 +26,43 @@ function UserPage(props:any) {
 
             {user &&
                 <Card style={{padding:'25px', margin:'30px auto'}}>
-                    
-                    <h3> Usuario: {user.email} </h3>
-                    
-                    <div className="d-inline-block">
-                        <h3 className="d-inline-block"> Territorios asignados: &nbsp; &nbsp; </h3>
 
-                        {user.asign &&
-                            asignOrdenados().map((territorio:number, index:number) => (
+                    {mobile ?
+                    <>
+                        <h4> Usuario: {user.email} </h4>
+                        <br/>
 
-                                <h3 key={index} className="d-inline-block">
-                                    {territorio} &nbsp; &nbsp;
-                                </h3>
+                        <div className="d-inline-block">
+                            <h4 className="d-inline-block"> Territorios asignados: &nbsp; &nbsp; </h4>
 
-                            ))
-                        }
+                            {user.asign &&
+                                asignOrdenados().map((territorio:number, index:number) => (
+                                    <h4 key={index} className="d-inline-block">
+                                        {territorio} &nbsp; &nbsp;
+                                    </h4>
+                                ))
+                            }
 
-                    </div>
+                        </div>
+                    </>
+                    :
+                    <>
+                        <h3> Usuario: {user.email} </h3>
+                        
+                        <div className="d-inline-block">
+                            <h3 className="d-inline-block"> Territorios asignados: &nbsp; &nbsp; </h3>
+
+                            {user.asign &&
+                                asignOrdenados().map((territorio:number, index:number) => (
+                                    <h3 key={index} className="d-inline-block">
+                                        {territorio} &nbsp; &nbsp;
+                                    </h3>
+                                ))
+                            }
+
+                        </div>
+                    </>
+                    }
 
                 </Card>
             }

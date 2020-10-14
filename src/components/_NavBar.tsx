@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
 import Axios from 'axios'
@@ -27,7 +27,14 @@ function NavBar() {
     }
   }
 
-  //console.log(document.cookie)
+  const [scrollDown, setScrollDown] = useState(false)
+
+  useEffect(() => {
+    document.addEventListener("scroll", () => {
+      if (window.scrollY>100) setScrollDown(true)
+      else setScrollDown(false)
+    })
+  }, [])
 
 
   return (
@@ -85,11 +92,14 @@ function NavBar() {
       
 
       {user && user.isAuth &&
+        ((mobile && !scrollDown) || !mobile) ?
         <div style={{position:'fixed', right:'0', marginRight:'18px', marginTop:'5px', zIndex:1}}>
           <p style={{textAlign:'right', marginBottom:'0'}}> {user.email} </p>
           <p style={{textAlign:'right', marginBottom:'0'}}> Grupo: {user.group} </p>
           <p style={{textAlign:'right'}}> {user.role ? "Administrador" : ""} </p>
         </div>
+        :
+        <></>
       }
 
     </div>

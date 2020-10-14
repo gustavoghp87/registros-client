@@ -8,6 +8,7 @@ import { mobile } from './_App'
 import { useParams } from 'react-router'
 import { typeParam } from '../hoc/types'
 import { ReturnBtn } from './_Return'
+import { Col0b } from './columns/Col0b'
 
 
 function EstadisticasLocalPage(props:any) {
@@ -20,22 +21,22 @@ function EstadisticasLocalPage(props:any) {
     return (
         <>
         {ReturnBtn(props)}
+        
         <H2> ESTADÍSTICAS </H2>
-        <h1 style={{textAlign:'center'}}> TERRITORIO {territorio} </h1>
 
-        {/* <Col0
+        <h1 style={{textAlign:'center', marginBottom: mobile ? '30px' : '25px'}}>
+            TERRITORIO {territorio}
+        </h1>
+
+        <Col0b
             territorio={territorio}
-            count={count}
-            radioMValue={radioMValue}
-            setRadioMValue={setRadioMValue}
-            setManzana={setManzana}
-            props2={props}
-        /> */}
+            isTodo={false}
+            isStatistics={true}
+        />
 
         {datos
         ?
             <div style={{margin: mobile ? '0' : '0 10%'}}>
-                <br/>
                 <br/>
                 <Card style={{padding:'35px', textAlign: mobile ? 'center' : 'left'}}>
 

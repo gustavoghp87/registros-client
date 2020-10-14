@@ -6,15 +6,15 @@ import { LINK2 } from '../css/css'
 
 export const Col0a:any = (props:any) => {
 
-    const {count, radioMValue, setRadioMValue, setManzana } = props
+    const {count } = props
 
-    let radiosM = [
+    let radiosManzana = [
         { name: mobile ? 'Manz 1' : 'Manzana 1', value: '1' }
     ]
 
     try {
         for (let i=2; i<=count.countBlocks.cantidad; i++) {
-            radiosM.push( {name: mobile ? `Manz ${i}` : `Manzana ${i}`, value: i.toString() })
+            radiosManzana.push( {name: mobile ? `Manz ${i}` : `Manzana ${i}`, value: i.toString()})
         }
     } catch {}
 
@@ -26,7 +26,7 @@ export const Col0a:any = (props:any) => {
             {count && count.countBlocks && !!count.countBlocks.cantidad &&
                 <div style={{marginBottom:'10px'}}>
                     <ButtonGroup toggle>
-                        {radiosM.map((radio, idx) => (
+                        {radiosManzana.map((radio, idx) => (
                             <ToggleButton
                                 key={idx} type="radio" variant="danger" name="radio" value={radio.value}
                                 checked={props.manzana === radio.value}
