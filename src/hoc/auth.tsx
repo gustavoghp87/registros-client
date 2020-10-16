@@ -11,13 +11,12 @@ export default function (ComposedClass:any, reload:boolean, reloadAdmin:boolean=
         const dispatch = useDispatch()
 
         useEffect(() => {
+            console.log("Entra en auth frontend", user)
             dispatch(auth()).then(async response => {
 
-                if (!response.payload.isAuth && reload) 
-                    props.history.push('/login')
+                if (!response.payload.isAuth && reload) props.history.push('/login')
 
-                if (response.payload.role!==1 && reloadAdmin) 
-                    props.history.push('/login')
+                if (response.payload.role!==1 && reloadAdmin) props.history.push('/login')
             })
 
         }, [dispatch, props.history])
