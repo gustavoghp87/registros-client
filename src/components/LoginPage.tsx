@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { SERVER } from "../config"
 import { Link, useHistory } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
@@ -11,23 +11,15 @@ function LoginPage() {
     const history = useHistory()
     const [email, setemail] = useState<any>(localStorage.getItem('rememberMeMW') ? localStorage.getItem('rememberMeMW') : '')
     const [password, setpassword] = useState<any>(localStorage.getItem('rememberMePSMW') ? localStorage.getItem('rememberMePSMW') : '')
-    const [recaptchaToken, setRecaptchaToken ] = useState<string|null>('')
     const { executeRecaptcha } = useGoogleReCaptcha()
-
     const rememberMeMWChecked = localStorage.getItem("rememberMeMW") ? true : false
     const [rememberMeMW, setRememberMeMW] = useState(rememberMeMWChecked)
-    
-console.log(rememberMeMW, rememberMeMWChecked, email);
 
-    useEffect(() => {
-        (async () => {
-            if (!executeRecaptcha) return
-            const result = await executeRecaptcha("")
-            setRecaptchaToken(result);
-        })()
-    }, [executeRecaptcha])
 
     const loginHandle = async () => {
+        if (!executeRecaptcha) return
+        const recaptchaToken = await executeRecaptcha("")
+        console.log(recaptchaToken)
         let axios, loginSuccess
         const fetchy = await fetch(`${SERVER}/api/users/login`, {
             method: 'POST',
