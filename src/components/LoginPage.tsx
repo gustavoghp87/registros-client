@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { SERVER } from "../config.json"
+import { SERVER } from "../config"
 import { Link, useHistory } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { mobile } from './_App'
@@ -22,7 +22,7 @@ console.log(rememberMeMW, rememberMeMWChecked, email);
     useEffect(() => {
         (async () => {
             if (!executeRecaptcha) return
-            const result = await executeRecaptcha("");
+            const result = await executeRecaptcha("")
             setRecaptchaToken(result);
         })()
     }, [executeRecaptcha])

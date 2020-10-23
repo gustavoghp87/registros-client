@@ -1,15 +1,15 @@
 import { AUTH_USER } from './types'
-import { SERVER } from '../config.json'
+import { SERVER } from '../config'
 
 
 export const auth = async () => {
 
-    const axios = await fetch(`${SERVER}/api/users/auth`, {
+    const fetchy = await fetch(`${SERVER}/api/users/auth`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
         body: JSON.stringify({token:document.cookie})
     })
-    const request = await axios.json()
+    const request = await fetchy.json()
 
     return {
         type: AUTH_USER,

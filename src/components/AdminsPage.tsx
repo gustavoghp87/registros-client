@@ -100,7 +100,7 @@ function AdminsPage(props:any) {
 
                     <Card key={index} 
                         style={{
-                            width:'27rem',
+                            width: mobile ? '332px': '500px',
                             margin:'30px auto 60px auto',
                             backgroundColor:'#f6f6f8'
                         }}>
@@ -110,7 +110,7 @@ function AdminsPage(props:any) {
                             <Card.Title style={{
                                 textAlign:'center',
                                 padding:'20px',
-                                fontSize: mobile ? '2rem' : '1.8rem'
+                                fontSize: mobile ? '1.5rem' : '1.8rem'
                             }}>
                                 Usuario: <br/>
                                 {usuario.email}
@@ -193,12 +193,14 @@ function AdminsPage(props:any) {
                             </Card.Text>
 
 
-                            <div style={{display: groupVisible ? 'block' : 'none'}}>
+                            <div style={{width:'350px', margin:'auto'}}>
+                                <div style={{display: groupVisible ? 'block' : 'none'}}>
 
-                                <Pagination size="lg" style={{textAlign:'center'}}>
-                                    {items}
-                                </Pagination>
+                                    <Pagination size="lg" style={{textAlign:'center'}}>
+                                        {items}
+                                    </Pagination>
 
+                                </div>
                             </div>
                         
 

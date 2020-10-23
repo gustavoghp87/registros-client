@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import Axios from 'axios';
-import { SERVER } from "../config.json";
+import { SERVER } from "../config";
 import { Link, useHistory } from 'react-router-dom'
 import { mobile } from './_App'
 

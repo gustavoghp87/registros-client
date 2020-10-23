@@ -193,11 +193,17 @@ function TerritoriosPage(props:any) {
 
             {isTodo &&
                 <Pagination size='lg' style={{
-                    alignItems:'center', justifyContent:'center', marginTop:'80px'
+                    alignItems:'center', justifyContent:'center', marginTop:'80px',
+                    display: traerTodos ? 'none' : ''
                 }}>
 
-                    <Pagination.Item active onClick={()=>traerDiezMas()}> Traer 10 más </Pagination.Item>
-                    <Pagination.Item onClick={()=>setTraerTodos(!traerTodos)}> Traer todos </Pagination.Item>
+                    <Pagination.Item active onClick={()=>traerDiezMas()}>
+                        Traer 10 más
+                    </Pagination.Item>
+
+                    <Pagination.Item onClick={()=>setTraerTodos(!traerTodos)}>
+                        Traer todos y ordenar por fechas
+                    </Pagination.Item>
 
                 </Pagination>
             }
