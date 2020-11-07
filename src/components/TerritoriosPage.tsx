@@ -91,9 +91,10 @@ function TerritoriosPage(props:any) {
             })
             setviviendas(nuevoTodo)
         }
+        if (isTodo) setTraerTodos(true)    // parche
     }, [data, escuchar.data, traidos])
 
-    console.log(traidos);
+    //console.log(data)
     
 
     return (
@@ -194,7 +195,7 @@ function TerritoriosPage(props:any) {
             {isTodo &&
                 <Pagination size='lg' style={{
                     alignItems:'center', justifyContent:'center', marginTop:'80px',
-                    display: traerTodos ? 'none' : ''
+                    display: traerTodos ? 'none' : 'none'
                 }}>
 
                     <Pagination.Item active onClick={()=>traerDiezMas()}>
