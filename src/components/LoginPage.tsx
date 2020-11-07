@@ -47,10 +47,8 @@ function LoginPage() {
         else {alert("Datos incorrectos"); window.location.reload()}
     }
 
-    const loginHandle2 = (e:any) => {
-        if (e.key === 'Enter')
-            loginHandle()
-    }
+    
+    const loginHandle2 = (e:any) => {if (e.key === 'Enter') loginHandle()}
 
     
     return (

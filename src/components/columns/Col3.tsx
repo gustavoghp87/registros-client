@@ -66,7 +66,7 @@ export const Col3:any = (props:any) => {
                     style={{
                         maxWidth:'18rem',
                         backgroundColor:'rgb(214, 214, 214)',
-                        display: vivienda.estado==='No predicado' ? 'none' : 'block',
+                        display: vivienda.fechaUlt ? 'block' : 'none',
                         margin:'auto'
                     }}
                     >
