@@ -21,21 +21,23 @@ export const Col0a:any = (props:any) => {
 
     return (
 
-        <Col style={{textAlign:'center', marginBottom:'0', padding: mobile ? '0' : '0'}}>
+        <Col style={{textAlign:'center', marginBottom:'0', padding: mobile ? '0' : '0', maxWidth:'100%'}}>
 
             {count && count.countBlocks && !!count.countBlocks.cantidad &&
                 <div style={{marginBottom:'10px'}}>
-                    <ButtonGroup toggle>
+                    <ButtonGroup toggle vertical={mobile ? true : false}>
                         {radiosManzana.map((radio, idx) => (
                             <ToggleButton
                                 key={idx} type="radio" variant="danger" name="radio" value={radio.value}
-                                checked={props.manzana === radio.value}
+                                checked={props.manzana === radio.value} style={{padding:'0'}}
                             >
                                 <LINK2 to={`/territorios/${props.territorio}/${radio.value}`}
                                     style={{color:'white'}}>
-
-                                    {radio.name}
-
+                                    <div style={{height:'40px', width:'120px'}}>
+                                        <div style={{lineHeight:'40px'}}>
+                                            {radio.name}
+                                        </div>
+                                    </div>
                                 </LINK2>
                             </ToggleButton>
 

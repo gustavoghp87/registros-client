@@ -67,7 +67,7 @@ export const Col3:any = (props:any) => {
                         maxWidth:'18rem',
                         backgroundColor:'rgb(214, 214, 214)',
                         display:
-                            vivienda.estado==="No predicado" && vivienda.noAbonado===false
+                            vivienda.estado==="No predicado" // && vivienda.noAbonado===false
                             ? 'none' : 'block',
                         margin:'auto'
                     }}

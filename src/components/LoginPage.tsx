@@ -19,7 +19,7 @@ function LoginPage() {
     const loginHandle = async () => {
         if (!executeRecaptcha) return
         const recaptchaToken = await executeRecaptcha("")
-        console.log(recaptchaToken)
+        //console.log(recaptchaToken)
         let axios, loginSuccess
         const fetchy = await fetch(`${SERVER}/api/users/login`, {
             method: 'POST',
@@ -30,7 +30,7 @@ function LoginPage() {
         loginSuccess = axios.loginSuccess
         const token = axios.newtoken;
         document.cookie = `newtoken = ${token}`
-        console.log("Éxito en loguear:", loginSuccess, "doc.cookie:", document.cookie)
+        //console.log("Éxito en loguear:", loginSuccess, "doc.cookie:", document.cookie)
 
         if (loginSuccess) {
             if (rememberMeMW) {
