@@ -9,12 +9,12 @@ export const Col0a:any = (props:any) => {
     const {count } = props
 
     let radiosManzana = [
-        { name: mobile ? 'Manz 1' : 'Manzana 1', value: '1' }
+        { name: mobile ? 'Manzana 1' : 'Manzana 1', value: '1' }
     ]
 
     try {
         for (let i=2; i<=count.countBlocks.cantidad; i++) {
-            radiosManzana.push( {name: mobile ? `Manz ${i}` : `Manzana ${i}`, value: i.toString()})
+            radiosManzana.push( {name: mobile ? `Manzana ${i}` : `Manzana ${i}`, value: i.toString()})
         }
     } catch {}
 

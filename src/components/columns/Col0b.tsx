@@ -16,25 +16,25 @@ export const Col0b:any = (props:any) => {
     if (mobile)
         radios = user && user.userData && user.userData.isAdmin ? 
             [
-                { name: props.isTodo ? 'Viendo no pred' : 'Ver no pred', value: '1' },
+                { name: props.isTodo ? 'Ver no pred' : 'Viendo no pred', value: '1' },
                 { name: props.isTodo ? 'Viendo todos' : 'Ver todos', value: '2' },
                 { name: props.isStatistics ? 'Viendo estad' : 'Ver estad', value: '3' }
             ]
             :
             [
-                { name: props.isTodo ? 'Viendo no predicados' : 'Ver no predicados', value: '1' },
+                { name: props.isTodo ? 'Viendo no pred' : 'Ver no pred', value: '1' },
                 { name: props.isTodo ? 'Viendo todos' : 'Ver todos', value: '2' }
             ]
     else
         radios = user && user.userData && user.userData.isAdmin ?
             [
-                { name: props.isTodo ? 'Viendo no pred' : 'Ver no pred', value: '1' },
+                { name: props.isTodo ? 'Ver no predicados' : 'Viendo no predicados', value: '1' },
                 { name: props.isTodo ? 'Viendo todos' : 'Ver todos', value: '2' },
                 { name: props.isStatistics ? 'Viendo estadísticas' : 'Ver estadísticas', value: '3' }
             ]
             :
             [
-                { name: props.isTodo ? 'Viendo no predicados' : 'Ver no predicados', value: '1' },
+                { name: props.isTodo ? 'Ver no predicados' : 'Viendo no predicados', value: '1' },
                 { name: props.isTodo ? 'Viendo todos' : 'Ver todos', value: '2' }
             ]
 
@@ -48,14 +48,14 @@ export const Col0b:any = (props:any) => {
 
                 <ToggleButton
                     key={'1'} type="radio" variant="danger"
-                    name="radio" value={radios[0].value}
+                    name="radio" value={radios[0].value} style={{padding:'0'}}
                     checked={props.isTodo ? false : (props.isStatistics ? false : true )}
                 >
 
-                    <LINK2 to={`/territorios/${props.territorio}/${props.manzana}`}
+                    <LINK2 to={`/territorios/${props.territorio}/${manzana}`}
                         style={{color:'white'}}>
                         
-                        {radios[0].name}
+                        <div style={{lineHeight:'40px', padding:'0 15px'}}> {radios[0].name} </div>
 
                     </LINK2>
 
@@ -64,14 +64,14 @@ export const Col0b:any = (props:any) => {
 
                 <ToggleButton
                     key={'2'} type="radio" variant="danger"
-                    name="radio" value={radios[1].value}
+                    name="radio" value={radios[1].value} style={{padding:'0'}}
                     checked={props.isTodo ? true : false}
                 >
 
                     <LINK2 to={`/territorios/${props.territorio}/${manzana}/todo`}
                         style={{color:'white'}}>
                         
-                        {radios[1].name}
+                        <div style={{lineHeight:'40px', padding:'0 15px'}}> {radios[1].name} </div>
 
                     </LINK2>
 
@@ -81,14 +81,14 @@ export const Col0b:any = (props:any) => {
                 {radios && radios[2] &&
                     <ToggleButton
                         key={'3'} type="radio" variant="danger"
-                        name="radio" value={radios[2].value}
+                        name="radio" value={radios[2].value} style={{padding:'0'}}
                         checked={props.isStatistics ? true : false }
                     >
 
                         <LINK2 to={`/estadisticas/${props.territorio}`}
                             style={{color:'white'}}>
                             
-                            {radios[2].name}
+                            <div style={{lineHeight:'40px', padding:'0 15px'}}> {radios[2].name} </div>
 
                         </LINK2>
 
