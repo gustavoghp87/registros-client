@@ -56,10 +56,6 @@ function TerritoriosPage(props:any) {
         changeState({ variables: {inner_id, estado, noAbonado, token:document.cookie} })
     }
 
-    const traerDiezMas = () => {
-        setTraidos(traidos+10)
-    }
-
 
     useEffect(() => {
         if (data) setviviendas({unterritorio: data.getApartmentsByTerritory})
@@ -192,18 +188,18 @@ function TerritoriosPage(props:any) {
                 )
             })}
 
-            {isTodo &&
+            {!isTodo &&
                 <Pagination size='lg' style={{
                     alignItems:'center', justifyContent:'center', marginTop:'80px',
-                    display: traerTodos ? 'none' : 'none'
+                    display: traerTodos ? 'none' : ''
                 }}>
 
-                    <Pagination.Item active onClick={()=>traerDiezMas()}>
+                    <Pagination.Item active onClick={()=>setTraidos(traidos+10)}>
                         Traer 10 más
                     </Pagination.Item>
 
-                    <Pagination.Item onClick={()=>setTraerTodos(!traerTodos)}>
-                        Traer todos y ordenar por fechas
+                    <Pagination.Item onClick={()=>setTraerTodos(true)}>
+                        Traer todos
                     </Pagination.Item>
 
                 </Pagination>
