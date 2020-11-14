@@ -194,7 +194,7 @@ function TerritoriosPage(props:any) {
                     display: traerTodos ? 'none' : ''
                 }}>
 
-                    <Pagination.Item active onClick={()=>setTraidos(traidos+10)}>
+                    <Pagination.Item onClick={()=>setTraidos(traidos+10)}>
                         Traer 10 más
                     </Pagination.Item>
 
