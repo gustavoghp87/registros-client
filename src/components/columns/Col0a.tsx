@@ -6,27 +6,25 @@ import { LINK2 } from '../css/css'
 
 export const Col0a:any = (props:any) => {
 
-    const {count } = props
+    const { manzanas } = props
 
-    let radiosManzana = [
-        { name: mobile ? 'Manzana 1' : 'Manzana 1', value: '1' }
-    ]
+    let radiosManzana:any = []
 
     try {
-        for (let i=2; i<=count.countBlocks.cantidad; i++) {
-            radiosManzana.push( {name: mobile ? `Manzana ${i}` : `Manzana ${i}`, value: i.toString()})
-        }
+        manzanas.forEach((manzana:string) => {
+            radiosManzana.push({name: `Manzana ${manzana}`, value: manzana})
+        })
     } catch {}
 
 
     return (
 
-        <Col style={{textAlign:'center', marginBottom:'0', padding: mobile ? '0' : '0', maxWidth:'100%'}}>
+        <Col style={{textAlign:'center', marginBottom:'0', padding: '0', maxWidth:'100%'}}>
 
-            {count && count.countBlocks && !!count.countBlocks.cantidad &&
+            {manzanas && !!manzanas.length &&
                 <div style={{marginBottom:'10px'}}>
                     <ButtonGroup toggle vertical={mobile ? true : false}>
-                        {radiosManzana.map((radio, idx) => (
+                        {radiosManzana.map((radio:any, idx:any) => (
                             <ToggleButton
                                 key={idx} type="radio" variant="danger" name="radio" value={radio.value}
                                 checked={props.manzana === radio.value} style={{padding:'0'}}

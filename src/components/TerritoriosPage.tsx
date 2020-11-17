@@ -22,6 +22,8 @@ function TerritoriosPage(props:any) {
     const [showMap, setShowMap] = useState(false)
     const [traidos, setTraidos] = useState(10)
     const [traerTodos, setTraerTodos] = useState(false)
+    const [loaded, setLoaded] = useState(false)
+    const [manzanas, setManzanas] = useState(['1'])
 
     const isTodo = todo==='todo' ? true : false
 
@@ -47,7 +49,7 @@ function TerritoriosPage(props:any) {
 
 
     const data = useQuery(graphql.GETTERRITORY, {variables}).data
-    const count = useQuery(graphql.COUNTBLOCKS, {variables: {terr:territorio}}).data
+    const manzTraidas = useQuery(graphql.COUNTBLOCKS, {variables: {terr:territorio}}).data
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEESTADO)
     const [changeState] = useMutation(graphql.CHANGESTATE)
     
@@ -58,7 +60,10 @@ function TerritoriosPage(props:any) {
 
 
     useEffect(() => {
-        if (data) setviviendas({unterritorio: data.getApartmentsByTerritory})
+        if (data) {
+            setviviendas({unterritorio: data.getApartmentsByTerritory})
+            new Promise(resolve => setTimeout(resolve, 1000)).then(nada => setLoaded(true))
+        }
         if (escuchar.data) {
             let nuevoTodo:any = {unterritorio: []}
             viviendas.unterritorio.forEach((vivienda:typeVivienda, index:number) => {
@@ -87,8 +92,9 @@ function TerritoriosPage(props:any) {
             })
             setviviendas(nuevoTodo)
         }
-        if (isTodo) setTraerTodos(true)    // parche
-    }, [data, escuchar.data, traidos])
+        if (isTodo) setTraerTodos(true)
+        try {setManzanas(manzTraidas.countBlocks.cantidad)} catch{}
+    }, [data, escuchar.data, traidos, manzTraidas])
 
     //console.log(data)
     
@@ -130,7 +136,7 @@ function TerritoriosPage(props:any) {
 
             <Col0a
                 territorio={territorio}
-                count={count}
+                manzanas={manzanas}
                 manzana={manzana}
             />
 
@@ -188,7 +194,7 @@ function TerritoriosPage(props:any) {
                 )
             })}
 
-            {!isTodo &&
+            {viviendas && viviendas.unterritorio && !!viviendas.unterritorio.length && !isTodo && loaded &&
                 <Pagination size='lg' style={{
                     alignItems:'center', justifyContent:'center', marginTop:'80px',
                     display: traerTodos ? 'none' : ''
@@ -205,7 +211,19 @@ function TerritoriosPage(props:any) {
                 </Pagination>
             }
 
-            {viviendas && viviendas.unterritorio && !viviendas.unterritorio.length && <Loading />}
+            {viviendas && viviendas.unterritorio && !viviendas.unterritorio.length && !loaded &&
+                <>
+                    <br/>
+                    <Loading />
+                </>
+            }
+
+            {viviendas && viviendas.unterritorio && !viviendas.unterritorio.length && !isTodo && loaded &&
+                <h3 style={{textAlign:'center'}}>
+                    <br/>
+                    No hay viviendas no llamadas en esta manzana {manzana} del territorio {territorio}
+                </h3>
+            }
 
         </>
     )
