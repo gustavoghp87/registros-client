@@ -24,7 +24,6 @@ function TerritoriosPage(props:any) {
     const [traerTodos, setTraerTodos] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const [manzanas, setManzanas] = useState(['1'])
-
     const isTodo = todo==='todo' ? true : false
 
     let variables = {terr:territorio, manzana, token:document.cookie, todo:isTodo, traidos, traerTodos}
@@ -47,7 +46,6 @@ function TerritoriosPage(props:any) {
         terr:territorio, manzana:'6', token:document.cookie, todo:isTodo, traidos, traerTodos
     }
 
-
     const data = useQuery(graphql.GETTERRITORY, {variables}).data
     const manzTraidas = useQuery(graphql.COUNTBLOCKS, {variables: {terr:territorio}}).data
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEESTADO)
@@ -62,7 +60,7 @@ function TerritoriosPage(props:any) {
     useEffect(() => {
         if (data) {
             setviviendas({unterritorio: data.getApartmentsByTerritory})
-            new Promise(resolve => setTimeout(resolve, 1000)).then(nada => setLoaded(true))
+            new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
         }
         if (escuchar.data) {
             let nuevoTodo:any = {unterritorio: []}
@@ -94,9 +92,7 @@ function TerritoriosPage(props:any) {
         }
         if (isTodo) setTraerTodos(true)
         try {setManzanas(manzTraidas.countBlocks.cantidad)} catch{}
-    }, [data, escuchar.data, traidos, manzTraidas])
-
-    //console.log(data)
+    }, [data, escuchar.data, traidos, manzTraidas, isTodo])
     
 
     return (

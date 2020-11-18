@@ -52,12 +52,12 @@ export const Col0b:any = (props:any) => {
                     checked={props.isTodo ? false : (props.isStatistics ? false : true )}
                 >
 
-                    <LINK2 to={`/territorios/${props.territorio}/${manzana}`}
+                    <a href={`/territorios/${props.territorio}/${manzana}`}
                         style={{color:'white'}}>
                         
                         <div style={{lineHeight:'40px', padding:'0 15px'}}> {radios[0].name} </div>
 
-                    </LINK2>
+                    </a>
 
                 </ToggleButton>
 
