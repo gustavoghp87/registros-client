@@ -56,6 +56,17 @@ function TerritoriosPage(props:any) {
         changeState({ variables: {inner_id, estado, noAbonado, token:document.cookie} })
     }
 
+    const traerDiezMas = () => {
+        setTraidos(traidos+10)
+    }
+
+    console.log("data:", data)
+    console.log("traídos:", traidos)
+    console.log("variables:", variables)
+    
+    
+    
+
 
     useEffect(() => {
         if (data) {
@@ -196,7 +207,7 @@ function TerritoriosPage(props:any) {
                     display: traerTodos ? 'none' : ''
                 }}>
 
-                    <Pagination.Item onClick={()=>setTraidos(traidos+10)}>
+                    <Pagination.Item onClick={()=>traerDiezMas()}>
                         Traer 10 más
                     </Pagination.Item>
 
