@@ -40,25 +40,27 @@ function EstadisticasLocalPage(props:any) {
                 <br/>
                 <Card style={{padding:'35px', textAlign: mobile ? 'center' : 'left'}}>
 
-                    <h4>{`Hay ${datos.getLocalStatistics.count} viviendas`} </h4>
+                    <h4>{`Hay ${datos.getLocalStatistics.count} viviendas, ${datos.getLocalStatistics.countNoAbonado} no abonadas. Neto: ${datos.getLocalStatistics.count - datos.getLocalStatistics.countNoAbonado}`} </h4>
 
                     <br/>
 
-                    <h4>{`Predicadas: ${datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countDejarCarta} viviendas (${Math.round((datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countDejarCarta)*10000/datos.getLocalStatistics.count)/100}%)`} </h4>
+                    <h4> {`Llamadas: ${datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countNoAbonado} (${ Math.round( (datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countNoAbonado) / datos.getLocalStatistics.count * 1000 )/10}%)`} </h4>
+
+                    <hr />
+
+                    <h4>{`Predicadas: ${datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countDejarCarta} viviendas (${Math.round((datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countDejarCarta)*10000/datos.getLocalStatistics.count/10)/10}%)`} </h4>
                     
                     <br/>
 
-                    <h4>{`Contestó: ${datos.getLocalStatistics.countContesto} viviendas (${Math.round(datos.getLocalStatistics.countContesto*10000/datos.getLocalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; {`Contestó: ${datos.getLocalStatistics.countContesto} viviendas (${Math.round(datos.getLocalStatistics.countContesto*10000/datos.getLocalStatistics.count/10)/10}%)`} </h4>
 
-                    <h4>{`No contestó ${datos.getLocalStatistics.countNoContesto} viviendas (${Math.round(datos.getLocalStatistics.countNoContesto*10000/datos.getLocalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; {`A dejar carta: ${datos.getLocalStatistics.countDejarCarta} viviendas (${Math.round(datos.getLocalStatistics.countDejarCarta*10000/datos.getLocalStatistics.count/10)/10}%)`} </h4>
 
-                    <h4>{`A dejar carta: ${datos.getLocalStatistics.countDejarCarta} viviendas (${Math.round(datos.getLocalStatistics.countDejarCarta*10000/datos.getLocalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; {`No llamar: ${datos.getLocalStatistics.countNoLlamar} viviendas (${Math.round(datos.getLocalStatistics.countNoLlamar*10000/datos.getLocalStatistics.count/10)/10}%)`} </h4>
 
-                    <h4>{`No llamar: ${datos.getLocalStatistics.countNoLlamar} viviendas (${Math.round(datos.getLocalStatistics.countNoLlamar*10000/datos.getLocalStatistics.count)/100}%)`} </h4>
+                    <hr/>
 
-                    <br/>
-
-                    <h4>{`No abonados en servicio: ${datos.getLocalStatistics.countNoAbonado} viviendas`} </h4>
+                    <h4>{`No contestó: ${datos.getLocalStatistics.countNoContesto} viviendas (${Math.round(datos.getLocalStatistics.countNoContesto*10000/datos.getLocalStatistics.count/10)/10}%)`} </h4>
 
                 </Card>
             </div>

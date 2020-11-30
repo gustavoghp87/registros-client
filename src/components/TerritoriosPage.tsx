@@ -57,15 +57,13 @@ function TerritoriosPage(props:any) {
     }
 
     const traerDiezMas = () => {
+        alert("Trayendo 10")
         setTraidos(traidos+10)
     }
 
     console.log("data:", data)
     console.log("traídos:", traidos)
     console.log("variables:", variables)
-    
-    
-    
 
 
     useEffect(() => {
@@ -109,6 +107,16 @@ function TerritoriosPage(props:any) {
     return (
         <>
             {ReturnBtn(props)}
+
+            <div style={{
+                display: 'block',
+                margin: 'auto',
+                zIndex: 3}}
+            >
+                <Button variant={"danger"} onClick={()=>window.location.reload()}
+                    style={{display: 'block', margin: 'auto'}}
+                > Refrescar </Button>
+            </div>
 
             <h1 style={{
                 textAlign:'center',

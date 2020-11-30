@@ -1,7 +1,7 @@
 import React from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { mobile } from '../_App'
-import { LINK2 } from '../css/css'
+// import { LINK2 } from '../css/css'
 
 
 export const Col0a:any = (props:any) => {
@@ -29,14 +29,14 @@ export const Col0a:any = (props:any) => {
                                 key={idx} type="radio" variant="danger" name="radio" value={radio.value}
                                 checked={props.manzana === radio.value} style={{padding:'0'}}
                             >
-                                <LINK2 to={`/territorios/${props.territorio}/${radio.value}`}
+                                <a href={`/territorios/${props.territorio}/${radio.value}`}
                                     style={{color:'white'}}>
                                     <div style={{height:'40px', width:'120px'}}>
                                         <div style={{lineHeight:'40px'}}>
                                             {radio.name}
                                         </div>
                                     </div>
-                                </LINK2>
+                                </a>
                             </ToggleButton>
 
                         ))}
