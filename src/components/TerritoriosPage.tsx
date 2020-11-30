@@ -50,6 +50,7 @@ function TerritoriosPage(props:any) {
     const manzTraidas = useQuery(graphql.COUNTBLOCKS, {variables: {terr:territorio}}).data
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEESTADO)
     const [changeState] = useMutation(graphql.CHANGESTATE)
+    const [textBtn, setTextBtn] = useState('Traer 10 más')
     
     const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null) => {
         if (!noAbonado) noAbonado = false
@@ -57,9 +58,10 @@ function TerritoriosPage(props:any) {
     }
 
     const traerDiezMas = () => {
-        alert("Trayendo 10")
+        setTextBtn('...buscando...')
         setTraidos(traidos+10)
     }
+
 
     console.log("data:", data)
     console.log("traídos:", traidos)
@@ -70,6 +72,7 @@ function TerritoriosPage(props:any) {
         if (data) {
             setviviendas({unterritorio: data.getApartmentsByTerritory})
             new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
+            setTextBtn(`Traer 10 más (${traidos})`)
         }
         if (escuchar.data) {
             let nuevoTodo:any = {unterritorio: []}
@@ -210,20 +213,41 @@ function TerritoriosPage(props:any) {
             })}
 
             {viviendas && viviendas.unterritorio && !!viviendas.unterritorio.length && !isTodo && loaded &&
-                <Pagination size='lg' style={{
+                // <Pagination size='lg' style={{
+                //     alignItems:'center', justifyContent:'center', marginTop:'80px',
+                //     display: traerTodos ? 'none' : ''
+                // }}>
+                //     <Pagination.Item>
+                //         Traer 10 más
+                //     </Pagination.Item>
+
+                //     <Pagination.Item onClick={()=>setTraerTodos(true)}>
+                //         Traer todos
+                //     </Pagination.Item>
+                // </Pagination>
+                
+                <div style={{
                     alignItems:'center', justifyContent:'center', marginTop:'80px',
-                    display: traerTodos ? 'none' : ''
+                    display: traerTodos ? 'none' : '', textAlign: 'center'
                 }}>
+                    <Button variant={'primary'} onClick={()=>traerDiezMas()}
+                        style={{
+                            fontSize: mobile ? '1.1rem' : '1.4rem',
+                            display: 'inline', padding: '10px 15px', margin: '10px'
+                        }}
+                    >
+                        {textBtn}
+                    </Button>
 
-                    <Pagination.Item onClick={()=>traerDiezMas()}>
-                        Traer 10 más
-                    </Pagination.Item>
-
-                    <Pagination.Item onClick={()=>setTraerTodos(true)}>
+                    <Button variant={'primary'} onClick={()=>setTraerTodos(true)}
+                        style={{
+                            fontSize: mobile ? '1.1rem' : '1.4rem',
+                            display: 'inline', padding: '10px 15px', margin: '10px'
+                        }}
+                    >
                         Traer todos
-                    </Pagination.Item>
-
-                </Pagination>
+                    </Button>
+                </div>
             }
 
             {viviendas && viviendas.unterritorio && !viviendas.unterritorio.length && !loaded &&
