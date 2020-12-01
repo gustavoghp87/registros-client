@@ -228,7 +228,7 @@ function TerritoriosPage(props:any) {
                 
                 <div style={{
                     alignItems:'center', justifyContent:'center', marginTop:'80px',
-                    display: traerTodos ? 'none' : '', textAlign: 'center'
+                    display: traerTodos ? 'none' : 'none', textAlign: 'center'
                 }}>
                     <Button variant={'primary'} onClick={()=>traerDiezMas()}
                         style={{
