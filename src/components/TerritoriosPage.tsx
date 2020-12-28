@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, Container, Row, Pagination } from 'react-bootstrap'
+import { Button, Card, Container, Row } from 'react-bootstrap'
 import { useParams } from 'react-router'
 import { typeParam, typeTerritorio, typeVivienda } from '../hoc/types'
 import { Loading } from './_Loading'

@@ -1,6 +1,6 @@
 import React from 'react'
 import { H2 } from './css/css'
-import { Card } from 'react-bootstrap'
+import { Card, Button } from 'react-bootstrap'
 import { useQuery } from '@apollo/client'
 import * as graphql from '../hoc/graphql'
 import { Loading } from './_Loading'
@@ -9,6 +9,9 @@ import { useParams } from 'react-router'
 import { typeParam } from '../hoc/types'
 import { ReturnBtn } from './_Return'
 import { Col0b } from './columns/Col0b'
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { SERVER } from '../config'
 
 
 function EstadisticasLocalPage(props:any) {
@@ -17,7 +20,34 @@ function EstadisticasLocalPage(props:any) {
     const datos = useQuery(graphql.GETLOCALSTATISTICS,
         {variables: {token:document.cookie, territorio}}
     ).data
+
+    const reset = async (option:number) => {
+        let message = ""
+        if (option===1) message = "Esta opción resetea los predicados más viejos (más de 6 meses)"
+        if (option===2) message = "Esta opción resetea predicados (no hace nada con los no abonados)"
+        if (option===3) message = "Esta opción resetea todos los predicados y, además, los no abonados de más de 6 meses"
+        if (option===4) message = "Esta opción resetea ABSOLUTAMENTE TODO"
+        confirmAlert({
+            title: `¿Resetear Territorio ${territorio}?`,
+            message,
+            buttons: [
+                { label: 'Yes', onClick: () => resetNow(option) },
+                { label: 'No', onClick: () => {} }
+            ]
+        })
+    }
     
+    const resetNow = async (option:number) => {
+        const fetchy = await fetch(`${SERVER}/api/reset`, {
+            method: 'POST',
+            headers: {'Content-Type':'Application/json'},
+            body: JSON.stringify({token:document.cookie, option, territorio})
+        })
+        const response = await fetchy.json()
+        if (response.success) window.location.reload()
+    }
+
+
     return (
         <>
         {ReturnBtn(props)}
@@ -34,6 +64,7 @@ function EstadisticasLocalPage(props:any) {
             isStatistics={true}
         />
 
+
         {datos
         ?
             <div style={{margin: mobile ? '0' : '0 10%'}}>
@@ -45,6 +76,10 @@ function EstadisticasLocalPage(props:any) {
                     <br/>
 
                     <h4> {`Llamadas: ${datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countNoAbonado} (${ Math.round( (datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countNoAbonado) / datos.getLocalStatistics.count * 1000 )/10}%)`} </h4>
+
+                    <br/>
+
+                    <h4> Libres para llamar: {datos.getLocalStatistics.libres} </h4>
 
                     <hr />
 
@@ -63,6 +98,34 @@ function EstadisticasLocalPage(props:any) {
                     <h4>{`No contestó: ${datos.getLocalStatistics.countNoContesto} viviendas (${Math.round(datos.getLocalStatistics.countNoContesto*10000/datos.getLocalStatistics.count/10)/10}%)`} </h4>
 
                 </Card>
+
+                <div style={{display:'block', margin:'auto', marginTop:'50px'}}>
+                    <Button variant='dark' style={{display:'block', margin:'auto'}}
+                        onClick={()=>reset(1)}
+                    >
+                        Limpiar más viejos (más de 6 meses)
+                    </Button>
+                    <br/>
+                    <Button variant='dark' style={{display:'block', margin:'auto'}}
+                        onClick={()=>reset(2)}
+                    >
+                        Limpiar todos (menos no abonados)
+                    </Button>
+                    <br/>
+                    <Button variant='dark' style={{display:'block', margin:'auto'}}
+                        onClick={()=>reset(3)}
+                    >
+                        Limpiar todos y no abonados de más de 6 meses
+                    </Button>
+                    <br/>
+                    <Button variant='dark' style={{display:'block', margin:'auto'}}
+                        onClick={()=>reset(4)}
+                    >
+                        Limpiar absolutamente todos
+                    </Button>
+                    <br/>
+                </div>
+
             </div>
         :
             <>
@@ -70,6 +133,7 @@ function EstadisticasLocalPage(props:any) {
                 <Loading />
             </>
         }
+
     </>
     )
 }

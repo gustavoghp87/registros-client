@@ -89,6 +89,7 @@ export const GETLOCALSTATISTICS = gql`query statistics($token:String!, $territor
         countDejarCarta
         countNoLlamar
         countNoAbonado
+        libres
     }
 }
 `
