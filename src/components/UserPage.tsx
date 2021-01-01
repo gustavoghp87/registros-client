@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { typeUser, typeState } from '../hoc/types'
-import { Card } from 'react-bootstrap'
+import { Card, Button } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
 import { mobile } from './_App'
+import { SERVER } from '../config'
 
 
 function UserPage(props:any) {
@@ -18,6 +19,7 @@ function UserPage(props:any) {
         return ordenados
     }
 
+
     return (
         <>
             {ReturnBtn(props)}
@@ -25,6 +27,7 @@ function UserPage(props:any) {
             <H2 style={{textAlign:'center'}}> Usuario </H2>
 
             {user &&
+            <>
                 <Card style={{padding:'25px', margin:'30px auto'}}>
 
                     {mobile ?
@@ -65,6 +68,10 @@ function UserPage(props:any) {
                     }
 
                 </Card>
+
+                {/* <Button variant={darkMode ? "dark" : "danger"} onClick={()=>changeMode()}> {darkMode ? "Modo claro" : "Modo oscuro"} </Button> */}
+
+            </>
             }
         </>
     )

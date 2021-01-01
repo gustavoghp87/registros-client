@@ -35,6 +35,7 @@ export type typeUser = {
     group: number
     isAuth?: boolean
     asign?: number[]
+    darkMode?: boolean
 }
 
 export type typeState = {

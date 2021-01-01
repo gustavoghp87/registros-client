@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import './css/App.css'
 import { Route, Switch } from 'react-router-dom'
 import Auth from '../hoc/auth'
@@ -51,7 +51,49 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
+
 function App() {
+
+  const [user, setUser] = useState({darkMode:false})
+  const [darkMode, setDarkMode] = useState(false)
+
+  useEffect(() => {
+    if (localStorage.getItem('darkMode')==='true') setDarkMode(true)
+
+    ;(async () => {
+      const fetchy = await fetch(`${SERVER}/api/users/auth`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        body: JSON.stringify({token:document.cookie})
+      })
+      setUser(await fetchy.json())
+      console.log(user)
+    })()
+
+  }, [])
+
+  const changeDarkMode = () => {
+    if (darkMode) localStorage.setItem('darkMode', 'false')
+    else localStorage.setItem('darkMode', 'true')
+    setDarkMode(!darkMode)
+
+    ;(async () => {
+      const fetchy = await fetch(`${SERVER}/api/users/change-mode`, {
+        method: 'POST',
+        headers: {'Content-Type': 'Application/json'},
+        body: JSON.stringify({token:document.cookie, darkMode:!user.darkMode})
+      })
+      const resp = await fetchy.json()
+      if (resp.success) {
+          console.log("resp:", resp)
+          // if (resp.darkMode) {localStorage.setItem('darkMode', 'true'); setDarkMode(true)}
+          // else {localStorage.setItem('darkMode', 'false'); setDarkMode(false)}
+          window.location.reload()
+      }
+      else console.log("Error cambiando el mode")
+    })()
+  }
+  
 
   return (
 
@@ -60,33 +102,42 @@ function App() {
       <GoogleReCaptchaProvider reCaptchaKey="6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9">
       <ApolloProvider client={client}>
 
-        <NavBar />
+        <div style={darkMode ? {backgroundColor:'black'} : {backgroundColor:'white'}}>
 
-        <div style={{
-          maxWidth: mobile ? '95%' : '90%',
-          paddingTop:'75px',
-          margin:'auto',
-          minHeight:'calc(100vh - 80px)'
-        }}>
+          <NavBar />
 
-          <Switch>
-            {/* <Redirect exact strict from="/" to="/login" /> */}
-            <Route exact path="/" component={Auth(HomePage, false)} />
-            <Route exact path="/login" component={Auth(LoginPage, false)} />
-            <Route exact path="/register" component={Auth(RegisterPage, false)} />
-            <Route exact path="/index" component={Auth(IndexPage, true)} />
-            <Route exact path="/territorios/:territorio/:manzana" component={Auth(TerritoriosPage, true)} />
-            <Route exact path="/territorios/:territorio/:manzana/:todo" component={Auth(TerritoriosPage, true)} />
-            <Route exact path="/estadisticas" component={Auth(EstadisticasPage, true, true)} />
-            <Route exact path="/estadisticas/:territorio" component={Auth(EstadisticasLocalPage, true, true)} />
-            <Route exact path="/user" component={Auth(UserPage, true)} />
-            <Route exact path="/admins" component={Auth(AdminsPage, true, true)} />
-            <Route path="/" component={Auth(LoginPage, false)} />
-          </Switch>
-          
+          <div style={{
+            maxWidth: mobile ? '95%' : '90%',
+            paddingTop: '75px',
+            margin: 'auto',
+            minHeight: 'calc(100vh - 80px)'
+          }}>
+
+            <Switch>
+              {/* <Redirect exact strict from="/" to="/login" /> */}
+              <Route exact path="/" component={Auth(HomePage, false)} />
+              <Route exact path="/login" component={Auth(LoginPage, false)} />
+              <Route exact path="/register" component={Auth(RegisterPage, false)} />
+              <Route exact path="/index" component={Auth(IndexPage, true)} />
+              <Route exact path="/territorios/:territorio/:manzana" component={Auth(TerritoriosPage, true)} />
+              <Route exact path="/territorios/:territorio/:manzana/:todo" component={Auth(TerritoriosPage, true)} />
+              <Route exact path="/estadisticas" component={Auth(EstadisticasPage, true, true)} />
+              <Route exact path="/estadisticas/:territorio" component={Auth(EstadisticasLocalPage, true, true)} />
+              <Route exact path="/user" component={Auth(UserPage, true)} />
+              <Route exact path="/admins" component={Auth(AdminsPage, true, true)} />
+              <Route path="/" component={Auth(LoginPage, false)} />
+            </Switch>
+
+            <div className='custom-control custom-switch' style={{position:'fixed', bottom:'20px'}}>
+              <input type='checkbox' className='custom-control-input' id='customSwitches' checked={darkMode} onChange={() => changeDarkMode()} />
+              <label className='custom-control-label' htmlFor='customSwitches' style={{color:'red'}}> {mobile ? '' : 'Modo Oscuro'} </label>
+            </div>
+            
+          </div>
+
+          <Footer />
+
         </div>
-
-        <Footer />
 
       </ApolloProvider>
       </GoogleReCaptchaProvider>
