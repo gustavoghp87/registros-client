@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ReturnBtn } from './_Return'
-import { Card, Col, Row, Button } from 'react-bootstrap'
+import { Card, Col, Row, Button, Toast } from 'react-bootstrap'
 import { typePack, typeParam } from '../hoc/types'
 import { colocarGuiones } from '../hoc/functions'
 import { H2 } from './css/css'
@@ -16,6 +16,7 @@ function CelularesPage2(props:any) {
     const [paquete, setPaquete] = useState<typePack>()
     const [telefonos, setTelefonos] = useState<any>([])
     const [change, setChange] = useState(false)
+    const [showToast, setShowToast] = useState(true)
     
     useEffect(() => {
         ;(async () => {
@@ -59,10 +60,18 @@ function CelularesPage2(props:any) {
 
         <H2 style={{fontSize: mobile ? '2.2rem' : '', marginBottom: mobile ? '20px' : ''}}> CAMPAÑA CELULARES 2021 </H2>
 
-        <h1 style={{textAlign:'center', marginBottom: mobile ? '20px' : ''}}> Paquete de teléfonos {id} </h1>
+        <h1 style={{textAlign:'center', marginBottom: mobile ? '30px' : '40px'}}> Paquete de teléfonos {id} </h1>
 
+        <Toast show={showToast} style={{display:'block', margin:'auto'}}
+            onClose={()=>setShowToast(false)}>
+          <Toast.Header className="bg-dark">
+            <strong className="mr-auto"> Campaña Celulares 2021 </strong>
+            <small> enero-marzo </small>
+          </Toast.Header>
+          <Toast.Body> Estos registros serán eliminados al finalizar la campaña </Toast.Body>
+        </Toast>
 
-        <div style={{display:'block', margin: mobile ? '' : '80px auto'}}>
+        <div style={{display:'block', margin: mobile ? '40px auto' : '80px auto'}}>
 
             <Row>
                 <Col lg={4} sm={6}>
@@ -72,7 +81,7 @@ function CelularesPage2(props:any) {
                                 <h5 style={{display:'inline', fontSize:'2rem'}}>
                                     <a href={`tel:${tel}`}> {colocarGuiones(tel)} &nbsp; </a>
                                 </h5>
-                                <input style={{display:'inline'}} type="checkbox"
+                                <input style={{display:'inline'}} type="checkbox" className="checkboxdos"
                                     checked={(paquete && paquete.llamados && paquete.llamados.includes(tel)) ? true : false}
                                     onChange={()=> clickBox(tel, paquete && paquete.llamados && paquete.llamados.includes(tel) ? true : false)}
                                 />
@@ -87,7 +96,7 @@ function CelularesPage2(props:any) {
                                 <h5 style={{display:'inline', fontSize:'2rem'}}>
                                     <a href={`tel:${tel}`}> {colocarGuiones(tel)} &nbsp; </a>
                                 </h5>
-                                <input style={{display:'inline'}} type="checkbox"
+                                <input style={{display:'inline'}} type="checkbox" className="checkboxdos"
                                     checked={(paquete && paquete.llamados && paquete.llamados.includes(tel)) ? true : false}
                                     onChange={()=> clickBox(tel, paquete && paquete.llamados && paquete.llamados.includes(tel) ? true : false)}
                                 />
@@ -102,7 +111,7 @@ function CelularesPage2(props:any) {
                                 <h5 style={{display:'inline', fontSize:'2rem'}}>
                                     <a href={`tel:${tel}`}> {colocarGuiones(tel)} &nbsp; </a>
                                 </h5>
-                                <input style={{display:'inline'}} type="checkbox"
+                                <input style={{display:'inline'}} type="checkbox" className="checkboxdos"
                                     checked={(paquete && paquete.llamados && paquete.llamados.includes(tel)) ? true : false}
                                     onChange={()=> clickBox(tel, paquete && paquete.llamados && paquete.llamados.includes(tel) ? true : false)}
                                 />
