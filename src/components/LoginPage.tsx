@@ -23,7 +23,7 @@ function LoginPage() {
         let axios, loginSuccess
         const fetchy = await fetch(`${SERVER}/api/users/login`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            headers: {'Content-Type':'application/json', 'Accept':'application/json'},
             body: JSON.stringify({email, password, recaptchaToken})
         })
         axios = await fetchy.json()

@@ -14,18 +14,18 @@ export const Col4:any = (props:any) => {
 
             <div style={{display:"block", margin: mobile ? '20px auto' : 'auto' }}>
 
-                <input className="form-check-input" type="checkbox"
+                <h4 className="form-check-label" style={{fontSize: mobile ? '1.3rem' : '1.1rem', fontWeight:600}}>
+                    Teléfono no abonado en servicio
+                </h4>
+
+                <input className="checkboxuno" type="checkbox"
                     checked={vivienda.noAbonado}
-                    style={{marginTop:"0.5rem", transform:"scale(1.5)", padding:5, marginLeft:"0rem"}}
+                    style={{marginTop:"0.5rem", padding:5, marginLeft:"0rem"}}
                     onClick={ () => props.cambiarEstado(
                         vivienda.inner_id, vivienda.estado, !vivienda.noAbonado
                     )}
                     onChange={() => {}}
                 />
-
-                <label className="form-check-label" htmlFor="defaultCheck1" style={{fontSize: mobile ? '1.3rem' : '1.1rem', fontWeight:600}}>
-                    &nbsp; &nbsp; Teléfono no abonado en servicio
-                </label>
 
             </div>
 

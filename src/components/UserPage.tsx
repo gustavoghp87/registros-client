@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import { typeUser, typeState } from '../hoc/types'
-import { Card, Button } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
 import { mobile } from './_App'
-import { SERVER } from '../config'
 
 
 function UserPage(props:any) {

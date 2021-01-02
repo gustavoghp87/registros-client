@@ -62,9 +62,9 @@ function CelularesPage2(props:any) {
 
         <h1 style={{textAlign:'center', marginBottom: mobile ? '30px' : '40px'}}> Paquete de teléfonos {id} </h1>
 
-        <Toast show={showToast} style={{display:'block', margin:'auto'}}
+        <Toast show={showToast} style={{display:'block', margin:'auto', border:'1px solid lightgray'}}
             onClose={()=>setShowToast(false)}>
-          <Toast.Header className="bg-dark">
+          <Toast.Header style={{border:'1px solid lightgray'}}>
             <strong className="mr-auto"> Campaña Celulares 2021 </strong>
             <small> enero-marzo </small>
           </Toast.Header>

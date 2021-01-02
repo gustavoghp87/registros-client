@@ -12,6 +12,12 @@ code {
     monospace;
 }
 
+input[type="checkbox"].checkboxuno {
+  zoom: 2.4;
+}
+
 input[type="checkbox"].checkboxdos {
   zoom: 2.2;
 }
+
+/* También transform:"scale(1.5)" */
