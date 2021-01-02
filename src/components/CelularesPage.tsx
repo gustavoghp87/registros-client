@@ -1,28 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { ReturnBtn } from './_Return'
-import { Card, Col, Row, SplitButton, Dropdown, Button, Pagination } from 'react-bootstrap'
-import { typeUsers, typeUser } from '../hoc/types'
+import { Card, Col, Row, SplitButton, Dropdown } from 'react-bootstrap'
+import { typeUsers, typeUser, typeCampaign, typePack } from '../hoc/types'
+import { colocarGuiones } from '../hoc/functions'
 import { H2 } from './css/css'
 import { Loading } from './_Loading'
-import { useQuery, useMutation, useSubscription } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import * as graphql from '../hoc/graphql'
 import { mobile } from './_App'
 import { SERVER } from '../config'
 
 
 function CelularesPage(props:any) {
-    
-    type typePack = {
-        paquete:number
-        id:number
-        desde:number
-        al:number
-    }
-
-    type typeCampaign = {
-        packs: typePack[]
-    }
-
 
     const [Usuarios, setUsuarios] = useState<typeUsers>({usuarios: []})
     const [Campaign, setCampaign] = useState<typeCampaign>({packs: []})
@@ -47,13 +36,6 @@ function CelularesPage(props:any) {
 
     }, [data, change])
 
-
-    const colocarGuiones = (tel:number) => {
-        let tel2:string
-        if (tel.toString()[0]==='1') tel2 = tel.toString().slice(0,2) + "-" + tel.toString().slice(2,6) + "-" + tel.toString().slice(-4)
-        else tel2 = tel.toString().slice(0,3) + "-" + tel.toString().slice(3,6) + "-" + tel.toString().slice(-4)
-        return tel2
-    }
 
     const asignar = async (id:number, email:string) => {
         const fetchy = await fetch(`${SERVER}/api/campaign/asign`, {
@@ -80,7 +62,7 @@ function CelularesPage(props:any) {
 
 
             {Usuarios && !!Usuarios.usuarios.length && !!Campaign.packs.length &&
-                Campaign.packs.map((pack:any) => (
+                Campaign.packs.map((pack:typePack) => (
 
                     <Card key={pack.id} className="bg-dark text-white mb-4">
                         <Card.Body>

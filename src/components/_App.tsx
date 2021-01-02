@@ -12,6 +12,7 @@ import EstadisticasLocalPage from './EstadisticasLocalPage'
 import UserPage from './UserPage'
 import AdminsPage from './AdminsPage'
 import CelularesPage from './CelularesPage'
+import CelularesPage2 from './CelularesPage2'
 import NavBar from './_NavBar'
 import Footer from './_Footer'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -127,6 +128,7 @@ function App() {
               <Route exact path="/user" component={Auth(UserPage, true)} />
               <Route exact path="/admins" component={Auth(AdminsPage, true, true)} />
               <Route exact path="/celulares2021" component={Auth(CelularesPage, true, true)} />
+              <Route exact path="/celulares/:id" component={Auth(CelularesPage2, true, false)} />
               <Route path="/" component={Auth(LoginPage, false)} />
             </Switch>
 

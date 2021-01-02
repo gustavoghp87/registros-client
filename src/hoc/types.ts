@@ -3,6 +3,7 @@ export type typeParam = {
     territorio: string
     manzana: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 
     todo: 'todo' | ''
+    id: string
 }
 
 export type typeTerritorio = {
@@ -23,7 +24,7 @@ export type typeVivienda = {
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 export type typeUser = {
     _id: Object
@@ -56,4 +57,21 @@ export type typeState = {
 
 export type typeUsers = {
     usuarios: typeUser[]
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+export type typePack = {
+    paquete: number
+    id: number
+    desde: number
+    al: number
+    asignado?: string
+    terminado?: boolean
+    llamados?: number[]
+}
+
+export type typeCampaign = {
+    packs: typePack[]
 }

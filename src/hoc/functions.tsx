@@ -23,3 +23,11 @@ export const isLocalhost = Boolean(
         /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
     )
 )
+
+
+export const colocarGuiones = (tel:number) => {
+    let tel2:string
+    if (tel.toString()[0]==='1') tel2 = tel.toString().slice(0,2) + "-" + tel.toString().slice(2,6) + "-" + tel.toString().slice(-4)
+    else tel2 = tel.toString().slice(0,3) + "-" + tel.toString().slice(3,6) + "-" + tel.toString().slice(-4)
+    return tel2
+}
