@@ -64,7 +64,7 @@ function CelularesPage(props:any) {
             {Usuarios && !!Usuarios.usuarios.length && !!Campaign.packs.length &&
                 Campaign.packs.map((pack:typePack) => (
 
-                    <Card key={pack.id} className="bg-dark text-white mb-4">
+                    <Card key={pack.id} className={pack.terminado ? "bg-info text-white mb-4" : "bg-dark text-white mb-4"}>
                         <Card.Body>
                             <Row>
                                 <Col md={4} style={{marginBottom: mobile ? '15px' : '', textAlign: mobile ? 'center' : 'left'}}>
@@ -76,7 +76,8 @@ function CelularesPage(props:any) {
                                 <Col md={4} style={{marginBottom: mobile ? '15px' : '', textAlign: mobile ? 'center' : 'left'}}>
                                     <h4> Asignado a: </h4>
 
-                                    <SplitButton id={`1`} variant={'primary'} title={pack.asignado ? pack.asignado : "No asignado"}>
+                                    <SplitButton id={`1`} variant={(!pack.asignado || pack.asignado==="No asignado") ? 'primary' : 'danger'}
+                                     title={pack.asignado ? pack.asignado : "No asignado"}>
                                         
                                         {Usuarios.usuarios.map((user:typeUser, index:number) => (
                                             <Dropdown.Item key={index} eventKey={index.toString()} onClick={()=>asignar(pack.id, user.email)}>
