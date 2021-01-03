@@ -41,7 +41,7 @@ function IndexPage(props:any) {
         borderRadius: '15px',
         margin: '0 1% 40px 1%',
     }
-
+    
 
     return (
         <>
@@ -54,29 +54,29 @@ function IndexPage(props:any) {
 
                 <Row style={{padding: mobile ? '40px' : '70px 40px 0px 40px', justifyContent:'space-evenly'}}>
 
-                    {user && user.isAuth && user.asign && !!user.asign.length
+                    {user && user.isAuth && user.group 
                     ?
-                        Territorios.map((territorio, index) => (
-                            <Link type="button" className="btn btn-danger" style={btnTerri}
-                                to={`/territorios/${territorio}/1`} key={index}>
+                        Territorios.map((territorio, index) => {
+                            if (territorio) {return (
+                                <Link type="button" className="btn btn-danger" style={btnTerri}
+                                    to={`/territorios/${territorio}/1`} key={index}>
 
-                                <h2 className="h-100 align-middle" style={{
-                                    padding: '22%',
-                                    margin: 'auto',
-                                    fontFamily: '"Arial Black", Gadget, sans-serif',
-                                    fontSize: mobile ? '2.3rem' : ''
-                                }}>
-                                    {territorio}
-                                </h2>
+                                    <h2 className="h-100 align-middle" style={{
+                                        padding: '22%',
+                                        margin: 'auto',
+                                        fontFamily: '"Arial Black", Gadget, sans-serif',
+                                        fontSize: mobile ? '2.3rem' : ''
+                                    }}>
+                                        {territorio}
+                                    </h2>
 
-                            </Link>
-                        ))
+                                </Link>
+                            )} else {
+                                return <h3 key={index}> No hay territorios asignados <br/> Hablar con el grupo de territorios </h3>
+                            }
+                        })
                     :
                         <Loading />
-                    }
-
-                    {user && user.isAuth && user.asign && !user.asign.length &&
-                        <h3>No hay territorios asignados <br/> Hablar con el grupo de territorios</h3>
                     }
 
                 </Row>
