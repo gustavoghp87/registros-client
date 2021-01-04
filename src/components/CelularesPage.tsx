@@ -97,6 +97,7 @@ function CelularesPage(props:any) {
                                 <Col md={4} style={{marginBottom: mobile ? '15px' : '', textAlign: mobile ? 'center' : 'left'}}>
                                     <h4> ¿Terminado? </h4>
                                     <h4> {pack.terminado ? "TERMINADO" : "NO"} </h4>
+                                    <h4> Llamados: {pack.llamados ? pack.llamados.length : '0'} </h4>
                                 </Col>
                             </Row>
                         </Card.Body>

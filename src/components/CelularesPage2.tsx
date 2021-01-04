@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { ReturnBtn } from './_Return'
 import { Card, Col, Row, Button, Toast } from 'react-bootstrap'
-import { typePack, typeParam } from '../hoc/types'
+import { typePack, typeParam, typeUser, typeState } from '../hoc/types'
 import { colocarGuiones } from '../hoc/functions'
 import { H2 } from './css/css'
 import { Loading } from './_Loading'
 import { mobile } from './_App'
 import { SERVER } from '../config'
 import { useParams } from 'react-router'
+import { useSelector } from 'react-redux'
 
 
 function CelularesPage2(props:any) {
@@ -17,6 +18,7 @@ function CelularesPage2(props:any) {
     const [telefonos, setTelefonos] = useState<any>([])
     const [change, setChange] = useState(false)
     const [showToast, setShowToast] = useState(true)
+    const user:typeUser = useSelector((state:typeState) => state.user.userData)
     
     useEffect(() => {
         ;(async () => {
@@ -113,7 +115,7 @@ function CelularesPage2(props:any) {
                                 </h5>
                                 <input style={{display:'inline'}} type="checkbox" className="checkboxdos"
                                     checked={(paquete && paquete.llamados && paquete.llamados.includes(tel)) ? true : false}
-                                    onChange={()=> clickBox(tel, paquete && paquete.llamados && paquete.llamados.includes(tel) ? true : false)}
+                                    onChange={() => clickBox(tel, paquete && paquete.llamados && paquete.llamados.includes(tel) ? true : false)}
                                 />
                             </Card.Body>
                         </div>
@@ -127,7 +129,8 @@ function CelularesPage2(props:any) {
             ?
                 <Loading />
             :
-                <Button variant={'danger'} style={{display:'block', margin:'50px auto 0 auto'}} onClick={()=>console.log("Cambiar todo")}>
+                <Button variant={'danger'} style={{display: user.role===1 ? 'block' : 'none', margin:'50px auto 0 auto'}}
+                 onClick={()=>console.log("Cambiar todo")}>
                     Marcar todos como llamados (próximamente)
                 </Button>
             }

@@ -49,7 +49,6 @@ function IndexPage(props:any) {
         
             <H2> SELECCIONE UN TERRITORIO </H2>
 
-
             <div className="container" style={{paddingTop:'0', marginBottom:'50px'}}>
 
                 <Row style={{padding: mobile ? '40px' : '70px 40px 0px 40px', justifyContent:'space-evenly'}}>
@@ -72,7 +71,9 @@ function IndexPage(props:any) {
 
                                 </Link>
                             )} else {
-                                return <h3 key={index}> No hay territorios asignados <br/> Hablar con el grupo de territorios </h3>
+                                return <h3 key={index} style={{marginBottom:'40px'}}>
+                                    {/* No hay territorios asignados <br/> Hablar con el grupo de territorios */}
+                                </h3>
                             }
                         })
                     :
