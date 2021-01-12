@@ -28,11 +28,15 @@ type Config = {
 export function register(config?: Config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
+    console.log("Production and nav")
+    
     const publicUrl = new URL(
       process.env.PUBLIC_URL,
       window.location.href
     );
     if (publicUrl.origin !== window.location.origin) {
+      console.log("publicUrl.origin !== window.location.origin")
+      
       // Our service worker won't work if PUBLIC_URL is on a different origin
       // from what our page is served on. This might happen if a CDN is used to
       // serve assets; see https://github.com/facebook/create-react-app/issues/2374
@@ -41,10 +45,13 @@ export function register(config?: Config) {
 
     window.addEventListener('load', () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+      console.log(swUrl)
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
-        checkValidServiceWorker(swUrl, config);
+        console.log("aca")
+        checkValidServiceWorker(swUrl, config)
+        console.log("aca2")
 
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
@@ -56,9 +63,13 @@ export function register(config?: Config) {
         });
       } else {
         // Is not localhost. Just register service worker
+        console.log("Aca 3")
         registerValidSW(swUrl, config);
       }
     });
+  } else {
+    console.log("Afuera");
+    
   }
 }
 
@@ -113,19 +124,23 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
   })
     .then(response => {
       // Ensure service worker exists, and that we really are getting a JS file.
+      console.log("aca 4");
+      
       const contentType = response.headers.get('content-type');
+      console.log("4'", contentType)
+      
       if (
         response.status === 404 ||
         (contentType != null && contentType.indexOf('javascript') === -1)
       ) {
-        // No service worker found. Probably a different app. Reload the page.
+        console.log("// No service worker found. Probably a different app. Reload the page.")
         navigator.serviceWorker.ready.then(registration => {
           registration.unregister().then(() => {
             window.location.reload();
           });
         });
       } else {
-        // Service worker found. Proceed as normal.
+        console.log("// Service worker found. Proceed as normal.")
         registerValidSW(swUrl, config);
       }
     })
