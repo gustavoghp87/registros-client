@@ -29,14 +29,5 @@
   <body>
     <noscript> No se puede ver la aplicación porque tienes desactivado JavaScript. </noscript>
     <div id="root"></div>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/servide-worker.js')
-          .then(registration => {console.log("SW registered")})
-          .catch(registrationError => {console.log("SW error,", registrationError)})
-        })
-      }
-    </script>
   </body>
 </html>

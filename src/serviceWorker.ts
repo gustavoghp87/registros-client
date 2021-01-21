@@ -10,8 +10,6 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
 
-// const AMPLIFY = "https://misericordiaweb.com"
-
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -30,15 +28,11 @@ type Config = {
 export function register(config?: Config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
-    console.log("Production and nav")
-    
     const publicUrl = new URL(
       process.env.PUBLIC_URL,
       window.location.href
     );
     if (publicUrl.origin !== window.location.origin) {
-      console.log("publicUrl.origin !== window.location.origin")
-      
       // Our service worker won't work if PUBLIC_URL is on a different origin
       // from what our page is served on. This might happen if a CDN is used to
       // serve assets; see https://github.com/facebook/create-react-app/issues/2374
@@ -46,14 +40,11 @@ export function register(config?: Config) {
     }
 
     window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
-      console.log("swUrl:", swUrl)
+      const swUrl = `${process.env.PUBLIC_URL}/sw.js`
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
-        console.log("aca")
-        checkValidServiceWorker(swUrl, config)
-        console.log("aca2")
+        checkValidServiceWorker(swUrl, config);
 
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
@@ -65,13 +56,9 @@ export function register(config?: Config) {
         });
       } else {
         // Is not localhost. Just register service worker
-        console.log("Aca 3")
         registerValidSW(swUrl, config);
       }
     });
-  } else {
-    console.log("Afuera");
-    
   }
 }
 
@@ -126,25 +113,19 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
   })
     .then(response => {
       // Ensure service worker exists, and that we really are getting a JS file.
-      console.log("aca 4");
-      
       const contentType = response.headers.get('content-type');
-      console.log("4'", contentType)
-      
       if (
         response.status === 404 ||
         (contentType != null && contentType.indexOf('javascript') === -1)
       ) {
-        console.log("// No service worker found. Probably a different app. Reload the page.")
-        if (response.status === 404) console.log("response 404")
-
+        // No service worker found. Probably a different app. Reload the page.
         navigator.serviceWorker.ready.then(registration => {
           registration.unregister().then(() => {
             window.location.reload();
           });
         });
       } else {
-        console.log("// Service worker found. Proceed as normal.")
+        // Service worker found. Proceed as normal.
         registerValidSW(swUrl, config);
       }
     })
@@ -152,13 +133,17 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
       console.log(
         'No internet connection found. App is running in offline mode.'
       );
-    })
+    });
 }
 
 export function unregister() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
-      .then(registration => {registration.unregister()})
-      .catch(error => {console.error(error.message)})
+      .then(registration => {
+        registration.unregister();
+      })
+      .catch(error => {
+        console.error(error.message);
+      });
   }
 }

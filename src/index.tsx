@@ -30,4 +30,3 @@ ReactDOM.render(
 )
 
 const result = serviceWorker.register()
-console.log("RESGISTER():", result)

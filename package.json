@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "workbox generateSW && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -31,7 +31,8 @@
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.2.0",
-    "subscriptions-transport-ws": "^0.9.18"
+    "subscriptions-transport-ws": "^0.9.18",
+    "workbox-cli": "^6.0.2"
   },
   "eslintConfig": {
     "extends": "react-app"
