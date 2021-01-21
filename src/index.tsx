@@ -29,4 +29,5 @@ ReactDOM.render(
   , document.getElementById('root')
 )
 
-serviceWorker.register()
+const result = serviceWorker.register()
+console.log("RESGISTER():", result)

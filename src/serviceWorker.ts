@@ -10,6 +10,8 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
 
+// const AMPLIFY = "https://misericordiaweb.com"
+
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -45,7 +47,7 @@ export function register(config?: Config) {
 
     window.addEventListener('load', () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
-      console.log(swUrl)
+      console.log("swUrl:", swUrl)
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
@@ -134,6 +136,8 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
         (contentType != null && contentType.indexOf('javascript') === -1)
       ) {
         console.log("// No service worker found. Probably a different app. Reload the page.")
+        if (response.status === 404) console.log("response 404")
+
         navigator.serviceWorker.ready.then(registration => {
           registration.unregister().then(() => {
             window.location.reload();
@@ -148,17 +152,13 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
       console.log(
         'No internet connection found. App is running in offline mode.'
       );
-    });
+    })
 }
 
 export function unregister() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
-      .then(registration => {
-        registration.unregister();
-      })
-      .catch(error => {
-        console.error(error.message);
-      });
+      .then(registration => {registration.unregister()})
+      .catch(error => {console.error(error.message)})
   }
 }
