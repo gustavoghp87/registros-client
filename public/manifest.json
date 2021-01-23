@@ -1,11 +1,11 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Misericordia Web",
+  "name": "Misericordia Web App",
   "description": "App oficial de la congregación Misericordia",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "512x512 192x192 64x64 32x32 24x24 16x16",
+      "sizes": "192x192 64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
@@ -21,18 +21,7 @@
     {
       "src": "icon512.png",
       "sizes": "512x512",
-      "type": "image/x-icon"
-    },
-    {
-			"src": "icon512.png",
-			"type": "image/png",
-			"sizes": "144x144"
-    }
-    ,
-    {
-			"src": "icon512.png",
-			"type": "image/png",
-      "sizes": "144x144",
+      "type": "image/png",
       "purpose": "maskable any"
 		}
   ],
