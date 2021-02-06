@@ -29,4 +29,4 @@ ReactDOM.render(
   , document.getElementById('root')
 )
 
-const result = serviceWorker.register()
+serviceWorker.register()
