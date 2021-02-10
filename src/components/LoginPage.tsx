@@ -29,8 +29,8 @@ function LoginPage() {
         axios = await fetchy.json()
         loginSuccess = axios.loginSuccess
         const token = axios.newtoken;
-        document.cookie = `newtoken = ${token}`
-        //console.log("Éxito en loguear:", loginSuccess, "doc.cookie:", document.cookie)
+        localStorage.setItem('token', token)
+        //console.log("Éxito en loguear:", loginSuccess, "token:", localStorage.getItem('token'))
 
         if (loginSuccess) {
             if (rememberMeMW) {

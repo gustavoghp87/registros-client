@@ -17,13 +17,13 @@ function AdminsPage(props:any) {
     const [asig, setAsig] = useState<any[]>([])
     const [desasig, setDesasig] = useState<any[]>([])
 
-    const { data } = useQuery(graphql.GETUSERS, {variables:{token:document.cookie}})
+    const { data } = useQuery(graphql.GETUSERS, {variables:{token:localStorage.getItem('token')}})
 
     const [controlarU] = useMutation(graphql.CONTROLARUSUARIO)
     const [asignarT] = useMutation(graphql.ASIGNAR)
 
     const controlar = async (user_id:String, estado:Boolean, role:Number, group:Number) => {
-        controlarU({variables: {token:document.cookie, user_id, estado, role, group}})
+        controlarU({variables: {token:localStorage.getItem('token'), user_id, estado, role, group}})
     }
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEUSUARIO)
 
@@ -32,9 +32,9 @@ function AdminsPage(props:any) {
         
         if (asig[0]===user_id && asig[1]) asignar = parseInt(asig[1])
         if (desasig[0]===user_id && desasig[1]) desasignar = parseInt(desasig[1])
-        if (asignar) asignarT({variables: {token:document.cookie, user_id, asignar}})
-        if (desasignar) asignarT({variables: {token:document.cookie, user_id, desasignar}})
-        if (all) asignarT({variables: {token:document.cookie, user_id, all}})
+        if (asignar) asignarT({variables: {token:localStorage.getItem('token'), user_id, asignar}})
+        if (desasignar) asignarT({variables: {token:localStorage.getItem('token'), user_id, desasignar}})
+        if (all) asignarT({variables: {token:localStorage.getItem('token'), user_id, all}})
         setAsig([])
         setDesasig([])
     }

@@ -26,24 +26,24 @@ function TerritoriosPage(props:any) {
     const [manzanas, setManzanas] = useState(['1'])
     const isTodo = todo==='todo' ? true : false
 
-    let variables = {terr:territorio, manzana, token:document.cookie, todo:isTodo, traidos, traerTodos}
+    let variables = {terr:territorio, manzana, token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos}
     if (manzana==='1') variables = {
-        terr:territorio, manzana:'1', token:document.cookie, todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'1', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='2') variables = {
-        terr:territorio, manzana:'2', token:document.cookie, todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'2', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='3') variables = {
-        terr:territorio, manzana:'3', token:document.cookie, todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'3', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='4') variables = {
-        terr:territorio, manzana:'4', token:document.cookie, todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'4', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='5') variables = {
-        terr:territorio, manzana:'5', token:document.cookie, todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'5', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='6') variables = {
-        terr:territorio, manzana:'6', token:document.cookie, todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'6', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
     }
 
     const data = useQuery(graphql.GETTERRITORY, {variables}).data
@@ -54,7 +54,7 @@ function TerritoriosPage(props:any) {
     
     const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null) => {
         if (!noAbonado) noAbonado = false
-        changeState({ variables: {inner_id, estado, noAbonado, token:document.cookie} })
+        changeState({ variables: {inner_id, estado, noAbonado, token:localStorage.getItem('token')} })
     }
 
     const traerDiezMas = () => {

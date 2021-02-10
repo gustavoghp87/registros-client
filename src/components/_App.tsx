@@ -65,8 +65,8 @@ function App() {
     ;(async () => {
       const fetchy = await fetch(`${SERVER}/api/users/auth`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-        body: JSON.stringify({token:document.cookie})
+        headers: {'Content-Type':'application/json', 'Accept':'application/json'},
+        body: JSON.stringify({token:localStorage.getItem('token')})
       })
       setUser(await fetchy.json())
       console.log(user)
@@ -83,7 +83,7 @@ function App() {
       const fetchy = await fetch(`${SERVER}/api/users/change-mode`, {
         method: 'POST',
         headers: {'Content-Type': 'Application/json'},
-        body: JSON.stringify({token:document.cookie, darkMode:!user.darkMode})
+        body: JSON.stringify({token:localStorage.getItem('token'), darkMode:!user.darkMode})
       })
       const resp = await fetchy.json()
       if (resp.success) {

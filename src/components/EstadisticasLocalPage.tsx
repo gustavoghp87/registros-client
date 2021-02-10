@@ -18,7 +18,7 @@ function EstadisticasLocalPage(props:any) {
 
     const { territorio } = useParams<typeParam>()
     const datos = useQuery(graphql.GETLOCALSTATISTICS,
-        {variables: {token:document.cookie, territorio}}
+        {variables: {token:localStorage.getItem('token'), territorio}}
     ).data
 
     const reset = async (option:number) => {
@@ -41,7 +41,7 @@ function EstadisticasLocalPage(props:any) {
         const fetchy = await fetch(`${SERVER}/api/reset`, {
             method: 'POST',
             headers: {'Content-Type':'Application/json'},
-            body: JSON.stringify({token:document.cookie, option, territorio})
+            body: JSON.stringify({token:localStorage.getItem('token'), option, territorio})
         })
         const response = await fetchy.json()
         if (response.success) window.location.reload()

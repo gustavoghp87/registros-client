@@ -27,7 +27,7 @@ function IndexPage(props:any) {
             const fetchy2 = await fetch(`${SERVER}/api/campaign/getCampaign`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({token:document.cookie})
+                body: JSON.stringify({token:localStorage.getItem('token')})
             })
             const paquetes2 = await fetchy2.json()
             setCampaign({packs:paquetes2})

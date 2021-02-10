@@ -12,10 +12,10 @@ import { SERVER } from '../config'
 function EstadisticasPage(props:any) {
 
     const [localStatistics, setLocalStatistics] = useState<any>({localData:[]})
-    const datos = useQuery(graphql.GETSTATISTICS, {variables: {token:document.cookie}}).data
+    const datos = useQuery(graphql.GETSTATISTICS, {variables: {token:localStorage.getItem('token')}}).data
     
     // const datos2 = useQuery(graphql.GETLOCALSTATISTICS,
-    //     {variables: {token:document.cookie, territorio:counter.toString()}}
+    //     {variables: {token:localStorage.getItem('token'), territorio:counter.toString()}}
     // ).data
 
     let arreglo:any = []
@@ -26,7 +26,7 @@ function EstadisticasPage(props:any) {
             fetch(`${SERVER}/api/statistics`, {
                 method: 'POST',
                 headers: {'Content-Type':'Application/json'},
-                body: JSON.stringify({token:document.cookie, territorio:counter.toString()})
+                body: JSON.stringify({token:localStorage.getItem('token'), territorio:counter.toString()})
             }).then(datos2 => datos2.json()).then(datos2 => {
                 //console.log(datos2, typeof datos2)
                 const valor = datos2

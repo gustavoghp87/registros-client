@@ -16,15 +16,12 @@ function NavBar() {
   const history = useHistory()
 
   const logoutHandle = async () => {
-    const axios = await Axios.post(`${SERVER}/api/users/logout`, {token:document.cookie})
+    const axios = await Axios.post(`${SERVER}/api/users/logout`, {token:localStorage.getItem('token')})
     const response = axios.data.response
-    if (response==="ok") {
-      alert("Sesión de usuario cerrada con éxito")
-      document.cookie = "newtoken ="
-      history.push("/login")
-    } else {
-      alert("Algo falló y no cerró sesión")
-    }
+    if (response==="ok") alert("Sesión de usuario cerrada con éxito")
+    else alert("Algo falló y no cerró sesión bien")
+    localStorage.setItem('token', '')
+    history.push("/login")
   }
 
   const [scrollDown, setScrollDown] = useState(false)

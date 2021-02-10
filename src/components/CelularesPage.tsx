@@ -17,7 +17,7 @@ function CelularesPage(props:any) {
     const [Campaign, setCampaign] = useState<typeCampaign>({packs: []})
     const [change, setChange] = useState(false)
 
-    const { data } = useQuery(graphql.GETUSERS, {variables:{token:document.cookie}})
+    const { data } = useQuery(graphql.GETUSERS, {variables:{token:localStorage.getItem('token')}})
 
     
     useEffect(() => {
@@ -27,7 +27,7 @@ function CelularesPage(props:any) {
             const fetchy2 = await fetch(`${SERVER}/api/campaign/getCampaign`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({token:document.cookie})
+                body: JSON.stringify({token:localStorage.getItem('token')})
             })
             const paquetes2 = await fetchy2.json()
             setCampaign({packs:paquetes2})
@@ -41,7 +41,7 @@ function CelularesPage(props:any) {
         const fetchy = await fetch(`${SERVER}/api/campaign/asign`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({token:document.cookie, id, email})
+            body: JSON.stringify({token:localStorage.getItem('token'), id, email})
         })
         const resp = await fetchy.json()
         if (resp.success && email!=='Nadie') alert(`Asignado con éxito ${email} a ${id}`)

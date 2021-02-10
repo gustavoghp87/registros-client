@@ -61,9 +61,7 @@ function RegisterPage() {
 
                     <input className="form-control" type="number" style={{marginBottom: '30px'}} min="1" placeholder="Número de Grupo de Predicación" onChange={e => setGroup((e.target as any).value)} />
 
-                    <button className="btn btn-danger"
-                        style={{width:'100%', height:'50px'}}
-                        onClick={()=>sendForm()}>
+                    <button className="btn btn-danger" style={{width:'100%', height:'50px'}} onClick={()=>sendForm()}>
                         REGISTRARSE
                     </button>
 

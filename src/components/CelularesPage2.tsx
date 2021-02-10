@@ -48,7 +48,7 @@ function CelularesPage2(props:any) {
         const fetchy = await fetch(`${SERVER}/api/campaign/clickBox`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({token:document.cookie, tel, id:parseInt(id), checked})
+            body: JSON.stringify({token:localStorage.getItem('token'), tel, id:parseInt(id), checked})
         })
         const resp = await fetchy.json()
         if (resp.success) {console.log(`Click en teléfono ${tel}, queda en ${!checked}`); setChange(true)}
