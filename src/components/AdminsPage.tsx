@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ReturnBtn } from './_Return'
-import { Card, Button, Pagination } from 'react-bootstrap'
+import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { typeUsers, typeUser } from '../hoc/types'
 import { H2 } from './css/css'
 import { Loading } from './_Loading'
@@ -16,6 +16,7 @@ function AdminsPage(props:any) {
     const [groupVisible, setGroupVisible] = useState(false)
     const [asig, setAsig] = useState<any[]>([])
     const [desasig, setDesasig] = useState<any[]>([])
+    const [viendo, setViendo] = useState<string>("todos")
 
     const { data } = useQuery(graphql.GETUSERS, {variables:{token:localStorage.getItem('token')}})
 
@@ -75,11 +76,33 @@ function AdminsPage(props:any) {
         </Button>
 
 
-        <div style={{display:'block', margin: mobile ? '' : '80px auto'}}>
+        <div style={{display:'block', margin: mobile ? '40px auto' : '80px auto'}}>
 
 
             {!Usuarios.usuarios.length && <Loading />}
 
+            {Usuarios.usuarios &&
+                <>
+                    <h2 className="text-center mb-3"> Viendo {viendo} </h2>
+                    
+                    <DropdownButton
+                        as={ButtonGroup}
+                        key={'dropb'}
+                        variant={'primary'}
+                        title={`Viendo ${viendo}`}
+                        style={{display:'block', margin:'auto', textAlign:'center'}}
+                    >
+                        <Dropdown.Item eventKey="0" onClick={()=>setViendo("todos")} active={viendo=="todos"}> Ver todos </Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item eventKey="1" onClick={()=>setViendo("Grupo 1")} active={viendo=="Grupo 1"}> Grupo 1 </Dropdown.Item>
+                        <Dropdown.Item eventKey="2" onClick={()=>setViendo("Grupo 2")} active={viendo=="Grupo 2"}> Grupo 2 </Dropdown.Item>
+                        <Dropdown.Item eventKey="3" onClick={()=>setViendo("Grupo 3")} active={viendo=="Grupo 3"}> Grupo 3 </Dropdown.Item>
+                        <Dropdown.Item eventKey="4" onClick={()=>setViendo("Grupo 4")} active={viendo=="Grupo 4"}> Grupo 4 </Dropdown.Item>
+                        <Dropdown.Item eventKey="5" onClick={()=>setViendo("Grupo 5")} active={viendo=="Grupo 5"}> Grupo 5 </Dropdown.Item>
+                        <Dropdown.Item eventKey="6" onClick={()=>setViendo("Grupo 6")} active={viendo=="Grupo 6"}> Grupo 6 </Dropdown.Item>
+                    </DropdownButton>
+                </>
+            }
 
             {Usuarios.usuarios &&
                 Usuarios.usuarios.map((usuario:typeUser, index:any) => {
@@ -106,7 +129,8 @@ function AdminsPage(props:any) {
                         style={{
                             width: mobile ? '332px': '500px',
                             margin:'30px auto 60px auto',
-                            backgroundColor:'#f6f6f8'
+                            backgroundColor:'#f6f6f8',
+                            display: viendo==='todos' || usuario.group.toString()===viendo.slice(-1) ? '' : 'none'
                         }}>
                         
                         <Card.Body style={{padding:'30px'}}>
