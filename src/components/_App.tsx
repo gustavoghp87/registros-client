@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import './css/App.css'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import Auth from '../hoc/auth'
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
@@ -117,7 +117,8 @@ function App() {
 
             <Switch>
               {/* <Redirect exact strict from="/" to="/login" /> */}
-              <Route exact path="/" component={Auth(HomePage, false)} />
+              <Redirect exact from='/' to="/login" />
+              {/* <Route exact path="/" component={Auth(HomePage, false)} /> */}
               <Route exact path="/login" component={Auth(LoginPage, false)} />
               <Route exact path="/register" component={Auth(RegisterPage, false)} />
               <Route exact path="/index" component={Auth(IndexPage, true)} />
