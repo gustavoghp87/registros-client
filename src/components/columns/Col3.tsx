@@ -25,31 +25,31 @@ export const Col3:any = (props:any) => {
                 <Dropdown.Menu>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "No predicado", vivienda.noAbonado)}
+                        ()=>{cambiarEstado(vivienda.inner_id, "No predicado", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         No predicado
                     </Dropdown.Item>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "Contestó", vivienda.noAbonado)}
+                        ()=>{cambiarEstado(vivienda.inner_id, "Contestó", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         Contestó
                     </Dropdown.Item>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "No contestó", vivienda.noAbonado)}
+                        ()=>{cambiarEstado(vivienda.inner_id, "No contestó", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         No contestó
                     </Dropdown.Item>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "A dejar carta", vivienda.noAbonado)}
+                        ()=>{cambiarEstado(vivienda.inner_id, "A dejar carta", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         A dejar carta
                     </Dropdown.Item>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "No llamar", vivienda.noAbonado)}
+                        ()=>{cambiarEstado(vivienda.inner_id, "No llamar", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         No llamar
                     </Dropdown.Item>

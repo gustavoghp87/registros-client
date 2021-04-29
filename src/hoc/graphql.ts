@@ -13,6 +13,7 @@ export const ESCUCHARCAMBIODEESTADO = gql`subscription escucharCambioDeEstado {
         telefono
         noAbonado
         fechaUlt
+        asignado
     }
 }`
 
@@ -52,6 +53,7 @@ export const GETTERRITORY = gql`query busqueda(
             estado
             noAbonado
             fechaUlt
+            asignado
         }
     }
 `
@@ -138,18 +140,20 @@ export const ASIGNAR = gql`mutation
 `
 
 export const CHANGESTATE = gql`mutation
-    changeState($inner_id:String!, $estado:String!, $noAbonado:Boolean!, $token:String!) {
+    changeState($inner_id:String!, $estado:String!, $noAbonado:Boolean!, $asignado:Boolean!, $token:String!) {
 
         cambiarEstado (input: {
             inner_id: $inner_id
             estado: $estado
             noAbonado: $noAbonado
+            asignado: $asignado
             token: $token
         }) {
             inner_id
             estado
             noAbonado
             fechaUlt
+            asignado
         }
     }
 `

@@ -52,9 +52,10 @@ function TerritoriosPage(props:any) {
     const [changeState] = useMutation(graphql.CHANGESTATE)
     const [textBtn, setTextBtn] = useState('Traer 10 más')
     
-    const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null) => {
+    const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null, asignado:Boolean|null) => {
         if (!noAbonado) noAbonado = false
-        changeState({ variables: {inner_id, estado, noAbonado, token:localStorage.getItem('token')} })
+        if (!asignado) asignado = false
+        changeState({ variables: {inner_id, estado, noAbonado, asignado, token:localStorage.getItem('token')} })
     }
 
     const traerDiezMas = () => {
@@ -63,9 +64,9 @@ function TerritoriosPage(props:any) {
     }
 
 
-    console.log("data:", data)
-    console.log("traídos:", traidos)
-    console.log("variables:", variables)
+    //console.log("data:", data)
+    //console.log("traídos:", traidos)
+    //console.log("variables:", variables)
 
 
     useEffect(() => {
@@ -86,7 +87,8 @@ function TerritoriosPage(props:any) {
                         direccion: escuchar.data.escucharCambioDeEstado.direccion,
                         telefono: escuchar.data.escucharCambioDeEstado.telefono,
                         noAbonado: escuchar.data.escucharCambioDeEstado.noAbonado,
-                        fechaUlt: escuchar.data.escucharCambioDeEstado.fechaUlt
+                        fechaUlt: escuchar.data.escucharCambioDeEstado.fechaUlt,
+                        asignado: escuchar.data.escucharCambioDeEstado.asignado
                     })
                 else 
                     nuevoTodo.unterritorio.push({
@@ -97,13 +99,14 @@ function TerritoriosPage(props:any) {
                         direccion: viviendas.unterritorio[index].direccion,
                         telefono: viviendas.unterritorio[index].telefono,
                         noAbonado: viviendas.unterritorio[index].noAbonado,
-                        fechaUlt: viviendas.unterritorio[index].fechaUlt
+                        fechaUlt: viviendas.unterritorio[index].fechaUlt,
+                        asignado: viviendas.unterritorio[index].asignado
                     })
             })
             setviviendas(nuevoTodo)
         }
         if (isTodo) setTraerTodos(true)
-        try {setManzanas(manzTraidas.countBlocks.cantidad)} catch{}
+        try {setManzanas(manzTraidas.countBlocks.cantidad)} catch {}
     }, [data, escuchar.data, traidos, manzTraidas, isTodo])
     
 
@@ -178,9 +181,10 @@ function TerritoriosPage(props:any) {
                 
                     <Card key={vivienda.inner_id}
                         style={{
-                            marginBottom:'50px',
-                            border:'1px solid gray',
-                            boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+                            marginBottom: '50px',
+                            border: '1px solid gray',
+                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                            backgroundColor: vivienda.asignado ? '#B0B0B0' : ''
                         }}
                     >
                         <Container fluid="lg">

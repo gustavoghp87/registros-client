@@ -21,6 +21,7 @@ export type typeVivienda = {
     noAbonado: boolean
     fechaUlt?: string
     variante: "success" | "dark" | "primary" | "danger" | "warning" | "light"
+    asignado?: boolean
 }
 
 
