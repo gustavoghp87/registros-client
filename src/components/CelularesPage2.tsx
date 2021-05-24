@@ -68,7 +68,7 @@ function CelularesPage2(props:any) {
             onClose={()=>setShowToast(false)}>
           <Toast.Header style={{border:'1px solid lightgray'}}>
             <strong className="mr-auto"> Campaña Celulares 2021 </strong>
-            <small> enero-marzo </small>
+            <small> enero-junio </small>
           </Toast.Header>
           <Toast.Body> Estos registros serán eliminados al finalizar la campaña </Toast.Body>
         </Toast>
@@ -125,7 +125,7 @@ function CelularesPage2(props:any) {
 
 
             
-            {!paquete
+            {/* {!paquete
             ?
                 <Loading />
             :
@@ -133,7 +133,7 @@ function CelularesPage2(props:any) {
                  onClick={()=>console.log("Cambiar todo")}>
                     Marcar todos como llamados (próximamente)
                 </Button>
-            }
+            } */}
 
         </div>
 

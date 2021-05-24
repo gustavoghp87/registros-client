@@ -75,7 +75,7 @@ function EstadisticasLocalPage(props:any) {
 
                     <br/>
 
-                    <h4> {`Llamadas: ${datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countNoAbonado} (${ Math.round( (datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countNoAbonado) / datos.getLocalStatistics.count * 1000 )/10}%)`} </h4>
+                    <h4> {`Llamadas: ${datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countNoAbonado} (${ Math.round( (datos.getLocalStatistics.countContesto + datos.getLocalStatistics.countNoContesto + datos.getLocalStatistics.countNoLlamar + datos.getLocalStatistics.countNoAbonado) / datos.getLocalStatistics.count * 1000 )/10}%) (Predicadas (sin cartas) + No contestó + No abonadas)`} </h4>
 
                     <br/>
 

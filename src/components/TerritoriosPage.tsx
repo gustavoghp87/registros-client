@@ -51,6 +51,9 @@ function TerritoriosPage(props:any) {
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEESTADO)
     const [changeState] = useMutation(graphql.CHANGESTATE)
     const [textBtn, setTextBtn] = useState('Traer 10 más')
+
+    console.log("aaaa", territorio, manzana, manzTraidas);
+    
     
     const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null, asignado:Boolean|null) => {
         if (!noAbonado) noAbonado = false

@@ -79,6 +79,7 @@ export const GETSTATISTICS = gql`query statistics($token:String!) {
         countDejarCarta
         countNoLlamar
         countNoAbonado
+        libres
     }
 }
 `

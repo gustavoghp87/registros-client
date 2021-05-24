@@ -83,7 +83,7 @@ function IndexPage(props:any) {
                 </Row>
 
 
-                {Campaign && !!Campaign.packs.length &&
+                {Campaign && Campaign.packs && !!Campaign.packs.length &&
                 <>
                 
                     <hr style={{border: '2px solid lightgray', borderRadius:'5px'}}/>

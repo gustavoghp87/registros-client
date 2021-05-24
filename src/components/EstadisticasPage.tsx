@@ -64,25 +64,31 @@ function EstadisticasPage(props:any) {
                 <br/>
                 <Card style={{padding:'35px', textAlign: mobile ? 'center' : 'left'}}>
 
-                    <h4>{`Hay ${datos.getGlobalStatistics.count} viviendas`} </h4>
+                    <h4>{`Hay ${datos.getGlobalStatistics.count} viviendas, ${datos.getGlobalStatistics.countNoAbonado} no abonadas. Neto: ${datos.getGlobalStatistics.count - datos.getGlobalStatistics.countNoAbonado}`} </h4>
 
                     <br/>
+
+                    <h4>Llamadas: {datos.getGlobalStatistics.countContesto + datos.getGlobalStatistics.countNoContesto + datos.getGlobalStatistics.countNoLlamar + datos.getGlobalStatistics.countNoAbonado} ({ Math.round( (datos.getGlobalStatistics.countContesto + datos.getGlobalStatistics.countNoContesto + datos.getGlobalStatistics.countNoLlamar + datos.getGlobalStatistics.countNoAbonado) / datos.getGlobalStatistics.count * 1000 )/10}%) (Predicadas (sin cartas) + No contestó + No abonadas) </h4>
+
+                    <br/>
+
+                    <h4>Libres para llamar: {datos.getGlobalStatistics.libres} </h4>
+
+                    <hr/>
 
                     <h4>{`Predicadas: ${datos.getGlobalStatistics.countContesto + datos.getGlobalStatistics.countNoLlamar + datos.getGlobalStatistics.countDejarCarta} viviendas (${Math.round((datos.getGlobalStatistics.countContesto + datos.getGlobalStatistics.countNoLlamar + datos.getGlobalStatistics.countDejarCarta)*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
 
                     <br/>
 
-                    <h4>{`Contestó: ${datos.getGlobalStatistics.countContesto} viviendas (${Math.round(datos.getGlobalStatistics.countContesto*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; {`Contestó: ${datos.getGlobalStatistics.countContesto} viviendas (${Math.round(datos.getGlobalStatistics.countContesto*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
 
-                    <h4>{`No contestó ${datos.getGlobalStatistics.countNoContesto} viviendas (${Math.round(datos.getGlobalStatistics.countNoContesto*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; {`A dejar carta: ${datos.getGlobalStatistics.countDejarCarta} viviendas (${Math.round(datos.getGlobalStatistics.countDejarCarta*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
 
-                    <h4>{`A dejar carta: ${datos.getGlobalStatistics.countDejarCarta} viviendas (${Math.round(datos.getGlobalStatistics.countDejarCarta*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
-
-                    <h4>{`No llamar: ${datos.getGlobalStatistics.countNoLlamar} viviendas (${Math.round(datos.getGlobalStatistics.countNoLlamar*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; {`No llamar: ${datos.getGlobalStatistics.countNoLlamar} viviendas (${Math.round(datos.getGlobalStatistics.countNoLlamar*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
 
                     <br/>
 
-                    <h4>{`No abonados en servicio: ${datos.getGlobalStatistics.countNoAbonado} viviendas`} </h4>
+                    <h4>{`No contestó: ${datos.getGlobalStatistics.countNoContesto} viviendas (${Math.round(datos.getGlobalStatistics.countNoContesto*10000/datos.getGlobalStatistics.count)/100}%)`} </h4>
 
                 </Card>
 
