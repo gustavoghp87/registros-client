@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SERVER } from "../config"
 import { Link, useHistory } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
@@ -9,11 +9,27 @@ import { Form } from 'react-bootstrap'
 function LoginPage() {
 
     const history = useHistory()
-    const [email, setemail] = useState<any>(localStorage.getItem('rememberMeMW') ? localStorage.getItem('rememberMeMW') : '')
-    const [password, setpassword] = useState<any>(localStorage.getItem('rememberMePSMW') ? localStorage.getItem('rememberMePSMW') : '')
+    const [email, setemail] = useState<any>(localStorage.getItem('rememberMeMW') ?? localStorage.getItem('rememberMeMW'))
+    const [password, setpassword] = useState<any>(localStorage.getItem('rememberMePSMW') ?? localStorage.getItem('rememberMePSMW'))
     const { executeRecaptcha } = useGoogleReCaptcha()
     const rememberMeMWChecked = localStorage.getItem("rememberMeMW") ? true : false
     const [rememberMeMW, setRememberMeMW] = useState(rememberMeMWChecked)
+
+    useEffect(() => {
+        (async () => {
+            const token = localStorage.getItem('token')
+            if (token) {
+                const response = await fetch(`${SERVER}/api/users/auth`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json', 'Accept':'application/json'},
+                    body: JSON.stringify({token})
+                })
+                const data = await response.json()
+                if (data && data.isAuth) history.push("/index")
+                else localStorage.setItem('token', '')
+            }
+        })()
+    })
 
 
     const loginHandle = async () => {
