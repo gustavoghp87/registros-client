@@ -53,7 +53,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-const token = () => localStorage.getItem('token')
+const getToken = () => localStorage.getItem('token')
 
 
 function App() {
@@ -62,19 +62,17 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem('darkMode')==='true') setDarkMode(true)
-
     ;(async () => {
-      if (!token) return
+      if (!getToken()) return
       const request = await fetch(`${SERVER}/api/users/auth`, {
         method: 'POST',
         headers: {'Content-Type':'application/json', 'Accept':'application/json'},
-        body: JSON.stringify({ token:localStorage.getItem('token') })
+        body: JSON.stringify({ token: getToken() })
       })
-      const data = await request.json()
-      if (data && data.darkMode!==undefined) setDarkMode(data.darkMode)
+      const user = await request.json()
+      if (user && user.darkMode!==undefined) setDarkMode(user.darkMode)
     })()
-
-  }, [])
+  })
 
   const changeDarkMode = () => {
     if (darkMode) localStorage.setItem('darkMode', 'false')
@@ -82,11 +80,11 @@ function App() {
     setDarkMode(!darkMode)
 
     ;(async () => {
-      if (!token) return
+      if (!getToken()) return
       const request = await fetch(`${SERVER}/api/users/change-mode`, {
         method: 'POST',
         headers: {'Content-Type': 'Application/json'},
-        body: JSON.stringify({ token, darkMode: !darkMode })
+        body: JSON.stringify({ token: getToken(), darkMode: !darkMode })
       })
       const resp = await request.json()
       if (resp.success) {
