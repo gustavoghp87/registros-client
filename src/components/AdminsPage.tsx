@@ -7,6 +7,7 @@ import { Loading } from './_Loading'
 import { useQuery, useMutation, useSubscription } from '@apollo/client'
 import * as graphql from '../services/graphql'
 import { mobile } from './_App'
+import { getToken } from '../services/getToken'
 
 
 function AdminsPage(props:any) {
@@ -18,13 +19,13 @@ function AdminsPage(props:any) {
     const [desasig, setDesasig] = useState<any[]>([])
     const [viendo, setViendo] = useState<string>("todos")
 
-    const { data } = useQuery(graphql.GETUSERS, {variables:{token:localStorage.getItem('token')}})
+    const { data } = useQuery(graphql.GETUSERS, {variables: {token: getToken()} })
 
     const [controlarU] = useMutation(graphql.CONTROLARUSUARIO)
     const [asignarT] = useMutation(graphql.ASIGNAR)
 
     const controlar = async (user_id:String, estado:Boolean, role:Number, group:Number) => {
-        controlarU({variables: {token:localStorage.getItem('token'), user_id, estado, role, group}})
+        controlarU({variables: {token: getToken(), user_id, estado, role, group}})
     }
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEUSUARIO)
 
@@ -33,9 +34,9 @@ function AdminsPage(props:any) {
         
         if (asig[0]===user_id && asig[1]) asignar = parseInt(asig[1])
         if (desasig[0]===user_id && desasig[1]) desasignar = parseInt(desasig[1])
-        if (asignar) asignarT({variables: {token:localStorage.getItem('token'), user_id, asignar}})
-        if (desasignar) asignarT({variables: {token:localStorage.getItem('token'), user_id, desasignar}})
-        if (all) asignarT({variables: {token:localStorage.getItem('token'), user_id, all}})
+        if (asignar) asignarT({variables: {token: getToken(), user_id, asignar}})
+        if (desasignar) asignarT({variables: {token: getToken(), user_id, desasignar}})
+        if (all) asignarT({variables: {token: getToken(), user_id, all}})
         setAsig([])
         setDesasig([])
     }

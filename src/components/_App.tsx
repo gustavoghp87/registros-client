@@ -23,6 +23,7 @@ import { split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { isLocalhost } from './tools/functions'
+import { getToken } from '../services/getToken'
 
 
 export let mobile = window.screen.width<990 ? true : false
@@ -53,15 +54,15 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-const getToken = () => localStorage.getItem('token')
-
 
 function App() {
 
-  const [darkMode, setDarkMode] = useState(false)
+  const getDarkModeStorage = () => localStorage.getItem('darkMode')
+  const mode = getDarkModeStorage() === 'true'
+  const setDarkModeStorage = (darkMode: boolean) => localStorage.setItem('darkMode', darkMode.toString())
+  const [darkMode, setDarkMode] = useState(mode)
 
   useEffect(() => {
-    if (localStorage.getItem('darkMode')==='true') setDarkMode(true)
     ;(async () => {
       if (!getToken()) return
       const request = await fetch(`${SERVER}/api/users/auth`, {
@@ -71,32 +72,25 @@ function App() {
       })
       const user = await request.json()
       if (user && user.darkMode!==undefined) {
-        setDarkMode(user.darkMode)
-        localStorage.setItem('darkMode', user.darkMode.toString())
+        console.log("Llegó", user.darkMode, "      GET REQUEST mientras que", darkMode)
+        if (darkMode !== user.darkMode) setDarkMode(user.darkMode)
+        if (getDarkModeStorage() !== user.darkMode) setDarkModeStorage(user.darkMode.toString())
       }
     })()
   })
 
-  const changeDarkMode = () => {
-    if (darkMode) localStorage.setItem('darkMode', 'false')
-    else localStorage.setItem('darkMode', 'true')
-    setDarkMode(!darkMode)
-    ;(async () => {
-      if (!getToken()) return
-      const request = await fetch(`${SERVER}/api/users/change-mode`, {
-        method: 'POST',
-        headers: {'Content-Type': 'Application/json'},
-        body: JSON.stringify({ token: getToken(), darkMode: !darkMode })
-      })
-      const resp = await request.json()
-      if (resp.success) {
-        console.log("resp:", resp)
-        // if (resp.darkMode) {localStorage.setItem('darkMode', 'true'); setDarkMode(true)}
-        // else {localStorage.setItem('darkMode', 'false'); setDarkMode(false)}
-        window.location.reload()
-      }
-      else console.log("Error cambiando el mode")
-    })()
+  const changeDarkMode = async () => {
+    const newMode = !darkMode
+    setDarkMode(newMode)
+    setDarkModeStorage(newMode)
+    if (!getToken()) return
+    const response = await fetch(`${SERVER}/api/users/change-mode`, {
+      method: 'POST',
+      headers: {'Content-Type': 'Application/json'},
+      body: JSON.stringify({ token: getToken(), darkMode: newMode })
+    })
+    const resp = await response.json()
+    console.log(resp.darkMode, "desde DB    POST REQUEST")
   }
   
 
@@ -137,7 +131,8 @@ function App() {
             </Switch>
 
             <div className='custom-control custom-switch' style={{position:'fixed', bottom:'20px'}}>
-              <input type='checkbox' className='custom-control-input' id='customSwitches' checked={darkMode} onChange={() => changeDarkMode()} />
+              <input type='checkbox' className='custom-control-input' id='customSwitches' checked={darkMode}
+               onChange={() => changeDarkMode()} />
               <label className='custom-control-label' htmlFor='customSwitches' style={{color: darkMode ? 'white' : 'red'}}>
                 <b> {mobile ? '' : (darkMode ? 'Modo Claro' : 'Modo Oscuro')} </b>
               </label>

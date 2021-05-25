@@ -1,5 +1,3 @@
-import React from 'react';
-
 
 function Footer() {
     
@@ -25,7 +23,8 @@ function Footer() {
     return (
         <>
             <div className="main-footer" style={estilo1}>
-                <div style={{display:'flex', height:'100%', width:'100%', margin:'auto', textAlign:'center', alignItems:'center', justifyContent:'center'}}>
+                <div style={{display:'flex', height:'100%', width:'100%', margin:'auto', textAlign:'center',
+                 alignItems:'center', justifyContent:'center'}}>
                     <a href="https://misericordiaweb.com/" style={{color:'white', fontWeight:'bolder'}}>
                         misericordiaweb.com
                     </a>

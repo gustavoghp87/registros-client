@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
 import Axios from 'axios'
@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux'
 import { typeUser, typeState } from '../models/types'
 import { FaUserAlt } from 'react-icons/fa'
 import { mobile } from './_App'
+import { getToken } from '../services/getToken'
+import { setToken } from '../services/setToken'
 
 
 function NavBar() {
@@ -16,11 +18,11 @@ function NavBar() {
   const history = useHistory()
 
   const logoutHandle = async () => {
-    const axios = await Axios.post(`${SERVER}/api/users/logout`, {token:localStorage.getItem('token')})
+    const axios = await Axios.post(`${SERVER}/api/users/logout`, { token: getToken() })
     const response = axios.data.response
     if (response==="ok") alert("Sesión de usuario cerrada con éxito")
     else alert("Algo falló y no cerró sesión bien")
-    localStorage.setItem('token', '')
+    setToken('')
     history.push("/login")
   }
 

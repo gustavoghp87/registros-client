@@ -13,6 +13,7 @@ import { Col1 } from './columns/Col1'
 import { Col2 } from './columns/Col2'
 import { Col3 } from './columns/Col3'
 import { Col4 } from './columns/Col4'
+import { getToken } from '../services/getToken'
 
 
 function TerritoriosPage(props:any) {
@@ -26,24 +27,24 @@ function TerritoriosPage(props:any) {
     const [manzanas, setManzanas] = useState(['1'])
     const isTodo = todo==='todo' ? true : false
 
-    let variables = {terr:territorio, manzana, token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos}
+    let variables = {terr:territorio, manzana, token: getToken(), todo:isTodo, traidos, traerTodos}
     if (manzana==='1') variables = {
-        terr:territorio, manzana:'1', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'1', token: getToken(), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='2') variables = {
-        terr:territorio, manzana:'2', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'2', token: getToken(), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='3') variables = {
-        terr:territorio, manzana:'3', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'3', token: getToken(), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='4') variables = {
-        terr:territorio, manzana:'4', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'4', token: getToken(), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='5') variables = {
-        terr:territorio, manzana:'5', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'5', token: getToken(), todo:isTodo, traidos, traerTodos
     }
     if (manzana==='6') variables = {
-        terr:territorio, manzana:'6', token:localStorage.getItem('token'), todo:isTodo, traidos, traerTodos
+        terr:territorio, manzana:'6', token: getToken(), todo:isTodo, traidos, traerTodos
     }
 
     const data = useQuery(graphql.GETTERRITORY, {variables}).data
@@ -58,7 +59,7 @@ function TerritoriosPage(props:any) {
     const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null, asignado:Boolean|null) => {
         if (!noAbonado) noAbonado = false
         if (!asignado) asignado = false
-        changeState({ variables: {inner_id, estado, noAbonado, asignado, token:localStorage.getItem('token')} })
+        changeState({ variables: {inner_id, estado, noAbonado, asignado, token: getToken()} })
     }
 
     const traerDiezMas = () => {

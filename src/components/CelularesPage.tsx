@@ -10,6 +10,7 @@ import * as graphql from '../services/graphql'
 import { mobile } from './_App'
 import { SERVER } from '../config'
 import { confirmAlert } from 'react-confirm-alert'
+import { getToken } from '../services/getToken'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 
@@ -19,7 +20,7 @@ function CelularesPage(props:any) {
     const [Campaign, setCampaign] = useState<typeCampaign>({packs: []})
     const [change, setChange] = useState(false)
     const [showFiltered, setShowFilered] = useState(false)
-    const { data } = useQuery(graphql.GETUSERS, {variables: { token:localStorage.getItem('token') } })
+    const { data } = useQuery(graphql.GETUSERS, {variables: { token: getToken() } })
     
     useEffect(() => {
         if (data) setUsuarios({ usuarios: data.getUsers })
@@ -28,7 +29,7 @@ function CelularesPage(props:any) {
             const fetchy2 = await fetch(`${SERVER}/api/campaign/getCampaign`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ token: localStorage.getItem('token') })
+                body: JSON.stringify({ token: getToken() })
             })
             const paquetes2 = await fetchy2.json()
             setCampaign({ packs: paquetes2 })
@@ -59,7 +60,7 @@ function CelularesPage(props:any) {
         const response = await fetch(`${SERVER}/api/campaign/finished`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ token: localStorage.getItem('token'), packId})
+            body: JSON.stringify({ token: getToken(), packId})
         })
         const data = await response.json()
         console.log(data)
@@ -70,7 +71,7 @@ function CelularesPage(props:any) {
         const fetchy = await fetch(`${SERVER}/api/campaign/asign`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ token:localStorage.getItem('token'), id, email })
+            body: JSON.stringify({ token: getToken(), id, email })
         })
         const resp = await fetchy.json()
         if (resp.success && email!=='Nadie') alert(`Asignado con éxito ${email} a ${id}`)

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import { ReturnBtn } from './_Return'
 import { Card, Col, Row, Toast } from 'react-bootstrap'
-import { typePack, typeParam, typeUser, typeState } from '../models/types'
+import { typePack, typeParam } from '../models/types'
 import { colocarGuiones } from './tools/functions'
 import { H2 } from './css/css'
-import { Loading } from './_Loading'
 import { mobile } from './_App'
 import { SERVER } from '../config'
 import { useParams } from 'react-router'
-import { useSelector } from 'react-redux'
+import { getToken } from '../services/getToken'
 
 
 function CelularesPage2(props:any) {
@@ -18,14 +17,14 @@ function CelularesPage2(props:any) {
     const [telefonos, setTelefonos] = useState<any>([])
     const [change, setChange] = useState(false)
     const [showToast, setShowToast] = useState(true)
-    const user:typeUser = useSelector((state:typeState) => state.user.userData)
     
     useEffect(() => {
+        window.scrollTo(0, 0)
         ;(async () => {
             const fetchy = await fetch(`${SERVER}/api/campaign/getPack`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({id})
+                body: JSON.stringify({ id })
             })
             const pack:typePack = await fetchy.json()
             console.log(pack) 
@@ -48,7 +47,7 @@ function CelularesPage2(props:any) {
         const fetchy = await fetch(`${SERVER}/api/campaign/clickBox`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({token:localStorage.getItem('token'), tel, id:parseInt(id), checked})
+            body: JSON.stringify({ token: getToken(), tel, id: parseInt(id), checked})
         })
         const resp = await fetchy.json()
         if (resp.success) {console.log(`Click en teléfono ${tel}, queda en ${!checked}`); setChange(true)}
@@ -122,18 +121,6 @@ function CelularesPage2(props:any) {
                     ))}
                 </Col>
             </Row>
-
-
-            
-            {/* {!paquete
-            ?
-                <Loading />
-            :
-                <Button variant={'danger'} style={{display: user.role===1 ? 'block' : 'none', margin:'50px auto 0 auto'}}
-                 onClick={()=>console.log("Cambiar todo")}>
-                    Marcar todos como llamados (próximamente)
-                </Button>
-            } */}
 
         </div>
 

@@ -8,6 +8,7 @@ import { H2 } from './css/css'
 import { mobile } from './_App'
 import { Row } from 'react-bootstrap'
 import { SERVER } from '../config'
+import { getToken } from '../services/getToken'
 
 
 function IndexPage(props:any) {
@@ -23,17 +24,20 @@ function IndexPage(props:any) {
             asignados.sort((a:number, b:number) => a - b)
             setTerritorios(asignados)
         }
-        ;(async () => {
-            const fetchy2 = await fetch(`${SERVER}/api/campaign/getCampaign`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({token:localStorage.getItem('token')})
-            })
-            const paquetes2 = await fetchy2.json()
-            setCampaign({packs:paquetes2})
-        })()
+        //aaa()
+        
     }, [user])
 
+    const aaa = async () => {
+        const response = await fetch(`${SERVER}/api/campaign/getCampaign`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ token: getToken() })
+        })
+        const packs = await response.json()
+        if (!packs) return console.log("Coming packs failed")
+        setCampaign({ packs })
+    }
 
     const btnTerri = {
         width: '120px',

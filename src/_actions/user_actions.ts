@@ -1,5 +1,6 @@
 import { AUTH_USER } from './types'
 import { SERVER } from '../config'
+import { getToken } from '../services/getToken'
 
 
 export const auth = async () => {
@@ -10,7 +11,7 @@ export const auth = async () => {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify({ token: localStorage.getItem('token') })
+        body: JSON.stringify({ token: getToken() })
     })
     const request = await fetchy.json()
 

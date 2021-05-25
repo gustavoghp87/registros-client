@@ -8,14 +8,15 @@ import { mobile } from './_App'
 import { ReturnBtn } from './_Return'
 import { SERVER } from '../config'
 import { localStatistic } from '../models/statistic'
+import { getToken } from '../services/getToken'
 
 
 function EstadisticasPage(props:any) {
 
-    const token = () => {const t = localStorage.getItem('token'); console.log("sdsdsd", t); return t}
-    const datos = useQuery(graphql.GETSTATISTICS, {variables: { token: token() }}).data
+    const datos = useQuery(graphql.GETSTATISTICS, {variables: { token: getToken() }}).data
     const [localStatistics, setLocalStatistics] = useState<localStatistic[]|null>()
     const [loading, setLoading] = useState(false)
+    const [showBtn, setShowBtn] = useState(true)
 
     const retrieveLocalStats = () => {
         let tempArray: localStatistic[] = []
@@ -25,7 +26,7 @@ function EstadisticasPage(props:any) {
                 const response = await fetch(`${SERVER}/api/statistics`, {
                     method: 'POST',
                     headers: {'Content-Type':'Application/json'},
-                    body: JSON.stringify({ token: token(), territorio: counter.toString() })
+                    body: JSON.stringify({ token: getToken(), territorio: counter.toString() })
                 })
                 const data:localStatistic = await response.json()
                 if (data) {tempArray.push(data); console.log("Llegó", data.territorio)}
@@ -89,7 +90,8 @@ function EstadisticasPage(props:any) {
         <br/>
 
         
-        <Button variant="primary" className={!loading ? "d-block m-auto" : 'd-none'} onClick={()=>{setLoading(true); retrieveLocalStats();}}>
+        <Button variant="primary" className={showBtn ? 'd-block m-auto' : "d-none"}
+         onClick={()=>{setLoading(true); setShowBtn(false); retrieveLocalStats();}}>
             Traer Estadísticas por Territorio
         </Button>
 

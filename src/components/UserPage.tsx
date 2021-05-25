@@ -6,6 +6,8 @@ import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
 import { mobile } from './_App'
 import { SERVER } from '../config'
+import { getToken } from '../services/getToken'
+import { setToken } from '../services/setToken'
 
 
 function UserPage(props:any) {
@@ -27,13 +29,13 @@ function UserPage(props:any) {
         const fetchy = await fetch(`${SERVER}/api/users/change-psw`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({token:localStorage.getItem('token'), psw, newPsw})
+            body: JSON.stringify({ token: getToken(), psw, newPsw})
         })
         const response = await fetchy.json()
         setPsw('')
         setNewPsw('')
         if (response.success) {
-            localStorage.setItem('token', response.newToken); alert("Clave cambiada con éxito")
+            setToken(response.newToken); alert("Clave cambiada con éxito")
         }
         else if (response.compareProblem) alert("Clave incorrecta")
         else alert("Algo falló")

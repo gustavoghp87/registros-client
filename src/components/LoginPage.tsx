@@ -1,32 +1,41 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SERVER } from "../config"
 import { Link, useHistory } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { mobile } from './_App'
 import { Form } from 'react-bootstrap'
+import { getToken } from '../services/getToken'
+import { setToken } from "../services/setToken"
 
 
 function LoginPage() {
 
+    const getRememberMeMW = () => localStorage.getItem('rememberMeMW')
+    const getRememberMePSMW = () => localStorage.getItem('rememberMePSMW')
+    const setRememberMeMWLocal = (email: string) => localStorage.setItem('rememberMeMW', email)
+    const setRememberMePSMWLocal = (password: string) => localStorage.setItem('rememberMePSMW', password)
+    const removeEmailFromStorage = () => localStorage.removeItem('rememberMeMW')
+    const removePswFromStorage = () => localStorage.removeItem('rememberMePSMW')
+
     const history = useHistory()
-    const [email, setemail] = useState<any>(localStorage.getItem('rememberMeMW') ?? localStorage.getItem('rememberMeMW'))
-    const [password, setpassword] = useState<any>(localStorage.getItem('rememberMePSMW') ?? localStorage.getItem('rememberMePSMW'))
+    const [email, setemail] = useState<any>(getRememberMeMW() ?? getRememberMeMW())
+    const [password, setpassword] = useState<any>(getRememberMePSMW() ?? getRememberMePSMW())
     const { executeRecaptcha } = useGoogleReCaptcha()
-    const rememberMeMWChecked = localStorage.getItem("rememberMeMW") ? true : false
+    const rememberMeMWChecked = getRememberMeMW() ? true : false
     const [rememberMeMW, setRememberMeMW] = useState(rememberMeMWChecked)
 
     useEffect(() => {
         (async () => {
-            const token = localStorage.getItem('token')
+            const token = getToken()
             if (token) {
                 const response = await fetch(`${SERVER}/api/users/auth`, {
                     method: 'POST',
                     headers: {'Content-Type':'application/json', 'Accept':'application/json'},
-                    body: JSON.stringify({token})
+                    body: JSON.stringify({ token })
                 })
                 const data = await response.json()
                 if (data && data.isAuth) history.push("/index")
-                else localStorage.setItem('token', '')
+                else setToken('')
             }
         })()
     })
@@ -40,21 +49,21 @@ function LoginPage() {
         const fetchy = await fetch(`${SERVER}/api/users/login`, {
             method: 'POST',
             headers: {'Content-Type':'application/json', 'Accept':'application/json'},
-            body: JSON.stringify({email, password, recaptchaToken})
+            body: JSON.stringify({ email, password, recaptchaToken })
         })
         axios = await fetchy.json()
         loginSuccess = axios.loginSuccess
         const token = axios.newtoken;
-        localStorage.setItem('token', token)
-        //console.log("Éxito en loguear:", loginSuccess, "token:", localStorage.getItem('token'))
+        setToken(token)
+        //console.log("Éxito en loguear:", loginSuccess, "token:", getToken())
 
         if (loginSuccess) {
             if (rememberMeMW) {
-                localStorage.setItem('rememberMeMW', email)
-                localStorage.setItem('rememberMePSMW', password)
+                setRememberMeMWLocal(email)
+                setRememberMePSMWLocal(password)
             } else {
-                localStorage.removeItem('rememberMeMW')
-                localStorage.removeItem('rememberMePSMW')
+                removeEmailFromStorage()
+                removePswFromStorage()
             }
             history.push("/index")
         }

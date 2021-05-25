@@ -11,13 +11,14 @@ import { Col0b } from './columns/Col0b'
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import { SERVER } from '../config'
+import { getToken } from '../services/getToken'
 
 
 function EstadisticasLocalPage(props:any) {
 
     const { territorio } = useParams<typeParam>()
     const datos = useQuery(graphql.GETLOCALSTATISTICS,
-        {variables: {token:localStorage.getItem('token'), territorio}}
+        {variables: { token: getToken(), territorio}}
     ).data
 
     const reset = async (option:number) => {
@@ -37,13 +38,13 @@ function EstadisticasLocalPage(props:any) {
     }
     
     const resetNow = async (option:number) => {
-        const fetchy = await fetch(`${SERVER}/api/reset`, {
+        const response = await fetch(`${SERVER}/api/reset`, {
             method: 'POST',
             headers: {'Content-Type':'Application/json'},
-            body: JSON.stringify({token:localStorage.getItem('token'), option, territorio})
+            body: JSON.stringify({ token: getToken(), option, territorio})
         })
-        const response = await fetchy.json()
-        if (response.success) window.location.reload()
+        const data = await response.json()
+        if (data.success) window.location.reload()
     }
 
 

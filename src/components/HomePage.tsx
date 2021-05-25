@@ -1,4 +1,3 @@
-import React from 'react';
 import { H2, LINK2 } from './css/css'
 import { mobile } from './_App'
 
