@@ -1,55 +1,40 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { H2 } from './css/css'
-import { Card } from 'react-bootstrap'
+import { Card, Button } from 'react-bootstrap'
 import { useQuery } from '@apollo/client'
-import * as graphql from '../hoc/graphql'
+import * as graphql from '../services/graphql'
 import { Loading } from './_Loading'
 import { mobile } from './_App'
 import { ReturnBtn } from './_Return'
 import { SERVER } from '../config'
+import { localStatistic } from '../models/statistic'
 
 
 function EstadisticasPage(props:any) {
 
-    const [localStatistics, setLocalStatistics] = useState<any>({localData:[]})
-    const datos = useQuery(graphql.GETSTATISTICS, {variables: {token:localStorage.getItem('token')}}).data
-    
-    // const datos2 = useQuery(graphql.GETLOCALSTATISTICS,
-    //     {variables: {token:localStorage.getItem('token'), territorio:counter.toString()}}
-    // ).data
+    const token = () => {const t = localStorage.getItem('token'); console.log("sdsdsd", t); return t}
+    const datos = useQuery(graphql.GETSTATISTICS, {variables: { token: token() }}).data
+    const [localStatistics, setLocalStatistics] = useState<localStatistic[]|null>()
+    const [loading, setLoading] = useState(false)
 
-    let arreglo:any = []
-    let counter:number = 1
-        
-    useEffect(() => {
-        while (counter<57) {            
-            fetch(`${SERVER}/api/statistics`, {
-                method: 'POST',
-                headers: {'Content-Type':'Application/json'},
-                body: JSON.stringify({token:localStorage.getItem('token'), territorio:counter.toString()})
-            }).then(datos2 => datos2.json()).then(datos2 => {
-                //console.log(datos2, typeof datos2)
-                const valor = datos2
-                arreglo.push(valor)
-                //console.log("ARREGLO:", arreglo)
-                arreglo.sort((a:any, b:any) => {
-                    return parseInt(a.territorio) - parseInt(b.territorio)
+    const retrieveLocalStats = () => {
+        let tempArray: localStatistic[] = []
+        let counter = 1
+        while (counter<57) {
+            (async () => {
+                const response = await fetch(`${SERVER}/api/statistics`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'Application/json'},
+                    body: JSON.stringify({ token: token(), territorio: counter.toString() })
                 })
-            })
+                const data:localStatistic = await response.json()
+                if (data) {tempArray.push(data); console.log("Llegó", data.territorio)}
+                tempArray.sort((a:localStatistic, b:localStatistic) => parseInt(a.territorio) - parseInt(b.territorio))
+                if (tempArray.length===56){ setLocalStatistics(tempArray); setLoading(false) }
+            })()
             counter++
         }
-        console.log("Arreglo final", arreglo)
-        let i = 1
-        const writeNext = () => {
-            console.log(i)
-            i++
-            if (i===20) {setLocalStatistics({localData: arreglo}); return}
-            setTimeout(() => writeNext(), 1000)
-        }
-        writeNext()
-    }, [])
-
-//    console.log(localStatistics.localData)
+    }
     
 
     return (
@@ -103,11 +88,15 @@ function EstadisticasPage(props:any) {
         <br/>
         <br/>
 
-        {localStatistics && localStatistics.localData && !!localStatistics.localData.length
-        ?
-            localStatistics.localData.map((territory:any, index:number) =>
-                <a key={index} href={`/estadisticas/${territory.territorio}`}
-                >
+        
+        <Button variant="primary" className={!loading ? "d-block m-auto" : 'd-none'} onClick={()=>{setLoading(true); retrieveLocalStats();}}>
+            Traer Estadísticas por Territorio
+        </Button>
+
+        {localStatistics && !!localStatistics.length &&
+            localStatistics.map((territory:localStatistic, index:number) =>
+
+                <a key={index} href={`/estadisticas/${territory.territorio}`}>
                     <Card style={{
                         padding:'35px', textAlign: mobile ? 'center' : 'left',
                         display: 'block', margin: 'auto', color: 'black',
@@ -120,13 +109,17 @@ function EstadisticasPage(props:any) {
                     </Card>
                 </a>
             )
-        :
+        }
+        
+        {loading ?
             <>
                 <br/><br/><br/>
                 <Loading />
                 <br/>
-                <h4 style={{textAlign:'center'}}> Esto demora 20 segundos </h4>
+                <h4 style={{textAlign:'center'}}> Esto demora 15 segundos </h4>
             </>
+            :
+            <></>
         }
 
     </>

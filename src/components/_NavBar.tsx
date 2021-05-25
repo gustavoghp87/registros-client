@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import Axios from 'axios'
 import { SERVER } from '../config'
 import { useSelector } from 'react-redux'
-import { typeUser, typeState } from '../hoc/types'
+import { typeUser, typeState } from '../models/types'
 import { FaUserAlt } from 'react-icons/fa'
 import { mobile } from './_App'
 

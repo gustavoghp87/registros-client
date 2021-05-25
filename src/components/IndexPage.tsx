@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { typeState, typeUser, typeCampaign, typePack } from '../hoc/types'
+import { typeState, typeUser, typeCampaign, typePack } from '../models/types'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'

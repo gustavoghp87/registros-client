@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import './css/App.css'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Auth from '../hoc/auth'
@@ -22,7 +22,7 @@ import { SERVER } from '../config'
 import { split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
-import { isLocalhost } from '../hoc/functions'
+import { isLocalhost } from './tools/functions'
 
 
 export let mobile = window.screen.width<990 ? true : false
@@ -53,23 +53,25 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
+const token = () => localStorage.getItem('token')
+
 
 function App() {
 
-  const [user, setUser] = useState({darkMode:false})
   const [darkMode, setDarkMode] = useState(false)
 
   useEffect(() => {
     if (localStorage.getItem('darkMode')==='true') setDarkMode(true)
 
     ;(async () => {
-      const fetchy = await fetch(`${SERVER}/api/users/auth`, {
+      if (!token) return
+      const request = await fetch(`${SERVER}/api/users/auth`, {
         method: 'POST',
         headers: {'Content-Type':'application/json', 'Accept':'application/json'},
-        body: JSON.stringify({token:localStorage.getItem('token')})
+        body: JSON.stringify({ token:localStorage.getItem('token') })
       })
-      setUser(await fetchy.json())
-      console.log(user)
+      const data = await request.json()
+      if (data && data.darkMode!==undefined) setDarkMode(data.darkMode)
     })()
 
   }, [])
@@ -80,17 +82,18 @@ function App() {
     setDarkMode(!darkMode)
 
     ;(async () => {
-      const fetchy = await fetch(`${SERVER}/api/users/change-mode`, {
+      if (!token) return
+      const request = await fetch(`${SERVER}/api/users/change-mode`, {
         method: 'POST',
         headers: {'Content-Type': 'Application/json'},
-        body: JSON.stringify({token:localStorage.getItem('token'), darkMode:!user.darkMode})
+        body: JSON.stringify({ token, darkMode: !darkMode })
       })
-      const resp = await fetchy.json()
+      const resp = await request.json()
       if (resp.success) {
-          console.log("resp:", resp)
-          // if (resp.darkMode) {localStorage.setItem('darkMode', 'true'); setDarkMode(true)}
-          // else {localStorage.setItem('darkMode', 'false'); setDarkMode(false)}
-          window.location.reload()
+        console.log("resp:", resp)
+        // if (resp.darkMode) {localStorage.setItem('darkMode', 'true'); setDarkMode(true)}
+        // else {localStorage.setItem('darkMode', 'false'); setDarkMode(false)}
+        window.location.reload()
       }
       else console.log("Error cambiando el mode")
     })()
@@ -135,7 +138,9 @@ function App() {
 
             <div className='custom-control custom-switch' style={{position:'fixed', bottom:'20px'}}>
               <input type='checkbox' className='custom-control-input' id='customSwitches' checked={darkMode} onChange={() => changeDarkMode()} />
-              <label className='custom-control-label' htmlFor='customSwitches' style={{color:'red'}}> {mobile ? '' : 'Modo Oscuro'} </label>
+              <label className='custom-control-label' htmlFor='customSwitches' style={{color: darkMode ? 'white' : 'red'}}>
+                <b> {mobile ? '' : (darkMode ? 'Modo Claro' : 'Modo Oscuro')} </b>
+              </label>
             </div>
             
           </div>

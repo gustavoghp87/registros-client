@@ -1,7 +1,6 @@
-import React from 'react'
 import { Col, Row, Dropdown } from 'react-bootstrap'
 import { mobile } from '../_App'
-import { timeConverter } from '../../hoc/functions'
+import { timeConverter } from '../tools/functions'
 
 
 export const Col3:any = (props:any) => {

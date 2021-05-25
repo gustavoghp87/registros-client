@@ -86,6 +86,7 @@ export const GETSTATISTICS = gql`query statistics($token:String!) {
 
 export const GETLOCALSTATISTICS = gql`query statistics($token:String!, $territorio:String!) {
     getLocalStatistics (token:$token, territorio:$territorio) {
+        territorio
         count
         countContesto
         countNoContesto
