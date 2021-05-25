@@ -70,7 +70,10 @@ function App() {
         body: JSON.stringify({ token: getToken() })
       })
       const user = await request.json()
-      if (user && user.darkMode!==undefined) setDarkMode(user.darkMode)
+      if (user && user.darkMode!==undefined) {
+        setDarkMode(user.darkMode)
+        localStorage.setItem('darkMode', user.darkMode.toString())
+      }
     })()
   })
 
@@ -78,7 +81,6 @@ function App() {
     if (darkMode) localStorage.setItem('darkMode', 'false')
     else localStorage.setItem('darkMode', 'true')
     setDarkMode(!darkMode)
-
     ;(async () => {
       if (!getToken()) return
       const request = await fetch(`${SERVER}/api/users/change-mode`, {
