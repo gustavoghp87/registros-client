@@ -118,7 +118,7 @@ function EstadisticasPage(props:any) {
                 <br/><br/><br/>
                 <Loading />
                 <br/>
-                <h4 style={{textAlign:'center'}}> Esto demora 15 segundos </h4>
+                <h4 style={{textAlign:'center'}}> Esto demora 10 segundos </h4>
             </>
             :
             <></>

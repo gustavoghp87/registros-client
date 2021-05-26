@@ -24,7 +24,7 @@ function IndexPage(props:any) {
             asignados.sort((a:number, b:number) => a - b)
             setTerritorios(asignados)
         }
-        //aaa()
+        aaa()
         
     }, [user])
 

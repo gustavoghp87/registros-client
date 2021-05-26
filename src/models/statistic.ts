@@ -1,4 +1,4 @@
-export interface statistic {
+export type statistic = {
     count: number
     countContesto: number
     countNoContesto: number
@@ -6,7 +6,6 @@ export interface statistic {
     countNoLlamar: number
     countNoAbonado: number
     libres: number
-
 }
 
 export interface localStatistic extends statistic {

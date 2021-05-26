@@ -1,7 +1,9 @@
 
+export type manzana = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 
+
 export type typeParam = {
     territorio: string
-    manzana: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 
+    manzana: manzana
     todo: 'todo' | ''
     id: string
 }
@@ -10,6 +12,10 @@ export type typeTerritorio = {
     unterritorio: typeVivienda[]
 }
 
+export type estado = "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | "No llamar"
+
+export type variante = "success" | "dark" | "primary" | "danger" | "warning" | "light"
+
 export type typeVivienda = {
     _id?: Object
     inner_id: string
@@ -17,10 +23,10 @@ export type typeVivienda = {
     manzana: string
     direccion: string
     telefono: string
-    estado:  "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | "No llamar"
+    estado: estado
     noAbonado: boolean
     fechaUlt?: string
-    variante: "success" | "dark" | "primary" | "danger" | "warning" | "light"
+    variante: variante
     asignado?: boolean
 }
 
