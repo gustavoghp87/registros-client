@@ -6,7 +6,7 @@ Aplicación frontend en React y TypeScript con React Router, Router Dom, Hooks y
 
 Corriendo en AWS Amplify y enrutada por Route 53
 
-Consume la Restful API [registros-rest-api]
+Consume la API [registros-rest-api]
 
 GraphQL desde Apollo Client, subscripciones por el mismo puerto (split)
 
