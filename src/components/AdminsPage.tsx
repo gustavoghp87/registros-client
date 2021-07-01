@@ -72,9 +72,10 @@ function AdminsPage(props:any) {
 
         <H2 style={{fontSize: mobile ? '2.2rem' : ''}}> ADMINISTRADORES </H2>
 
-        <Button variant={'danger'} style={{display:'block', margin:'30px auto 0 auto'}} onClick={()=>window.location.href='/celulares2021'}>
+        {/* <Button variant={'danger'} style={{display:'block', margin:'30px auto 0 auto'}}
+         onClick={()=>window.location.href='/celulares2021'}>
             Ir a Campaña Celulares 2021
-        </Button>
+        </Button> */}
 
 
         <div style={{display:'block', margin: mobile ? '40px auto' : '80px auto'}}>

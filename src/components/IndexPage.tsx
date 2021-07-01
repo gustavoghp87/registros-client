@@ -16,7 +16,7 @@ function IndexPage(props:any) {
     const user:typeUser = useSelector((state:typeState) => state.user.userData)
     const [Territorios, setTerritorios] = useState([0])
 
-    const [Campaign, setCampaign] = useState<typeCampaign>({packs: []})
+    // const [Campaign, setCampaign] = useState<typeCampaign>({packs: []})
 
     useEffect(() => {
         if (user && user.asign && user.asign.length) {
@@ -24,20 +24,20 @@ function IndexPage(props:any) {
             asignados.sort((a:number, b:number) => a - b)
             setTerritorios(asignados)
         }
-        aaa()
+        // aaa()
         
     }, [user])
 
-    const aaa = async () => {
-        const response = await fetch(`${SERVER}/api/campaign/getCampaign`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ token: getToken() })
-        })
-        const packs = await response.json()
-        if (!packs) return console.log("Coming packs failed")
-        setCampaign({ packs })
-    }
+    // const aaa = async () => {
+    //     const response = await fetch(`${SERVER}/api/campaign/getCampaign`, {
+    //         method: 'POST',
+    //         headers: {'Content-Type': 'application/json'},
+    //         body: JSON.stringify({ token: getToken() })
+    //     })
+    //     const packs = await response.json()
+    //     if (!packs) return console.log("Coming packs failed")
+    //     setCampaign({ packs })
+    // }
 
     const btnTerri = {
         width: '120px',
@@ -87,7 +87,8 @@ function IndexPage(props:any) {
                 </Row>
 
 
-                {Campaign && Campaign.packs && !!Campaign.packs.length &&
+                {/* CAMPAÑA 2020-2021 */}
+                {/* {Campaign && Campaign.packs && !!Campaign.packs.length &&
                 <>
                 
                     <hr style={{border: '2px solid lightgray', borderRadius:'5px'}}/>
@@ -116,7 +117,7 @@ function IndexPage(props:any) {
 
                     </Row>
                 </>
-                }
+                } */}
 
             </div>
         </>
