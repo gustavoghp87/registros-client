@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { typeState, typeUser, typeCampaign, typePack } from '../models/types'
+import { typeState, typeUser } from '../models/typesUsuarios'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
 import { mobile } from './_App'
 import { Row } from 'react-bootstrap'
-import { SERVER } from '../config'
-import { getToken } from '../services/getToken'
 
 
 function IndexPage(props:any) {

@@ -42,7 +42,7 @@ export const Col0b:any = (props:any) => {
 
     return (
 
-        <Col style={{textAlign:'center', marginBottom:'30px', padding: mobile ? '0' : '5px'}}>
+        <Col style={{textAlign:'center', marginBottom:'7px', padding: mobile ? '0' : '5px'}}>
 
             <ButtonGroup toggle>
 

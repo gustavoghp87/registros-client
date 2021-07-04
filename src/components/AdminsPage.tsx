@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ReturnBtn } from './_Return'
 import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
-import { typeUsers, typeUser } from '../models/types'
+import { typeUsers, typeUser } from '../models/typesUsuarios'
 import { H2 } from './css/css'
 import { Loading } from './_Loading'
 import { useQuery, useMutation, useSubscription } from '@apollo/client'

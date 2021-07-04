@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { typeUser, typeState } from '../models/types'
+import { typeUser, typeState } from '../models/typesUsuarios'
 import { Card, Button, Form } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'

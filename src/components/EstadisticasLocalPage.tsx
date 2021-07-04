@@ -5,7 +5,7 @@ import * as graphql from '../services/graphql'
 import { Loading } from './_Loading'
 import { mobile } from './_App'
 import { useParams } from 'react-router'
-import { typeParam } from '../models/types'
+import { typeParam } from '../models/typesTerritorios'
 import { ReturnBtn } from './_Return'
 import { Col0b } from './columns/Col0b'
 import { confirmAlert } from 'react-confirm-alert'; // Import

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button, Card, Container, Row } from 'react-bootstrap'
-import { useParams } from 'react-router'
-import { typeParam, typeTerritorio, typeVivienda } from '../models/types'
+import { useHistory, useParams } from 'react-router'
+import { typeParam, typeTerritorio, typeVivienda } from '../models/typesTerritorios'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { mobile } from './_App'
@@ -14,12 +14,14 @@ import { Col2 } from './columns/Col2'
 import { Col3 } from './columns/Col3'
 import { Col4 } from './columns/Col4'
 import { getToken } from '../services/getToken'
+import { checkTerritorioAsFinished, getStateOfTerritories } from '../services/stateOfterritories'
 
 
 function TerritoriosPage(props:any) {
 
     const { territorio, manzana, todo } = useParams<typeParam>()
-    const [viviendas, setviviendas] = useState<typeTerritorio>({unterritorio:[]})
+    const [viviendas, setViviendas] = useState<typeTerritorio>({ unterritorio: [] })
+    const [terminado, setTerminado] = useState<boolean>(false)
     const [showMap, setShowMap] = useState(false)
     const [traidos, setTraidos] = useState(10)
     const [traerTodos, setTraerTodos] = useState(false)
@@ -50,10 +52,11 @@ function TerritoriosPage(props:any) {
     const data = useQuery(graphql.GETTERRITORY, {variables}).data
     const manzTraidas = useQuery(graphql.COUNTBLOCKS, {variables: {terr:territorio}}).data
     const escuchar = useSubscription(graphql.ESCUCHARCAMBIODEESTADO)
+    const history = useHistory()
     const [changeState] = useMutation(graphql.CHANGESTATE)
     const [textBtn, setTextBtn] = useState('Traer 10 más')
 
-    console.log("aaaa", territorio, manzana, manzTraidas);
+    // console.log("aaaa", territorio, manzana, manzTraidas);
     
     
     const cambiarEstado = (inner_id:String, estado:String, noAbonado:Boolean|null, asignado:Boolean|null) => {
@@ -67,6 +70,11 @@ function TerritoriosPage(props:any) {
         setTraidos(traidos+10)
     }
 
+    const checkAsFinished = async () => {
+        const success = await checkTerritorioAsFinished(territorio, !terminado)
+        if (success) history.push("/index")
+    }
+
 
     //console.log("data:", data)
     //console.log("traídos:", traidos)
@@ -75,9 +83,12 @@ function TerritoriosPage(props:any) {
 
     useEffect(() => {
         if (data) {
-            setviviendas({unterritorio: data.getApartmentsByTerritory})
-            new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
-            setTextBtn(`Traer 10 más (${traidos})`)
+            getStateOfTerritories(territorio).then(stateOfTerritory => {
+                setViviendas({ unterritorio: data.getApartmentsByTerritory })
+                setTerminado(stateOfTerritory)
+                new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
+                setTextBtn(`Traer 10 más (${traidos})`)
+            })
         }
         if (escuchar.data) {
             let nuevoTodo:any = {unterritorio: []}
@@ -107,10 +118,10 @@ function TerritoriosPage(props:any) {
                         asignado: viviendas.unterritorio[index].asignado
                     })
             })
-            setviviendas(nuevoTodo)
+            setViviendas(nuevoTodo)
         }
         if (isTodo) setTraerTodos(true)
-        try {setManzanas(manzTraidas.countBlocks.cantidad)} catch {}
+        try { setManzanas(manzTraidas.countBlocks.cantidad) } catch {}
     }, [data, escuchar.data, traidos, manzTraidas, isTodo])
     
 
@@ -134,7 +145,7 @@ function TerritoriosPage(props:any) {
                 fontSize: mobile ? '2.3rem' : '2.8rem',
                 fontWeight:'bolder'
             }}>
-                TERRITORIO {territorio}
+                TERRITORIO {territorio} {terminado ? `- TERMINADO` : ``} 
             </h1>
 
 
@@ -170,6 +181,21 @@ function TerritoriosPage(props:any) {
                 manzana={manzana}
                 isTodo={isTodo}
             />
+
+            <Button size={mobile ? 'sm' : 'lg'}
+                onClick={() => checkAsFinished()}
+                style={{
+                    backgroundColor: '#4a6da7',
+                    border: '1px solid #4a6da7',
+                    borderRadius: '5px',
+                    display: terminado ? 'none' : 'block',
+                    margin: 'auto',
+                    marginBottom: '50px',
+                    fontSize: 15
+                }}
+            >
+                Marcar este territorio como terminado
+            </Button>
 
 
             {viviendas && viviendas.unterritorio && !!viviendas.unterritorio.length &&

@@ -22,7 +22,7 @@ import { SERVER } from '../config'
 import { split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
-import { isLocalhost } from './tools/functions'
+import { isLocalhost } from '../services/functions'
 import { getToken } from '../services/getToken'
 
 
