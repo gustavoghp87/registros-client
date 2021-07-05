@@ -123,11 +123,11 @@ function TerritoriosPage(props:any) {
 
     useEffect(() => {
         if (data) {
+            setViviendas({ unterritorio: data.getApartmentsByTerritory })
+            new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
+            setTextBtn(`Traer 10 más (${traidos})`)
             getStateOfTerritory(territorio).then(stateOfTerritory => {
-                setViviendas({ unterritorio: data.getApartmentsByTerritory })
                 setTerminado(stateOfTerritory)
-                new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
-                setTextBtn(`Traer 10 más (${traidos})`)
             })
         }
         if (escuchar.data) {
