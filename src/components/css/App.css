@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+
+/* statistics animation */
+
+.animate-me {
+  -webkit-animation: bgcolorchange 1s infinite; /* Chrome, Safari, Opera */ 
+  animation: 1s infinite bgcolorchange;
+}
+@keyframes bgcolorchange {
+  0% {
+    background-color: red;
+  }
+  50% {
+    background-color: black;
+  }
+  100% {
+    background-color: red;
+  }
+}
+/* Chrome, Safari, Opera */
+ @-webkit-keyframes bgcolorchange {
+      0%   {background: red;}
+      50%  {background: black;}
+      100% {background: red;}
+ }

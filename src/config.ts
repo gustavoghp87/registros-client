@@ -1,5 +1,5 @@
 
-const local = true
+const local = false
 
 export let SERVER: string
 if (local) SERVER = "http://localhost:4005"

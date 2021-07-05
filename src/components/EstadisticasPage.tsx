@@ -9,6 +9,8 @@ import { ReturnBtn } from './_Return'
 import { SERVER } from '../config'
 import { localStatistic } from '../models/statistic'
 import { getToken } from '../services/getToken'
+import { getStateOfTerritories } from '../services/stateOfterritories'
+import { useEffect } from 'react'
 
 
 function EstadisticasPage(props:any) {
@@ -17,6 +19,7 @@ function EstadisticasPage(props:any) {
     const [localStatistics, setLocalStatistics] = useState<localStatistic[]|null>()
     const [loading, setLoading] = useState(false)
     const [showBtn, setShowBtn] = useState(true)
+    const [states, setStates] = useState<any>()
 
     const retrieveLocalStats = () => {
         let tempArray: localStatistic[] = []
@@ -31,12 +34,16 @@ function EstadisticasPage(props:any) {
                 const data:localStatistic = await response.json()
                 if (data) {tempArray.push(data); console.log("Llegó", data.territorio)}
                 tempArray.sort((a:localStatistic, b:localStatistic) => parseInt(a.territorio) - parseInt(b.territorio))
-                if (tempArray.length===56){ setLocalStatistics(tempArray); setLoading(false) }
+                if (tempArray.length===56) { setLocalStatistics(tempArray); setLoading(false) }
+            })()
+            if (counter === 50) (async () => {
+                const states1 = await getStateOfTerritories()
+                setStates(states1)
             })()
             counter++
         }
     }
-    
+
 
     return (
     <>
@@ -96,21 +103,28 @@ function EstadisticasPage(props:any) {
         </Button>
 
         {localStatistics && !!localStatistics.length &&
-            localStatistics.map((territory:localStatistic, index:number) =>
-
-                <a key={index} href={`/estadisticas/${territory.territorio}`}>
-                    <Card style={{
-                        padding:'35px', textAlign: mobile ? 'center' : 'left',
-                        display: 'block', margin: 'auto', color: 'black',
-                        maxWidth: mobile ? '80%' : '55%', marginBottom:'20px',
-                        backgroundColor: territory.libres < 50 ? 'red' : (
-                            territory.libres < 100 ? 'yellow': 'green')
-                    }}>
-                        <h3> Territorio {territory.territorio} </h3>
-                        <h4> Quedan {territory.libres} para predicar </h4>
-                    </Card>
-                </a>
-            )
+            localStatistics.map((territory:localStatistic, index:number) => {
+                let terminado = false
+                if (states) states.forEach((state:any) => {
+                    if (state.territorio == territory.territorio) terminado = state.estado                    
+                })
+                return (
+                    <a key={index} href={`/estadisticas/${territory.territorio}`}>
+                        <Card
+                            style = {{
+                                padding:'35px', textAlign: mobile ? 'center' : 'left',
+                                display: 'block', margin: 'auto', color: 'black',
+                                maxWidth: mobile ? '80%' : '55%', marginBottom:'20px',
+                                backgroundColor: territory.libres < 50 ? 'red' : (territory.libres < 100 ? 'yellow': 'green')
+                            }}
+                            className={terminado ? 'animate-me' : ''}
+                        >
+                            <h3> Territorio {territory.territorio} {terminado ? '- TERMINADO' : ''} </h3>
+                            <h4> Quedan {territory.libres} para predicar </h4>
+                        </Card>
+                    </a>
+                )
+            })
         }
         
         {loading ?

@@ -14,7 +14,9 @@ import { Col2 } from './columns/Col2'
 import { Col3 } from './columns/Col3'
 import { Col4 } from './columns/Col4'
 import { getToken } from '../services/getToken'
-import { checkTerritorioAsFinished, getStateOfTerritories } from '../services/stateOfterritories'
+import { checkTerritorioAsFinished, getStateOfTerritory } from '../services/stateOfterritories'
+import { confirmAlert } from 'react-confirm-alert'
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 
 function TerritoriosPage(props:any) {
@@ -71,10 +73,48 @@ function TerritoriosPage(props:any) {
     }
 
     const checkAsFinished = async () => {
-        const success = await checkTerritorioAsFinished(territorio, !terminado)
+        const success = await checkTerritorioAsFinished(territorio, true)
         if (success) history.push("/index")
     }
 
+    const checkAsUnfinished = async () => {
+        const success = await checkTerritorioAsFinished(territorio, false)
+        if (success) window.location.reload()
+    }
+
+    const submit1 = () => {
+        confirmAlert({
+            title: '¿Confirmar finalizar territorio?',
+            message: `El territorio ${territorio} se dará por terminado y se te desasignará`,
+            buttons: [
+                {
+                    label: `Terminar Territorio ${territorio}`,
+                    onClick: () => checkAsFinished()
+                },
+                {
+                    label: 'Cancelar',
+                    onClick: () => {}
+                }
+            ]
+        })
+    }
+
+    const submit2 = () => {
+        confirmAlert({
+            title: '¿Confirmar abrir territorio?',
+            message: `El territorio ${territorio} se abrirá de nuevo`,
+            buttons: [
+                {
+                    label: `Abrir Territorio ${territorio}`,
+                    onClick: () => checkAsUnfinished()
+                },
+                {
+                    label: 'Cancelar',
+                    onClick: () => {}
+                }
+            ]
+        })
+    }
 
     //console.log("data:", data)
     //console.log("traídos:", traidos)
@@ -83,7 +123,7 @@ function TerritoriosPage(props:any) {
 
     useEffect(() => {
         if (data) {
-            getStateOfTerritories(territorio).then(stateOfTerritory => {
+            getStateOfTerritory(territorio).then(stateOfTerritory => {
                 setViviendas({ unterritorio: data.getApartmentsByTerritory })
                 setTerminado(stateOfTerritory)
                 new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
@@ -134,7 +174,7 @@ function TerritoriosPage(props:any) {
                 margin: 'auto',
                 zIndex: 3}}
             >
-                <Button variant={"danger"} onClick={()=>window.location.reload()}
+                <Button variant="danger" onClick={() => window.location.reload()}
                     style={{display: 'block', margin: 'auto'}}
                 > Refrescar </Button>
             </div>
@@ -183,7 +223,7 @@ function TerritoriosPage(props:any) {
             />
 
             <Button size={mobile ? 'sm' : 'lg'}
-                onClick={() => checkAsFinished()}
+                onClick={() => submit1()}
                 style={{
                     backgroundColor: '#4a6da7',
                     border: '1px solid #4a6da7',
@@ -195,6 +235,21 @@ function TerritoriosPage(props:any) {
                 }}
             >
                 Marcar este territorio como terminado
+            </Button>
+
+            <Button size={mobile ? 'sm' : 'lg'}
+                onClick={() => submit2()}
+                style={{
+                    backgroundColor: 'red',
+                    border: '1px solid red',
+                    borderRadius: '5px',
+                    display: terminado ? 'block' : 'none',
+                    margin: 'auto',
+                    marginBottom: '50px',
+                    fontSize: 15
+                }}
+            >
+                Desmarcar este territorio como terminado
             </Button>
 
 
