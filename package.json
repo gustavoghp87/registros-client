@@ -18,7 +18,7 @@
     "bootstrap": "^4.6.0",
     "graphql": "^15.5.0",
     "react": "^17.0.1",
-    "react-bootstrap": "^1.4.3",
+    "react-bootstrap": "^1.6.1",
     "react-confirm-alert": "^2.7.0",
     "react-dom": "^17.0.1",
     "react-google-recaptcha-v3": "^1.7.1",

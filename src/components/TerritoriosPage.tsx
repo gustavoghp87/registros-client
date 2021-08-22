@@ -13,6 +13,7 @@ import { Col1 } from './columns/Col1'
 import { Col2 } from './columns/Col2'
 import { Col3 } from './columns/Col3'
 import { Col4 } from './columns/Col4'
+import { BsToaster } from './columns/BsToaster'
 import { getToken } from '../services/getToken'
 import { checkTerritorioAsFinished, getStateOfTerritory } from '../services/stateOfterritories'
 import { confirmAlert } from 'react-confirm-alert'
@@ -178,6 +179,8 @@ function TerritoriosPage(props:any) {
                     style={{display: 'block', margin: 'auto'}}
                 > Refrescar </Button>
             </div>
+
+            <BsToaster />
 
             <h1 style={{
                 textAlign:'center',
