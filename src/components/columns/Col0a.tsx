@@ -1,33 +1,25 @@
-import React from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
-import { mobile } from '../_App'
-// import { LINK2 } from '../css/css'
+import { isMobile } from '../../services/functions'
 
-
-export const Col0a:any = (props:any) => {
+export const Col0a = (props: any) => {
 
     const { manzanas } = props
 
     let radiosManzana:any = []
 
-    try {
-        manzanas.forEach((manzana:string) => {
-            radiosManzana.push({name: `Manzana ${manzana}`, value: manzana})
-        })
-    } catch {}
-
+    manzanas.forEach((manzana:string) => {
+        radiosManzana.push({ name: `Manzana ${manzana}`, value: manzana })
+    })
 
     return (
-
         <Col style={{textAlign:'center', marginBottom:'0', padding: '0', maxWidth:'100%'}}>
-
             {manzanas && !!manzanas.length &&
                 <div style={{marginBottom:'10px'}}>
-                    <ButtonGroup toggle vertical={mobile ? true : false}>
+                    <ButtonGroup toggle vertical={isMobile ? true : false}>
                         {radiosManzana.map((radio:any, idx:any) => (
                             <ToggleButton
                                 key={idx} type="radio" variant="danger" name="radio" value={radio.value}
-                                checked={props.manzana === radio.value} style={{padding:'0'}}
+                                checked={props.manzana === radio.value.toString()} style={{padding:'0'}}
                             >
                                 <a href={`/territorios/${props.territorio}/${radio.value}`}
                                     style={{color:'white'}}>
@@ -43,7 +35,6 @@ export const Col0a:any = (props:any) => {
                     </ButtonGroup>
                 </div>
             }
-
         </Col>
     )
 }

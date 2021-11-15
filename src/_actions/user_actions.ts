@@ -1,19 +1,10 @@
 import { AUTH_USER } from './types'
-import { SERVER } from '../config'
-import { getToken } from '../services/getToken'
+import { authUserService } from '../services/userServices'
 
 
 export const auth = async () => {
 
-    const fetchy = await fetch(`${SERVER}/api/users/auth`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({ token: getToken() })
-    })
-    const request = await fetchy.json()
+    const request = await authUserService()
 
     return {
         type: AUTH_USER,

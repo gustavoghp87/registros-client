@@ -4,7 +4,7 @@ import { combineReducers } from 'redux'
 
 type RootState = ReturnType<any>
 
-const rootReducer:RootState = combineReducers({
+const rootReducer: RootState = combineReducers({
     user
 })
 

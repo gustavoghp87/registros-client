@@ -1,36 +1,26 @@
 import { useState, useEffect } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
-import Axios from 'axios'
-import { SERVER } from '../config'
 import { useSelector } from 'react-redux'
-import { typeUser, typeState } from '../models/typesUsuarios'
 import { FaUserAlt } from 'react-icons/fa'
-import { mobile } from './_App'
-import { getToken } from '../services/getToken'
-import { setToken } from '../services/setToken'
+import { logoutService } from '../services/userServices'
+import { isMobile } from '../services/functions'
+import { typeUser, typeState } from '../models/typesUsuarios'
 
-
-function NavBar() {
-
-  const user:typeUser = useSelector((state:typeState) => state.user.userData)
+export const NavBar = () => {
 
   const history = useHistory()
+  const user: typeUser = useSelector((state: typeState) => state.user.userData)
+  const [scrollDown, setScrollDown] = useState<boolean>(false)
 
-  const logoutHandle = async () => {
-    const axios = await Axios.post(`${SERVER}/api/users/logout`, { token: getToken() })
-    const response = axios.data.response
-    if (response==="ok") alert("Sesión de usuario cerrada con éxito")
-    else alert("Algo falló y no cerró sesión bien")
-    setToken('')
+  const logoutHandler = async () => {
+    await logoutService()
     history.push("/login")
   }
 
-  const [scrollDown, setScrollDown] = useState(false)
-
   useEffect(() => {
     document.addEventListener("scroll", () => {
-      if (window.scrollY>100) setScrollDown(true)
+      if (window.scrollY > 100) setScrollDown(true)
       else setScrollDown(false)
     })
   }, [])
@@ -57,9 +47,9 @@ function NavBar() {
               <Nav.Link href="/login" style={{color:'#fbfbfb'}}>&nbsp; &nbsp;Entrar&nbsp; &nbsp;</Nav.Link>
             }
 
-            {user && user.role===1 &&
+            {user && user.role === 1 &&
               <>
-              <Nav.Link href="/estadisticas" style={{color:'#fbfbfb', margin: window.screen.width<989 ? '8px 0' : '0'}}>
+              <Nav.Link href="/estadisticas" style={{color:'#fbfbfb', margin: isMobile ? '8px 0' : '0'}}>
                 &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
               </Nav.Link>
               <Nav.Link href="/admins" style={{color:'#fbfbfb'}}>&nbsp; &nbsp;Administradores&nbsp; &nbsp;</Nav.Link>
@@ -69,8 +59,8 @@ function NavBar() {
 
           {user && user.isAuth &&
             <>
-            <Nav.Link href="/user" style={{display:'flex', alignItems:'center', marginBottom: window.screen.width<992 ? '12px' : '0'}}>
-              <span style={{display: mobile ? 'none' : 'block'}}>
+            <Nav.Link href="/user" style={{display:'flex', alignItems:'center', marginBottom: isMobile ? '12px' : '0'}}>
+              <span style={{display: isMobile ? 'none' : 'block'}}>
                 <FaUserAlt size="17px" color="lightgray" />
                 &nbsp;&nbsp;
               </span>
@@ -80,18 +70,19 @@ function NavBar() {
 
             <Nav>
               <Form inline>
-                <Button variant="outline-info" style={{color:'#fbfbfb', borderColor:'#fbfbfb'}} onClick={()=>logoutHandle()}>CERRAR SESIÓN</Button>
+                <Button variant="outline-info" style={{color:'#fbfbfb', borderColor:'#fbfbfb'}} onClick={() => logoutHandler()}>
+                  CERRAR SESIÓN
+                </Button>
               </Form>
             </Nav>
             </>
           }
-
         </Navbar.Collapse>
       </Navbar>
       
 
-      {user && user.isAuth &&
-        ((mobile && !scrollDown) || !mobile) ?
+      {user && user.isAuth && ((isMobile && !scrollDown) || !isMobile)
+        ?
         <div style={{position:'fixed', right:'0', marginRight:'18px', marginTop:'5px', zIndex:1}}>
           <p style={{textAlign:'right', marginBottom:'0'}}> {user.email} </p>
           <p style={{textAlign:'right', marginBottom:'0'}}> Grupo: {user.group} </p>
@@ -104,6 +95,3 @@ function NavBar() {
     </div>
   )
 }
-
-
-export default NavBar

@@ -30,6 +30,14 @@
     <title> Misericordia Web </title>
   </head>
   <body>
+    <script>
+      if (window.localStorage.getItem("version4FirstLogin") === "true") {
+        window.localStorage.setItem("version4FirstLogin", "false")
+      } else if (window.localStorage.getItem("version4FirstLogin") !== "false") {
+        window.localStorage.setItem("version4FirstLogin", "true")
+        window.location.reload(true)
+      }
+    </script>
     <noscript> No se puede ver la aplicación porque tienes desactivado JavaScript. </noscript>
     <div id="root"></div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

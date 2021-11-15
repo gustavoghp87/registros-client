@@ -1,28 +1,32 @@
-import { useQuery } from '@apollo/client'
-import { useState } from 'react'
-import * as graphql from '../../services/graphql'
-import { getToken } from '../../services/getToken'
+import { useEffect, useState } from 'react'
 import { Toast } from 'react-bootstrap'
 import { AiOutlineWarning } from 'react-icons/ai'
 import { useParams } from 'react-router-dom'
+import { localStatistic } from '../../models/statistic'
 import { typeParam } from '../../models/typesTerritorios'
+import { getLocalStatisticsService } from '../../services/statisticsServices'
 
-export const BsToaster:any = (props:any) => {
+export const BsToaster = (props:any) => {
 
-    const [showA, setShowA] = useState(true)
-    const toggleShowA = () => setShowA(!showA)
     const { territorio } = useParams<typeParam>()
+    const [showA, setShowA] = useState<boolean>(true)
+    const [localStat, setLocalStat] = useState<localStatistic>()
+    
+    const toggleShowA = () => setShowA(!showA)
 
-    const datos = useQuery(graphql.GETLOCALSTATISTICS,
-        {variables: { token: getToken(), territorio}}
-    ).data
+    useEffect(() => {
+        (async () => {
+            const datos: localStatistic|null = await getLocalStatisticsService(territorio)
+            if (datos) setLocalStat(datos)
+        })()
+    }, [territorio])
 
     return (
         <>
-            {datos &&
-                datos.getLocalStatistics !== null && datos.getLocalStatistics !== undefined &&
-                datos.getLocalStatistics.libres !== null && datos.getLocalStatistics.libres !== undefined &&
-                datos.getLocalStatistics.libres < 50 ?
+            {localStat &&
+                localStat !== null && localStat !== undefined &&
+                localStat.libres !== null && localStat.libres !== undefined &&
+                localStat.libres < 50 ?
 
                 <Toast className="mt-5 mx-auto" show={showA} onClose={toggleShowA}>
                     <Toast.Header className="d-block">
@@ -32,8 +36,8 @@ export const BsToaster:any = (props:any) => {
                         </span>
                     </Toast.Header>
                     <Toast.Body>
-                        {datos.getLocalStatistics.libres > 0 ?
-                            <span> A este territorio le quedan solo {datos.getLocalStatistics.libres} teléfonos para llamar </span>
+                        {localStat.libres > 0 ?
+                            <span> A este territorio le quedan solo {localStat.libres} teléfonos para llamar </span>
                             :
                             <span> No quedan teléfonos para llamar </span>
                         }

@@ -14,7 +14,7 @@ export type typeVivienda = {
 }
 
 export type typeTerritorio = {
-    unterritorio: typeVivienda[]
+    households: typeVivienda[]
 }
 
 export type manzana = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 
@@ -26,24 +26,18 @@ export type typeParam = {
     id: string
 }
 
-export type estado = "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | "No llamar"
+export const noPredicado: string = "No predicado"
+export const contesto: string = "Contestó"
+export const noContesto: string = "No contestó"
+export const aDejarCarta: string = "A dejar carta"
+export const noLlamar: string = "No llamar"
+
+type estado = "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | "No llamar"
 
 export type variante = "success" | "dark" | "primary" | "danger" | "warning" | "light"
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-
-
-export type typePack = {
-    paquete: number
-    id: number
-    desde: number
-    al: number
-    asignado?: string
-    terminado?: boolean
-    llamados?: number[]
-}
-
-export type typeCampaign = {
-    packs: typePack[]
+export type stateOfTerritory = {
+    _id?: object
+    territorio: string
+    estado: boolean
 }

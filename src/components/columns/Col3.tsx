@@ -1,19 +1,17 @@
 import { Col, Row, Dropdown } from 'react-bootstrap'
-import { mobile } from '../_App'
-import { timeConverter } from '../../services/functions'
+import { isMobile, timeConverter } from '../../services/functions'
 
-
-export const Col3:any = (props:any) => {
+export const Col3 = (props:any) => {
 
     const { vivienda, cambiarEstado } = props
 
     return (
     
-    <Col xs={12} md={3} style={{margin: mobile ? 'auto' : '0 30px'}}>
+    <Col xs={12} md={3} style={{margin: isMobile ? 'auto' : '0 30px'}}>
 
-        <Row style={{textAlign:"center", height:"30%", margin: mobile ? '50 auto' : '20px auto 0 auto'}}>
+        <Row style={{textAlign:"center", height:"30%", margin: isMobile ? '50 auto' : '20px auto 0 auto'}}>
 
-            <Dropdown style={{width:'100%', margin: mobile ? '25px auto' : '30px auto'}}>
+            <Dropdown style={{width:'100%', margin: isMobile ? '25px auto' : '30px auto'}}>
 
                 <Dropdown.Toggle id="dropdown-basic" variant={vivienda.variante}
                     style={{width:'80%', border:'1px solid black'}}
@@ -24,31 +22,31 @@ export const Col3:any = (props:any) => {
                 <Dropdown.Menu>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "No predicado", vivienda.noAbonado, vivienda.asignado)}
+                        () => {cambiarEstado(vivienda.inner_id, "No predicado", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         No predicado
                     </Dropdown.Item>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "Contestó", vivienda.noAbonado, vivienda.asignado)}
+                        () => {cambiarEstado(vivienda.inner_id, "Contestó", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         Contestó
                     </Dropdown.Item>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "No contestó", vivienda.noAbonado, vivienda.asignado)}
+                        () => {cambiarEstado(vivienda.inner_id, "No contestó", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         No contestó
                     </Dropdown.Item>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "A dejar carta", vivienda.noAbonado, vivienda.asignado)}
+                        () => {cambiarEstado(vivienda.inner_id, "A dejar carta", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         A dejar carta
                     </Dropdown.Item>
                     
                     <Dropdown.Item onClick={
-                        ()=>{cambiarEstado(vivienda.inner_id, "No llamar", vivienda.noAbonado, vivienda.asignado)}
+                        () => {cambiarEstado(vivienda.inner_id, "No llamar", vivienda.noAbonado, vivienda.asignado)}
                     }>
                         No llamar
                     </Dropdown.Item>
@@ -66,11 +64,11 @@ export const Col3:any = (props:any) => {
                         maxWidth:'18rem',
                         backgroundColor:'rgb(214, 214, 214)',
                         display:
-                            vivienda.estado==="No predicado" // && vivienda.noAbonado===false
+                            vivienda.estado === "No predicado" // && vivienda.noAbonado===false
                             ? 'none' : 'block',
                         margin:'auto'
                     }}
-                    >
+                >
                     
                     <div className='card-header' style={{padding:'0.2rem 0.5rem'}}>
                         <p className='card-text'>

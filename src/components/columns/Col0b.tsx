@@ -1,11 +1,9 @@
-import React from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { mobile } from '../_App'
+import { isMobile } from '../../services/functions'
 import { LINK2 } from '../css/css'
 
-
-export const Col0b:any = (props:any) => {
+export const Col0b = (props:any) => {
 
     let manzana
     if (props.manzana) manzana = props.manzana
@@ -13,7 +11,7 @@ export const Col0b:any = (props:any) => {
     const user = useSelector((state:any) => state.user)
     let radios = []
 
-    if (mobile)
+    if (isMobile)
         radios = user && user.userData && user.userData.isAdmin ? 
             [
                 { name: props.isTodo ? 'Ver no pred' : 'Viendo no pred', value: '1' },
@@ -42,7 +40,7 @@ export const Col0b:any = (props:any) => {
 
     return (
 
-        <Col style={{textAlign:'center', marginBottom:'7px', padding: mobile ? '0' : '5px'}}>
+        <Col style={{textAlign:'center', marginBottom:'7px', padding: isMobile ? '0' : '5px'}}>
 
             <ButtonGroup toggle>
 

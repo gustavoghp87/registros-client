@@ -1,8 +1,4 @@
+export const recaptchaPublicKey = "6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9"
 
-const local = false
-
-export let SERVER: string
-if (local) SERVER = "http://localhost:4005"
-else SERVER = "https://registros-rest-api.herokuapp.com"
-
-console.log(SERVER)
+const local = true
+export let SERVER: string = local ? "http://localhost:4005" : "https://registros-rest-api.herokuapp.com"

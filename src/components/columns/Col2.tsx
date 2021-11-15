@@ -1,15 +1,13 @@
-import React from 'react'
 import { Col, Row } from 'react-bootstrap'
-import { mobile } from '../_App'
+import { isMobile } from '../../services/functions'
 
-
-export const Col2:any = (props:any) => {
+export const Col2 = (props:any) => {
 
     const { vivienda } = props
 
     return (
 
-    <Col xs={12} md={4} style={{margin: mobile ? '0' : '20px 0px', padding: mobile ? '0' : '20px'}}>
+    <Col xs={12} md={4} style={{margin: isMobile ? '0' : '20px 0px', padding: isMobile ? '0' : '20px'}}>
 
         <Row style={{ paddingBottom: '10px' }}>
             <h4 style={{textAlign:'center', display:'block', margin:'auto', fontSize:'1.9rem'}}>
@@ -23,7 +21,7 @@ export const Col2:any = (props:any) => {
                 textAlign:'center',
                 display: vivienda.noAbonado ? 'none' : 'block',
                 margin:'auto',
-                fontSize: mobile ? '2.3rem' : '2.1rem'
+                fontSize: isMobile ? '2.3rem' : '2.1rem'
             }}>
 
                 Teléfono:
@@ -39,4 +37,3 @@ export const Col2:any = (props:any) => {
 
     )
 }
-

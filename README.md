@@ -8,8 +8,6 @@ Corriendo en AWS Amplify y enrutada por Route 53
 
 Consume la API [registros-rest-api]
 
-GraphQL desde Apollo Client, subscripciones por el mismo puerto (split)
-
 Usuarios desde Redux Thunk, registro, login, roles
 
 Google Recaptcha 3

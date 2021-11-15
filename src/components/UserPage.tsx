@@ -1,16 +1,13 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { typeUser, typeState } from '../models/typesUsuarios'
 import { Card, Button, Form } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
-import { mobile } from './_App'
-import { SERVER } from '../config'
-import { getToken } from '../services/getToken'
-import { setToken } from '../services/setToken'
+import { changePswService } from '../services/userServices'
+import { isMobile } from '../services/functions'
 
-
-function UserPage(props:any) {
+export const UserPage = (props: any) => {
     
     const user:typeUser = useSelector((state:typeState) => state.user.userData)
     const [show, setShow] = useState(false)
@@ -25,19 +22,12 @@ function UserPage(props:any) {
     }
 
     const changePsw = async () => {
-        alert("Cambiando password de " + psw + " a " + newPsw)
-        const fetchy = await fetch(`${SERVER}/api/users/change-psw`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ token: getToken(), psw, newPsw})
-        })
-        const response = await fetchy.json()
         setPsw('')
         setNewPsw('')
-        if (response.success) {
-            setToken(response.newToken); alert("Clave cambiada con éxito")
-        }
-        else if (response.compareProblem) alert("Clave incorrecta")
+        alert("Cambiando password de " + psw + " a " + newPsw)
+        const response: any|null = await changePswService(psw, newPsw)
+        if (response && response.success) { alert("Clave cambiada con éxito") }
+        else if (response && response.compareProblem) alert("Clave incorrecta")
         else alert("Algo falló")
     }
 
@@ -52,7 +42,7 @@ function UserPage(props:any) {
             <>
                 <Card style={{padding:'25px', margin:'30px auto'}}>
                     
-                    {mobile ?
+                    {isMobile ?
                     <>
                         <h4> Usuario: {user.email} </h4>
                         <br/>
@@ -89,10 +79,12 @@ function UserPage(props:any) {
                     </>
                     }
 
-                    <Button variant={"danger"} style={{display: show ? 'none' : 'block', maxWidth:'400px', margin:'20px auto 0 auto'}} onClick={()=>setShow(true)}>
+                    <Button
+                        variant={"danger"}
+                        style={{display: show ? 'none' : 'block', maxWidth:'400px', margin:'20px auto 0 auto'}}
+                        onClick={() => setShow(true)}>
                         Cambiar contraseña
                     </Button>
-
 
                 </Card>
 
@@ -126,6 +118,3 @@ function UserPage(props:any) {
         </>
     )
 }
-
-
-export default UserPage
