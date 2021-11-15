@@ -102,7 +102,6 @@ export const TerritoriosPage = (props: any) => {
         householdsObj.households.forEach((household: types.typeVivienda, index: number) => {
             if (household.inner_id === updatedHousehold.inner_id) indexOfHousehold = index
         })
-        console.log("INDEX", indexOfHousehold)
         const objPackage: any = {
             households: householdsObj.households,
             updatedHousehold,
@@ -131,8 +130,6 @@ export const TerritoriosPage = (props: any) => {
         })()
         
         socket.on('household: change', (updatedHouseholds: types.typeVivienda[]) => {
-            console.log("LLEGO", updatedHouseholds);
-            
             if (updatedHouseholds) setHouseholdsObj({ households: updatedHouseholds })
         })
     }, [showingAll, manzana, territorio, brought, broughtAll])

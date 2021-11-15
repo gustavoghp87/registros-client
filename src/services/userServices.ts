@@ -13,7 +13,6 @@ export const loginService = async (email: string, password: string, recaptchaTok
         body: JSON.stringify({ email, password, recaptchaToken })
     })
     const response: any|null = await request.json()
-    console.log(response);
     if (response && response.success && response.newtoken) setToken(response.newtoken)
     return response
 }

@@ -14,15 +14,19 @@ export const RegisterPage = () => {
     const [recaptchaToken, setRecaptchaToken] = useState<string>('')
     const { executeRecaptcha } = useGoogleReCaptcha();
 
-    const sendForm = async () => {
+    const sendFormHandler = async (): Promise<void> => {
         if (!executeRecaptcha) return
-        const result = await executeRecaptcha("")
-        setRecaptchaToken(result);
+        const token = await executeRecaptcha("")
+        setTimeout(() => {}, 1000)
+        if (token) setRecaptchaToken(token)
         if (!email || !password || !confPassword || !group) return alert("Faltan datos")
         if (password.length < 8) return alert("La contraseña es demasiado corta (mín 8)")
         if (password !== confPassword) return alert("La contraseña no coincide con su confirmación")
+        if (recaptchaToken) sendForm()
+    }
+
+    const sendForm = async (): Promise<void> => {
         const data: any|null = await registerUserService(email, password, group, recaptchaToken)
-        console.log("Llegó en registrar:", data)
         if (data && data.recaptchaFails) alert("Problemas, refresque la página")
         else if (data && data.userExists) alert("Ya existe un usuario con ese correo")
         else if (data && data.success) {
@@ -32,7 +36,7 @@ export const RegisterPage = () => {
         else alert("Algo salió mal")
     }
 
-
+    
     return (
         <div className="container container2" style={{maxWidth:'95%', marginTop:'50px', padding:'0'}}>
 
@@ -79,7 +83,7 @@ export const RegisterPage = () => {
 
                     <button className="btn btn-danger"
                         style={{width:'100%', height:'50px'}}
-                        onClick={() => sendForm()}
+                        onClick={() => sendFormHandler()}
                     >
                         REGISTRARSE
                     </button>
