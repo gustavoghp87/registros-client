@@ -3,7 +3,7 @@ export type typeVivienda = {
     _id?: Object
     inner_id: string
     territorio: string
-    manzana: string
+    manzana: typeBlock
     direccion: string
     telefono: string
     estado: estado
@@ -17,14 +17,7 @@ export type typeTerritorio = {
     households: typeVivienda[]
 }
 
-export type manzana = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 
-
-export type typeParam = {
-    territorio: string
-    manzana: manzana
-    todo: 'todo' | ''
-    id: string
-}
+export type typeBlock = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 
 
 export const noPredicado: string = "No predicado"
 export const contesto: string = "Contestó"

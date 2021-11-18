@@ -1,25 +1,35 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
 import { Row } from 'react-bootstrap'
+import { authUserService } from '../services/userServices'
 import { isMobile } from '../services/functions'
-import { typeState, typeUser } from '../models/typesUsuarios'
+import { typeUser } from '../models/typesUsuarios'
 
 export const IndexPage = (props: any) => {
 
-    const user: typeUser = useSelector((state: typeState) => state.user.userData)
+    const navigate = useNavigate()
+    const [user, setUser] = useState<typeUser>()
     const [territories, setTerritories] = useState<number[]>([])
 
     useEffect(() => {
-        if (user && user.asign && user.asign.length) {
-            let asignados = user.asign
-            asignados.sort((a: number, b: number) => a - b)
-            setTerritories(asignados)
-        }
-    }, [user])
+        ;(async() => {
+            if (!user) {
+                const user0: typeUser|null = await authUserService()
+                if (user0) setUser(user0)
+                else { console.log("XXXX"); navigate("/login") }
+            }
+        })()
+        ;(async() => {
+            if ((!territories || !territories.length) && user && user.asign && user.asign.length) {
+                let asignados = user.asign
+                asignados.sort((a: number, b: number) => a - b)
+                setTerritories(asignados)
+            }
+        })()
+    }, [user, territories])
 
     const btnTerri = {
         width: '120px',
@@ -34,9 +44,9 @@ export const IndexPage = (props: any) => {
         
             <H2> SELECCIONE UN TERRITORIO </H2>
 
-            <div className="container" style={{paddingTop:'0', marginBottom:'50px'}}>
+            <div className="container" style={{ paddingTop: '0', marginBottom: '50px' }}>
 
-                <Row style={{padding: isMobile ? '40px' : '70px 40px 0px 40px', justifyContent:'space-evenly'}}>
+                <Row style={{ padding: isMobile ? '40px' : '70px 40px 0px 40px', justifyContent: 'space-evenly' }}>
 
                     {(user && user.isAuth && territories && !!territories.length)
                         ?
@@ -70,7 +80,7 @@ export const IndexPage = (props: any) => {
 
                     {(user && user.isAuth && user.asign && user.asign.length === 0)
                         ?
-                        <h3 style={{marginBottom:'40px'}}>
+                        <h3 style={{ marginBottom: '40px' }}>
                             No hay territorios asignados <br/> Hablar con el grupo de territorios
                         </h3>
                         :
@@ -78,7 +88,6 @@ export const IndexPage = (props: any) => {
                     }
 
                 </Row>
-
             </div>
         </>
     )

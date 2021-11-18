@@ -9,13 +9,12 @@ import { confirmAlert } from 'react-confirm-alert'
 import { isMobile } from '../services/functions'
 import { resetTerritoryService } from '../services/territoryServices'
 import { getLocalStatisticsService } from '../services/statisticsServices'
-import { typeParam } from '../models/typesTerritorios'
 import { localStatistic } from '../models/statistic'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const EstadisticasLocalPage = (props: any) => {
 
-    const { territorio } = useParams<typeParam>()
+    const { territorio } = useParams<string>()
     const [datos, setDatos] = useState<localStatistic>()
 
     const reset = async (option: number): Promise<void> => {
@@ -35,12 +34,14 @@ export const EstadisticasLocalPage = (props: any) => {
     }
     
     const resetNow = async (option: number): Promise<void> => {
+        if(!territorio) return
         const response: boolean = await resetTerritoryService(territorio, option)
         if (response) window.location.reload()
     }
 
     useEffect(() => {
         (async () => {
+            if(!territorio) return
             const data: localStatistic|null = await getLocalStatisticsService(territorio)
             if (data && data) setDatos(data)
         })()

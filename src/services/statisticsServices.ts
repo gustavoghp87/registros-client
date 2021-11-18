@@ -2,7 +2,7 @@ import { SERVER } from '../config'
 import { localStatistic, statistic } from '../models/statistic'
 import { getHeaders, getToken } from './functions'
 
-const base = `${SERVER}/api/statistics`
+const base: string = `${SERVER}/api/statistics`
 
 export const getLocalStatisticsService = async (territory: string): Promise<localStatistic|null> => {
     const token: string|null = getToken()

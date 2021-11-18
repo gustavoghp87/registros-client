@@ -24,7 +24,7 @@ export const Footer = () => {
         <>
             <div className="main-footer" style={footerStyle1}>
                 <div style={footerStyle2}>
-                    <a href="https://misericordiaweb.com/" style={{color: 'white', fontWeight: 'bolder'}}>
+                    <a href="https://misericordiaweb.com/" style={{ color: 'white', fontWeight: 'bolder' }}>
                         misericordiaweb.com
                     </a>
                 </div>

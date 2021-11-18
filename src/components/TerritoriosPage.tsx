@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
-import { useHistory, useParams } from 'react-router'
-import socketIOClient from "socket.io-client"
+import { useNavigate, useParams } from 'react-router'
+import io from "socket.io-client"
 import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
 import { Col0a } from './columns/Col0a'
@@ -21,7 +21,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const TerritoriosPage = (props: any) => {
 
-    const { territorio, manzana, todo } = useParams<types.typeParam>()
+    const { territorio, manzana, todo } = useParams<any>()
     const [householdsObj, setHouseholdsObj] = useState<types.typeTerritorio>({ households: [] })
     const [isFinished, setIsFinished] = useState<boolean>(false)
     const [showMap, setShowMap] = useState<boolean>(false)
@@ -31,13 +31,8 @@ export const TerritoriosPage = (props: any) => {
     const [blocks, setBlocks] = useState<string[]>(['1'])
     const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
     const showingAll = todo === 'todo' ? true : false
-    const history = useHistory()
-    const [socket] = useState<any>(
-        socketIOClient(SERVER, {
-            withCredentials: true,
-            extraHeaders: { "my-custom-header": "abcd" }
-        })
-    )
+    const navigate = useNavigate()
+    const [socket, setSocket] = useState<any>(null)
     
     const modifyHouseholdHandler = async (inner_id: string,
          estado: string, noAbonado: boolean|null, asignado: boolean|null): Promise<void> => {
@@ -54,11 +49,13 @@ export const TerritoriosPage = (props: any) => {
     }
 
     const checkAsFinished = async (): Promise<void> => {
+        if(!territorio) return
         const success = await markTerritoryAsFinishedService(territorio, true)
-        if (success) history.push("/index")
+        if (success) navigate("/index")
     }
 
     const checkAsUnfinished = async (): Promise<void> => {
+        if (!territorio) return
         const success: boolean = await markTerritoryAsFinishedService(territorio, false)
         if (success) window.location.reload()
     }
@@ -111,12 +108,12 @@ export const TerritoriosPage = (props: any) => {
     }
 
     useEffect(() => {
-        //if (showingAll) setBroughtAll(true)
-        
         ;(async () => {
+            if(!territorio) return
             const blocks: string[]|null = await getBlocksService(territorio)
             if (blocks) setBlocks(blocks)
-
+            
+            if(!manzana) return
             const households: types.typeVivienda[]|null =
                 await getHouseholdsByTerritoryService(territorio, manzana, showingAll, brought, broughtAll)
             if (households) {
@@ -128,11 +125,18 @@ export const TerritoriosPage = (props: any) => {
                 })
             }
         })()
+
+        if (socket) return
+        const newSocket = io(SERVER, {
+            withCredentials: true,
+            //extraHeaders: { "my-custom-header": "abcd" }
+        })
+        if (newSocket) setSocket(newSocket)
         
-        socket.on('household: change', (updatedHouseholds: types.typeVivienda[]) => {
+        if (newSocket) newSocket.on('household: change', (updatedHouseholds: types.typeVivienda[]) => {
             if (updatedHouseholds) setHouseholdsObj({ households: updatedHouseholds })
         })
-    }, [showingAll, manzana, territorio, brought, broughtAll])
+    }, [showingAll, manzana, territorio, brought, broughtAll, socket])
     
 
     return (
@@ -228,11 +232,11 @@ export const TerritoriosPage = (props: any) => {
             {householdsObj && householdsObj.households && !!householdsObj.households.length &&
                 householdsObj.households.map((vivienda: types.typeVivienda) => {
 
-                    if (vivienda.estado === types.noPredicado) vivienda = { ...vivienda, variante: "success" }
-                    if (vivienda.estado === types.contesto) vivienda = { ...vivienda, variante: "primary" }
-                    if (vivienda.estado === types.noContesto) vivienda = { ...vivienda, variante: "warning" }
-                    if (vivienda.estado === types.aDejarCarta) vivienda = { ...vivienda, variante: "danger" }
-                    if (vivienda.estado === types.noLlamar) vivienda = { ...vivienda, variante: "dark" }
+                if (vivienda.estado === types.noPredicado) vivienda = { ...vivienda, variante: "success" }
+                if (vivienda.estado === types.contesto) vivienda = { ...vivienda, variante: "primary" }
+                if (vivienda.estado === types.noContesto) vivienda = { ...vivienda, variante: "warning" }
+                if (vivienda.estado === types.aDejarCarta) vivienda = { ...vivienda, variante: "danger" }
+                if (vivienda.estado === types.noLlamar) vivienda = { ...vivienda, variante: "dark" }
 
                 return (
                 

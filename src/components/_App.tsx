@@ -1,6 +1,5 @@
 import { Suspense, useEffect, useState } from 'react'
-import { Route, Switch } from 'react-router-dom'
-import { Auth } from '../hoc/auth'
+import { Route, Routes } from 'react-router-dom'
 import { LoginPage } from './LoginPage'
 import { RegisterPage } from './RegisterPage'
 import { HomePage } from './HomePage'
@@ -20,34 +19,33 @@ import { typeUser } from '../models/typesUsuarios'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-    export const App = () => {
+export const App = () => {
 
     const getDarkModeStorage = () => localStorage.getItem('darkMode')
     const setDarkModeStorage = (darkMode: boolean) => localStorage.setItem('darkMode', darkMode.toString())
     const mode: boolean = getDarkModeStorage() === 'true'
     const [darkMode, setDarkMode] = useState<boolean>(mode)
+    const [done, setDone] = useState<boolean>(false)
 
     useEffect(() => {
-        ;(async () => {
-            updateDarkMode()
+        if (done) return
+        (async () => {
+            const user: typeUser|null = await authUserService()
+            if (user && user.darkMode !== undefined) {
+                if (darkMode !== user.darkMode) setDarkMode(user.darkMode)
+                if (getDarkModeStorage() !== user.darkMode.toString()) setDarkModeStorage(user.darkMode)
+                setDone(true)
+            }
         })()
-    }, [])
-
-    const updateDarkMode = async () => {
-        const user: typeUser|null = await authUserService()
-        if (user && user.darkMode !== undefined) {
-            if (darkMode !== user.darkMode) setDarkMode(user.darkMode)
-            if (getDarkModeStorage() !== user.darkMode.toString()) setDarkModeStorage(user.darkMode)
-        }
-    }
+    }, [done, darkMode])
 
     const changeDarkMode = async () => {
         const newMode = !darkMode
         setDarkMode(newMode)
         setDarkModeStorage(newMode)
-        changeDarkModeService(newMode)
+        const success: boolean = await changeDarkModeService(newMode)
+        if (!success) alert("Algo falló al guardar el cambio de modo")
     }
-    
 
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>
@@ -63,32 +61,30 @@ import 'bootstrap/dist/css/bootstrap.min.css'
                         minHeight: 'calc(100vh - 80px)'
                     }}>
 
-                        <Switch>
-                        {/* <Redirect exact strict from="/" to="/login" /> */}
-                        {/* <Redirect exact from='/' to="/login" /> */}
-                        <Route exact path="/" component={ HomePage } />
-                        <Route exact path="/login" component={ LoginPage } />
-                        <Route exact path="/register" component={ RegisterPage } />
-                        <Route exact path="/index" component={ Auth(IndexPage, true) } />
-                        <Route exact path="/territorios/:territorio/:manzana" component={ Auth(TerritoriosPage, true) } />
-                        <Route exact path="/territorios/:territorio/:manzana/:todo" component={ Auth(TerritoriosPage, true) } />
-                        <Route exact path="/estadisticas" component={ Auth(EstadisticasPage, true, true) } />
-                        <Route exact path="/estadisticas/:territorio" component={ Auth(EstadisticasLocalPage, true, true) } />
-                        <Route exact path="/user" component={ Auth(UserPage, true) } />
-                        <Route exact path="/admins" component={ Auth(AdminsPage, true, true) } />
-                        <Route path="/" component={ HomePage } />
-                        </Switch>
+                        <Routes>
+                            <Route path="/" element={ <HomePage /> } />
+                            <Route path="/login" element={ <LoginPage /> } />
+                            <Route path="/register" element={ <RegisterPage /> } />
+                            <Route path="/index" element={ <IndexPage /> } />
+                            <Route path="/territorios/:territorio/:manzana" element={ <TerritoriosPage /> } />
+                            <Route path="/territorios/:territorio/:manzana/:todo" element={ <TerritoriosPage /> } />
+                            <Route path="/estadisticas" element={ <EstadisticasPage /> } />
+                            <Route path="/estadisticas/:territorio" element={ <EstadisticasLocalPage /> } />
+                            <Route path="/user" element={ <UserPage /> } />
+                            <Route path="/admins" element={ <AdminsPage /> } />
+                            <Route path="*" element={ <HomePage /> } />
+                        </Routes>
 
-                        <div className='custom-control custom-switch' style={{position:'fixed', bottom:'20px'}}>
-                        <input className='custom-control-input'
-                            type='checkbox'
-                            id='customSwitches'
-                            checked={darkMode}
-                            onChange={() => changeDarkMode()}
-                        />
-                        <label className='custom-control-label' htmlFor='customSwitches' style={{color: darkMode ? 'white' : 'red'}}>
-                            <b> {isMobile ? '' : (darkMode ? 'Modo Claro' : 'Modo Oscuro')} </b>
-                        </label>
+                        <div className='custom-control custom-switch' style={{ position: 'fixed', bottom: '20px' }}>
+                            <input className='custom-control-input'
+                                type='checkbox'
+                                id='customSwitches'
+                                checked={darkMode}
+                                onChange={() => changeDarkMode()}
+                            />
+                            <label className='custom-control-label' htmlFor='customSwitches' style={{ color: darkMode ? 'white' : 'red' }}>
+                                <b> {isMobile ? '' : (darkMode ? 'Modo Claro' : 'Modo Oscuro')} </b>
+                            </label>
                         </div>
                         
                     </div>

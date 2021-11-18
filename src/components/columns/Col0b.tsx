@@ -1,18 +1,29 @@
+import { useState, useEffect } from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
-import { isMobile } from '../../services/functions'
 import { LINK2 } from '../css/css'
+import { authUserService } from '../../services/userServices'
+import { isMobile } from '../../services/functions'
+import { typeUser } from '../../models/typesUsuarios'
+import { typeBlock } from '../../models/typesTerritorios'
 
 export const Col0b = (props:any) => {
 
-    let manzana
+    let manzana: typeBlock
     if (props.manzana) manzana = props.manzana
     else manzana = '1'
-    const user = useSelector((state:any) => state.user)
-    let radios = []
+    let radios: any[] = []
+
+    const [user, setUser] = useState<typeUser>()
+
+    useEffect(() => {
+        (async() => {
+            const user0: typeUser|null = await authUserService()
+            if (user0) setUser(user0)
+        })()
+    }, [])
 
     if (isMobile)
-        radios = user && user.userData && user.userData.isAdmin ? 
+        radios = user && user.isAdmin ? 
             [
                 { name: props.isTodo ? 'Ver no pred' : 'Viendo no pred', value: '1' },
                 { name: props.isTodo ? 'Viendo todos' : 'Ver todos', value: '2' },
@@ -24,7 +35,7 @@ export const Col0b = (props:any) => {
                 { name: props.isTodo ? 'Viendo todos' : 'Ver todos', value: '2' }
             ]
     else
-        radios = user && user.userData && user.userData.isAdmin ?
+        radios = user && user.isAdmin ?
             [
                 { name: props.isTodo ? 'Ver no predicados' : 'Viendo no predicados', value: '1' },
                 { name: props.isTodo ? 'Viendo todos' : 'Ver todos', value: '2' },

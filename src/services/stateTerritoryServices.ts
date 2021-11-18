@@ -2,7 +2,7 @@ import { SERVER } from '../config'
 import { stateOfTerritory } from '../models/typesTerritorios'
 import { getHeaders, getHeadersWithToken, getToken } from './functions'
 
-const base = `${SERVER}/api/state-territories`
+const base: string = `${SERVER}/api/state-territories`
 
 export const getStateOfTerritoryService = async (territorio:string): Promise<boolean|null> => {
     const token: string|null = getToken()

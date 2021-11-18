@@ -2,7 +2,7 @@ import { SERVER } from "../config"
 import { typeVivienda } from "../models/typesTerritorios"
 import { getHeaders, getToken } from "./functions"
 
-const base = `${SERVER}/api/territories`
+const base: string = `${SERVER}/api/territories`
 
 export const modifyHouseholdService = async (inner_id: string,
      estado: string, noAbonado: boolean, asignado: boolean): Promise<typeVivienda|null> => {

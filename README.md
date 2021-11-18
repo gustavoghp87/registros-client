@@ -1,14 +1,12 @@
 # registros-client
 
-Aplicación frontend en React y TypeScript con React Router, Router Dom, Hooks y Redux
+Aplicación frontend en React y TypeScript con React Router, Router Dom, Hooks
 
 [https://misericordiaweb.com/]
 
 Corriendo en AWS Amplify y enrutada por Route 53
 
 Consume la API [registros-rest-api]
-
-Usuarios desde Redux Thunk, registro, login, roles
 
 Google Recaptcha 3
 

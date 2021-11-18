@@ -1,34 +1,47 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { typeUser, typeState } from '../models/typesUsuarios'
+import { useState, useEffect } from 'react'
 import { Card, Button, Form } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
-import { changePswService } from '../services/userServices'
+import { authUserService, changePswService, logoutAllService } from '../services/userServices'
 import { isMobile } from '../services/functions'
+import { typeUser } from '../models/typesUsuarios'
 
 export const UserPage = (props: any) => {
     
-    const user:typeUser = useSelector((state:typeState) => state.user.userData)
+    const [user, setUser] = useState<typeUser>()
     const [show, setShow] = useState(false)
     const [psw, setPsw] = useState('')
     const [newPsw, setNewPsw] = useState('')
-    
-    const asignOrdenados = () => {
-        let ordenados = [0]
-        if (user.asign)
-            ordenados = user.asign.sort((a:number, b:number) => a - b)
-        return ordenados
-    }
 
-    const changePsw = async () => {
+    useEffect(() => {
+        (async() => {
+            const user0: typeUser|null = await authUserService()
+            if (user0) setUser(user0)
+        })()
+    }, [])
+    
+    const changePswHandler = async (): Promise<void> => {
         setPsw('')
         setNewPsw('')
         alert("Cambiando password de " + psw + " a " + newPsw)
         const response: any|null = await changePswService(psw, newPsw)
         if (response && response.success) { alert("Clave cambiada con éxito") }
-        else if (response && response.compareProblem) alert("Clave incorrecta")
+        else if (response && response.wrongPassword) alert("Clave incorrecta")
         else alert("Algo falló")
+    }
+
+    const logoutAllHandler = async (): Promise<void> => {
+        alert("Esta opción cerrará todas las sesiones en cualquier dispositivo excepto en este")
+        const response: boolean = await logoutAllService()
+        if (response) alert("Cierre exitoso")
+        else alert("Algo falló; intente de nuevo")
+    }
+
+    const getAssignedTerritoriesSorted = (): number[] => {
+        let sorted = [0]
+        if (user && user.asign)
+            sorted = user.asign.sort((a: number, b: number) => a - b)
+        return sorted
     }
 
 
@@ -36,11 +49,11 @@ export const UserPage = (props: any) => {
         <>
             {ReturnBtn(props)}
 
-            <H2 style={{textAlign:'center'}}> Usuario </H2>
+            <H2 style={{ textAlign: 'center' }}> Usuario </H2>
 
             {user &&
             <>
-                <Card style={{padding:'25px', margin:'30px auto'}}>
+                <Card style={{ padding: '25px', margin: '30px auto' }}>
                     
                     {isMobile ?
                     <>
@@ -51,7 +64,7 @@ export const UserPage = (props: any) => {
                             <h4 className="d-inline-block"> Territorios asignados: &nbsp; &nbsp; </h4>
 
                             {user.asign &&
-                                asignOrdenados().map((territorio:number, index:number) => (
+                                getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
                                     <h4 key={index} className="d-inline-block">
                                         {territorio} &nbsp; &nbsp;
                                     </h4>
@@ -68,7 +81,7 @@ export const UserPage = (props: any) => {
                             <h3 className="d-inline-block"> Territorios asignados: &nbsp; &nbsp; </h3>
 
                             {user.asign &&
-                                asignOrdenados().map((territorio:number, index:number) => (
+                                getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
                                     <h3 key={index} className="d-inline-block">
                                         {territorio} &nbsp; &nbsp;
                                     </h3>
@@ -81,38 +94,51 @@ export const UserPage = (props: any) => {
 
                     <Button
                         variant={"danger"}
-                        style={{display: show ? 'none' : 'block', maxWidth:'400px', margin:'20px auto 0 auto'}}
+                        style={{ display: show ? 'none' : 'block', maxWidth: '400px', margin: '20px auto 0 auto' }}
                         onClick={() => setShow(true)}>
                         Cambiar contraseña
+                    </Button>
+
+                    <Button
+                        className="d-none"
+                        variant={"danger"}
+                        style={{ display: show ? 'none' : 'block', maxWidth: '400px', margin: '20px auto 0 auto' }}
+                        onClick={() => logoutAllHandler()}>
+                        Cerrar sesión en todos los dispositivos
                     </Button>
 
                 </Card>
 
                 {show &&
-                    <Card style={{padding:'25px', margin:'60px auto', maxWidth:'600px'}}>
+                    <Card style={{ padding: '25px', margin: '60px auto', maxWidth: '600px'}}>
                         <Card.Title className="mb-4"> CAMBIAR CONTRASEÑA </Card.Title>
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label> Contraseña actual </Form.Label>
-                            <Form.Control type="text" placeholder="Contraseña actual" value={psw} onChange={(event)=>setPsw(event.target.value)} />
+                            <Form.Control type="text"
+                                placeholder="Contraseña actual"
+                                value={psw}
+                                onChange={(event: any) => setPsw(event.target.value)}
+                            />
                         </Form.Group>
 
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label> Nueva contraseña </Form.Label>
-                            <Form.Control type="text" placeholder="Nueva contraseña" value={newPsw} onChange={(event)=>setNewPsw(event.target.value)} />
+                            <Form.Control type="text"
+                                placeholder="Nueva contraseña"
+                                value={newPsw}
+                                onChange={(event: any) => setNewPsw(event.target.value)}
+                            />
                         </Form.Group>
 
-                        <Button variant="primary" className="mt-4 mb-2" type="submit" onClick={()=>changePsw()}>
+                        <Button variant="primary" className="mt-4 mb-2" type="submit" onClick={() => changePswHandler()}>
                             Aceptar
                         </Button>
 
-                        <Button variant="danger" type="cancel" onClick={()=>setShow(false)}>
+                        <Button variant="danger" type="cancel" onClick={() => setShow(false)}>
                             Cancelar
                         </Button>
                     </Card>
                 }
-                
-                {/* <Button variant={darkMode ? "dark" : "danger"} onClick={()=>changeMode()}> {darkMode ? "Modo claro" : "Modo oscuro"} </Button> */}
-
             </>
             }
         </>

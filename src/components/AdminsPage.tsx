@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { confirmAlert } from 'react-confirm-alert'
-import socketIOClient from "socket.io-client"
+import io from 'socket.io-client'
 import { assignTerritoryService, modifyUserService, getUsersService, changePswOtherUserService } from '../services/userServices'
 import { ReturnBtn } from './_Return'
 import { Loading } from './_Loading'
@@ -18,12 +18,29 @@ export const AdminsPage = (props: any) => {
     const [asig, setAsig] = useState<string[]>([])
     const [desasig, setDesasig] = useState<string[]>([])
     const [viendo, setViendo] = useState<string>("todos")
-    const [socket] = useState<any>(
-        socketIOClient(SERVER, {
+    const [socket, setSocket] = useState<any>(null)
+
+    useEffect(() => {
+        ;(async () => {
+            const users: typeUser[]|null = await getUsersService()
+            if (users) setUsersObj({ usuarios: users })
+        })()
+
+        if (socket) return
+        const newSocket = io(SERVER, {
             withCredentials: true
             //extraHeaders: { "my-custom-header": "abcd" }
         })
-    )
+        if (newSocket) setSocket(newSocket)
+        
+        if (newSocket) newSocket.on("user: change", (updatedUser: typeUser) => {
+            ;(async () => {
+                const users: typeUser[]|null = await getUsersService()
+                if (users) setUsersObj({ usuarios: users })
+            })()
+        })
+    }, [socket])
+    
 
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
         const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
@@ -50,22 +67,6 @@ export const AdminsPage = (props: any) => {
     const sendUpdatedUser = (updatedUser: typeUser): void => {
         if (socket) socket.emit('user: change', updatedUser)
     }
-    
-    useEffect(() => {
-        ;(async () => {
-            const users: typeUser[]|null = await getUsersService()
-            if (users) setUsersObj({ usuarios: users })
-        })()
-
-        socket.on("user: change", (updatedUser: typeUser) => {
-            console.log("Actualizado", updatedUser)
-            ;(async () => {
-                const users: typeUser[]|null = await getUsersService()
-                if (users) setUsersObj({ usuarios: users })
-            })()
-        })
-    }, [])
-    
     
     const resetPasswordHandler = (email: string): void => {
         confirmAlert({
@@ -127,9 +128,9 @@ export const AdminsPage = (props: any) => {
             {usersObj && usersObj.usuarios && !!usersObj.usuarios &&
                 usersObj.usuarios.map((usuario: typeUser, index: number) => {
                     
-                    let active = usuario.group
-                    let items = []
-                    for (let number=1; number<=6; number++) {
+                    let active: number = usuario.group
+                    let items: any[] = []
+                    for (let number: number = 1; number <= 6; number++) {
                       items.push(
                         <Pagination.Item key={number}
                             active={number === active}
@@ -236,10 +237,10 @@ export const AdminsPage = (props: any) => {
                                 </Button>
                             </Card.Text>
 
-                            <div style={{width:'350px', margin:'auto'}}>
-                                <div style={{display: groupVisible ? 'block' : 'none'}}>
+                            <div style={{ width: '350px', margin: 'auto'}}>
+                                <div style={{ display: groupVisible ? 'block' : 'none'}}>
 
-                                    <Pagination size="lg" style={{textAlign:'center'}}>
+                                    <Pagination size="lg" style={{ textAlign: 'center' }}>
                                         {items}
                                     </Pagination>
 
@@ -250,8 +251,8 @@ export const AdminsPage = (props: any) => {
                             <hr/>
                         
 
-                            <Button block variant={usuario.estado ? 'danger' : 'primary'}
-                                onClick={() => { usuario.estado === true 
+                            <Button block variant={ usuario.estado ? 'danger' : 'primary' }
+                                onClick={() => {usuario.estado === true 
                                     ?
                                     modifyUserHandler(usuario._id.toString(), false, usuario.role, usuario.group)
                                     :

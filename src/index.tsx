@@ -1,29 +1,15 @@
 import ReactDOM from 'react-dom'
 import { App } from './components/_App'
 import { BrowserRouter } from "react-router-dom"
-import { createStore, applyMiddleware } from 'redux'
-import { Provider } from 'react-redux'
-import rootReducer from './_reducers'
-import ReduxThunk from 'redux-thunk'
-import promiseMiddleware from 'redux-promise'
 import * as serviceWorker from './serviceWorker'
 import './components/css/index.css'
 
-const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore)
-
 ReactDOM.render(
-  <Provider
-    store = {createStoreWithMiddleware(
-        rootReducer,
-        (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()
-    )}
-  >
 
     <BrowserRouter>
         <App />
     </BrowserRouter>
 
-  </Provider>
   , document.getElementById('root')
 )
 

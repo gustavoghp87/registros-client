@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { autoLoginService, loginService } from '../services/userServices'
 import { isMobile } from '../services/functions'
@@ -7,34 +7,32 @@ import { isMobile } from '../services/functions'
 export const LoginPage = () => {
 
     const { executeRecaptcha } = useGoogleReCaptcha()
-    const history = useHistory()
+    const navigate = useNavigate()
     const [email, setemail] = useState<string>("")
     const [password, setpassword] = useState<string>("")
 
     useEffect(() => {
         (async () => {
             const result: boolean = await autoLoginService()
-            if (result) history.push("/index")
+            if (result) navigate("/index")
         })()
     })
     
-    const loginHandler = async () => {
+    const loginHandler = async (): Promise<void> => {
         if (!executeRecaptcha) return
         const recaptchaToken = await executeRecaptcha("")
         const response: any|null = await loginService(email, password, recaptchaToken)
-        if (response && response.success && response.newtoken) {
-            history.push("/index")
-        }
+        if (response && response.success && response.newToken) navigate("/index")
         else if (!response || response.recaptchaFails) alert("Problemas, refresque la página")
-        else if (response && response.disable) alert("Usuario aun no habilitado por el grupo de territorios... avisarles")
+        else if (response && response.isDisabled) alert("Usuario aun no habilitado por el grupo de territorios... avisarles")
         else { alert("Datos incorrectos"); window.location.reload() }
     }
 
-    const loginHandler2 = (e: any) => { if (e.key === 'Enter') loginHandler() }
+    const loginHandler2 = (e: any): void => { if (e.key === 'Enter') loginHandler() }
 
     const containerLogin = {
-        paddingTop:'50px', marginBottom:'50px', border:'black 1px solid', borderRadius:'12px',
-        maxWidth:'600px', boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+        paddingTop: '50px', marginBottom: '50px', border: 'black 1px solid', borderRadius: '12px',
+        maxWidth: '600px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
     }
     
     return (

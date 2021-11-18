@@ -3,12 +3,11 @@ import { Toast } from 'react-bootstrap'
 import { AiOutlineWarning } from 'react-icons/ai'
 import { useParams } from 'react-router-dom'
 import { localStatistic } from '../../models/statistic'
-import { typeParam } from '../../models/typesTerritorios'
 import { getLocalStatisticsService } from '../../services/statisticsServices'
 
-export const BsToaster = (props:any) => {
+export const BsToaster = () => {
 
-    const { territorio } = useParams<typeParam>()
+    const { territorio } = useParams<string>()
     const [showA, setShowA] = useState<boolean>(true)
     const [localStat, setLocalStat] = useState<localStatistic>()
     
@@ -16,6 +15,7 @@ export const BsToaster = (props:any) => {
 
     useEffect(() => {
         (async () => {
+            if (!territorio) return
             const datos: localStatistic|null = await getLocalStatisticsService(territorio)
             if (datos) setLocalStat(datos)
         })()
@@ -30,7 +30,7 @@ export const BsToaster = (props:any) => {
 
                 <Toast className="mt-5 mx-auto" show={showA} onClose={toggleShowA}>
                     <Toast.Header className="d-block">
-                        <AiOutlineWarning className="m-1" style={{fontSize:18}} />
+                        <AiOutlineWarning className="m-1" style={{ fontSize: 18 }} />
                         <span className="">
                             <strong> ¡Advertencia! </strong>
                         </span>

@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { isMobile } from '../services/functions'
 import { registerUserService } from '../services/userServices'
 
 export const RegisterPage = () => {
 
-    const history = useHistory()
+    const navigate = useNavigate()
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [confPassword, setConfPassword] = useState<string>('')
@@ -27,11 +27,13 @@ export const RegisterPage = () => {
 
     const sendForm = async (): Promise<void> => {
         const data: any|null = await registerUserService(email, password, group, recaptchaToken)
-        if (data && data.recaptchaFails) alert("Problemas, refresque la página")
-        else if (data && data.userExists) alert("Ya existe un usuario con ese correo")
-        else if (data && data.success) {
-            alert("Registrado con éxito. Resta ser habilitado por el grupo de predicación.")
-            history.push("/index")
+        if (data) {
+            if (data.recaptchaFails) alert("Problemas, refresque la página")
+            else if (data.userExists) alert("Ya existe un usuario con ese correo")
+            else if (data.success) {
+                alert("Registrado con éxito. Resta ser habilitado por el grupo de predicación.")
+                navigate("/")
+            }
         }
         else alert("Algo salió mal")
     }

@@ -5,7 +5,7 @@ export const HomePage = () => {
     
     return (
     <>
-        <H2 style={{marginTop:'50px'}}> BIENVENIDOS </H2>
+        <H2 style={{ marginTop: '50px' }}> BIENVENIDOS </H2>
 
         <LINK2 to={'/index'}>
             <h3 style={{
@@ -21,9 +21,9 @@ export const HomePage = () => {
             </h3>
         </LINK2>
 
-        <div style={{textAlign:'center', marginTop: isMobile ? '30px' : '40px'}}>
+        <div style={{ textAlign: 'center', marginTop: isMobile ? '30px' : '40px' }}>
             
-            <img src="/img/world.png" alt="world" style={{margin:'15px auto 0 auto', maxWidth: '100%'}} />
+            <img src="/img/world.png" alt="world" style={{ margin: '15px auto 0 auto', maxWidth: '100%' }} />
         
 
             <div style={{
@@ -35,14 +35,14 @@ export const HomePage = () => {
             }}>
 
                 <a href="https://jw.org/es" target="_blank" rel="noopener noreferrer"
-                    style={{textDecoration:'none'}}>
+                    style={{ textDecoration: 'none' }}>
                     
-                    <h2 style={{color:'#4a6da7', fontSize: isMobile ? '1.5rem' : '2rem'}}>
+                    <h2 style={{ color: '#4a6da7', fontSize: isMobile ? '1.5rem' : '2rem' }}>
                         VISITAR JW.ORG
                     </h2>
                 
                     <img src="/img/jw.png" alt="jw"
-                        style={{margin:'15px auto', maxWidth: isMobile ? '100%' : '100%'}} />
+                        style={{ margin: '15px auto', maxWidth: '100%' }} />
                 
                 </a>
             </div>
