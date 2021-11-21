@@ -32,5 +32,5 @@ export type variante = "success" | "dark" | "primary" | "danger" | "warning" | "
 export type stateOfTerritory = {
     _id?: object
     territorio: string
-    estado: boolean
+    isFinished: boolean
 }

@@ -97,9 +97,9 @@ export const EstadisticasPage = () => {
 
         {localStatisticsArray && !!localStatisticsArray.length &&
             localStatisticsArray.map((territory: localStatistic, index: number) => {
-                let terminado = false
+                let isFinished = false
                 if (states) states.forEach((state: stateOfTerritory) => {
-                    if (state.territorio === territory.territorio) terminado = state.estado                    
+                    if (state && territory && state.territorio === territory.territorio) isFinished = state.isFinished
                 })
                 return (
                     <a key={index} href={`/estadisticas/${territory.territorio}`}>
@@ -110,9 +110,9 @@ export const EstadisticasPage = () => {
                                 maxWidth: isMobile ? '80%' : '55%', marginBottom: '20px',
                                 backgroundColor: territory.libres < 50 ? 'red' : (territory.libres < 100 ? 'yellow': 'green')
                             }}
-                            className={terminado ? 'animate-me' : ''}
+                            className={isFinished ? 'animate-me' : ''}
                         >
-                            <h3> Territorio {territory.territorio} {terminado ? '- TERMINADO' : ''} </h3>
+                            <h3> Territorio {territory.territorio} {isFinished ? '- TERMINADO' : ''} </h3>
                             <h4> Quedan {territory.libres} para predicar </h4>
                         </Card>
                     </a>
