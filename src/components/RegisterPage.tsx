@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { typeUser } from '../models/typesUsuarios'
 import { isMobile } from '../services/functions'
 import { registerUserService } from '../services/userServices'
 
-export const RegisterPage = () => {
+export const RegisterPage = (props: any) => {
 
-    const navigate = useNavigate()
+    const user: typeUser = props.user
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [confPassword, setConfPassword] = useState<string>('')
@@ -14,10 +15,13 @@ export const RegisterPage = () => {
     const [recaptchaToken, setRecaptchaToken] = useState<string>('')
     const { executeRecaptcha } = useGoogleReCaptcha();
 
+    useEffect(() => {
+        if (user && user.isAuth) window.location.href = "/"
+    }, [user])
+
     const sendFormHandler = async (): Promise<void> => {
         if (!executeRecaptcha) return
-        const token = await executeRecaptcha("")
-        setTimeout(() => {}, 1000)
+        const token: string = await executeRecaptcha("")
         if (token) setRecaptchaToken(token)
         if (!email || !password || !confPassword || !group) return alert("Faltan datos")
         if (password.length < 8) return alert("La contraseña es demasiado corta (mín 8)")
@@ -32,7 +36,7 @@ export const RegisterPage = () => {
             else if (data.userExists) alert("Ya existe un usuario con ese correo")
             else if (data.success) {
                 alert("Registrado con éxito. Resta ser habilitado por el grupo de predicación.")
-                navigate("/")
+                window.location.href = "/"
             }
         }
         else alert("Algo salió mal")

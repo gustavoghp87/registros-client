@@ -12,12 +12,17 @@ import { getLocalStatisticsService } from '../services/statisticsServices'
 import { localStatistic } from '../models/statistic'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const EstadisticasLocalPage = (props: any) => {
+export const EstadisticasLocalPage = () => {
 
     const { territorio } = useParams<string>()
     const [datos, setDatos] = useState<localStatistic>()
 
-    const reset = async (option: number): Promise<void> => {
+    useEffect(() => {
+        if (territorio) getLocalStatisticsService(territorio)
+            .then((data: localStatistic|null) => { if (data) setDatos(data) })
+    }, [territorio])
+
+    const resetHandler = async (option: number): Promise<void> => {
         let message = ""
         if (option === 1) message = "Esta opción resetea los predicados más viejos (más de 6 meses)"
         else if (option === 2) message = "Esta opción resetea predicados (no hace nada con los no abonados)"
@@ -34,26 +39,18 @@ export const EstadisticasLocalPage = (props: any) => {
     }
     
     const resetNow = async (option: number): Promise<void> => {
-        if(!territorio) return
-        const response: boolean = await resetTerritoryService(territorio, option)
-        if (response) window.location.reload()
+        if (!territorio) return
+        const success: boolean = await resetTerritoryService(territorio, option)
+        if (success) window.location.reload()
     }
-
-    useEffect(() => {
-        (async () => {
-            if(!territorio) return
-            const data: localStatistic|null = await getLocalStatisticsService(territorio)
-            if (data && data) setDatos(data)
-        })()
-    }, [territorio])
 
     return (
         <>
-        {ReturnBtn(props)}
+        {ReturnBtn()}
         
         <H2> ESTADÍSTICAS </H2>
 
-        <h1 style={{textAlign:'center', marginBottom: isMobile ? '30px' : '25px'}}>
+        <h1 style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '25px' }}>
             TERRITORIO {territorio}
         </h1>
 
@@ -65,9 +62,9 @@ export const EstadisticasLocalPage = (props: any) => {
 
         {datos
         ?
-            <div style={{margin: isMobile ? '0' : '0 10%'}}>
+            <div style={{ margin: isMobile ? '0' : '0 10%' }}>
                 <br/>
-                <Card style={{padding:'35px', textAlign: isMobile ? 'center' : 'left'}}>
+                <Card style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}>
 
                     <h4>{`Hay ${datos.count} viviendas, ${datos.countNoAbonado} no abonadas. Neto: ${datos.count - datos.countNoAbonado}`} </h4>
 
@@ -97,27 +94,27 @@ export const EstadisticasLocalPage = (props: any) => {
 
                 </Card>
 
-                <div style={{display:'block', margin:'auto', marginTop:'50px'}}>
-                    <Button variant='dark' style={{display:'block', margin:'auto'}}
-                        onClick={() => reset(1)}
+                <div style={{ display: 'block', margin: 'auto', marginTop: '50px' }}>
+                    <Button variant='dark' style={{ display: 'block', margin: 'auto' }}
+                        onClick={() => resetHandler(1)}
                     >
                         Limpiar más viejos (más de 6 meses)
                     </Button>
                     <br/>
-                    <Button variant='dark' style={{display:'block', margin:'auto'}}
-                        onClick={() => reset(2)}
+                    <Button variant='dark' style={{ display:'block', margin:'auto' }}
+                        onClick={() => resetHandler(2)}
                     >
                         Limpiar todos (menos no abonados)
                     </Button>
                     <br/>
-                    <Button variant='dark' style={{display:'block', margin:'auto'}}
-                        onClick={() => reset(3)}
+                    <Button variant='dark' style={{ display:'block', margin:'auto' }}
+                        onClick={() => resetHandler(3)}
                     >
                         Limpiar todos y no abonados de más de 6 meses
                     </Button>
                     <br/>
-                    <Button variant='dark' style={{display:'block', margin:'auto'}}
-                        onClick={() => reset(4)}
+                    <Button variant='dark' style={{ display:'block', margin:'auto' }}
+                        onClick={() => resetHandler(4)}
                     >
                         Limpiar absolutamente todos
                     </Button>
@@ -127,7 +124,9 @@ export const EstadisticasLocalPage = (props: any) => {
             </div>
         :
             <>
-                <br/><br/><br/>
+                <br/>
+                <br/>
+                <br/>
                 <Loading />
             </>
         }

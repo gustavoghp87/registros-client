@@ -1,10 +1,10 @@
-// export const isLocalhost = Boolean(
-//     window.location.hostname === 'localhost' ||
-//     window.location.hostname === '[::1]' ||
-//     window.location.hostname.match(
-//         /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-//     )
-// )
+export const isLocalhost: boolean = Boolean(
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '[::1]' ||
+    window.location.hostname.match(
+        /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+    )
+)
 
 export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {
 
@@ -24,6 +24,7 @@ export const timeConverter = (UNIX_timestamp: string, parse: boolean): string =>
 }
 
 export const colocarGuiones = (tel: number): string => {
+    if (!tel) return ""
     let tel2: string
     if (tel.toString()[0] === '1') tel2 = tel.toString().slice(0,2) + "-" + tel.toString().slice(2,6) + "-" + tel.toString().slice(-4)
     else tel2 = tel.toString().slice(0,3) + "-" + tel.toString().slice(3,6) + "-" + tel.toString().slice(-4)
@@ -34,17 +35,8 @@ export let isMobile: boolean = window.screen.width < 990 ? true : false
 
 export const getToken = (): string|null => localStorage.getItem('token')
 
-export const getHeadersWithToken = (): HeadersInit => headersWithToken
-
-const headersWithToken = {
+export const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'authorization': getToken() || 'abcdefghi0123456789'
-}
-
-export const getHeaders = (): HeadersInit => headers
-
-const headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
 }

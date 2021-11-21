@@ -21,25 +21,27 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 export const App = () => {
 
+    const [user, setUser] = useState<typeUser>()
     const getDarkModeStorage = () => localStorage.getItem('darkMode')
-    const setDarkModeStorage = (darkMode: boolean) => localStorage.setItem('darkMode', darkMode.toString())
     const mode: boolean = getDarkModeStorage() === 'true'
     const [darkMode, setDarkMode] = useState<boolean>(mode)
-    const [done, setDone] = useState<boolean>(false)
-
+    
+    const setDarkModeStorage = (darkMode: boolean) => {
+        if (darkMode !== null && darkMode !== undefined) localStorage.setItem('darkMode', darkMode.toString())
+    }
+    
     useEffect(() => {
-        if (done) return
-        (async () => {
-            const user: typeUser|null = await authUserService()
-            if (user && user.darkMode !== undefined) {
-                if (darkMode !== user.darkMode) setDarkMode(user.darkMode)
-                if (getDarkModeStorage() !== user.darkMode.toString()) setDarkModeStorage(user.darkMode)
-                setDone(true)
+        if (user && user.isAuth) return
+        authUserService().then((user0: typeUser|null) => {
+            if (user0) setUser(user0)
+            if (user0 && typeof user0.darkMode === 'boolean') {
+                if (darkMode !== user0.darkMode) setDarkMode(user0.darkMode)
+                if (getDarkModeStorage() !== user0.darkMode.toString()) setDarkModeStorage(user0.darkMode)
             }
-        })()
-    }, [done, darkMode])
+        })
+    }, [user, darkMode])
 
-    const changeDarkMode = async () => {
+    const changeDarkMode = async (): Promise<void> => {
         const newMode = !darkMode
         setDarkMode(newMode)
         setDarkModeStorage(newMode)
@@ -52,7 +54,7 @@ export const App = () => {
             <GoogleReCaptchaProvider reCaptchaKey={recaptchaPublicKey}>
                 <div style={ darkMode ? { backgroundColor: 'black' } : { backgroundColor: 'white' } }>
 
-                    <NavBar />
+                    <NavBar user={user} />
 
                     <div style={{
                         maxWidth: isMobile ? '95%' : '90%',
@@ -62,17 +64,17 @@ export const App = () => {
                     }}>
 
                         <Routes>
-                            <Route path="/" element={ <HomePage /> } />
-                            <Route path="/login" element={ <LoginPage /> } />
-                            <Route path="/register" element={ <RegisterPage /> } />
-                            <Route path="/index" element={ <IndexPage /> } />
-                            <Route path="/territorios/:territorio/:manzana" element={ <TerritoriosPage /> } />
-                            <Route path="/territorios/:territorio/:manzana/:todo" element={ <TerritoriosPage /> } />
+                            <Route path="/" element={ <HomePage user={user} /> } />
+                            <Route path="/login" element={ <LoginPage user={user} /> } />
+                            <Route path="/register" element={ <RegisterPage user={user} /> } />
+                            <Route path="/index" element={ <IndexPage user={user} /> } />
+                            <Route path="/territorios/:territorio/:manzana" element={ <TerritoriosPage user={user} /> } />
+                            <Route path="/territorios/:territorio/:manzana/:todo" element={ <TerritoriosPage user={user} /> } />
                             <Route path="/estadisticas" element={ <EstadisticasPage /> } />
                             <Route path="/estadisticas/:territorio" element={ <EstadisticasLocalPage /> } />
-                            <Route path="/user" element={ <UserPage /> } />
+                            <Route path="/user" element={ <UserPage user={user} /> } />
                             <Route path="/admins" element={ <AdminsPage /> } />
-                            <Route path="*" element={ <HomePage /> } />
+                            <Route path="*" element={ <HomePage user={user} /> } />
                         </Routes>
 
                         <div className='custom-control custom-switch' style={{ position: 'fixed', bottom: '20px' }}>

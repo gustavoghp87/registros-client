@@ -1,9 +1,11 @@
 import { Col, Row, Dropdown } from 'react-bootstrap'
+import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeVivienda } from '../../models/typesTerritorios'
 import { isMobile, timeConverter } from '../../services/functions'
 
 export const Col3 = (props: any) => {
 
-    const { vivienda, cambiarEstado } = props
+    const vivienda: typeVivienda = props.vivienda
+    const cambiarEstado: any = props.cambiarEstado
 
     return (
     
@@ -22,27 +24,27 @@ export const Col3 = (props: any) => {
                 <Dropdown.Menu>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, "No predicado", vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => cambiarEstado(vivienda.inner_id, noPredicado, vivienda.noAbonado, vivienda.asignado)}>
                         No predicado
                     </Dropdown.Item>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, "Contestó", vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => cambiarEstado(vivienda.inner_id, contesto, vivienda.noAbonado, vivienda.asignado)}>
                         Contestó
                     </Dropdown.Item>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, "No contestó", vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => cambiarEstado(vivienda.inner_id, noContesto, vivienda.noAbonado, vivienda.asignado)}>
                         No contestó
                     </Dropdown.Item>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, "A dejar carta", vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => cambiarEstado(vivienda.inner_id, aDejarCarta, vivienda.noAbonado, vivienda.asignado)}>
                         A dejar carta
                     </Dropdown.Item>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, "No llamar", vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => cambiarEstado(vivienda.inner_id, noLlamar, vivienda.noAbonado, vivienda.asignado)}>
                         No llamar
                     </Dropdown.Item>
                 </Dropdown.Menu>
@@ -53,12 +55,12 @@ export const Col3 = (props: any) => {
 
         <Row style={{ height: '40%', marginTop: '15px' }}>
             {vivienda.fechaUlt
-            ?
+                ?
                 <div className="card border-dark mb-3"
                     style={{
                         maxWidth: '18rem',
                         backgroundColor: 'rgb(214, 214, 214)',
-                        display: vivienda.estado === "No predicado" ? 'none' : 'block',
+                        display: vivienda.estado === noPredicado ? 'none' : 'block',
                         margin: 'auto'
                     }}
                 >
@@ -70,7 +72,7 @@ export const Col3 = (props: any) => {
                     </div>
 
                 </div>
-            :
+                :
                 <div></div>
             }
         </Row>

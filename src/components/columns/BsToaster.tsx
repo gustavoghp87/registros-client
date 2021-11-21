@@ -11,15 +11,12 @@ export const BsToaster = () => {
     const [showA, setShowA] = useState<boolean>(true)
     const [localStat, setLocalStat] = useState<localStatistic>()
     
-    const toggleShowA = () => setShowA(!showA)
-
     useEffect(() => {
-        (async () => {
-            if (!territorio) return
-            const datos: localStatistic|null = await getLocalStatisticsService(territorio)
-            if (datos) setLocalStat(datos)
-        })()
+        if (territorio) getLocalStatisticsService(territorio)
+            .then((datos: localStatistic|null) => { if (datos) setLocalStat(datos) })
     }, [territorio])
+
+    const toggleShowA = () => setShowA(!showA)
 
     return (
         <>
@@ -43,7 +40,6 @@ export const BsToaster = () => {
                         }
                     </Toast.Body>
                 </Toast>
-                
             :
             <></>
             }

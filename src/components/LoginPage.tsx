@@ -1,34 +1,32 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { autoLoginService, loginService } from '../services/userServices'
+import { loginService } from '../services/tokenServices'
 import { isMobile } from '../services/functions'
+import { typeUser } from '../models/typesUsuarios'
 
-export const LoginPage = () => {
+export const LoginPage = (props: any) => {
 
+    const user: typeUser = props.user
     const { executeRecaptcha } = useGoogleReCaptcha()
-    const navigate = useNavigate()
     const [email, setemail] = useState<string>("")
     const [password, setpassword] = useState<string>("")
 
     useEffect(() => {
-        (async () => {
-            const result: boolean = await autoLoginService()
-            if (result) navigate("/index")
-        })()
-    })
+        //if (user && user.isAuth) window.location.href = "/index"
+    }, [user])
     
     const loginHandler = async (): Promise<void> => {
+        if (email.length === 0 || password.length < 6) return
         if (!executeRecaptcha) return
         const recaptchaToken = await executeRecaptcha("")
         const response: any|null = await loginService(email, password, recaptchaToken)
-        if (response && response.success && response.newToken) navigate("/index")
+        if (response && response.success && response.newToken)
+            window.location.href = "/index"
         else if (!response || response.recaptchaFails) alert("Problemas, refresque la página")
         else if (response && response.isDisabled) alert("Usuario aun no habilitado por el grupo de territorios... avisarles")
         else { alert("Datos incorrectos"); window.location.reload() }
     }
-
-    const loginHandler2 = (e: any): void => { if (e.key === 'Enter') loginHandler() }
 
     const containerLogin = {
         paddingTop: '50px', marginBottom: '50px', border: 'black 1px solid', borderRadius: '12px',
@@ -37,29 +35,34 @@ export const LoginPage = () => {
     
     return (
 
-        <div className="container" style={{maxWidth:'100%', marginTop:'50px', padding:'0'}}>
+        <div className="container" style={{ maxWidth: '100%', marginTop: '50px', padding: '0' }}>
 
             <div className="container" style={containerLogin}>
             
-                <h2 style={{textAlign:'center', textShadow:'0 0 1px gray', fontSize: isMobile ? '1.7rem' : '2rem'}}>
+                <h2 style={{ textAlign: 'center', textShadow: '0 0 1px gray', fontSize: isMobile ? '1.7rem' : '2rem' }}>
                     INGRESAR
                 </h2>
 
-                <div className="container" style={{paddingTop:'35px', display:'block', margin:'auto', maxWidth:'500px'}}>
+                <div className="container" style={{ paddingTop: '35px', display: 'block', margin: 'auto', maxWidth: '500px' }}>
 
-                    <div style={{display:'block', margin:'auto'}}>
+                    <div style={{ display: 'block', margin: 'auto' }}>
 
                         <input className="form-control" type="email" name="email"
                             value={email}
-                            style={{marginBottom:'12px'}} placeholder="Correo electrónico" autoFocus
-                            onChange={e => setemail((e.target as HTMLInputElement).value)}
+                            style={{ marginBottom: '12px' }}
+                            placeholder="Correo electrónico"
+                            //minLength={4}
+                            autoFocus
+                            onChange={(e: any) => setemail((e.target as HTMLInputElement).value)}
                         />
 
                         <input className="form-control" type="password" name="password"
                             value={password}
-                            style={{marginBottom:'30px'}} placeholder="Contraseña"
-                            onChange={e => setpassword((e.target as HTMLInputElement).value)}
-                            onKeyDown={es => loginHandler2(es)}
+                            style={{ marginBottom: '30px' }}
+                            placeholder="Contraseña"
+                            //minLength={6}
+                            onChange={(e: any) => setpassword((e.target as HTMLInputElement).value)}
+                            onKeyDown={(es: any) => { if (es.key === 'Enter') loginHandler() }}
                         />
 
                         {/* <Form.Group controlId="formBasicCheckbox">
@@ -70,7 +73,7 @@ export const LoginPage = () => {
 
                         <button
                             className="btn btn-success"
-                            style={{width:'100%', display:'block', margin:'auto'}}
+                            style={{ width: '100%', display: 'block', margin: 'auto' }}
                             onClick={() => loginHandler()}
                         >
                             ENTRAR
@@ -78,9 +81,8 @@ export const LoginPage = () => {
 
                     </div>
 
-
                     <Link to={"/register"}>
-                        <p style={{fontSize:'1rem', margin:'15px 0 30px', textAlign:'end'}}>
+                        <p style={{ fontSize: '1rem', margin: '15px 0 30px', textAlign: 'end' }}>
                             Registrar una cuenta
                         </p>
                     </Link>

@@ -9,13 +9,17 @@ import { isMobile } from '../services/functions'
 import { localStatistic, statistic } from '../models/statistic'
 import { stateOfTerritory } from '../models/typesTerritorios'
 
-export const EstadisticasPage = (props: any) => {
+export const EstadisticasPage = () => {
 
     const [globalStatistics, setGlobalStatistics] = useState<statistic|null>()
     const [localStatisticsArray, setLocalStatisticsArray] = useState<localStatistic[]|null>()
     const [loading, setLoading] = useState<boolean>(false)
     const [showBtn, setShowBtn] = useState<boolean>(true)
     const [states, setStates] = useState<stateOfTerritory[]>()
+
+    useEffect(() => {
+        getGlobalStatisticsService().then((data: statistic|null) => { if (data) setGlobalStatistics(data) })
+    }, [])
 
     const retrieveLocalStats = async () => {
         setLoading(true);
@@ -29,26 +33,18 @@ export const EstadisticasPage = (props: any) => {
         }
     }
 
-    useEffect(() => {
-        (async () => {
-            const data: statistic|null = await getGlobalStatisticsService()
-            if (data) setGlobalStatistics(data)
-        })()
-    }, [])
-
-
     return (
     <>
-        {ReturnBtn(props)}
+        {ReturnBtn()}
 
         <H2> ESTADÍSTICAS GLOBALES </H2>
 
         {globalStatistics
         ?
-            <div style={{margin: isMobile ? '0' : '0 10%'}}>
+            <div style={{ margin: isMobile ? '0' : '0 10%' }}>
                 <br/>
                 <br/>
-                <Card style={{padding:'35px', textAlign: isMobile ? 'center' : 'left'}}>
+                <Card style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}>
 
                     <h4>{`Hay ${globalStatistics.count} viviendas, ${globalStatistics.countNoAbonado} no abonadas. Neto: ${globalStatistics.count - globalStatistics.countNoAbonado}`} </h4>
 
@@ -81,7 +77,9 @@ export const EstadisticasPage = (props: any) => {
             </div>
         :
             <>
-                <br/><br/><br/>
+                <br/>
+                <br/>
+                <br/>
                 <Loading />
             </>
         }
@@ -107,9 +105,9 @@ export const EstadisticasPage = (props: any) => {
                     <a key={index} href={`/estadisticas/${territory.territorio}`}>
                         <Card
                             style = {{
-                                padding:'35px', textAlign: isMobile ? 'center' : 'left',
+                                padding: '35px', textAlign: isMobile ? 'center' : 'left',
                                 display: 'block', margin: 'auto', color: 'black',
-                                maxWidth: isMobile ? '80%' : '55%', marginBottom:'20px',
+                                maxWidth: isMobile ? '80%' : '55%', marginBottom: '20px',
                                 backgroundColor: territory.libres < 50 ? 'red' : (territory.libres < 100 ? 'yellow': 'green')
                             }}
                             className={terminado ? 'animate-me' : ''}
@@ -124,10 +122,12 @@ export const EstadisticasPage = (props: any) => {
         
         {loading ?
             <>
-                <br/><br/><br/>
+                <br/>
+                <br/>
+                <br/>
                 <Loading />
                 <br/>
-                <h4 style={{textAlign:'center'}}> Esto demora 10 segundos </h4>
+                <h4 style={{ textAlign: 'center' }}> Esto demora 10 segundos </h4>
             </>
             :
             <></>

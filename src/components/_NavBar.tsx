@@ -1,38 +1,30 @@
 import { useState, useEffect } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
 import { FaUserAlt } from 'react-icons/fa'
-import { authUserService, logoutService } from '../services/userServices'
+import { logoutService } from '../services/tokenServices'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
 
-export const NavBar = () => {
+export const NavBar = (props: any) => {
 
-    const navigate = useNavigate()
-    const [user, setUser] = useState<typeUser>()
+    const user: typeUser = props.user
     const [scrollDown, setScrollDown] = useState<boolean>(false)
-
-    const logoutHandler = async () => {
-        await logoutService()
-        navigate("/login")
-    }
 
     useEffect(() => {
         document.addEventListener("scroll", () => {
             if (window.scrollY > 100) setScrollDown(true)
             else setScrollDown(false)
         })
-
-        ;(async() => {
-            const user0: typeUser|null = await authUserService()
-            if (user0) setUser(user0)
-        })()
     }, [])
-
+    
+    const logoutHandler = async () => {
+        logoutService()
+        window.location.href = "/login"
+    }
 
     return (
     <div style={{ position: 'fixed', width: '100%', zIndex: 4 }}>
-        <Navbar style={{ backgroundColor: "#4a6da7" }} collapseOnSelect expand="lg">
+        <Navbar style={{ backgroundColor: '#4a6da7' }} collapseOnSelect expand="lg">
 
             <Navbar.Brand href="/" style={{ color: '#fbfbfb' }}>&nbsp; INICIO</Navbar.Brand>
 

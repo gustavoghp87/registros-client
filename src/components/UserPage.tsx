@@ -1,31 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, Button, Form } from 'react-bootstrap'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
-import { authUserService, changePswService, logoutAllService } from '../services/userServices'
+import { changePswService, logoutAllService } from '../services/tokenServices'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
 
 export const UserPage = (props: any) => {
     
-    const [user, setUser] = useState<typeUser>()
+    const user: typeUser = props.user
     const [show, setShow] = useState(false)
     const [psw, setPsw] = useState('')
     const [newPsw, setNewPsw] = useState('')
-
-    useEffect(() => {
-        (async() => {
-            const user0: typeUser|null = await authUserService()
-            if (user0) setUser(user0)
-        })()
-    }, [])
     
     const changePswHandler = async (): Promise<void> => {
         setPsw('')
         setNewPsw('')
         alert("Cambiando password de " + psw + " a " + newPsw)
         const response: any|null = await changePswService(psw, newPsw)
-        if (response && response.success) { alert("Clave cambiada con éxito") }
+        if (response && response.newToken) { alert("Clave cambiada con éxito") }
         else if (response && response.wrongPassword) alert("Clave incorrecta")
         else alert("Algo falló")
     }
@@ -43,11 +36,11 @@ export const UserPage = (props: any) => {
             sorted = user.asign.sort((a: number, b: number) => a - b)
         return sorted
     }
-
+    
 
     return (
         <>
-            {ReturnBtn(props)}
+            {ReturnBtn()}
 
             <H2 style={{ textAlign: 'center' }}> Usuario </H2>
 
@@ -100,7 +93,6 @@ export const UserPage = (props: any) => {
                     </Button>
 
                     <Button
-                        className="d-none"
                         variant={"danger"}
                         style={{ display: show ? 'none' : 'block', maxWidth: '400px', margin: '20px auto 0 auto' }}
                         onClick={() => logoutAllHandler()}>

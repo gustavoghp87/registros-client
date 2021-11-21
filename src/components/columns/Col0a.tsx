@@ -20,7 +20,7 @@ export const Col0a = (props: any) => {
                             <ToggleButton
                                 key={index} type="radio" variant="danger" name="radio"
                                 value={radio.value}
-                                checked={props.manzana === radio.value.toString()}
+                                checked={props.manzana === radio?.value?.toString()}
                                 style={{ padding: '0' }}
                             >
                                 <a href={`/territorios/${props.territorio}/${radio.value}`}

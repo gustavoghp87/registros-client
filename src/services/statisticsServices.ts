@@ -1,16 +1,15 @@
 import { SERVER } from '../config'
 import { localStatistic, statistic } from '../models/statistic'
-import { getHeaders, getToken } from './functions'
+import { getToken, headers } from './functions'
 
-const base: string = `${SERVER}/api/statistics`
+const base: string = `${SERVER}/api/statistic`
 
 export const getLocalStatisticsService = async (territory: string): Promise<localStatistic|null> => {
     const token: string|null = getToken()
     if (!token) return null
-    const request = await fetch(`${base}/local`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ token, territory })
+    const request = await fetch(`${base}/${territory}`, {
+        method: 'GET',
+        headers: headers
     })
     const response: any|null = await request.json()
     if (!response || !response.success || !response.data) return null
@@ -20,10 +19,9 @@ export const getLocalStatisticsService = async (territory: string): Promise<loca
 export const getAllLocalStatisticsService = async (): Promise<localStatistic[]|null> => {
     const token: string|null = getToken()
     if (!token) return null
-    const request = await fetch(`${base}/local-all`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ token })
+    const request = await fetch(`${base}/`, {
+        method: 'GET',
+        headers: headers
     })
     const response: any|null = await request.json()
     if (!response || !response.success || !response.data) return null
@@ -33,10 +31,9 @@ export const getAllLocalStatisticsService = async (): Promise<localStatistic[]|n
 export const getGlobalStatisticsService = async (): Promise<statistic|null> => {
     const token: string|null = getToken()
     if (!token) return null
-    const request = await fetch(`${base}/global`, {
+    const request = await fetch(`${base}/`, {
         method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ token })
+        headers: headers
     })
     const response: any|null = await request.json()
     if (!response || !response.success || !response.data) return null

@@ -1,8 +1,12 @@
 import { Button } from 'react-bootstrap'
 import { BsBackspace } from 'react-icons/bs'
+import { useNavigate } from 'react-router-dom'
 import { isMobile } from '../services/functions'
 
-export const ReturnBtn = (props: any) => {
+export const ReturnBtn = () => {
+
+    const navigate: any = useNavigate()
+    
     return (
         <>
             <div style={{
@@ -13,7 +17,7 @@ export const ReturnBtn = (props: any) => {
                 zIndex: 3
             }}>
                 <Button size={isMobile ? 'sm' : 'lg'}
-                    onClick={() => props.history.goBack()}
+                    onClick={() => navigate(-1)}
                     style={{
                         backgroundColor: '#4a6da7',
                         border: '1px solid #4a6da7',
@@ -22,7 +26,7 @@ export const ReturnBtn = (props: any) => {
                     }}
                 >
 
-                    <BsBackspace style={{paddingBottom:'3px'}} /> VOLVER &nbsp;
+                    <BsBackspace style={{ paddingBottom: '3px' }} /> VOLVER &nbsp;
 
                 </Button>
             </div>

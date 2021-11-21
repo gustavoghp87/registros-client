@@ -17,10 +17,13 @@ import { confirmAlert } from 'react-confirm-alert'
 import { isMobile } from '../services/functions'
 import { SERVER } from '../config'
 import * as types from '../models/typesTerritorios'
+import { typeUser } from '../models/typesUsuarios'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const TerritoriosPage = (props: any) => {
 
+    const navigate = useNavigate()
+    const user: typeUser = props.user
     const { territorio, manzana, todo } = useParams<any>()
     const [householdsObj, setHouseholdsObj] = useState<types.typeTerritorio>({ households: [] })
     const [isFinished, setIsFinished] = useState<boolean>(false)
@@ -31,8 +34,35 @@ export const TerritoriosPage = (props: any) => {
     const [blocks, setBlocks] = useState<string[]>(['1'])
     const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
     const showingAll = todo === 'todo' ? true : false
-    const navigate = useNavigate()
     const [socket, setSocket] = useState<any>(null)
+    
+    useEffect(() => {
+        if (territorio) getBlocksService(territorio)
+            .then((blocks: string[]|null) => { if (blocks) setBlocks(blocks) })
+        if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, showingAll, brought, broughtAll)
+            .then((households: types.typeVivienda[]|null) => {
+                if (households) {
+                    setHouseholdsObj({ households })
+                    new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
+                    setTextBtn(`Traer 10 más (${brought + 10})`)
+                    getStateOfTerritoryService(territorio).then(stateOfTerritory => {
+                        if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory) }
+                    })
+                }
+            })
+        ;
+        // socket:
+        if (!socket) {
+            const newSocket = io(SERVER, { withCredentials: true })
+            newSocket.on('household: change', (updatedHouseholds: types.typeVivienda[]) => {
+                if (updatedHouseholds && updatedHouseholds[0].territorio === territorio && updatedHouseholds[0].manzana === manzana)
+                setHouseholdsObj({ households: updatedHouseholds })
+            })
+            if (newSocket) setSocket(newSocket)
+        }
+        if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
+        
+    }, [showingAll, manzana, territorio, brought, broughtAll, socket, socket?.connected])
     
     const modifyHouseholdHandler = async (inner_id: string,
          estado: string, noAbonado: boolean|null, asignado: boolean|null): Promise<void> => {
@@ -43,31 +73,31 @@ export const TerritoriosPage = (props: any) => {
         else alert("Algo falló al modificar")
     }
 
-    const traerDiezMas = (): void => {
+    const getTenMoreHandler = (): void => {
         setTextBtn('...buscando...')
-        setBrought(brought+10)
+        setBrought(brought + 10)
     }
 
-    const checkAsFinished = async (): Promise<void> => {
+    const markAsFinishedHandler = async (): Promise<void> => {
         if(!territorio) return
         const success = await markTerritoryAsFinishedService(territorio, true)
         if (success) navigate("/index")
     }
 
-    const checkAsUnfinished = async (): Promise<void> => {
+    const markAsUnfinishedHandler = async (): Promise<void> => {
         if (!territorio) return
         const success: boolean = await markTerritoryAsFinishedService(territorio, false)
         if (success) window.location.reload()
     }
 
-    const submit1 = (): void => {
+    const submit1Handler = (): void => {
         confirmAlert({
             title: '¿Confirmar finalizar territorio?',
             message: `El territorio ${territorio} se dará por terminado y se te desasignará`,
             buttons: [
                 {
                     label: `Terminar Territorio ${territorio}`,
-                    onClick: () => checkAsFinished()
+                    onClick: () => markAsFinishedHandler()
                 },
                 {
                     label: 'Cancelar',
@@ -77,14 +107,14 @@ export const TerritoriosPage = (props: any) => {
         })
     }
 
-    const submit2 = (): void => {
+    const submit2Handler = (): void => {
         confirmAlert({
             title: '¿Confirmar abrir territorio?',
             message: `El territorio ${territorio} se abrirá de nuevo`,
             buttons: [
                 {
                     label: `Abrir Territorio ${territorio}`,
-                    onClick: () => checkAsUnfinished()
+                    onClick: () => markAsUnfinishedHandler()
                 },
                 {
                     label: 'Cancelar',
@@ -104,44 +134,14 @@ export const TerritoriosPage = (props: any) => {
             updatedHousehold,
             indexOfHousehold
         }
-        if (socket && objPackage) socket.emit('household: change', objPackage)
+        if (socket && socket.connected && objPackage) socket.emit('household: change', objPackage)
+        else alert("No estás conectado")
     }
 
-    useEffect(() => {
-        ;(async () => {
-            if(!territorio) return
-            const blocks: string[]|null = await getBlocksService(territorio)
-            if (blocks) setBlocks(blocks)
-            
-            if(!manzana) return
-            const households: types.typeVivienda[]|null =
-                await getHouseholdsByTerritoryService(territorio, manzana, showingAll, brought, broughtAll)
-            if (households) {
-                setHouseholdsObj({ households })
-                new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
-                setTextBtn(`Traer 10 más (${brought + 10})`)
-                getStateOfTerritoryService(territorio).then(stateOfTerritory => {
-                    if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory) }
-                })
-            }
-        })()
-
-        if (socket) return
-        const newSocket = io(SERVER, {
-            withCredentials: true,
-            //extraHeaders: { "my-custom-header": "abcd" }
-        })
-        if (newSocket) setSocket(newSocket)
-        
-        if (newSocket) newSocket.on('household: change', (updatedHouseholds: types.typeVivienda[]) => {
-            if (updatedHouseholds) setHouseholdsObj({ households: updatedHouseholds })
-        })
-    }, [showingAll, manzana, territorio, brought, broughtAll, socket])
-    
 
     return (
         <>
-            {ReturnBtn(props)}
+            {ReturnBtn()}
 
             <div style={{
                 display: 'block',
@@ -167,8 +167,8 @@ export const TerritoriosPage = (props: any) => {
 
             <Button variant="dark"
                 onClick={() => setShowMap(!showMap)}
-                style={{display:'block', margin:'22px auto'
-            }}>
+                style={{ display: 'block', margin: '22px auto' }}
+            >
                 {showMap ? 'Ocultar Mapa' : 'Ver Mapa'}
             </Button>
 
@@ -193,13 +193,14 @@ export const TerritoriosPage = (props: any) => {
             />
 
             <Col0b
+                user={user}
                 territorio={territorio}
                 manzana={manzana}
                 isTodo={showingAll}
             />
 
             <Button size={isMobile ? 'sm' : 'lg'}
-                onClick={() => submit1()}
+                onClick={() => submit1Handler()}
                 style={{
                     backgroundColor: '#4a6da7',
                     border: '1px solid #4a6da7',
@@ -214,7 +215,7 @@ export const TerritoriosPage = (props: any) => {
             </Button>
 
             <Button size={isMobile ? 'sm' : 'lg'}
-                onClick={() => submit2()}
+                onClick={() => submit2Handler()}
                 style={{
                     backgroundColor: 'red',
                     border: '1px solid red',
@@ -232,11 +233,11 @@ export const TerritoriosPage = (props: any) => {
             {householdsObj && householdsObj.households && !!householdsObj.households.length &&
                 householdsObj.households.map((vivienda: types.typeVivienda) => {
 
-                if (vivienda.estado === types.noPredicado) vivienda = { ...vivienda, variante: "success" }
-                if (vivienda.estado === types.contesto) vivienda = { ...vivienda, variante: "primary" }
-                if (vivienda.estado === types.noContesto) vivienda = { ...vivienda, variante: "warning" }
-                if (vivienda.estado === types.aDejarCarta) vivienda = { ...vivienda, variante: "danger" }
-                if (vivienda.estado === types.noLlamar) vivienda = { ...vivienda, variante: "dark" }
+                if (vivienda.estado === types.noPredicado) vivienda = { ...vivienda, variante: 'success' }
+                if (vivienda.estado === types.contesto) vivienda = { ...vivienda, variante: 'primary' }
+                if (vivienda.estado === types.noContesto) vivienda = { ...vivienda, variante: 'warning' }
+                if (vivienda.estado === types.aDejarCarta) vivienda = { ...vivienda, variante: 'danger' }
+                if (vivienda.estado === types.noLlamar) vivienda = { ...vivienda, variante: 'dark' }
 
                 return (
                 
@@ -280,10 +281,10 @@ export const TerritoriosPage = (props: any) => {
             {householdsObj && householdsObj.households && !!householdsObj.households.length && loaded &&
             <>
                 <Pagination size='lg' style={{ textAlign: 'center',
-                    alignItems:'center', justifyContent:'center', marginTop:'80px', fontWeight:'bolder',
+                    alignItems: 'center', justifyContent: 'center', marginTop: '80px', fontWeight: 'bolder',
                     display: broughtAll ? 'none' : ''
                 }}>
-                    <Pagination.Item onClick={() => traerDiezMas()}>
+                    <Pagination.Item onClick={() => getTenMoreHandler()}>
                         {textBtn}
                     </Pagination.Item>
 
@@ -302,7 +303,7 @@ export const TerritoriosPage = (props: any) => {
             }
 
             {householdsObj && householdsObj.households && !householdsObj.households.length && !showingAll && loaded &&
-                <h3 style={{textAlign:'center'}}>
+                <h3 style={{ textAlign: 'center' }}>
                     <br/>
                     No hay viviendas no llamadas en esta manzana {manzana} del territorio {territorio}
                 </h3>
