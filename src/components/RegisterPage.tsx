@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { Link } from 'react-router-dom'
-import { typeUser } from '../models/typesUsuarios'
-import { isMobile } from '../services/functions'
 import { registerUserService } from '../services/userServices'
+import { isMobile } from '../services/functions'
+import { typeUser } from '../models/typesUsuarios'
 
 export const RegisterPage = (props: any) => {
 
@@ -16,7 +16,7 @@ export const RegisterPage = (props: any) => {
     const { executeRecaptcha } = useGoogleReCaptcha();
 
     useEffect(() => {
-        if (user && user.isAuth) window.location.href = "/"
+        if (user && user.isAuth) window.location.href = "/index"
     }, [user])
 
     const sendFormHandler = async (): Promise<void> => {

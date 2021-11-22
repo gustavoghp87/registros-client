@@ -9,6 +9,7 @@ import { EstadisticasPage } from './EstadisticasPage'
 import { EstadisticasLocalPage } from './EstadisticasLocalPage'
 import { UserPage } from './UserPage'
 import { AdminsPage } from './AdminsPage'
+import { RecoveryPage } from './RecoveryPage'
 import { NavBar } from './_NavBar'
 import { Footer } from './_Footer'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
@@ -74,6 +75,7 @@ export const App = () => {
                             <Route path="/estadisticas/:territorio" element={ <EstadisticasLocalPage /> } />
                             <Route path="/user" element={ <UserPage user={user} /> } />
                             <Route path="/admins" element={ <AdminsPage /> } />
+                            <Route path="/recovery/:id" element={ <RecoveryPage /> } />
                             <Route path="*" element={ <HomePage user={user} /> } />
                         </Routes>
 

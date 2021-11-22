@@ -33,13 +33,13 @@ export const logoutAllService = async (): Promise<boolean> => {
     return true
 }
 
-export const changePswService = async (psw: string, newPsw: string): Promise<object|null> => {
+export const changePswService = async (psw: string|null, newPsw: string, id: string|null): Promise<object|null> => {
     const token: string|null = getToken()
-    if (!token) return null
+    if (!token && !id) return null
     const fetchy = await fetch(`${base}/`, {
         method: 'PUT',
         headers: headers,
-        body: JSON.stringify({ psw, newPsw })
+        body: JSON.stringify({ psw, newPsw, id })
     })
     const response: any|null = await fetchy.json()
     if (response && response.success && response.newToken) setToken(response.newToken)

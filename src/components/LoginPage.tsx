@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { confirmAlert } from 'react-confirm-alert'
 import { loginService } from '../services/tokenServices'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
+import { sendLinkToRecoverAccount } from '../services/userServices'
 
 export const LoginPage = (props: any) => {
 
@@ -13,7 +15,7 @@ export const LoginPage = (props: any) => {
     const [password, setpassword] = useState<string>("")
 
     useEffect(() => {
-        //if (user && user.isAuth) window.location.href = "/index"
+        if (user && user.isAuth) window.location.href = "/index"
     }, [user])
     
     const loginHandler = async (): Promise<void> => {
@@ -26,6 +28,35 @@ export const LoginPage = (props: any) => {
         else if (!response || response.recaptchaFails) alert("Problemas, refresque la página")
         else if (response && response.isDisabled) alert("Usuario aun no habilitado por el grupo de territorios... avisarles")
         else { alert("Datos incorrectos"); window.location.reload() }
+    }
+
+    const resetPasswordHandler = (email: string): void => {
+        confirmAlert({
+            title: `¿Recuperar cuenta?`,
+            message: `Esto enviará un correo ${email} para cambiar la contraseña`,
+            buttons: [
+                {
+                    label: 'ENVIAR',
+                    onClick: () => sendEmail()
+                },
+                {
+                    label: 'CANCELAR',
+                    onClick: () => {}
+                }
+            ]
+        })
+
+        const sendEmail = async (): Promise<void> => {
+            const response: any = await sendLinkToRecoverAccount(email)
+            if (response && response.success)
+                alert(`Se envió un correo a ${email}`)
+            else if (response && response.noUser)
+                alert(`Este email no es de un usuario registrado: ${email}`)
+            else if (response && response.notSent)
+                alert(`No se pudo mandar un correo a ${email}`)
+            else
+                alert(`Algo falló`)
+        }
     }
 
     const containerLogin = {
@@ -73,7 +104,7 @@ export const LoginPage = (props: any) => {
 
                         <button
                             className="btn btn-success"
-                            style={{ width: '100%', display: 'block', margin: 'auto' }}
+                            style={{ width: '100%', height: '50px', display: 'block', margin: 'auto' }}
                             onClick={() => loginHandler()}
                         >
                             ENTRAR
@@ -82,10 +113,22 @@ export const LoginPage = (props: any) => {
                     </div>
 
                     <Link to={"/register"}>
-                        <p style={{ fontSize: '1rem', margin: '15px 0 30px', textAlign: 'end' }}>
+                        <p style={{ fontSize: '1rem', margin: '18px 0 10px 0', textAlign: 'end' }}>
                             Registrar una cuenta
                         </p>
                     </Link>
+
+                    <a href={"#top"}>
+                        <p
+                            style={{ fontSize: '1rem', margin: '0px 0 22px', textAlign: 'end' }}
+                            onClick={() => {
+                                if (email && email.includes("@") && email.includes(".")) resetPasswordHandler(email)
+                                else alert("Escribir el email primero")
+                            }}
+                        >
+                            Olvidé mi contraseña
+                        </p>
+                    </a>
                     
                 </div>
             </div>

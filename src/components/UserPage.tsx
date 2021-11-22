@@ -17,7 +17,7 @@ export const UserPage = (props: any) => {
         setPsw('')
         setNewPsw('')
         alert("Cambiando password de " + psw + " a " + newPsw)
-        const response: any|null = await changePswService(psw, newPsw)
+        const response: any|null = await changePswService(psw, newPsw, null)
         if (response && response.newToken) { alert("Clave cambiada con éxito") }
         else if (response && response.wrongPassword) alert("Clave incorrecta")
         else alert("Algo falló")
