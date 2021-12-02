@@ -1,10 +1,10 @@
 import { SERVER } from '../config'
-import { stateOfTerritory } from '../models/typesTerritorios'
+import { typeStateOfTerritory } from '../models/typesTerritorios'
 import { getToken, headers } from './functions'
 
 const base: string = `${SERVER}/api/state-territory`
 
-export const getStateOfTerritoryService = async (territorio: string): Promise<boolean|null> => {
+export const getStateOfTerritoryService = async (territorio: string): Promise<any|null> => {
     const token: string|null = getToken()
     if (!token) return null
     const request: any|null = await fetch(`${base}/${territorio}`, {
@@ -14,10 +14,10 @@ export const getStateOfTerritoryService = async (territorio: string): Promise<bo
     const response: any|null = await request.json()
     if (!response || !response.success || !response.obj || response.obj.isFinished === null
         || typeof response.obj.isFinished !== "boolean") return null
-    return response.obj.isFinished
+    return response.obj
 }
 
-export const getStateOfTerritoriesService = async (): Promise<stateOfTerritory[]|null> => {
+export const getStateOfTerritoriesService = async (): Promise<typeStateOfTerritory[]|null> => {
     const token: string|null = getToken()
     if (!token) return null
     const request: any|null = await fetch(`${base}`, {
@@ -26,7 +26,7 @@ export const getStateOfTerritoriesService = async (): Promise<stateOfTerritory[]
     })
     const response: any|null = await request.json()
     if (!response || !response.success || !response.obj) return null
-    const stateOfTerritories: stateOfTerritory[] = response.obj
+    const stateOfTerritories: typeStateOfTerritory[] = response.obj
     return stateOfTerritories
 }
 

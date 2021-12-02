@@ -7,7 +7,7 @@ import { getStateOfTerritoriesService } from '../services/stateTerritoryServices
 import { getAllLocalStatisticsService, getGlobalStatisticsService } from '../services/statisticsServices'
 import { isMobile } from '../services/functions'
 import { localStatistic, statistic } from '../models/statistic'
-import { stateOfTerritory } from '../models/typesTerritorios'
+import { typeStateOfTerritory } from '../models/typesTerritorios'
 
 export const EstadisticasPage = () => {
 
@@ -15,7 +15,7 @@ export const EstadisticasPage = () => {
     const [localStatisticsArray, setLocalStatisticsArray] = useState<localStatistic[]|null>()
     const [loading, setLoading] = useState<boolean>(false)
     const [showBtn, setShowBtn] = useState<boolean>(true)
-    const [states, setStates] = useState<stateOfTerritory[]>()
+    const [states, setStates] = useState<typeStateOfTerritory[]>()
 
     useEffect(() => {
         getGlobalStatisticsService().then((data: statistic|null) => { if (data) setGlobalStatistics(data) })
@@ -28,7 +28,7 @@ export const EstadisticasPage = () => {
         if (allLocalStatistics) {
             setLocalStatisticsArray(allLocalStatistics)
             setLoading(false)
-            const states1: stateOfTerritory[]|null = await getStateOfTerritoriesService()
+            const states1: typeStateOfTerritory[]|null = await getStateOfTerritoriesService()
             if (states1) setStates(states1)
         }
     }
@@ -98,7 +98,7 @@ export const EstadisticasPage = () => {
         {localStatisticsArray && !!localStatisticsArray.length &&
             localStatisticsArray.map((territory: localStatistic, index: number) => {
                 let isFinished = false
-                if (states) states.forEach((state: stateOfTerritory) => {
+                if (states) states.forEach((state: typeStateOfTerritory) => {
                     if (state && territory && state.territorio === territory.territorio) isFinished = state.isFinished
                 })
                 return (

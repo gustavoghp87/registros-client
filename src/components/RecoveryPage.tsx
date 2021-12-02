@@ -20,25 +20,20 @@ export const RecoveryPage = (props: any) => {
     }, [id])
 
     const sendFormHandler = async (): Promise<void> => {
-        const sendForm = async (): Promise<void> => {
-            if (!id) return
-            const response: any|null = await changePswService(null, password, id)
-            if (response && response.success) {
-                alert("Clave cambiada con éxito")
-                window.location.href = "/"
-            } else if (response && response.expired) {
-                alert("Este link ya expiró; pedir otro")
-                window.location.href = "/login"
-            } else if (response && response.used) {
-                alert("Este link de recuperación ya se usó antes")
-                window.location.href = "/login"
-            } else alert("Algo salió mal")
-        }
-
         if (!id || !email || !password || !confPassword) return alert("Faltan datos")
         if (password.length < 8) return alert("La contraseña es demasiado corta (mín 8)")
         if (password !== confPassword) return alert("La contraseña no coincide con su confirmación")
-        sendForm()
+        const response: any|null = await changePswService(null, password, id)
+        if (response && response.success) {
+            alert("Clave cambiada con éxito")
+            window.location.href = "/"
+        } else if (response && response.expired) {
+            alert("Este link ya expiró; pedir otro")
+            window.location.href = "/login"
+        } else if (response && response.used) {
+            alert("Este link de recuperación ya se usó antes")
+            window.location.href = "/login"
+        } else alert("Algo salió mal")
     }
     
     return (

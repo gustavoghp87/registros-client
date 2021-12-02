@@ -1,5 +1,5 @@
 import { isMobile } from '../services/functions'
-import { H2, LINK2 } from './css/css'
+import { H2 } from './css/css'
 import { typeUser } from '../models/typesUsuarios'
 
 export const HomePage = (props: any) => {
@@ -10,7 +10,7 @@ export const HomePage = (props: any) => {
     <>
         <H2 style={{ marginTop: '50px' }}> BIENVENIDOS </H2>
 
-        <LINK2 to={user && user.isAuth ? '/index' : '/login'}>
+        <a href={user && user.isAuth ? '/index' : '/login'}>
             <h3 style={{
                 margin: '30px auto',
                 color: '#4a6da7',
@@ -22,7 +22,7 @@ export const HomePage = (props: any) => {
             }}>
                 ENTRAR
             </h3>
-        </LINK2>
+        </a>
 
         <div style={{ textAlign: 'center', marginTop: isMobile ? '30px' : '40px' }}>
             
@@ -44,8 +44,7 @@ export const HomePage = (props: any) => {
                         VISITAR JW.ORG
                     </h2>
                 
-                    <img src="/img/jw.png" alt="jw"
-                        style={{ margin: '15px auto', maxWidth: '100%' }} />
+                    <img src="/img/jw.png" alt="jw" style={{ margin: '15px auto', maxWidth: '100%' }} />
                 
                 </a>
             </div>

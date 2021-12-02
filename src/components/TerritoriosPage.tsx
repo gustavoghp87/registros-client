@@ -45,8 +45,8 @@ export const TerritoriosPage = (props: any) => {
                     setHouseholdsObj({ households })
                     new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
                     setTextBtn(`Traer 10 más (${brought + 10})`)
-                    getStateOfTerritoryService(territorio).then(stateOfTerritory => {
-                        if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory) }
+                    getStateOfTerritoryService(territorio).then((stateOfTerritory: types.typeStateOfTerritory|null) => {
+                        if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory.isFinished) }
                     })
                 }
             })

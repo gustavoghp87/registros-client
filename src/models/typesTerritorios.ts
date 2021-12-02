@@ -29,8 +29,14 @@ type estado = "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | 
 
 export type variante = "success" | "dark" | "primary" | "danger" | "warning" | "light"
 
-export type stateOfTerritory = {
+export type typeStateOfTerritory = {
     _id?: object
     territorio: string
     isFinished: boolean
+    resetDate?: typeResetDate[]
+}
+
+export type typeResetDate = {
+    date: number
+    option: number
 }

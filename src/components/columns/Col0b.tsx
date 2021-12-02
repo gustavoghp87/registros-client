@@ -1,5 +1,4 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
-import { LINK2 } from '../css/css'
 import { isMobile } from '../../services/functions'
 import { typeUser } from '../../models/typesUsuarios'
 import { typeBlock } from '../../models/typesTerritorios'
@@ -50,8 +49,8 @@ export const Col0b = (props:any) => {
             <ButtonGroup toggle>
 
                 <ToggleButton
-                    key={'1'} type="radio" variant="danger"
-                    name="radio" value={radios[0].value} style={{ padding: '0' }}
+                    key={'1'} type={'radio'} variant={'danger'}
+                    name={'radio'} value={radios[0].value} style={{ padding: '0' }}
                     checked={isTodo ? false : (isStatistics ? false : true )}
                 >
 
@@ -66,34 +65,34 @@ export const Col0b = (props:any) => {
 
 
                 <ToggleButton
-                    key={'2'} type="radio" variant="danger"
-                    name="radio" value={radios[1].value} style={{ padding: '0' }}
+                    key={'2'} type={'radio'} variant={'danger'}
+                    name={'radio'} value={radios[1].value} style={{ padding: '0' }}
                     checked={isTodo ? true : false}
                 >
 
-                    <LINK2 to={`/territorios/${territorio}/${manzana}/todo`}
+                    <a href={`/territorios/${territorio}/${manzana}/todo`}
                         style={{ color: 'white' }}>
                         
                         <div style={{ lineHeight: '40px', padding: '0 15px' }}> {radios[1].name} </div>
 
-                    </LINK2>
+                    </a>
 
                 </ToggleButton>
 
                 
                 {radios && radios[2] &&
                     <ToggleButton
-                        key={'3'} type="radio" variant="danger"
-                        name="radio" value={radios[2].value} style={{ padding: '0' }}
+                        key={'3'} type={'radio'} variant={'danger'}
+                        name={'radio'} value={radios[2].value} style={{ padding: '0' }}
                         checked={isStatistics ? true : false }
                     >
 
-                        <LINK2 to={`/estadisticas/${territorio}`}
+                        <a href={`/estadisticas/${territorio}`}
                             style={{ color: 'white' }}>
                             
                             <div style={{ lineHeight: '40px', padding: '0 15px' }}> {radios[2].name} </div>
 
-                        </LINK2>
+                        </a>
 
                     </ToggleButton>
                 }

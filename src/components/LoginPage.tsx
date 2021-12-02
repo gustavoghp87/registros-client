@@ -33,7 +33,7 @@ export const LoginPage = (props: any) => {
     const resetPasswordHandler = (email: string): void => {
         confirmAlert({
             title: `¿Recuperar cuenta?`,
-            message: `Esto enviará un correo ${email} para cambiar la contraseña`,
+            message: `Esto enviará un correo a ${email} para cambiar la contraseña`,
             buttons: [
                 {
                     label: 'ENVIAR',

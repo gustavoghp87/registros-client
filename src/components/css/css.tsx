@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+//import { Link } from 'react-router-dom'
 import { isMobile } from '../../services/functions'
 
 export const H2 = styled.h1`
@@ -9,10 +9,10 @@ export const H2 = styled.h1`
     font-weight: bolder;
 `
 
-export const LINK2 = styled(Link)`
-    text-decoration: none;
+// export const LINK2 = styled(Link)`
+//     text-decoration: none;
 
-    &:focus, &:hover, &:visited, &:link, &:active {
-        text-decoration: none;
-    }
-`
+//     &:focus, &:hover, &:visited, &:link, &:active {
+//         text-decoration: none;
+//     }
+// `
