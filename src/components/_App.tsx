@@ -19,6 +19,7 @@ import { recaptchaPublicKey } from '../config'
 import { typeUser } from '../models/typesUsuarios'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { CasaEnCasaPage } from './CasaEnCasaPage'
 
 export const App = () => {
 
@@ -69,6 +70,7 @@ export const App = () => {
                             <Route path="/login" element={ <LoginPage user={user} /> } />
                             <Route path="/register" element={ <RegisterPage user={user} /> } />
                             <Route path="/index" element={ <IndexPage user={user} /> } />
+                            <Route path="/casaencasa/:territory" element={ <CasaEnCasaPage user={user} /> } />
                             <Route path="/territorios/:territorio/:manzana" element={ <TerritoriosPage user={user} /> } />
                             <Route path="/territorios/:territorio/:manzana/:todo" element={ <TerritoriosPage user={user} /> } />
                             <Route path="/estadisticas" element={ <EstadisticasPage /> } />

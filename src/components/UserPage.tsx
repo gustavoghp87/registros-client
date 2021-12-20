@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Card, Button, Form } from 'react-bootstrap'
+import { confirmAlert } from 'react-confirm-alert'
 import { ReturnBtn } from './_Return'
 import { H2 } from './css/css'
 import { changePswService, logoutAllService } from '../services/tokenServices'
@@ -24,10 +25,25 @@ export const UserPage = (props: any) => {
     }
 
     const logoutAllHandler = async (): Promise<void> => {
-        alert("Esta opción cerrará todas las sesiones en cualquier dispositivo excepto en este")
-        const response: boolean = await logoutAllService()
-        if (response) alert("Cierre exitoso")
-        else alert("Algo falló; intente de nuevo")
+        confirmAlert({
+            title: `¿Cerrar sesiones?`,
+            message: `Esta opción cerrará todas las sesiones en todos los dispositivos en que se haya ingresado excepto en este`,
+            buttons: [
+                {
+                    label: 'ACEPTAR',
+                    onClick: () => logoutAll()
+                },
+                {
+                    label: 'CANCELAR',
+                    onClick: () => {}
+                }
+            ]
+        })
+        const logoutAll = async (): Promise<void> => {
+            const success: boolean = await logoutAllService()
+            if (success) alert("Cierre exitoso")
+            else alert("Algo falló; intente de nuevo")
+        }
     }
 
     const getAssignedTerritoriesSorted = (): number[] => {
@@ -53,12 +69,12 @@ export const UserPage = (props: any) => {
                         <h4> Usuario: {user.email} </h4>
                         <br/>
 
-                        <div className="d-inline-block">
-                            <h4 className="d-inline-block"> Territorios asignados: &nbsp; &nbsp; </h4>
+                        <div className={'d-inline-block'}>
+                            <h4 className={'d-inline-block'}> Territorios asignados: &nbsp; &nbsp; </h4>
 
                             {user.asign &&
                                 getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
-                                    <h4 key={index} className="d-inline-block">
+                                    <h4 key={index} className={'d-inline-block'}>
                                         {territorio} &nbsp; &nbsp;
                                     </h4>
                                 ))
@@ -70,12 +86,12 @@ export const UserPage = (props: any) => {
                     <>
                         <h3> Usuario: {user.email} </h3>
                         
-                        <div className="d-inline-block">
-                            <h3 className="d-inline-block"> Territorios asignados: &nbsp; &nbsp; </h3>
+                        <div className={'d-inline-block'}>
+                            <h3 className={'d-inline-block'}> Territorios asignados: &nbsp; &nbsp; </h3>
 
                             {user.asign &&
                                 getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
-                                    <h3 key={index} className="d-inline-block">
+                                    <h3 key={index} className={'d-inline-block'}>
                                         {territorio} &nbsp; &nbsp;
                                     </h3>
                                 ))
@@ -86,14 +102,14 @@ export const UserPage = (props: any) => {
                     }
 
                     <Button
-                        variant={"danger"}
+                        variant={'danger'}
                         style={{ display: show ? 'none' : 'block', maxWidth: '400px', margin: '20px auto 0 auto' }}
                         onClick={() => setShow(true)}>
                         Cambiar contraseña
                     </Button>
 
                     <Button
-                        variant={"danger"}
+                        variant={'danger'}
                         style={{ display: show ? 'none' : 'block', maxWidth: '400px', margin: '20px auto 0 auto' }}
                         onClick={() => logoutAllHandler()}>
                         Cerrar sesión en todos los dispositivos
@@ -103,8 +119,8 @@ export const UserPage = (props: any) => {
 
                 {show &&
                     <Card style={{ padding: '25px', margin: '60px auto', maxWidth: '600px'}}>
-                        <Card.Title className="mb-4"> CAMBIAR CONTRASEÑA </Card.Title>
-                        <Form.Group controlId="formBasicPassword">
+                        <Card.Title className={'mb-4'}> CAMBIAR CONTRASEÑA </Card.Title>
+                        <Form.Group>
                             <Form.Label> Contraseña actual </Form.Label>
                             <Form.Control type="text"
                                 placeholder="Contraseña actual"
@@ -113,20 +129,20 @@ export const UserPage = (props: any) => {
                             />
                         </Form.Group>
 
-                        <Form.Group controlId="formBasicPassword">
+                        <Form.Group>
                             <Form.Label> Nueva contraseña </Form.Label>
-                            <Form.Control type="text"
-                                placeholder="Nueva contraseña"
+                            <Form.Control type={'text'}
+                                placeholder={"Nueva contraseña"}
                                 value={newPsw}
                                 onChange={(event: any) => setNewPsw(event.target.value)}
                             />
                         </Form.Group>
 
-                        <Button variant="primary" className="mt-4 mb-2" type="submit" onClick={() => changePswHandler()}>
+                        <Button variant={'primary'} className={'mt-4 mb-2'} type={'submit'} onClick={() => changePswHandler()}>
                             Aceptar
                         </Button>
 
-                        <Button variant="danger" type="cancel" onClick={() => setShow(false)}>
+                        <Button variant={'danger'} onClick={() => setShow(false)}>
                             Cancelar
                         </Button>
                     </Card>

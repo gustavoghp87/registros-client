@@ -9,7 +9,7 @@ export type typeVivienda = {
     estado: estado
     noAbonado: boolean
     fechaUlt?: string
-    variante: variante
+    variante: variant
     asignado?: boolean
 }
 
@@ -27,7 +27,7 @@ export const noLlamar: string = "No llamar"
 
 type estado = "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | "No llamar"
 
-export type variante = "success" | "dark" | "primary" | "danger" | "warning" | "light"
+export type variant = "success" | "dark" | "primary" | "danger" | "warning" | "light" | "secondary" | "info" | "link"
 
 export type typeStateOfTerritory = {
     _id?: object

@@ -7,7 +7,6 @@ export const isLocalhost: boolean = Boolean(
 )
 
 export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {
-
     try {
         let a: Date;
         if (parse) a = new Date(parseInt(UNIX_timestamp))

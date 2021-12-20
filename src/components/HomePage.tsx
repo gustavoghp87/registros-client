@@ -10,7 +10,7 @@ export const HomePage = (props: any) => {
     <>
         <H2 style={{ marginTop: '50px' }}> BIENVENIDOS </H2>
 
-        <a href={user && user.isAuth ? '/index' : '/login'}>
+        <a href={user && user.isAuth ? "/index" : "/login"}>
             <h3 style={{
                 margin: '30px auto',
                 color: '#4a6da7',
@@ -26,7 +26,7 @@ export const HomePage = (props: any) => {
 
         <div style={{ textAlign: 'center', marginTop: isMobile ? '30px' : '40px' }}>
             
-            <img src="/img/world.png" alt="world" style={{ margin: '15px auto 0 auto', maxWidth: '100%' }} />
+            <img src={"/img/world.png"} alt={"world"} style={{ margin: '15px auto 0 auto', maxWidth: '100%' }} />
         
 
             <div style={{
@@ -37,14 +37,14 @@ export const HomePage = (props: any) => {
                 margin: 'auto'
             }}>
 
-                <a href="https://jw.org/es" target="_blank" rel="noopener noreferrer"
+                <a href={"https://jw.org/es"} target={'_blank'} rel={'noopener noreferrer'}
                     style={{ textDecoration: 'none' }}>
                     
                     <h2 style={{ color: '#4a6da7', fontSize: isMobile ? '1.5rem' : '2rem' }}>
                         VISITAR JW.ORG
                     </h2>
                 
-                    <img src="/img/jw.png" alt="jw" style={{ margin: '15px auto', maxWidth: '100%' }} />
+                    <img src={"/img/jw.png"} alt={"jw"} style={{ margin: '15px auto', maxWidth: '100%' }} />
                 
                 </a>
             </div>

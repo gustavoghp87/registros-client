@@ -11,6 +11,7 @@ import { Col2 } from './columns/Col2'
 import { Col3 } from './columns/Col3'
 import { Col4 } from './columns/Col4'
 import { BsToaster } from './columns/BsToaster'
+import { RefreshButton } from './blocks/RefreshButton'
 import { markTerritoryAsFinishedService, getStateOfTerritoryService } from '../services/stateTerritoryServices'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService } from '../services/territoryServices'
 import { confirmAlert } from 'react-confirm-alert'
@@ -37,6 +38,7 @@ export const TerritoriosPage = (props: any) => {
     const [socket, setSocket] = useState<any>(null)
     
     useEffect(() => {
+        window.scrollTo(0, 0)
         if (territorio) getBlocksService(territorio)
             .then((blocks: string[]|null) => { if (blocks) setBlocks(blocks) })
         if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, showingAll, brought, broughtAll)
@@ -143,15 +145,7 @@ export const TerritoriosPage = (props: any) => {
         <>
             {ReturnBtn()}
 
-            <div style={{
-                display: 'block',
-                margin: 'auto',
-                zIndex: 3}}
-            >
-                <Button variant="danger" onClick={() => window.location.reload()}
-                    style={{display: 'block', margin: 'auto'}}
-                > Refrescar </Button>
-            </div>
+            <RefreshButton />
 
             <BsToaster />
 
@@ -173,7 +167,7 @@ export const TerritoriosPage = (props: any) => {
             </Button>
 
 
-            <img src={`/img/${territorio}.jpg`} alt="map"
+            <img src={`/img/${territorio}.jpg`} alt={"mapa"}
                 style={{
                     border: '1px solid black',
                     borderRadius: '8px',

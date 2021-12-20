@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Loading } from './_Loading'
 import { ReturnBtn } from './_Return'
+import { TerritoryNumberBlock } from './blocks/TerritoryNumberBlock'
 import { H2 } from './css/css'
-import { Row } from 'react-bootstrap'
-import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
 
 export const IndexPage = (props: any) => {
 
     const user: typeUser = props.user
     const [territories, setTerritories] = useState<number[]>([])
+    const [isGhp, setIsGhp] = useState<boolean>(false)
+    const [showedMode1, setShowedMode1] = useState<boolean>(false)
+    const [showedMode2, setShowedMode2] = useState<boolean>(false)
+    const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
 
     useEffect(() => {
         //if (!user) window.location.href = "/login"
@@ -19,70 +20,58 @@ export const IndexPage = (props: any) => {
             let asignados = user.asign
             asignados.sort((a: number, b: number) => a - b)
             setTerritories(asignados)
+            if (user.email === 'ghp.2120@gmail.com') setIsGhp(true)
         }
     }, [user, territories])
-
-    const btnTerri = {
-        width: '120px',
-        height: '100px',
-        borderRadius: '15px',
-        margin: '0 1% 40px 1%',
-    }
+    
 
     return (
         <>
             {ReturnBtn()}
+
+            {isGhp &&
+            <>
+                <H2> CASA EN CASA </H2>
+
+                <button className={`btn btn-success btn-block mt-4`}
+                    type={'button'}
+                    onClick={() => setShowedMode1(!showedMode1)}
+                >
+                    {showedMode1 === true ? 'Ocultar' : 'Ver territorios'}
+                </button>
+
+                <div className={`${showedMode1 === true ? '' : 'd-none'}`}>
+                    <div className={'card card-body'}>
+                        <TerritoryNumberBlock
+                            user={user}
+                            territories={territoriesAll}
+                            mode={1}
+                        />
+                    </div>
+                </div>
+                
+                {!showedMode1 && <><br/><br/><br/></>}
+
+                <hr />
+                <hr />
+            </>
+            }
         
-            <H2> SELECCIONE UN TERRITORIO </H2>
+            <H2> TELEFÓNICA </H2>
 
-            <div className="container" style={{ paddingTop: '0', marginBottom: '50px' }}>
+            <button className={`btn btn-danger btn-block mt-4`}
+                type={'button'}
+                onClick={() => setShowedMode2(!showedMode2)}
+            >
+                {showedMode2 === true ? 'Ocultar' : 'Ver territorios'}
+            </button>
 
-                <Row style={{ padding: isMobile ? '40px' : '70px 40px 0px 40px', justifyContent: 'space-evenly' }}>
-
-                    {user && user.isAuth && territories && !!territories.length
-                        ?
-                        territories.map((territory: number, index: number) => {
-                            if (territory) return (
-                                <Link type="button" key={index}
-                                    className="btn btn-danger" style={btnTerri}
-                                    to={`/territorios/${territory?.toString()}/1`}
-                                >
-
-                                    <h2 className="h-100 align-middle" style={{
-                                        padding: '22%',
-                                        margin: 'auto',
-                                        fontFamily: '"Arial Black", Gadget, sans-serif',
-                                        fontSize: isMobile ? '2.3rem' : ''
-                                    }}>
-                                        {territory}
-                                    </h2>
-
-                                </Link>
-                            )
-                            else return (<></>)
-                        })
-                        :
-                        <></>
-                    }
-
-                    {(!user || !user.isAuth)
-                        ?
-                        <Loading />
-                        :
-                        <></>
-                    }
-
-                    {user && user.isAuth && user.asign && user.asign.length === 0
-                        ?
-                        <h3 style={{ marginBottom: '40px' }}>
-                            No hay territorios asignados <br/> Hablar con el grupo de territorios
-                        </h3>
-                        :
-                        <></>
-                    }
-
-                </Row>
+            <div className={`${showedMode2 === true ? '' : 'd-none'}`}>
+                <div className={'card card-body mt-4'}>
+                    <TerritoryNumberBlock user={user} territories={territories} mode={2} />
+                </div>
             </div>
+
         </>
     )
 }

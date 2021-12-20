@@ -56,15 +56,15 @@ export const EstadisticasLocalPage = () => {
 
     const predicadas: number = datos ? datos.countContesto + datos.countNoLlamar + datos.countDejarCarta : 0
 
-    const predicadasRel: number = datos ? Math.round((datos.countContesto + datos.countNoLlamar + datos.countDejarCarta)*10000/datos.count/10)/10 : 0
+    // const predicadasRel: number = datos ? Math.round((datos.countContesto + datos.countNoLlamar + datos.countDejarCarta)*10000/datos.count/10)/10 : 0
 
-    const noContestoRel: number = datos ? Math.round(datos.countNoContesto*10000/datos.count/10)/10 : 0
+    // const noContestoRel: number = datos ? Math.round(datos.countNoContesto*10000/datos.count/10)/10 : 0
 
-    const contestoRel: number = datos ? Math.round(datos.countContesto*10000/datos.count/10)/10 : 0
+    // const contestoRel: number = datos ? Math.round(datos.countContesto*10000/datos.count/10)/10 : 0
 
-    const aDejarCartaRel: number = datos ? Math.round(datos.countDejarCarta*10000/datos.count/10)/10 : 0
+    // const aDejarCartaRel: number = datos ? Math.round(datos.countDejarCarta*10000/datos.count/10)/10 : 0
 
-    const noLlamarRel: number = datos ? Math.round(datos.countNoLlamar*10000/datos.count/10)/10 : 0
+    // const noLlamarRel: number = datos ? Math.round(datos.countNoLlamar*10000/datos.count/10)/10 : 0
 
     return (
         <>

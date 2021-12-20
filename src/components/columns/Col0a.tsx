@@ -14,7 +14,7 @@ export const Col0a = (props: any) => {
         <Col style={{ textAlign: 'center', marginBottom: '0', padding: '0', maxWidth: '100%' }}>
             {manzanas && !!manzanas.length &&
                 <div style={{ marginBottom: '10px' }}>
-                    <ButtonGroup toggle vertical={isMobile ? true : false}>
+                    <ButtonGroup vertical={isMobile ? true : false}>
 
                         {radiosManzana.map((radio: any, index: number) => (
                             <ToggleButton

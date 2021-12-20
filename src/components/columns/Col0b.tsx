@@ -46,7 +46,7 @@ export const Col0b = (props:any) => {
 
         <Col style={{ textAlign: 'center', marginBottom: '7px', padding: isMobile ? '0' : '5px' }}>
 
-            <ButtonGroup toggle>
+            <ButtonGroup>
 
                 <ToggleButton
                     key={'1'} type={'radio'} variant={'danger'}

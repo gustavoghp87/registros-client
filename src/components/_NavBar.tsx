@@ -32,7 +32,7 @@ export const NavBar = (props: any) => {
             
             <Navbar.Collapse id="responsive-navbar-nav">
 
-            <Nav className="mr-auto">
+            <Nav className={'mr-auto'}>
 
                 {user && user.isAuth &&
                     <Nav.Link href="/index" style={{ color: '#fbfbfb' }}>&nbsp; &nbsp;Territorios&nbsp; &nbsp;</Nav.Link>
@@ -55,17 +55,16 @@ export const NavBar = (props: any) => {
             {user && user.isAuth &&
                 <>
                 <Nav.Link href="/user" style={{ display: 'flex', alignItems: 'center', marginBottom: isMobile ? '12px' : '0' }}>
-                    <span style={{ display: isMobile ? 'none' : 'block' }}>
-                        <FaUserAlt size="17px" color="lightgray" />
+                    <span className={'mb-1'} style={{ display: isMobile ? 'none' : '' }}>
+                        <FaUserAlt size={'17px'} color={'lightgray'} />
                         &nbsp;&nbsp;
                     </span>
-                
                     <span style={{ color: '#fbfbfb' }}> Mi Usuario </span> &nbsp;
                 </Nav.Link>
 
                 <Nav>
-                    <Form inline>
-                        <Button variant="outline-info" style={{ color: '#fbfbfb', borderColor: '#fbfbfb' }} onClick={() => logoutHandler()}>
+                    <Form>
+                        <Button variant={'outline-info'} style={{ color: '#fbfbfb', borderColor: '#fbfbfb' }} onClick={() => logoutHandler()}>
                             CERRAR SESIÓN
                         </Button>
                     </Form>
@@ -76,15 +75,12 @@ export const NavBar = (props: any) => {
         </Navbar>
       
 
-        {user && user.isAuth && ((isMobile && !scrollDown) || !isMobile)
-            ?
+        {user && user.isAuth && ((isMobile && !scrollDown) || !isMobile) &&
             <div style={{ position: 'fixed', right: '0', marginRight: '18px', marginTop: '5px', zIndex: 1 }}>
                 <p style={{ textAlign: 'right', marginBottom: '0' }}> {user.email} </p>
                 <p style={{ textAlign: 'right', marginBottom: '0' }}> Grupo: {user.group} </p>
                 <p style={{ textAlign: 'right' }}> {user.role ? "Administrador" : ""} </p>
             </div>
-            :
-            <></>
         }
 
     </div>

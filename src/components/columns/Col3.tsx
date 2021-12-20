@@ -15,37 +15,36 @@ export const Col3 = (props: any) => {
 
             <Dropdown style={{ width: '100%', margin: isMobile ? '25px auto' : '30px auto' }}>
 
-                <Dropdown.Toggle id="dropdown-basic" variant={vivienda.variante}
+                <Dropdown.Toggle variant={vivienda.variante}
                     style={{ width: '80%', border: '1px solid black' }}
                 >
                     {vivienda.estado}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    
                     <Dropdown.Item
                         onClick={() => cambiarEstado(vivienda.inner_id, noPredicado, vivienda.noAbonado, vivienda.asignado)}>
-                        No predicado
+                        {noPredicado}
                     </Dropdown.Item>
                     
                     <Dropdown.Item
                         onClick={() => cambiarEstado(vivienda.inner_id, contesto, vivienda.noAbonado, vivienda.asignado)}>
-                        Contestó
+                        {contesto}
                     </Dropdown.Item>
                     
                     <Dropdown.Item
                         onClick={() => cambiarEstado(vivienda.inner_id, noContesto, vivienda.noAbonado, vivienda.asignado)}>
-                        No contestó
+                        {noContesto}
                     </Dropdown.Item>
                     
                     <Dropdown.Item
                         onClick={() => cambiarEstado(vivienda.inner_id, aDejarCarta, vivienda.noAbonado, vivienda.asignado)}>
-                        A dejar carta
+                        {aDejarCarta}
                     </Dropdown.Item>
                     
                     <Dropdown.Item
                         onClick={() => cambiarEstado(vivienda.inner_id, noLlamar, vivienda.noAbonado, vivienda.asignado)}>
-                        No llamar
+                        {noLlamar}
                     </Dropdown.Item>
                 </Dropdown.Menu>
 
@@ -56,7 +55,7 @@ export const Col3 = (props: any) => {
         <Row style={{ height: '40%', marginTop: '15px' }}>
             {vivienda.fechaUlt
                 ?
-                <div className="card border-dark mb-3"
+                <div className={'card border-dark mb-3'}
                     style={{
                         maxWidth: '18rem',
                         backgroundColor: 'rgb(214, 214, 214)',
@@ -65,8 +64,8 @@ export const Col3 = (props: any) => {
                     }}
                 >
                     
-                    <div className='card-header' style={{ padding: '0.2rem 0.5rem' }}>
-                        <p className='card-text'>
+                    <div className={'card-header'} style={{ padding: '0.2rem 0.5rem' }}>
+                        <p className={'card-text text-center'}>
                             Se llamó el {timeConverter(vivienda.fechaUlt, true)}
                         </p>
                     </div>

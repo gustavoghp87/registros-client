@@ -23,7 +23,6 @@ export const AdminsPage = () => {
 
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsersObj({ users }) })
-        // socket :
         if (!socket) {
             const newSocket = io(SERVER, { withCredentials: true })
             newSocket.on("user: change", (updatedUser: typeUser) => {
@@ -77,7 +76,6 @@ export const AdminsPage = () => {
                 }
             ]
         })
-
         const resetPassword = async (): Promise<void> => {
             const response: any|null = await changePswOtherUserService(email)
             if (response && response.success && response.newPassword)
@@ -88,6 +86,7 @@ export const AdminsPage = () => {
                 alert(`Algo falló al resetear la contraseña de ${email}`)
         }
     }
+
 
     return (
     <>
@@ -101,7 +100,7 @@ export const AdminsPage = () => {
 
             {usersObj && usersObj.users && !!usersObj.users.length &&
             <>
-                <h2 className="text-center mb-3"> Viendo {viendo} </h2>
+                <h2 className={'text-center mb-3'}> Viendo {viendo} </h2>
                 
                 <DropdownButton
                     as={ButtonGroup}
@@ -151,16 +150,14 @@ export const AdminsPage = () => {
                             display: viendo === 'todos' || (user && user.group && user.group.toString()) === viendo.slice(-1) ? '' : 'none'
                         }}>
                         
-                        <Card.Body style={{padding:'30px'}}>
+                        <Card.Body style={{ padding: '30px' }}>
 
                             <Card.Title style={{
                                 textAlign: 'center',
                                 padding: '20px',
                                 fontSize: isMobile ? '1.5rem' : '1.8rem'
                             }}>
-                                Usuario: <br/>
-                                {user.email}
-
+                                Usuario: <br/> {user.email}
                             </Card.Title>
 
 
@@ -171,19 +168,20 @@ export const AdminsPage = () => {
                                 Territorios asignados: &nbsp;
                                 {user.asign && !!user.asign.length &&
                                     user.asign.map((asign: number) => (
-                                        <span key={asign} className="d-inline-block">
+                                        <span key={asign} className={'d-inline-block'}>
                                             {asign} &nbsp;
                                         </span>
                                     ))
                                 }
                                 {(!user.asign || !user.asign.length) &&
-                                    <span>ninguno</span>
+                                    <span> ninguno </span>
                                 }
                             </Card.Text>
 
 
-                            <Button block variant="primary"
-                                style={{marginTop:'10px'}}
+                            <Button className={'col-12 m-2'}
+                                variant={'primary'}
+                                style={{ marginTop: '10px' }}
                                 onClick={() => setAsignVisible(!asignVisible)}
                             >
                                 CAMBIAR ASIGNACIONES
@@ -195,7 +193,7 @@ export const AdminsPage = () => {
                                 textAlign: 'center'
                             }}>
                                 <div style={{ marginTop: '12px' }}>
-                                    <input type="number"
+                                    <input type={'number'}
                                         style={{ width: '60px' }}
                                         min={1}
                                         onChange={(event: any) => setAsig([user._id?.toString(), event.target.value])}
@@ -209,8 +207,8 @@ export const AdminsPage = () => {
 
                                 </div>
 
-                                <div style={{marginTop:'12px'}}>
-                                    <input type="number" name="" id="" style={{ width: '60px' }} min={1}
+                                <div style={{ marginTop: '12px' }}>
+                                    <input type={'number'} style={{ width: '60px' }} min={1}
                                         onChange={(event: any) => setDesasig([user._id?.toString(), event.target.value])}
                                     />
                                     &nbsp;
@@ -219,7 +217,7 @@ export const AdminsPage = () => {
                                     </Button>
                                 </div>
 
-                                <div style={{marginTop:'12px'}}>
+                                <div style={{ marginTop: '12px' }}>
                                     <Button onClick={() => assignTerritoryHandler(user._id?.toString(), true)}>
                                         Desasignar todos
                                     </Button>
@@ -230,14 +228,14 @@ export const AdminsPage = () => {
 
                             <Card.Text style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 600 }}>
                                 Grupo: {user.group} &nbsp;&nbsp;
-                                <Button variant="dark" onClick={() => setGroupVisible(!groupVisible)}>
+                                <Button variant={'dark'} onClick={() => setGroupVisible(!groupVisible)}>
                                     CAMBIAR GRUPO
                                 </Button>
                             </Card.Text>
 
-                            <div style={{ width: '350px', margin: 'auto'}}>
-                                <div style={{ display: groupVisible ? 'block' : 'none'}}>
-                                    <Pagination size="lg" style={{ textAlign: 'center' }}>
+                            <div style={{ width: '350px', margin: 'auto' }}>
+                                <div style={{ display: groupVisible ? 'block' : 'none' }}>
+                                    <Pagination size={'lg'} style={{ textAlign: 'center' }}>
                                         {items}
                                     </Pagination>
                                 </div>
@@ -247,7 +245,7 @@ export const AdminsPage = () => {
                             <hr/>
                         
 
-                            <Button block variant={ user.estado ? 'danger' : 'primary' }
+                            <Button className={'col-12 m-2'} variant={ user.estado ? 'danger' : 'primary' }
                                 onClick={() => modifyUserHandler(user._id?.toString(), !user.estado, user.role, user.group)}>
                                 
                                 {user.estado ? "DESACTIVAR" : "ACTIVAR"}
@@ -256,7 +254,7 @@ export const AdminsPage = () => {
 
                             <br/>
 
-                            <Button block variant={user.role === 1 ? 'danger' : 'primary'}
+                            <Button className={'col-12 m-2'} variant={user.role === 1 ? 'danger' : 'primary'}
                                 onClick = {() =>
                                     modifyUserHandler(user._id?.toString(), user.estado, user.role === 1 ? 0 : 1, user.group)}
                             >
@@ -267,7 +265,7 @@ export const AdminsPage = () => {
 
                             <br/>
 
-                            <Button block variant={'primary'}
+                            <Button className={'col-12 m-2'} variant={'primary'}
                                 onClick = {() => resetPasswordHandler(user.email)}
                             >
 
