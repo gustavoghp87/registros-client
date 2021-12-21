@@ -24,31 +24,25 @@ export const HTHStateDropdown = (props: any) => {
 
                 <Dropdown style={{ width: '100%', margin: '30px auto' }}>
 
-                    <Dropdown.Toggle variant={household.variant}
-                        style={{ width: '80%', border: '1px solid black' }}
+                    <Dropdown.Toggle variant={household.variant} style={{ width: '80%', border: '1px solid black' }}
                     >
                         {household.estado}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item
-                            onClick={() => changeState(household, noPredicado)}>
+                        <Dropdown.Item onClick={() => changeState(household, noPredicado)}>
                             {noPredicado}
                         </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => changeState(household, contesto)}>
+                        <Dropdown.Item onClick={() => changeState(household, contesto)}>
                             {contesto}
                         </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => changeState(household, noContesto)}>
+                        <Dropdown.Item onClick={() => changeState(household, noContesto)}>
                             {noContesto}
                         </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => changeState(household, cartaDejada)}>
+                        <Dropdown.Item onClick={() => changeState(household, cartaDejada)}>
                             {cartaDejada}
                         </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => changeState(household, noTocar)}>
+                        <Dropdown.Item onClick={() => changeState(household, noTocar)}>
                             {noTocar}
                         </Dropdown.Item>
                     </Dropdown.Menu>
@@ -61,9 +55,9 @@ export const HTHStateDropdown = (props: any) => {
                 <Row style={{ margin: '15px auto', maxWidth: '100%' }}>
                     <div className={'card border-dark mb-3'}
                         style={{
-                            maxWidth: '18rem',
-                            backgroundColor: 'rgb(214, 214, 214)',
                             display: household.estado === noPredicado ? 'none' : '',
+                            backgroundColor: 'rgb(214, 214, 214)',
+                            maxWidth: '18rem',
                             margin: 'auto'
                         }}
                     >

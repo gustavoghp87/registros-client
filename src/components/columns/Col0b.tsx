@@ -3,7 +3,7 @@ import { isMobile } from '../../services/functions'
 import { typeUser } from '../../models/typesUsuarios'
 import { typeBlock } from '../../models/typesTerritorios'
 
-export const Col0b = (props:any) => {
+export const Col0b = (props: any) => {
 
     const user: typeUser = props.user
     const isTodo: boolean = props.isTodo
@@ -11,9 +11,7 @@ export const Col0b = (props:any) => {
     const territorio: string = props.territorio
 
     let radios: any[] = []
-    let manzana: typeBlock
-    if (props.manzana) manzana = props.manzana
-    else manzana = '1'
+    let manzana: typeBlock = props.manzana ? props.manzana : '1'
 
     if (isMobile)
         radios = user && user.isAdmin ? 
@@ -49,15 +47,20 @@ export const Col0b = (props:any) => {
             <ButtonGroup>
 
                 <ToggleButton
-                    key={'1'} type={'radio'} variant={'danger'}
-                    name={'radio'} value={radios[0].value} style={{ padding: '0' }}
+                    key={'1'}
+                    type={'radio'}
+                    variant={'danger'}
+                    name={"radio"}
+                    value={radios[0].value} style={{ padding: '0' }}
                     checked={isTodo ? false : (isStatistics ? false : true )}
                 >
 
                     <a href={`/territorios/${territorio}/${manzana}`}
-                        style={{ color: 'white' }}>
+                        style={{ color: 'white', textDecoration: 'none' }}>
                         
-                        <div style={{ lineHeight: '40px', padding: '0 15px' }}> {radios[0].name} </div>
+                        <div style={{ lineHeight: '40px', padding: '0 15px' }}>
+                            {radios[0].name}
+                        </div>
 
                     </a>
 
@@ -65,15 +68,20 @@ export const Col0b = (props:any) => {
 
 
                 <ToggleButton
-                    key={'2'} type={'radio'} variant={'danger'}
-                    name={'radio'} value={radios[1].value} style={{ padding: '0' }}
+                    key={'2'}
+                    type={'radio'}
+                    variant={'danger'}
+                    name={"radio"}
+                    value={radios[1].value}
+                    style={{ padding: '0' }}
                     checked={isTodo ? true : false}
                 >
 
-                    <a href={`/territorios/${territorio}/${manzana}/todo`}
-                        style={{ color: 'white' }}>
+                    <a href={`/territorios/${territorio}/${manzana}/todo`} style={{ color: 'white', textDecoration: 'none' }}>
                         
-                        <div style={{ lineHeight: '40px', padding: '0 15px' }}> {radios[1].name} </div>
+                        <div style={{ lineHeight: '40px', padding: '0 15px' }}>
+                            {radios[1].name}
+                        </div>
 
                     </a>
 
@@ -82,15 +90,20 @@ export const Col0b = (props:any) => {
                 
                 {radios && radios[2] &&
                     <ToggleButton
-                        key={'3'} type={'radio'} variant={'danger'}
-                        name={'radio'} value={radios[2].value} style={{ padding: '0' }}
-                        checked={isStatistics ? true : false }
+                        key={'3'}
+                        type={'radio'}
+                        variant={'danger'}
+                        name={"radio"}
+                        value={radios[2].value}
+                        style={{ padding: '0' }}
+                        // checked={isStatistics ? true : false }
                     >
 
-                        <a href={`/estadisticas/${territorio}`}
-                            style={{ color: 'white' }}>
+                        <a href={`/estadisticas/${territorio}`} style={{ color: 'white', textDecoration: 'none' }}>
                             
-                            <div style={{ lineHeight: '40px', padding: '0 15px' }}> {radios[2].name} </div>
+                            <div style={{ lineHeight: '40px', padding: '0 15px' }}>
+                                {radios[2].name}
+                            </div>
 
                         </a>
 

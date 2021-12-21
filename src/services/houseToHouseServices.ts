@@ -17,8 +17,13 @@ export const getBuildingsService = async (territory: string): Promise<typeHTHBui
     return data.hthTerritory
 }
 
+export type responseType = {
+    success: boolean
+    hthTerritory?: typeHTHBuilding[]
+    exists?: boolean
+}
 export const addBuildingService = async (territory: string,
-     calle: string, numero: number, payloads: typeHTHHousehold[]): Promise<typeHTHBuilding[]|null> => {
+     calle: string, numero: number, payloads: typeHTHHousehold[]): Promise<responseType|null> => {
     const token: string|null = getToken()
     if (!token) return null
     const response: any|null = await fetch(`${base}`, {
@@ -26,9 +31,9 @@ export const addBuildingService = async (territory: string,
         headers,
         body: JSON.stringify({ territory, calle, numero, payloads })
     })
-    const data: any|null = await response.json()
-    if (!data || !data.success || !data.hthTerritory) return null
-    return data.hthTerritory
+    const data: responseType|null = await response.json()
+    // if (!data || !data.success || !data.hthTerritory) return null
+    return data
 }
 
 export const modifyHTHHouseholdStateService = async (household: typeHTHHousehold, buildingId:string): Promise<boolean> => {

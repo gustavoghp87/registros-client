@@ -10,7 +10,7 @@ export const HomePage = (props: any) => {
     <>
         <H2 style={{ marginTop: '50px' }}> BIENVENIDOS </H2>
 
-        <a href={user && user.isAuth ? "/index" : "/login"}>
+        <a href={user && user.isAuth ? "/index" : "/login"} style={{ textDecoration: 'none' }}>
             <h3 style={{
                 margin: '30px auto',
                 color: '#4a6da7',

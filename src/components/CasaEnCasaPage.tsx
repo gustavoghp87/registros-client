@@ -11,10 +11,10 @@ import { isMobile } from '../services/functions'
 //import { Col0b } from './columns/Col0b'
 import { BsToaster } from './columns/BsToaster'
 import { NewHouseholdModal } from './blocks/NewHouseholdModal'
+import { HTHStreetCard } from './blocks/HTHStreetCard'
 import { getBuildingsService, getTerritoryStreetsService } from '../services/houseToHouseServices'
 //import { typeUser } from '../models/typesUsuarios'
 import { typeHTHBuilding } from '../models/houseToHouse'
-import { HTHStreetCard } from './blocks/HTHStreetCard'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const CasaEnCasaPage = (props: any) => {
@@ -144,7 +144,7 @@ export const CasaEnCasaPage = (props: any) => {
 
 
         <Container fluid={'lg'} className={'mb-2'} style={{ marginTop: '60px' }}>
-            <Button className={'btn btn-danger btn-block w-100 p-3'}
+            <Button className={'btn btn-danger btn-block w-100 p-3 text-uppercase'}
                 onClick={() => setShowAddHousehold(!showAddHousehold)}
             >
                 + Agregar edificio
@@ -159,14 +159,15 @@ export const CasaEnCasaPage = (props: any) => {
             showHandler={showAddHouseholdModalHandler}
             show={showAddHousehold}
             territory={territory}
+            streets={streets}
         />
 
 
         {streets && !!streets.length && streets.map((street: string, index: number) =>
             <HTHStreetCard
+                key={index}
                 street={street}
                 buildings={buildings}
-                index={index}
             />
         )}
 

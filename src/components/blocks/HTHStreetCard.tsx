@@ -7,13 +7,14 @@ export const HTHStreetCard = (props: any) => {
 
     const buildings: typeHTHBuilding[] = props.buildings
     const street: string = props.street
-    const index: number = props.index
 
+    const buildingNumber: number = buildings.filter((building: typeHTHBuilding) => building.street === street).length
     const [showBuildings, setShowBuildings] = useState<boolean>(false)
+
 
     return (
     <>
-        <Card key={index}
+        <Card
             className={'d-flex justify-content-center align-items-center bg-dark'}
             style={{
                 marginTop: '50px',
@@ -29,19 +30,19 @@ export const HTHStreetCard = (props: any) => {
                 style={{ cursor: 'pointer' }}
             >
                 <p className={'text-center my-2 font-weight-bold blockquote'}>
-                    Calle {street}
+                    Calle {street} <br/> <small>({buildingNumber} {buildingNumber !== 1 ? "edificios" : "edificio"})</small>
                 </p>
             </Row>
 
 
             {showBuildings && buildings && !!buildings.length &&
-                buildings.map((building: typeHTHBuilding, index1: number) => {
+                buildings.map((building: typeHTHBuilding, index: number) => {
                     if (building.street === street) return (
                         <>
                             <br />
                             <HTHBuildingCard
+                                key={index}
                                 building={building}
-                                index={index1}
                             />
                         </>
                     )

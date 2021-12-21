@@ -1,6 +1,6 @@
 import { Col, Row, Dropdown } from 'react-bootstrap'
-import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeVivienda } from '../../models/typesTerritorios'
 import { isMobile, timeConverter } from '../../services/functions'
+import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeVivienda } from '../../models/typesTerritorios'
 
 export const Col3 = (props: any) => {
 
@@ -53,8 +53,7 @@ export const Col3 = (props: any) => {
         </Row>
 
         <Row style={{ height: '40%', marginTop: '15px' }}>
-            {vivienda.fechaUlt
-                ?
+            {vivienda.fechaUlt &&
                 <div className={'card border-dark mb-3'}
                     style={{
                         maxWidth: '18rem',
@@ -71,8 +70,6 @@ export const Col3 = (props: any) => {
                     </div>
 
                 </div>
-                :
-                <div></div>
             }
         </Row>
     </Col>

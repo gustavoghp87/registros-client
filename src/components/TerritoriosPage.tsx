@@ -34,8 +34,8 @@ export const TerritoriosPage = (props: any) => {
     const [loaded, setLoaded] = useState<boolean>(false)
     const [blocks, setBlocks] = useState<string[]>(['1'])
     const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
-    const showingAll = todo === 'todo' ? true : false
     const [socket, setSocket] = useState<any>(null)
+    const showingAll = todo === 'todo' ? true : false
     
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -63,7 +63,7 @@ export const TerritoriosPage = (props: any) => {
             if (newSocket) setSocket(newSocket)
         }
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
-        
+        return () => { }
     }, [showingAll, manzana, territorio, brought, broughtAll, socket, socket?.connected])
     
     const modifyHouseholdHandler = async (inner_id: string,

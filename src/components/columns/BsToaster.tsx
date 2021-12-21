@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Toast } from 'react-bootstrap'
-import { AiOutlineWarning } from 'react-icons/ai'
 import { useParams } from 'react-router-dom'
-import { localStatistic } from '../../models/statistic'
+import { AiOutlineWarning } from 'react-icons/ai'
 import { getLocalStatisticsService } from '../../services/statisticsServices'
+import { localStatistic } from '../../models/statistic'
 
 export const BsToaster = () => {
 
@@ -20,28 +20,25 @@ export const BsToaster = () => {
 
     return (
         <>
-            {localStat &&
-                localStat !== null && localStat !== undefined &&
-                localStat.libres !== null && localStat.libres !== undefined &&
-                localStat.libres < 50 ?
+            {localStat && localStat !== null && localStat !== undefined && localStat.libres !== null
+                && localStat.libres !== undefined && localStat.libres < 50 &&
 
-                <Toast className="mt-5 mx-auto" show={showA} onClose={toggleShowA}>
-                    <Toast.Header className="d-block">
-                        <AiOutlineWarning className="m-1" style={{ fontSize: 18 }} />
-                        <span className="">
+                <Toast className={'mt-5 mx-auto'} show={showA} onClose={toggleShowA}>
+                    <Toast.Header className={'d-block'}>
+                        <AiOutlineWarning className={'m-1'} style={{ fontSize: 18 }} />
+                        <span>
                             <strong> ¡Advertencia! </strong>
                         </span>
                     </Toast.Header>
                     <Toast.Body>
-                        {localStat.libres > 0 ?
+                        {localStat.libres > 0
+                            ?
                             <span> A este territorio le quedan solo {localStat.libres} teléfonos para llamar </span>
                             :
                             <span> No quedan teléfonos para llamar </span>
                         }
                     </Toast.Body>
                 </Toast>
-            :
-            <></>
             }
         </>
     )

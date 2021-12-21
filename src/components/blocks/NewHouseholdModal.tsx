@@ -1,29 +1,27 @@
 import { useState } from 'react'
 import { Button, Col, Form, Modal, Row, Card } from 'react-bootstrap'
-import { typeHTHBuilding, typeHTHHousehold } from '../../models/houseToHouse'
-import { addBuildingService } from '../../services/houseToHouseServices'
+import { addBuildingService, responseType } from '../../services/houseToHouseServices'
 import { HouseholdCheckbox } from './HouseholdCheckbox'
+import { typeHTHHousehold } from '../../models/houseToHouse'
 
 export const NewHouseholdModal = (props: any) => {
 
+    let h: number = 0
+    let j: number = 0
+    let pisos: string[] = ["Solo PB","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]
+    const deptosPorPiso: string[] = ["1","2","3","4","5","6","7","8","9","10","11","12"]
     const show: boolean = props.show
     const showHandler: any = props.showHandler
     const territory: string = props.territory
-    let h: number = 0
-    let j: number = 0
+    const streets: string[] = props.streets
 
-    const [pisosX, setPisosX] = useState<number>(1)
-    const [deptosX, setDeptosX] = useState<number>(1)
+    const [pisosX, setPisosX] = useState<number>(0)
+    const [deptosX, setDeptosX] = useState<number>(0)
     const [conLetras, setConLetras] = useState<boolean>(true)
     const [numCorrido, setNumCorrido] = useState<boolean>(false)
     const [sinPB, setSinPB] = useState<boolean>(false)
     const [street, setStreet] = useState<string>("")
     const [streetNumber, setStreetNumber] = useState<number>(0)
-    
-    const calles: string[] = ["Av. Alberdi", "Pumacahua", "Av. Rivadavia", "Av. Carabobo", "Lautaro", "Camacuá", "Cnl. Ramón L. Falcón"]
-    let pisos: string[] = ["Solo PB","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22"]
-    const deptosPorPiso: string[] = ["1","2","3","4","5","6","7","8","9","10","11","12"]
-
 
     const setPisosHandler = (pisos: string): void => {
         if (pisos === "Solo PB") setPisosX(1)
@@ -110,7 +108,6 @@ export const NewHouseholdModal = (props: any) => {
         });
         if (!isIn) payloads.push(newPayload)
         else payloads[k] = newPayload
-        console.log("register:", payloads)
     }
     
     const closeHandler = (): void => {
@@ -139,7 +136,9 @@ export const NewHouseholdModal = (props: any) => {
             closeHandler()
             console.log("Submitting...")
             // ver que no exista ya
-            const response: typeHTHBuilding[]|null = await addBuildingService(territory, street, streetNumber, payloads)
+            const response: responseType|null = await addBuildingService(territory, street, streetNumber, payloads)
+            if (!response) return alert("Falló la conexión")
+            if (response.exists) return alert("Ya existía; en todo caso editarlo")
             console.log(response)
         }
     }
@@ -160,28 +159,35 @@ export const NewHouseholdModal = (props: any) => {
                 <Modal.Body>
                     <Form onSubmit={submitHandler}>
 
-
-                        <Row className={'mb-3'}>
-                            <Form.Group as={Col}>
+                        <div className={'mb-3 d-flex align-self-center'}>
+                            <Form.Group
+                                // as={Col}
+                                className={'col-6'}
+                                //style={{ maxWidth: '180px' }}
+                            >
                                 <Form.Label> Calle </Form.Label>
-                                <Form.Select id={"calleSelect"}
+                                <Form.Select id={"streetSelect"}
                                     onChange={() => {
-                                        const element = document.getElementById("calleSelect") as HTMLInputElement
+                                        const element = document.getElementById("streetSelect") as HTMLInputElement
                                         if (element) setStreet(element.value)
                                     }}
                                 >
                                     <option> {} </option>
-                                    {calles.map((calle: string, index: number) =>
-                                        <option key={index}> {calle} </option>
+                                    {streets.map((street: string, index: number) =>
+                                        <option id={index.toString()} key={index}> {street} </option>
                                     )}
                                 </Form.Select>
                             </Form.Group>
 
-                            <Form.Group as={Col}>
+                            <Form.Group
+                                // as={Col}
+                                className={'col-6'}
+                                //style={{ maxWidth: '180px' }}
+                            >
                                 <Form.Label> Número </Form.Label>
-                                <Form.Control id={"numeroSelect"}
+                                <Form.Control id={"streetNumberSelect"}
                                     onChange={() => {
-                                        const element = document.getElementById("numeroSelect") as HTMLInputElement
+                                        const element = document.getElementById("streetNumberSelect") as HTMLInputElement
                                         try {
                                             if (element) {
                                                 const numb: number = parseInt(element.value)
@@ -199,13 +205,17 @@ export const NewHouseholdModal = (props: any) => {
                                     onInput={() => "event.target.value = event.target.value.replace(/[^0-9]*/g,'');"}
                                 />
                             </Form.Group>
-                        </Row>
+                        </div>
 
 
 
 
-                        <Row className={'my-3'}>
-                            <Form.Group as={Col}>
+                        <div className={'my-3 d-flex align-self-center'}>
+                            <Form.Group
+                                //as={Col}
+                                className={'col-6'}
+                                //style={{ maxWidth: '180px' }}
+                            >
                                 <Form.Label> Pisos </Form.Label>
                                 <Form.Select id={"formGridState0"}
                                     onChange={() => {
@@ -213,17 +223,21 @@ export const NewHouseholdModal = (props: any) => {
                                         if (element) setPisosHandler(element.value)
                                     }
                                 }>
-                                    {/* <option> {} </option> */}
+                                    <option> {} </option>
                                     {pisos.map((piso: string, index: number) => {
                                         if (!sinPB || (index !== 0 && sinPB && piso !== "Solo PB")) return (
-                                            <option key={index}> {piso} </option>
+                                            <option id={index.toString()} key={index}> {piso} </option>
                                         )
                                         else return <></>
-                                    }
-                                    )}
+                                    })}
                                 </Form.Select>
                             </Form.Group>
-                            <Form.Group as={Col}>
+
+                            <Form.Group
+                                // as={Col}
+                                className={'col-6'}
+                                // style={{ maxWidth: '180px' }}
+                            >
                                 <Form.Label> Deptos. por piso </Form.Label>
                                 <Form.Select id={"formGridState1"}
                                     onChange={() => {
@@ -231,18 +245,18 @@ export const NewHouseholdModal = (props: any) => {
                                         if (element) setDeptosHandler(element.value)
                                     }
                                 }>
-                                    {/* <option> {} </option> */}
+                                    <option> {} </option>
                                     {deptosPorPiso.map((deptos: string, index: number) =>
-                                        <option value={deptos} key={index}> {deptos} </option>
+                                        <option id={index.toString()} key={index}> {deptos} </option>
                                     )}
                                 </Form.Select>
                             </Form.Group>
-                        </Row>
+                        </div>
 
 
 
 
-                        <Row>
+                        <Row className={'mt-4'}>
                             <Form.Group as={Col} className={'mb-3'} onClick={() => setConLetras(!conLetras)}>
                                 <Form.Check type={'checkbox'}
                                     label={`Deptos. con letras`}
@@ -279,34 +293,35 @@ export const NewHouseholdModal = (props: any) => {
                             {pisos.map((piso: string, index: number) => {
                                 if (piso === "Solo PB") piso = "PB"
                                 if (index < pisosX && !(sinPB && piso === "PB")) return(
-                                <>
-                                    <Row className={'mb-3 mx-1 d-flex align-self-center'} key={index}>
-                                        {deptosPorPiso.map((depto: string, index2: number) => {
-                                            if (index2 < deptosX) {
-                                                j++
-                                                return(
-                                                    <HouseholdCheckbox key={index2}
-                                                        idNumber={j}
-                                                        register={register}
-                                                        piso={piso}
-                                                        depto={conLetras
-                                                            ? (numCorrido
-                                                                ? maskForCorridoDepto(depto, maskForLetraDepto(depto))
-                                                                : maskForLetraDepto(depto))
-                                                            : (numCorrido
-                                                                ? maskForCorridoDepto(piso, depto)
-                                                                : depto)
-                                                        }
-                                                    />
-                                                )
-                                            }
-                                            else return (<></>)
-                                        })}
-                                    </Row>
-                                    <hr />
-                                </>
+                                    <div key={index}>
+                                        <div className={'row mb-3 mx-1 d-flex align-self-center'}>
+                                            {deptosPorPiso.map((depto: string, index1: number) => {
+                                                if (index1 < deptosX) {
+                                                    j++
+                                                    return(
+                                                        <HouseholdCheckbox
+                                                            key={index1}
+                                                            idNumber={j}
+                                                            register={register}
+                                                            piso={piso}
+                                                            depto={conLetras
+                                                                ? (numCorrido
+                                                                    ? maskForCorridoDepto(depto, maskForLetraDepto(depto))
+                                                                    : maskForLetraDepto(depto))
+                                                                : (numCorrido
+                                                                    ? maskForCorridoDepto(piso, depto)
+                                                                    : depto)
+                                                            }
+                                                        />
+                                                    )
+                                                }
+                                                else return (<div key={index1}></div>)
+                                            })}
+                                        </div>
+                                        <hr />
+                                    </div>
                                 )
-                                else return (<></>)
+                                else return (<div key={index}></div>)
                             })}
 
                         </Card>

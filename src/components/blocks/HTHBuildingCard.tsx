@@ -10,7 +10,6 @@ export const HTHBuildingCard = (props: any) => {
     const index: number = props.index
 
     const [showHouseholds, setShowHouseholds] = useState<boolean>(false)
-    console.log("building", building)
 
 
     return (
@@ -28,11 +27,11 @@ export const HTHBuildingCard = (props: any) => {
             }}
             >
             <Row className={'py-2 text-white bg-danger w-100 align-center'}
-                onClick={() => setShowHouseholds(!showHouseholds)}
                 style={{ cursor: 'pointer' }}
-                >
+                onClick={() => setShowHouseholds(!showHouseholds)}
+            >
                 <p className={'text-center my-2 font-weight-bold blockquote'}>
-                    Edificio {building.street} {building.streetNumber}
+                    Edificio {building.street} {building.streetNumber} ({building.households.length} timbres, {building.households.filter((household: typeHTHHousehold) => household.estado === types.noPredicado || household.estado === types.noContesto).length} libres)
                 </p>
             </Row>
 

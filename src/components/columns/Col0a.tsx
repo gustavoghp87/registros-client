@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
-import { isMobile } from '../../services/functions'
 
 export const Col0a = (props: any) => {
 
-    const { manzanas } = props
+    const territory: string = props.territorio
+    const manzanas: string[] = props.manzanas
+    const manzana: string = props.manzana
 
     let radiosManzana: any[] = []
     manzanas.forEach((manzana: string) => {
@@ -14,29 +16,60 @@ export const Col0a = (props: any) => {
         <Col style={{ textAlign: 'center', marginBottom: '0', padding: '0', maxWidth: '100%' }}>
             {manzanas && !!manzanas.length &&
                 <div style={{ marginBottom: '10px' }}>
-                    <ButtonGroup vertical={isMobile ? true : false}>
-
-                        {radiosManzana.map((radio: any, index: number) => (
-                            <ToggleButton
-                                key={index} type="radio" variant="danger" name="radio"
-                                value={radio.value}
-                                checked={props.manzana === radio?.value?.toString()}
-                                style={{ padding: '0' }}
-                            >
-                                <a href={`/territorios/${props.territorio}/${radio.value}`}
-                                    style={{ color: 'white' }}>
-                                    <div style={{ height: '40px', width: '120px' }}>
-                                        <div style={{ lineHeight: '40px' }}>
-                                            {radio.name}
-                                        </div>
-                                    </div>
-                                </a>
-                            </ToggleButton>
-                        ))}
+                    <ButtonGroup
+                        // vertical={isMobile ? true : false}
+                        style={{ maxWidth: '100%' }}
+                    >
+                        {radiosManzana.map((radio: any, index: number) =>
                         
+                            <BlockToggleButton
+                                key={index}
+                                radio={radio}
+                                territory={territory}
+                                manzana={manzana}
+                            />
+                        
+                        )}
                     </ButtonGroup>
                 </div>
             }
         </Col>
     )
+}
+
+const BlockToggleButton = (props: any) => {
+    const radio: any = props.radio
+    const territory: string = props.territory
+    const manzana: string = props.manzana
+    const [isChecked, setIsChecked] = useState<boolean>(false)
+
+    useEffect(() => {
+        setIsChecked(manzana === radio?.value?.toString())
+    }, [manzana, radio])
+
+
+    return (
+    <>
+        <ToggleButton
+            type={'radio'}
+            variant={isChecked ? '' : 'danger'}
+            name={"radio"}
+            value={radio.value}
+            checked={isChecked}
+            style={{
+                padding: '0',
+                backgroundColor: `${isChecked ? '#b02a37' : ''}`,
+                borderTopLeftRadius: `${radio.value === "1" ? '3px' : ''}`,
+                borderBottomLeftRadius: `${radio.value === "1" ? '3px' : ''}`
+            }}
+        >
+            <a href={`/territorios/${territory}/${radio.value}`} style={{ color: 'white', textDecoration: 'none' }}>
+                <div style={{ height: '40px', width: '120px' }}>
+                    <div style={{ lineHeight: '40px' }}>
+                        {radio.name}
+                    </div>
+                </div>
+            </a>
+        </ToggleButton>
+    </>)
 }

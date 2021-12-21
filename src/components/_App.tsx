@@ -1,5 +1,7 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import { NavBar } from './_NavBar'
+import { Footer } from './_Footer'
 import { LoginPage } from './LoginPage'
 import { RegisterPage } from './RegisterPage'
 import { HomePage } from './HomePage'
@@ -10,8 +12,7 @@ import { EstadisticasLocalPage } from './EstadisticasLocalPage'
 import { UserPage } from './UserPage'
 import { AdminsPage } from './AdminsPage'
 import { RecoveryPage } from './RecoveryPage'
-import { NavBar } from './_NavBar'
-import { Footer } from './_Footer'
+import { CasaEnCasaPage } from './CasaEnCasaPage'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import { authUserService, changeDarkModeService } from '../services/userServices'
 import { isMobile } from '../services/functions'
@@ -19,7 +20,6 @@ import { recaptchaPublicKey } from '../config'
 import { typeUser } from '../models/typesUsuarios'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { CasaEnCasaPage } from './CasaEnCasaPage'
 
 export const App = () => {
 
@@ -66,29 +66,32 @@ export const App = () => {
                     }}>
 
                         <Routes>
-                            <Route path="/" element={ <HomePage user={user} /> } />
-                            <Route path="/login" element={ <LoginPage user={user} /> } />
-                            <Route path="/register" element={ <RegisterPage user={user} /> } />
-                            <Route path="/index" element={ <IndexPage user={user} /> } />
-                            <Route path="/casaencasa/:territory" element={ <CasaEnCasaPage user={user} /> } />
-                            <Route path="/territorios/:territorio/:manzana" element={ <TerritoriosPage user={user} /> } />
-                            <Route path="/territorios/:territorio/:manzana/:todo" element={ <TerritoriosPage user={user} /> } />
-                            <Route path="/estadisticas" element={ <EstadisticasPage /> } />
-                            <Route path="/estadisticas/:territorio" element={ <EstadisticasLocalPage /> } />
-                            <Route path="/user" element={ <UserPage user={user} /> } />
-                            <Route path="/admins" element={ <AdminsPage /> } />
-                            <Route path="/recovery/:id" element={ <RecoveryPage /> } />
-                            <Route path="*" element={ <HomePage user={user} /> } />
+                            <Route path={"/"} element={ <HomePage user={user} /> } />
+                            <Route path={"/login"} element={ <LoginPage user={user} /> } />
+                            <Route path={"/register"} element={ <RegisterPage user={user} /> } />
+                            <Route path={"/index"} element={ <IndexPage user={user} /> } />
+                            <Route path={"/casaencasa/:territory"} element={ <CasaEnCasaPage user={user} /> } />
+                            <Route path={"/territorios/:territorio/:manzana"} element={ <TerritoriosPage user={user} /> } />
+                            <Route path={"/territorios/:territorio/:manzana/:todo"} element={ <TerritoriosPage user={user} /> } />
+                            <Route path={"/estadisticas"} element={ <EstadisticasPage /> } />
+                            <Route path={"/estadisticas/:territorio"} element={ <EstadisticasLocalPage /> } />
+                            <Route path={"/user"} element={ <UserPage user={user} /> } />
+                            <Route path={"/admins"} element={ <AdminsPage /> } />
+                            <Route path={"/recovery/:id"} element={ <RecoveryPage /> } />
+                            <Route path={"*"} element={ <HomePage user={user} /> } />
                         </Routes>
 
                         <div className='custom-control custom-switch' style={{ position: 'fixed', bottom: '20px' }}>
-                            <input className='custom-control-input'
-                                type='checkbox'
-                                id='customSwitches'
+                            <input className={'custom-control-input'}
+                                type={'checkbox'}
+                                id={"customSwitches"}
                                 checked={darkMode}
                                 onChange={() => changeDarkMode()}
                             />
-                            <label className='custom-control-label' htmlFor='customSwitches' style={{ color: darkMode ? 'white' : 'red' }}>
+                            <label className={'custom-control-label'}
+                                htmlFor={'customSwitches'}
+                                style={{ color: darkMode ? 'white' : 'red' }}
+                            >
                                 <b> {isMobile ? '' : (darkMode ? 'Modo Claro' : 'Modo Oscuro')} </b>
                             </label>
                         </div>
