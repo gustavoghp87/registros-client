@@ -1,4 +1,4 @@
-import { isMobile } from "../services/functions"
+import { isMobile } from "../../services/functions"
 
 export const Footer = () => {
 

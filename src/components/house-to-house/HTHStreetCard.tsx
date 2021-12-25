@@ -7,7 +7,8 @@ export const HTHStreetCard = (props: any) => {
 
     const buildings: typeHTHBuilding[] = props.buildings
     const street: string = props.street
-
+    const streets: string[] = props.streets
+    const sendUpdateBySocket: any = props.sendUpdateBySocket
     const buildingNumber: number = buildings.filter((building: typeHTHBuilding) => building.street === street).length
     const [showBuildings, setShowBuildings] = useState<boolean>(false)
 
@@ -38,15 +39,16 @@ export const HTHStreetCard = (props: any) => {
             {showBuildings && buildings && !!buildings.length &&
                 buildings.map((building: typeHTHBuilding, index: number) => {
                     if (building.street === street) return (
-                        <>
+                        <div key={index}>
                             <br />
                             <HTHBuildingCard
-                                key={index}
                                 building={building}
+                                sendUpdateBySocket={sendUpdateBySocket}
+                                streets={streets}
                             />
-                        </>
+                        </div>
                     )
-                    else {return (<></>)}
+                    else {return (<div key={index}></div>)}
                 })
             }
 

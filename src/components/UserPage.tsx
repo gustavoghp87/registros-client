@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Card, Button, Form } from 'react-bootstrap'
 import { confirmAlert } from 'react-confirm-alert'
-import { ReturnBtn } from './_Return'
+import { ReturnBtn } from './commons/Return'
 import { H2 } from './css/css'
 import { changePswService, logoutAllService } from '../services/tokenServices'
 import { isMobile } from '../services/functions'

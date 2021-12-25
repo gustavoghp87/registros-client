@@ -1,7 +1,7 @@
 import { Button } from 'react-bootstrap'
 import { BsBackspace } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
-import { isMobile } from '../services/functions'
+import { isMobile } from '../../services/functions'
 
 export const ReturnBtn = () => {
 

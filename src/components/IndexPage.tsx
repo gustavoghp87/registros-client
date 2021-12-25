@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { ReturnBtn } from './_Return'
-import { TerritoryNumberBlock } from './blocks/TerritoryNumberBlock'
+import { ReturnBtn } from './commons/Return'
+import { TerritoryNumberBlock } from './commons/TerritoryNumberBlock'
 import { H2 } from './css/css'
 import { typeUser } from '../models/typesUsuarios'
 
@@ -15,7 +15,6 @@ export const IndexPage = (props: any) => {
 
     useEffect(() => {
         //if (!user) window.location.href = "/login"
-
         if ((!territories || !territories.length) && user && user.asign && user.asign.length) {
             let asignados = user.asign
             asignados.sort((a: number, b: number) => a - b)

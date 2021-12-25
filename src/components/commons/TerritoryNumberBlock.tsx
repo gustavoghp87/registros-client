@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Loading } from '../_Loading'
+import { Loading } from './Loading'
 import { Row } from 'react-bootstrap'
 import { isMobile } from '../../services/functions'
 import { typeUser } from '../../models/typesUsuarios'

@@ -14,11 +14,20 @@ export type typeHTHBuilding = {
     manzana?: typeBlock           // ?
     street: string
     streetNumber: number
+    
+    pisosX: number
+    deptosX: number
+    conLetras: boolean
+    numCorrido: boolean
+    sinPB: boolean
+    
     households: typeHTHHousehold[]
 }
 
 export type typeHTHHousehold = {
     isChecked: boolean
+    pisoN: number
+    deptoN: number
     piso: string
     depto: string
     idNumber: number

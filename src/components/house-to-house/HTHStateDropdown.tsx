@@ -8,13 +8,14 @@ export const HTHStateDropdown = (props: any) => {
 
     const household: typeHTHHousehold = props.vivienda
     const buildingId: string = props.buildingId
-    
-    const changeState = async (household: typeHTHHousehold, state: typeHTHState): Promise<void> => {
+    const sendUpdateBySocket: any = props.sendUpdateBySocket
+
+    const changeState = async (state: typeHTHState): Promise<void> => {
         household.estado = state
         const success: boolean = await modifyHTHHouseholdStateService(household, buildingId)
-        if (!success) alert("Algo falló; verificar conexión")
+        if (!success) return alert("Algo falló; verificar conexión")
+        sendUpdateBySocket(household, buildingId)
     }
-
 
     return (
     
@@ -30,19 +31,19 @@ export const HTHStateDropdown = (props: any) => {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => changeState(household, noPredicado)}>
+                        <Dropdown.Item onClick={() => changeState(noPredicado)}>
                             {noPredicado}
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => changeState(household, contesto)}>
+                        <Dropdown.Item onClick={() => changeState(contesto)}>
                             {contesto}
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => changeState(household, noContesto)}>
+                        <Dropdown.Item onClick={() => changeState(noContesto)}>
                             {noContesto}
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => changeState(household, cartaDejada)}>
+                        <Dropdown.Item onClick={() => changeState(cartaDejada)}>
                             {cartaDejada}
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => changeState(household, noTocar)}>
+                        <Dropdown.Item onClick={() => changeState(noTocar)}>
                             {noTocar}
                         </Dropdown.Item>
                     </Dropdown.Menu>

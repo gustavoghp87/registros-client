@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Col, Form } from 'react-bootstrap'
 
-export const HouseholdCheckbox = (props: any) => {
+export const HTHHouseholdCheckbox = (props: any) => {
     const idNumber: number = props.idNumber
     const piso: string = props.piso
     const depto: string = props.depto
     const register: any = props.register
-
-    const [isChecked, setIsChecked] = useState<boolean>(true)
-
+    const isCheckedEdit: boolean = props.isCheckedEdit
+    const [isChecked, setIsChecked] = useState<boolean>()
+    
     useEffect(() => {
+        if (isChecked === undefined && isCheckedEdit === null) setIsChecked(true)                  // add
+        else if (isChecked === undefined && isCheckedEdit !== null) setIsChecked(isCheckedEdit)    // edit
         register({
             idNumber,
             piso,
             depto,
             isChecked
         })
-    }, [idNumber, piso, depto, isChecked, register])
+    }, [idNumber, piso, depto, register, isChecked, isCheckedEdit])
 
 
     return (
@@ -38,7 +40,6 @@ export const HouseholdCheckbox = (props: any) => {
                     checked={isChecked}
                     label={piso === "PB" ? `PB ${depto}` : `${piso}° ${depto}`}
                     onChange={() => setIsChecked(!isChecked)}
-                    
                 />
             </Form.Group>
         </>

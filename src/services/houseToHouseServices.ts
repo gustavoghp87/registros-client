@@ -12,7 +12,7 @@ export const getBuildingsService = async (territory: string): Promise<typeHTHBui
         headers
     })
     const data: any|null = await response.json()
-    console.log("data:", data)
+    //console.log("data:", data)
     if (!data || !data.success || !data.hthTerritory || !data.hthTerritory.length) return null
     return data.hthTerritory
 }
@@ -22,14 +22,13 @@ export type responseType = {
     hthTerritory?: typeHTHBuilding[]
     exists?: boolean
 }
-export const addBuildingService = async (territory: string,
-     calle: string, numero: number, payloads: typeHTHHousehold[]): Promise<responseType|null> => {
+export const addBuildingService = async (building: typeHTHBuilding): Promise<responseType|null> => {
     const token: string|null = getToken()
     if (!token) return null
     const response: any|null = await fetch(`${base}`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ territory, calle, numero, payloads })
+        body: JSON.stringify({ building })
     })
     const data: responseType|null = await response.json()
     // if (!data || !data.success || !data.hthTerritory) return null
@@ -40,9 +39,22 @@ export const modifyHTHHouseholdStateService = async (household: typeHTHHousehold
     const token: string|null = getToken()
     if (!token) return false
     const response: any|null = await fetch(`${base}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers,
         body: JSON.stringify({ household, buildingId })
+    })
+    const data: any|null = await response.json()
+    if (!data || !data.success) return false
+    return true
+}
+
+export const modifyHTHBuildingService = async (building: typeHTHBuilding): Promise<boolean> => {
+    const token: string|null = getToken()
+    if (!token) return false
+    const response: any|null = await fetch(`${base}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ building })
     })
     const data: any|null = await response.json()
     if (!data || !data.success) return false
@@ -58,6 +70,6 @@ export const getTerritoryStreetsService = async (territory: string): Promise<str
     })
     const data: any|null = await response.json()
     if (!data || !data.success || !data.streets) return null
-    console.log("Streets:", data.streets.length)
+    //console.log("Streets:", data.streets.length)
     return data.streets
 }

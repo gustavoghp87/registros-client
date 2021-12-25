@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { FaUserAlt } from 'react-icons/fa'
-import { logoutService } from '../services/tokenServices'
-import { isMobile } from '../services/functions'
-import { typeUser } from '../models/typesUsuarios'
+import { logoutService } from '../../services/tokenServices'
+import { isMobile } from '../../services/functions'
+import { typeUser } from '../../models/typesUsuarios'
 
 export const NavBar = (props: any) => {
 

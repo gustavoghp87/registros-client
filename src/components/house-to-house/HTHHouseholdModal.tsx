@@ -1,19 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Col, Form, Modal, Row, Card } from 'react-bootstrap'
-import { addBuildingService, responseType } from '../../services/houseToHouseServices'
-import { HouseholdCheckbox } from './HouseholdCheckbox'
-import { typeHTHHousehold } from '../../models/houseToHouse'
+import { addBuildingService, modifyHTHBuildingService, responseType } from '../../services/houseToHouseServices'
+import { HTHHouseholdCheckbox } from './HTHHouseholdCheckbox'
+import { typeHTHBuilding, typeHTHHousehold } from '../../models/houseToHouse'
 
-export const NewHouseholdModal = (props: any) => {
+export const HTHHouseholdModal = (props: any) => {
 
     let h: number = 0
     let j: number = 0
-    let pisos: string[] = ["Solo PB","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]
-    const deptosPorPiso: string[] = ["1","2","3","4","5","6","7","8","9","10","11","12"]
-    const show: boolean = props.show
-    const showHandler: any = props.showHandler
-    const territory: string = props.territory
+    let pisos: string[] = ["Solo PB","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39"]
+    const deptosPorPiso: string[] = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]
+    
+    const closeHTHModalHandler: any = props.closeHTHModalHandler
+    const showModal: boolean = props.showModal
     const streets: string[] = props.streets
+    const territory: string = props.territory
+    const building: typeHTHBuilding = props.building    // edit
 
     const [pisosX, setPisosX] = useState<number>(0)
     const [deptosX, setDeptosX] = useState<number>(0)
@@ -22,6 +24,19 @@ export const NewHouseholdModal = (props: any) => {
     const [sinPB, setSinPB] = useState<boolean>(false)
     const [street, setStreet] = useState<string>("")
     const [streetNumber, setStreetNumber] = useState<number>(0)
+
+    
+    useEffect(() => {
+        if (building && !!building.households.length) {
+            setStreet(building.street)
+            setStreetNumber(building.streetNumber)
+            setPisosX(building.pisosX)
+            setDeptosX(building.deptosX)
+            setConLetras(building.conLetras)
+            setNumCorrido(building.numCorrido)
+            setSinPB(building.sinPB)
+        }
+    }, [building])
 
     const setPisosHandler = (pisos: string): void => {
         if (pisos === "Solo PB") setPisosX(1)
@@ -55,6 +70,8 @@ export const NewHouseholdModal = (props: any) => {
         else if (depto === "12") return "L"
         else if (depto === "13") return "M"
         else if (depto === "14") return "N"
+        else if (depto === "15") return "Ñ"
+        else if (depto === "16") return "O"
         else return "Z"
     }
 
@@ -97,110 +114,134 @@ export const NewHouseholdModal = (props: any) => {
     
     let payloads: typeHTHHousehold[] = []
     
-    const register = (newPayload: typeHTHHousehold): void => {
+    const register = (household: typeHTHHousehold): void => {
         let isIn: boolean = false
         let k = -1
         payloads.forEach((payload: typeHTHHousehold, index: number) => {
-            if (payload.idNumber === newPayload.idNumber) {
+            if (payload.idNumber === household.idNumber) {
                 isIn = true
                 k = index
             }
-        });
-        if (!isIn) payloads.push(newPayload)
-        else payloads[k] = newPayload
+        })
+        if (building && building.households && building.households.length) for (let i = 0; i < building.households.length; i++) {
+            if (building.households[i].idNumber === household.idNumber) household.estado = building.households[i].estado
+        }
+        if (!isIn) payloads.push(household)
+        else payloads[k] = household
     }
     
     const closeHandler = (): void => {
-        showHandler()
-        setPisosX(1)
-        setDeptosX(1)
-        setConLetras(true)
-        setNumCorrido(false)
-        setSinPB(false)
+        closeHTHModalHandler()
+        if (building) {    // edit
+            setPisosX(building.pisosX)
+            setDeptosX(building.deptosX)
+            setConLetras(building.conLetras)
+            setNumCorrido(building.numCorrido)
+            setSinPB(building.sinPB)
+        } else {
+            setStreet("")
+            setStreetNumber(0)
+            setPisosX(0)
+            setDeptosX(0)
+            setConLetras(true)
+            setNumCorrido(false)
+            setSinPB(false)
+        }
     }
 
     const submitHandler = async (event: any): Promise<void> => {
         event.preventDefault()
-        if (!territory || !street || !streetNumber || !payloads || !payloads.length) {
-            alert("Faltan datos")
-            return
-        } else {
-            let someTrue: boolean = false
-            payloads.forEach((household: typeHTHHousehold) => {
-                if (household.isChecked === true) someTrue = true
-            })
-            if (!someTrue) {
-                alert("No hay departamentos")
-                return
+        if (!territory || !street || !streetNumber || !payloads || !payloads.length) { alert("Faltan datos"); return }
+        let someTrue: boolean = false
+        payloads.forEach((household: typeHTHHousehold) => {
+            if (household.isChecked === true) someTrue = true
+        })
+        if (!someTrue) { alert("No hay departamentos"); return }
+        closeHandler()
+        if (!building) {    // add
+            const newBuilding: typeHTHBuilding = {
+                conLetras,
+                deptosX,
+                households: payloads,
+                numCorrido,
+                pisosX,
+                sinPB,
+                street,
+                streetNumber,
+                territory
             }
-            closeHandler()
-            console.log("Submitting...")
-            // ver que no exista ya
-            const response: responseType|null = await addBuildingService(territory, street, streetNumber, payloads)
-            if (!response) return alert("Falló la conexión")
+            const response: responseType|null = await addBuildingService(newBuilding)
+            if (!response || !response.success) return alert("Falló algo")
             if (response.exists) return alert("Ya existía; en todo caso editarlo")
-            console.log(response)
+        } else {            // edit
+            building.conLetras = conLetras
+            building.deptosX= deptosX
+            building.households = payloads
+            building.numCorrido = numCorrido
+            building.street = street
+            building.streetNumber = streetNumber
+            const response: boolean = await modifyHTHBuildingService(building)
+            if (!response) return alert("Falló algo")
         }
+        document.location.reload()
     }
 
 
     return (
         <>
             <Modal
-                show={show}
+                show={showModal}
                 onHide={() => closeHandler()}
                 backdrop={'static'}
                 keyboard={false}
                 size={'xl'}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title> Agregar edificio </Modal.Title>
+                    <Modal.Title className={'text-center'}> {building ? "Editar edificio" : "Agregar edificio"} </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={submitHandler}>
 
                         <div className={'mb-3 d-flex align-self-center'}>
                             <Form.Group
-                                // as={Col}
                                 className={'col-6'}
-                                //style={{ maxWidth: '180px' }}
+                                // as={Col} style={{ maxWidth: '180px' }}
                             >
                                 <Form.Label> Calle </Form.Label>
                                 <Form.Select id={"streetSelect"}
+                                    value={street}
                                     onChange={() => {
                                         const element = document.getElementById("streetSelect") as HTMLInputElement
                                         if (element) setStreet(element.value)
                                     }}
                                 >
                                     <option> {} </option>
-                                    {streets.map((street: string, index: number) =>
+                                    {streets && !!streets.length && streets.map((street: string, index: number) =>
                                         <option id={index.toString()} key={index}> {street} </option>
                                     )}
                                 </Form.Select>
                             </Form.Group>
 
                             <Form.Group
-                                // as={Col}
                                 className={'col-6'}
-                                //style={{ maxWidth: '180px' }}
+                                // as={Col} style={{ maxWidth: '180px' }}
                             >
                                 <Form.Label> Número </Form.Label>
                                 <Form.Control id={"streetNumberSelect"}
-                                    onChange={() => {
-                                        const element = document.getElementById("streetNumberSelect") as HTMLInputElement
-                                        try {
-                                            if (element) {
-                                                const numb: number = parseInt(element.value)
-                                                setStreetNumber(numb)
-                                            }
-                                        } catch (error) {
-                                            
-                                        }
-                                    }}
                                     type={'number'}
                                     min={'1'}
                                     max={'10000'}
                                     step={'1'}
+                                    value={streetNumber ? streetNumber : ""}
+                                    onChange={() => {
+                                        const element = document.getElementById("streetNumberSelect") as HTMLInputElement
+                                        if (element) {
+                                            try {
+                                                const numb: number = parseInt(element.value)
+                                                setStreetNumber(numb)
+                                            } catch (error) {}
+                                        }
+                                    }}
                                     onKeyPress={(event: any) => {if (event.key === '.' || event.key === ',') {event.preventDefault()}}}
                                     onInput={() => "event.target.value = event.target.value.replace(/[^0-9]*/g,'');"}
                                 />
@@ -212,41 +253,41 @@ export const NewHouseholdModal = (props: any) => {
 
                         <div className={'my-3 d-flex align-self-center'}>
                             <Form.Group
-                                //as={Col}
                                 className={'col-6'}
-                                //style={{ maxWidth: '180px' }}
+                                //as={Col} style={{ maxWidth: '180px' }}
                             >
                                 <Form.Label> Pisos </Form.Label>
                                 <Form.Select id={"formGridState0"}
+                                    value={pisosX ? pisosX : ""}
                                     onChange={() => {
                                         const element = document.getElementById("formGridState0") as HTMLInputElement
                                         if (element) setPisosHandler(element.value)
                                     }
                                 }>
                                     <option> {} </option>
-                                    {pisos.map((piso: string, index: number) => {
+                                    {pisos && !!pisos.length && pisos.map((piso: string, index: number) => {
                                         if (!sinPB || (index !== 0 && sinPB && piso !== "Solo PB")) return (
                                             <option id={index.toString()} key={index}> {piso} </option>
                                         )
-                                        else return <></>
+                                        else return (<option key={index}></option>)
                                     })}
                                 </Form.Select>
                             </Form.Group>
 
                             <Form.Group
-                                // as={Col}
                                 className={'col-6'}
-                                // style={{ maxWidth: '180px' }}
+                                // as={Col} style={{ maxWidth: '180px' }}
                             >
                                 <Form.Label> Deptos. por piso </Form.Label>
                                 <Form.Select id={"formGridState1"}
+                                    value={deptosX ? deptosX : ""}
                                     onChange={() => {
                                         const element = document.getElementById("formGridState1") as HTMLInputElement
                                         if (element) setDeptosHandler(element.value)
                                     }
                                 }>
                                     <option> {} </option>
-                                    {deptosPorPiso.map((deptos: string, index: number) =>
+                                    {deptosPorPiso && !!deptosPorPiso && deptosPorPiso.map((deptos: string, index: number) =>
                                         <option id={index.toString()} key={index}> {deptos} </option>
                                     )}
                                 </Form.Select>
@@ -290,16 +331,16 @@ export const NewHouseholdModal = (props: any) => {
 
                             <hr />
 
-                            {pisos.map((piso: string, index: number) => {
+                            {pisos && !!pisos.length && pisos.map((piso: string, index: number) => {
                                 if (piso === "Solo PB") piso = "PB"
                                 if (index < pisosX && !(sinPB && piso === "PB")) return(
                                     <div key={index}>
                                         <div className={'row mb-3 mx-1 d-flex align-self-center'}>
-                                            {deptosPorPiso.map((depto: string, index1: number) => {
+                                            {deptosPorPiso && !!deptosPorPiso.length && deptosPorPiso.map((depto: string, index1: number) => {
                                                 if (index1 < deptosX) {
                                                     j++
-                                                    return(
-                                                        <HouseholdCheckbox
+                                                    return (
+                                                        <HTHHouseholdCheckbox
                                                             key={index1}
                                                             idNumber={j}
                                                             register={register}
@@ -312,6 +353,15 @@ export const NewHouseholdModal = (props: any) => {
                                                                     ? maskForCorridoDepto(piso, depto)
                                                                     : depto)
                                                             }
+                                                            isCheckedEdit={
+                                                                !building
+                                                                ? null
+                                                                : sinPB && building && building.sinPB && building.households[j-1] !== undefined
+                                                                    ? building.households[j-1].isChecked
+                                                                    : !sinPB && building && building.sinPB && building.households[j-3]
+                                                                        ? building.households[j-3]
+                                                                        : false
+                                                            }
                                                         />
                                                     )
                                                 }
@@ -323,6 +373,8 @@ export const NewHouseholdModal = (props: any) => {
                                 )
                                 else return (<div key={index}></div>)
                             })}
+
+                            {/* edit: */}
 
                         </Card>
 
