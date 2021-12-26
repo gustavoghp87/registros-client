@@ -23,7 +23,7 @@ export const HTHHouseholdCheckbox = (props: any) => {
 
     return (
         <>
-            <Form.Group as={Col}
+            <Form.Group
                 className={'my-2 bg-dark text-white d-flex align-items-center'}
                 style={{
                     marginLeft: '10px',

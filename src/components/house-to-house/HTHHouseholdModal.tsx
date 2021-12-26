@@ -323,9 +323,9 @@ export const HTHHouseholdModal = (props: any) => {
 
 
 
-                        <Card className={'my-4'}>
+                        <Card className={'my-4 '}>
 
-                            <p className={'mt-4'} style={{ textAlign: 'center', fontWeight: 'bolder' }}>
+                            <p className={'mt-4 mb-2 justify-content-center align-items-center text-center font-weight-bolder'}>
                                 Esquema del Edificio:
                             </p>
 
@@ -335,7 +335,7 @@ export const HTHHouseholdModal = (props: any) => {
                                 if (piso === "Solo PB") piso = "PB"
                                 if (index < pisosX && !(sinPB && piso === "PB")) return(
                                     <div key={index}>
-                                        <div className={'row mb-3 mx-1 d-flex align-self-center'}>
+                                        <div className={'row mb-3 mx-1 d-flex justify-content-center align-self-center'}>
                                             {deptosPorPiso && !!deptosPorPiso.length && deptosPorPiso.map((depto: string, index1: number) => {
                                                 if (index1 < deptosX) {
                                                     j++

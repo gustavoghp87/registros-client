@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { HTHStateDropdown } from './HTHStateDropdown'
 import { Card, Row, Col, Button } from 'react-bootstrap'
+import { isMobile } from '../../services/functions'
+import { HTHStateDropdown } from './HTHStateDropdown'
+import { HTHHouseholdModal } from './HTHHouseholdModal'
 import * as types from '../../models/houseToHouse'
 import { typeHTHBuilding, typeHTHHousehold } from '../../models/houseToHouse'
-import { HTHHouseholdModal } from './HTHHouseholdModal'
 
 export const HTHBuildingCard = (props: any) => {
 
@@ -39,16 +40,25 @@ export const HTHBuildingCard = (props: any) => {
             >
                 <Col sm={2}></Col>
                 <Col sm={8} className={'text-center my-2 font-weight-bold blockquote'}>
-                    Edificio {building.street} {building.streetNumber} ({amount} timbres, {free} libres) &nbsp;
+                    Edificio {building.street} {building.streetNumber}
+                    <br className={`${isMobile ? '' : 'd-none'}`} />
+                    &nbsp; ({amount} timbres, {free} libres) &nbsp;
                 </Col>
                 
-                <Col sm={2} className={'text-right my-2 font-weight-bold blockquote'} onClick={() => {if (showHouseholds) setShowModal(true)}}>
+                <Col sm={2} className={`${isMobile ? 'd-none' : ''} text-right my-2 font-weight-bold blockquote`} 
+                onClick={() => {if (showHouseholds) setShowModal(true)}}>
                     <span className={`mr-4 ${showHouseholds ? '' : 'd-none'}`}>
                         <span style={{ borderLeft: '3px solid white', height: '50px' }}></span>
                         &nbsp;&nbsp;
                         <span style={{ fontSize: '1.1rem' }}> Editar </span>
                     </span>
                 </Col>
+
+                <div className={`${isMobile && showHouseholds ? '' : 'd-none'} text-center my-1 font-weight-bold blockquote`}
+                onClick={() => {if (showHouseholds) setShowModal(true)}}>
+                    <hr className={'mb-2'} />
+                    <span className={'mt-0'} style={{ fontSize: '1.1rem' }}> Editar </span>
+                </div>
             </Row>
 
             {showHouseholds && building.households && !!building.households.length &&
@@ -57,8 +67,8 @@ export const HTHBuildingCard = (props: any) => {
                 if (household.estado === types.noPredicado) household = { ...household, variant: 'success' }
                 if (household.estado === types.contesto) household = { ...household, variant: 'primary' }
                 if (household.estado === types.noContesto) household = { ...household, variant: 'warning' }
-                if (household.estado === types.cartaDejada) household = { ...household, variant: 'danger' }
-                if (household.estado === types.noTocar) household = { ...household, variant: 'dark' }
+                if (household.estado === types.cartaDejada) household = { ...household, variant: 'info' }
+                if (household.estado === types.noTocar) household = { ...household, variant: 'danger' }
 
                 return (
                     <Card key={index}

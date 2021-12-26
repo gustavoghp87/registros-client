@@ -39,7 +39,7 @@ export const HTHStreetCard = (props: any) => {
             {showBuildings && buildings && !!buildings.length &&
                 buildings.map((building: typeHTHBuilding, index: number) => {
                     if (building.street === street) return (
-                        <div key={index}>
+                        <div key={index} className={''} style={{ maxWidth: '90%' }}>
                             <br />
                             <HTHBuildingCard
                                 building={building}
