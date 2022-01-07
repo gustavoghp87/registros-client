@@ -38,7 +38,7 @@ export const TerritoriosPage = (props: any) => {
     const showingAll = todo === 'todo' ? true : false
     
     useEffect(() => {
-        window.scrollTo(0, 0)
+        // window.scrollTo(0, 0)
         if (territorio) getBlocksService(territorio)
             .then((blocks: string[]|null) => { if (blocks) setBlocks(blocks) })
         if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, showingAll, brought, broughtAll)

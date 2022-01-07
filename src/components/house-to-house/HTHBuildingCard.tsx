@@ -33,7 +33,7 @@ export const HTHBuildingCard = (props: any) => {
                 maxWidth: '100%',
                 width: '800px'
             }}
-            >
+        >
             <Row className={'py-2 text-white bg-danger w-100 align-center'}
                 style={{ cursor: 'pointer' }}
                 onClick={() => setShowHouseholds(!showHouseholds)}

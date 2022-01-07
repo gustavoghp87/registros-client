@@ -78,7 +78,7 @@ export const NavBar = (props: any) => {
         {user && user.isAuth && ((isMobile && !scrollDown) || !isMobile) &&
             <div style={{ position: 'fixed', right: '0', marginRight: '18px', marginTop: '5px', zIndex: 1 }}>
                 <p style={{ textAlign: 'right', marginBottom: '0' }}> {user.email} </p>
-                <p style={{ textAlign: 'right', marginBottom: '0' }}> Grupo: {user.group} </p>
+                <p style={{ textAlign: 'right', marginBottom: '0' }}> Grupo {user.group} </p>
                 <p style={{ textAlign: 'right' }}> {user.role ? "Administrador" : ""} </p>
             </div>
         }

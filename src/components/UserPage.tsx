@@ -58,15 +58,15 @@ export const UserPage = (props: any) => {
         <>
             {ReturnBtn()}
 
-            <H2 style={{ textAlign: 'center' }}> Usuario </H2>
+            <H2 className={'text-center'}> Usuario </H2>
 
             {user &&
             <>
-                <Card style={{ padding: '25px', margin: '30px auto' }}>
+                <Card className={'text-center'} style={{ padding: '25px', margin: '30px auto' }}>
                     
                     {isMobile ?
                     <>
-                        <h4> Usuario: {user.email} </h4>
+                        <h4> Usuario: <br /> {user.email} </h4>
                         <br/>
 
                         <div className={'d-inline-block'}>
@@ -84,16 +84,15 @@ export const UserPage = (props: any) => {
                     </>
                     :
                     <>
-                        <h3> Usuario: {user.email} </h3>
+                        <h3> Usuario: <br /> {user.email} </h3>
                         
-                        <div className={'d-inline-block'}>
+                        <div className={'mt-3 d-inline-block'}>
                             <h3 className={'d-inline-block'}> Territorios asignados: &nbsp; &nbsp; </h3>
-
-                            {user.asign &&
-                                getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
-                                    <h3 key={index} className={'d-inline-block'}>
+                            <br />
+                            {user.asign && getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
+                                    <Button key={index} className={'d-inline-block text-center active mt-3'}>
                                         {territorio} &nbsp; &nbsp;
-                                    </h3>
+                                    </Button>
                                 ))
                             }
 
@@ -122,8 +121,8 @@ export const UserPage = (props: any) => {
                         <Card.Title className={'mb-4'}> CAMBIAR CONTRASEÑA </Card.Title>
                         <Form.Group>
                             <Form.Label> Contraseña actual </Form.Label>
-                            <Form.Control type="text"
-                                placeholder="Contraseña actual"
+                            <Form.Control type={'text'}
+                                placeholder={"Contraseña actual"}
                                 value={psw}
                                 onChange={(event: any) => setPsw(event.target.value)}
                             />
