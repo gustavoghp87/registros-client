@@ -29,6 +29,12 @@ type estado = "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | 
 
 export type variant = "success" | "dark" | "primary" | "danger" | "warning" | "light" | "secondary" | "info" | "link"
 
+export const success: variant = "success"
+export const dark: variant = "dark"
+export const primary: variant = "primary"
+export const danger: variant = "danger"
+export const warning: variant = "warning"
+
 export type typeStateOfTerritory = {
     _id?: object
     territorio: string

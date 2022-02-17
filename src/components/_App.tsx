@@ -13,6 +13,7 @@ import { UserPage } from './UserPage'
 import { AdminsPage } from './AdminsPage'
 import { RecoveryPage } from './RecoveryPage'
 import { CasaEnCasaPage } from './CasaEnCasaPage'
+import { BgColorButton } from './commons/BgColorButton'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import { authUserService, changeDarkModeService } from '../services/userServices'
 import { isMobile } from '../services/functions'
@@ -81,20 +82,7 @@ export const App = () => {
                             <Route path={"*"} element={ <HomePage user={user} /> } />
                         </Routes>
 
-                        <div className='custom-control custom-switch' style={{ position: 'fixed', bottom: '20px' }}>
-                            <input className={'custom-control-input'}
-                                type={'checkbox'}
-                                id={"customSwitches"}
-                                checked={darkMode}
-                                onChange={() => changeDarkMode()}
-                            />
-                            <label className={'custom-control-label'}
-                                htmlFor={'customSwitches'}
-                                style={{ color: darkMode ? 'white' : 'red' }}
-                            >
-                                <b> {isMobile ? '' : (darkMode ? 'Modo Claro' : 'Modo Oscuro')} </b>
-                            </label>
-                        </div>
+                        <BgColorButton darkMode={darkMode} changeDarkMode={changeDarkMode} />
                         
                     </div>
 

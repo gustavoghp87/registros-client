@@ -12,6 +12,7 @@ import { Col3 } from './columns/Col3'
 import { Col4 } from './columns/Col4'
 import { BsToaster } from './columns/BsToaster'
 import { RefreshButton } from './commons/RefreshButton'
+import { WarningToaster } from './commons/WarningToaster'
 import { markTerritoryAsFinishedService, getStateOfTerritoryService } from '../services/stateTerritoryServices'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService } from '../services/territoryServices'
 import { confirmAlert } from 'react-confirm-alert'
@@ -35,7 +36,11 @@ export const TerritoriosPage = (props: any) => {
     const [blocks, setBlocks] = useState<string[]>(['1'])
     const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
     const [socket, setSocket] = useState<any>(null)
-    const showingAll = todo === 'todo' ? true : false
+    const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false);
+    //const [showWarningToasterPermanently, setShowWarningToasterPermanently] = useState<boolean>(false);
+    const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null);
+    const showingAll = todo === 'todo'
+    
     
     useEffect(() => {
         // window.scrollTo(0, 0)
@@ -54,17 +59,25 @@ export const TerritoriosPage = (props: any) => {
             })
         ;
         // socket:
-        if (!socket) {
+        if (!socket && user && user.email) {
             const newSocket = io(SERVER, { withCredentials: true })
-            newSocket.on('household: change', (updatedHouseholds: types.typeVivienda[]) => {
-                if (updatedHouseholds && updatedHouseholds[0].territorio === territorio && updatedHouseholds[0].manzana === manzana)
-                setHouseholdsObj({ households: updatedHouseholds })
+            newSocket.on('household: change', (updatedHouseholds: types.typeVivienda[], userEmail: string) => {
+                if (updatedHouseholds && updatedHouseholds[0].territorio === territorio) {
+                    if (updatedHouseholds[0].manzana === manzana) {
+                        setHouseholdsObj({ households: updatedHouseholds })
+                    }
+                    if (user && userEmail && userEmail !== user.email) {
+                        setShowWarningToaster(true)
+                        //setShowWarningToasterPermanently(true)
+                        setUserEmailWarningToaster(userEmail)
+                    }
+                }
             })
             if (newSocket) setSocket(newSocket)
         }
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
         return () => { }
-    }, [showingAll, manzana, territorio, brought, broughtAll, socket, socket?.connected])
+    }, [showingAll, manzana, territorio, brought, broughtAll, socket, socket?.connected, user, user?.email])
     
     const modifyHouseholdHandler = async (inner_id: string,
          estado: string, noAbonado: boolean|null, asignado: boolean|null): Promise<void> => {
@@ -81,7 +94,7 @@ export const TerritoriosPage = (props: any) => {
     }
 
     const markAsFinishedHandler = async (): Promise<void> => {
-        if(!territorio) return
+        if (!territorio) return
         const success = await markTerritoryAsFinishedService(territorio, true)
         if (success) navigate("/index")
     }
@@ -134,20 +147,41 @@ export const TerritoriosPage = (props: any) => {
         const objPackage: any = {
             households: householdsObj.households,
             updatedHousehold,
-            indexOfHousehold
+            indexOfHousehold,
+            userEmail: user?.email
         }
         if (socket && socket.connected && objPackage) socket.emit('household: change', objPackage)
         else alert("No estás conectado")
     }
 
+    const highligthCard = (id: string): void => {
+        const element = document.getElementById(id)
+        if (element) element.style.backgroundColor = "#BB8FCE"
+    }
+
+    const stopHighligthCard = (id: string, backgroundColor: string): void => {
+        const element = document.getElementById(id)
+        if (element) element.style.backgroundColor = backgroundColor
+    }
+
+    const toggleshowWarningToaster = (): void => setShowWarningToaster(false)
+
 
     return (
         <>
-            {ReturnBtn()}
+            <ReturnBtn />
 
             <RefreshButton />
 
             <BsToaster />
+
+            <WarningToaster
+                showWarningToaster={showWarningToaster}
+                //showWarningToasterPermanently={showWarningToasterPermanently}
+                toggleshowWarningToaster={toggleshowWarningToaster}
+                userEmailWarningToaster={userEmailWarningToaster}
+                currentUserEmail={user?.email}
+            />
 
             <h1 style={{
                 textAlign: 'center',
@@ -227,25 +261,28 @@ export const TerritoriosPage = (props: any) => {
             {householdsObj && householdsObj.households && !!householdsObj.households.length &&
                 householdsObj.households.map((vivienda: types.typeVivienda) => {
 
-                if (vivienda.estado === types.noPredicado) vivienda = { ...vivienda, variante: 'success' }
-                if (vivienda.estado === types.contesto) vivienda = { ...vivienda, variante: 'primary' }
-                if (vivienda.estado === types.noContesto) vivienda = { ...vivienda, variante: 'warning' }
-                if (vivienda.estado === types.aDejarCarta) vivienda = { ...vivienda, variante: 'danger' }
-                if (vivienda.estado === types.noLlamar) vivienda = { ...vivienda, variante: 'dark' }
+                if (vivienda.estado === types.noPredicado) vivienda = { ...vivienda, variante: types.success }
+                if (vivienda.estado === types.contesto) vivienda = { ...vivienda, variante: types.primary }
+                if (vivienda.estado === types.noContesto) vivienda = { ...vivienda, variante: types.warning }
+                if (vivienda.estado === types.aDejarCarta) vivienda = { ...vivienda, variante: types.danger }
+                if (vivienda.estado === types.noLlamar) vivienda = { ...vivienda, variante: types.dark }
 
                 return (
                 
                     <Card key={vivienda.inner_id}
+                        id={`card_${vivienda.inner_id}`}
                         style={{
                             marginBottom: '50px',
                             border: '1px solid gray',
                             boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
                             backgroundColor: vivienda.asignado ? '#B0B0B0' : ''
                         }}
+                        onMouseOver={() => vivienda.asignado ? null : highligthCard(`card_${vivienda.inner_id}`)}
+                        onMouseOut={() => stopHighligthCard(`card_${vivienda.inner_id}`, vivienda.asignado ? '#B0B0B0' : '')}
                     >
-                        <Container fluid="lg">
+                        <Container fluid={'lg'}>
 
-                            <Row style={{margin:'0 25px', paddingTop:'15px', paddingBottom:'15px'}}>
+                            <Row style={{ margin: '0 25px', paddingTop: '15px', paddingBottom: '15px' }}>
 
                                 <Col1
                                     vivienda={vivienda}
@@ -254,7 +291,6 @@ export const TerritoriosPage = (props: any) => {
                                 <Col2
                                     vivienda={vivienda}
                                 />
-
 
                                 <Col3
                                     vivienda={vivienda}
@@ -274,10 +310,16 @@ export const TerritoriosPage = (props: any) => {
 
             {householdsObj && householdsObj.households && !!householdsObj.households.length && loaded &&
             <>
-                <Pagination size='lg' style={{ textAlign: 'center',
-                    alignItems: 'center', justifyContent: 'center', marginTop: '80px', fontWeight: 'bolder',
-                    display: broughtAll ? 'none' : ''
-                }}>
+                <Pagination size='lg'
+                    style={{
+                        textAlign: 'center',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: '80px',
+                        fontWeight: 'bolder',
+                        display: broughtAll ? 'none' : ''
+                    }
+                }>
                     <Pagination.Item onClick={() => getTenMoreHandler()}>
                         {textBtn}
                     </Pagination.Item>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Col, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 
 export const HTHHouseholdCheckbox = (props: any) => {
     const idNumber: number = props.idNumber

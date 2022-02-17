@@ -6,14 +6,19 @@ const setToken = (newToken: string) => localStorage.setItem('token', newToken)
 export const clearToken = () => localStorage.removeItem('token')
 
 export const loginService = async (email: string, password: string, recaptchaToken: string): Promise<any|null> => {
-    const request: any = await fetch(`${base}/`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({ email, password, recaptchaToken })
-    })
-    const response: any|null = await request.json()
-    if (response && response.success && response.newToken) setToken(response.newToken)
-    return response
+    try {
+        const request: any = await fetch(`${base}/`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ email, password, recaptchaToken })
+        })
+        const response: any|null = await request.json()
+        if (response && response.success && response.newToken) setToken(response.newToken)
+        return response
+    } catch (error) {
+        console.log(error)
+        return null
+    }
 }
 
 export const logoutService = (): void => {
@@ -23,37 +28,52 @@ export const logoutService = (): void => {
 export const logoutAllService = async (): Promise<boolean> => {
     const token: string|null = getToken()
     if (!token) return false;
-    const request = await fetch(`${base}/`, {
-        method: 'DELETE',
-        headers: headers
-    })
-    const response: any|null = await request.json()
-    if (!response || !response.success || !response.newToken) return false
-    setToken(response.newToken)
-    return true
+    try {
+        const request = await fetch(`${base}/`, {
+            method: 'DELETE',
+            headers: headers
+        })
+        const response: any|null = await request.json()
+        if (!response || !response.success || !response.newToken) return false
+        setToken(response.newToken)
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
 }
 
 export const changePswService = async (psw: string|null, newPsw: string, id: string|null): Promise<object|null> => {
     const token: string|null = getToken()
     if (!token && !id) return null
-    const fetchy = await fetch(`${base}/`, {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify({ psw, newPsw, id })
-    })
-    const response: any|null = await fetchy.json()
-    if (response && response.success && response.newToken) setToken(response.newToken)
-    return response
+    try {
+        const fetchy = await fetch(`${base}/`, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify({ psw, newPsw, id })
+        })
+        const response: any|null = await fetchy.json()
+        if (response && response.success && response.newToken) setToken(response.newToken)
+        return response
+    } catch (error) {
+        console.log(error)
+        return null
+    }
 }
 
 export const changePswOtherUserService = async (email: string): Promise<object|null> => {
     const token: string|null = getToken()
     if (!token) return null
-    const request = await fetch(`${base}/`, {
-        method: 'PATCH',
-        headers: headers,
-        body: JSON.stringify({ email })
-    })
-    const response: any|null = await request.json()
-    return response
+    try {
+        const request = await fetch(`${base}/`, {
+            method: 'PATCH',
+            headers: headers,
+            body: JSON.stringify({ email })
+        })
+        const response: any|null = await request.json()
+        return response
+    } catch (error) {
+        console.log(error)
+        return null
+    }
 }
