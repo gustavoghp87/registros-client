@@ -5,7 +5,7 @@ import { typeVivienda } from '../../models/typesTerritorios'
 export const Col4 = (props: any) => {
 
     const vivienda: typeVivienda = props.vivienda
-    const cambiarEstado: any = props.cambiarEstado
+    const cambiarEstado: (inner_id: string, estado: string, noAbonado: boolean|null, asignado: boolean|undefined) => Promise<void> = props.cambiarEstado
 
     return (
         <Col xs={12} md={2}>

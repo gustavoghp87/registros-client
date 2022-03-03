@@ -4,7 +4,7 @@ import { getEmailByEmailLink } from '../services/userServices'
 import { isMobile } from '../services/functions'
 import { changePswService } from '../services/tokenServices'
 
-export const RecoveryPage = (props: any) => {
+export const RecoveryPage = () => {
 
     const { id } = useParams<string>()
     const [email, setEmail] = useState<string>('')

@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/authContext'
 import { registerUserService } from '../services/userServices'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
 
-export const RegisterPage = (props: any) => {
+export const RegisterPage = () => {
 
-    const user: typeUser = props.user
+    const user: typeUser|undefined = useAuth().user
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [confPassword, setConfPassword] = useState<string>('')

@@ -1,9 +1,17 @@
 import { Col, Row } from 'react-bootstrap'
+import { typeVivienda } from '../../models/typesTerritorios'
 import { isMobile } from '../../services/functions'
 
 export const Col2 = (props: any) => {
 
-    const { vivienda } = props
+    const vivienda: typeVivienda = props?.vivienda
+
+    const getReducedPhoneNumber = (phoneNumber: string): string => {
+        if (!phoneNumber) return phoneNumber
+        if (phoneNumber.substring(0, 6) === "54-11-") return phoneNumber.substring(6)
+        if (phoneNumber.substring(0, 3) === "54-") return phoneNumber.substring(3)
+        return phoneNumber
+    }
 
     return (
 
@@ -13,7 +21,7 @@ export const Col2 = (props: any) => {
                 <h4 style={{ textAlign: 'center', display: 'block', margin: 'auto', fontSize: '1.9rem' }}>
                     Dirección:
                     <br/>
-                    {vivienda.direccion}
+                    {vivienda?.direccion}
                 </h4>
             </Row>
 
@@ -21,15 +29,15 @@ export const Col2 = (props: any) => {
                 
                 <h4 style={{
                     textAlign: 'center',
-                    display: vivienda.noAbonado ? 'none' : 'block',
+                    display: vivienda?.noAbonado ? 'none' : 'block',
                     margin: 'auto',
-                    fontSize: isMobile ? '2.3rem' : '2.1rem'
+                    fontSize: isMobile ? '2.5rem' : '3rem'
                 }}>
 
                     Teléfono:
                     <div style={{ marginTop: '7px' }}>
-                        <a href={`tel:${vivienda.telefono}`}>
-                            {vivienda.telefono}
+                        <a href={`tel:${vivienda?.telefono}`}>
+                            {getReducedPhoneNumber(vivienda?.telefono)}
                         </a>
                     </div>
 

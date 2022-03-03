@@ -3,6 +3,7 @@ import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 
 import { confirmAlert } from 'react-confirm-alert'
 import { ReturnBtn } from './commons/Return'
 import { Loading } from './commons/Loading'
+//import { useAuth } from '../context/authContext'
 import io from 'socket.io-client'
 import { assignTerritoryService, modifyUserService, getUsersService } from '../services/userServices'
 import { changePswOtherUserService } from '../services/tokenServices'
@@ -10,6 +11,7 @@ import { SERVER } from '../config'
 import { H2 } from './css/css'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
+
 
 export const AdminsPage = () => {
     
@@ -21,6 +23,8 @@ export const AdminsPage = () => {
     const [viendo, setViendo] = useState<string>("todos")
     const [socket, setSocket] = useState<any>(null)
 
+    // const { loading, login, logout, user } = useAuth()
+    
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsersObj({ users }) })
         if (!socket) {

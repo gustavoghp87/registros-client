@@ -4,6 +4,7 @@ import { Button, Container } from 'react-bootstrap'
 import { ReturnBtn } from './commons/Return'
 import { Loading } from './commons/Loading'
 import { RefreshButton } from './commons/RefreshButton'
+import { useAuth } from '../context/authContext'
 import io from 'socket.io-client'
 import { SERVER } from './../config'
 import { H2 } from './css/css'
@@ -16,10 +17,10 @@ import { typeUser } from '../models/typesUsuarios'
 import { typeHTHBuilding, typeHTHHousehold } from '../models/houseToHouse'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const CasaEnCasaPage = (props: any) => {
+export const CasaEnCasaPage = () => {
     
     const { territory } = useParams<any>()
-    const user: typeUser = props.user
+    const user: typeUser|undefined = useAuth().user
     const [buildings, setBuildings] = useState<typeHTHBuilding[]>([])
     const [streets, setStreets] = useState<string[]>([])
     const [isFinished, setIsFinished] = useState<boolean>(false)

@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
-import { Loading } from './Loading'
 import { Row } from 'react-bootstrap'
+import { Loading } from './Loading'
+import { useAuth } from '../../context/authContext'
 import { isMobile } from '../../services/functions'
 import { typeUser } from '../../models/typesUsuarios'
 
 export const TerritoryNumberBlock = (props: any) => {
 
-    const user: typeUser = props.user
+    const user: typeUser|undefined = useAuth().user
     const territories: number[] = props.territories
     const mode: number = props.mode
 

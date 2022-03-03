@@ -13,19 +13,20 @@ import { Col4 } from './columns/Col4'
 import { BsToaster } from './columns/BsToaster'
 import { RefreshButton } from './commons/RefreshButton'
 import { WarningToaster } from './commons/WarningToaster'
+import { useAuth } from '../context/authContext'
+import { confirmAlert } from 'react-confirm-alert'
 import { markTerritoryAsFinishedService, getStateOfTerritoryService } from '../services/stateTerritoryServices'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService } from '../services/territoryServices'
-import { confirmAlert } from 'react-confirm-alert'
 import { isMobile } from '../services/functions'
 import { SERVER } from '../config'
 import * as types from '../models/typesTerritorios'
 import { typeUser } from '../models/typesUsuarios'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const TerritoriosPage = (props: any) => {
+export const TerritoriosPage = () => {
 
     const navigate = useNavigate()
-    const user: typeUser = props.user
+    const user: typeUser|undefined = useAuth().user
     const { territorio, manzana, todo } = useParams<any>()
     const [householdsObj, setHouseholdsObj] = useState<types.typeTerritorio>({ households: [] })
     const [isFinished, setIsFinished] = useState<boolean>(false)
@@ -156,7 +157,7 @@ export const TerritoriosPage = (props: any) => {
 
     const highligthCard = (id: string): void => {
         const element = document.getElementById(id)
-        if (element) element.style.backgroundColor = "#BB8FCE"
+        if (element) element.style.backgroundColor = "yellow"
     }
 
     const stopHighligthCard = (id: string, backgroundColor: string): void => {

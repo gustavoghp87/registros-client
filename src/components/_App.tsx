@@ -14,20 +14,22 @@ import { AdminsPage } from './AdminsPage'
 import { RecoveryPage } from './RecoveryPage'
 import { CasaEnCasaPage } from './CasaEnCasaPage'
 import { BgColorButton } from './commons/BgColorButton'
+import { AuthProvider, useAuth } from '../context/authContext'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
-import { authUserService, changeDarkModeService } from '../services/userServices'
+import { changeDarkModeService } from '../services/userServices'
 import { isMobile } from '../services/functions'
 import { recaptchaPublicKey } from '../config'
 import { typeUser } from '../models/typesUsuarios'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+
 export const App = () => {
 
-    const [user, setUser] = useState<typeUser>()
     const getDarkModeStorage = () => localStorage.getItem('darkMode')
     const mode: boolean = getDarkModeStorage() === 'true'
     const [darkMode, setDarkMode] = useState<boolean>(mode)
+    const user: typeUser|undefined = useAuth().user
     
     const setDarkModeStorage = (darkMode: boolean) => {
         if (darkMode !== null && darkMode !== undefined) localStorage.setItem('darkMode', darkMode.toString())
@@ -35,13 +37,13 @@ export const App = () => {
     
     useEffect(() => {
         if (user && user.isAuth) return
-        authUserService().then((user0: typeUser|null) => {
-            if (user0) setUser(user0)
-            if (user0 && typeof user0.darkMode === 'boolean') {
-                if (darkMode !== user0.darkMode) setDarkMode(user0.darkMode)
-                if (getDarkModeStorage() !== user0.darkMode.toString()) setDarkModeStorage(user0.darkMode)
-            }
-        })
+
+        if (user && typeof user.darkMode === 'boolean') {
+            console.log("entering to dark mode option");
+            
+            if (darkMode !== user.darkMode) setDarkMode(user.darkMode)
+            if (getDarkModeStorage() !== user.darkMode.toString()) setDarkModeStorage(user.darkMode)
+        }
     }, [user, darkMode])
 
     const changeDarkMode = async (): Promise<void> => {
@@ -55,38 +57,42 @@ export const App = () => {
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>
             <GoogleReCaptchaProvider reCaptchaKey={recaptchaPublicKey}>
-                <div style={ darkMode ? { backgroundColor: 'black' } : { backgroundColor: 'white' } }>
+                <div style={{ backgroundColor: darkMode ? 'black' : 'white' }}>
 
-                    <NavBar user={user} />
+                    <AuthProvider>
 
-                    <div style={{
-                        maxWidth: isMobile ? '95%' : '90%',
-                        paddingTop: '75px',
-                        margin: 'auto',
-                        minHeight: 'calc(100vh - 80px)'
-                    }}>
+                        <NavBar />
 
-                        <Routes>
-                            <Route path={"/"} element={ <HomePage user={user} /> } />
-                            <Route path={"/login"} element={ <LoginPage user={user} /> } />
-                            <Route path={"/register"} element={ <RegisterPage user={user} /> } />
-                            <Route path={"/index"} element={ <IndexPage user={user} /> } />
-                            <Route path={"/casaencasa/:territory"} element={ <CasaEnCasaPage user={user} /> } />
-                            <Route path={"/territorios/:territorio/:manzana"} element={ <TerritoriosPage user={user} /> } />
-                            <Route path={"/territorios/:territorio/:manzana/:todo"} element={ <TerritoriosPage user={user} /> } />
-                            <Route path={"/estadisticas"} element={ <EstadisticasPage /> } />
-                            <Route path={"/estadisticas/:territorio"} element={ <EstadisticasLocalPage /> } />
-                            <Route path={"/user"} element={ <UserPage user={user} /> } />
-                            <Route path={"/admins"} element={ <AdminsPage /> } />
-                            <Route path={"/recovery/:id"} element={ <RecoveryPage /> } />
-                            <Route path={"*"} element={ <HomePage user={user} /> } />
-                        </Routes>
+                        <div style={{
+                            maxWidth: isMobile ? '95%' : '90%',
+                            paddingTop: '75px',
+                            margin: 'auto',
+                            minHeight: 'calc(100vh - 80px)'
+                        }}>
 
-                        <BgColorButton darkMode={darkMode} changeDarkMode={changeDarkMode} />
-                        
-                    </div>
+                            <Routes>
+                                <Route element={ <HomePage /> } path={"/"} />
+                                <Route element={ <LoginPage /> } path={"/login"} />
+                                <Route element={ <RegisterPage /> } path={"/register"} />
+                                <Route element={ <IndexPage /> } path={"/index"} />
+                                <Route element={ <CasaEnCasaPage /> } path={"/casaencasa/:territory"} />
+                                <Route element={ <TerritoriosPage /> } path={"/territorios/:territorio/:manzana"} />
+                                <Route element={ <TerritoriosPage /> } path={"/territorios/:territorio/:manzana/:todo"} />
+                                <Route element={ <EstadisticasPage /> } path={"/estadisticas"} />
+                                <Route element={ <EstadisticasLocalPage /> } path={"/estadisticas/:territorio"} />
+                                <Route element={ <UserPage /> } path={"/user"} />
+                                <Route element={ <AdminsPage /> } path={"/admins"} />
+                                <Route element={ <RecoveryPage /> } path={"/recovery/:id"} />
+                                <Route element={ <HomePage /> } path={"*"} />
+                            </Routes>
 
-                    <Footer />
+                            <BgColorButton darkMode={darkMode} changeDarkMode={changeDarkMode} />
+                            
+                        </div>
+
+                        <Footer />
+
+                    </AuthProvider>
 
                 </div>
             </GoogleReCaptchaProvider>

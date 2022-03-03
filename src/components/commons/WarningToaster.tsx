@@ -6,12 +6,7 @@ import { danger } from '../../models/typesTerritorios'
 
 export const WarningToaster = (props: any) => {
 
-    const {
-        showWarningToaster,
-        //showWarningToasterPermanently,
-        toggleshowWarningToaster,
-        userEmailWarningToaster,
-        currentUserEmail } = props
+    const { showWarningToaster, toggleshowWarningToaster, userEmailWarningToaster, currentUserEmail } = props
 
     return (
         <Toast

@@ -23,14 +23,16 @@ export const BsToaster = () => {
             {localStat && localStat !== null && localStat !== undefined && localStat.libres !== null
                 && localStat.libres !== undefined && localStat.libres < 50 &&
 
-                <Toast className={'mt-5 mx-auto'} show={showA} onClose={toggleShowA}>
-                    <Toast.Header className={'d-block'}>
-                        <AiOutlineWarning className={'m-1'} style={{ fontSize: 18 }} />
-                        <span>
-                            <strong> ¡Advertencia! </strong>
+                <Toast className={'mt-5 mx-auto pr-2'} show={showA} onClose={toggleShowA}>
+                    <Toast.Header className={'d-flex justify-content-between'}>
+                        <span className={'mt-1'}>
+                            <AiOutlineWarning className={'mb-1 ml-3 '} style={{ fontSize: 22 }} />
+                            <span style={{ fontSize: 17 }}>
+                                <strong> ¡Advertencia! </strong>
+                            </span>
                         </span>
                     </Toast.Header>
-                    <Toast.Body>
+                    <Toast.Body className={'pl-4 pt-2'}>
                         {localStat.libres > 0
                             ?
                             <span> A este territorio le quedan solo {localStat.libres} teléfonos para llamar </span>

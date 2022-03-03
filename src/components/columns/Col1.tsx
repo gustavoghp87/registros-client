@@ -1,9 +1,10 @@
 import { Col } from 'react-bootstrap'
 import { isMobile } from '../../services/functions'
+import { typeVivienda } from '../../models/typesTerritorios'
 
 export const Col1 = (props: any) => {
 
-    const { vivienda } = props
+    const vivienda: typeVivienda = props.vivienda
 
     return (
 

@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { Card, Button, Form } from 'react-bootstrap'
 import { confirmAlert } from 'react-confirm-alert'
 import { ReturnBtn } from './commons/Return'
+import { useAuth } from '../context/authContext'
 import { H2 } from './css/css'
 import { changePswService, logoutAllService } from '../services/tokenServices'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
 
-export const UserPage = (props: any) => {
+export const UserPage = () => {
     
-    const user: typeUser = props.user
+    const user: typeUser|undefined = useAuth().user
     const [show, setShow] = useState(false)
     const [psw, setPsw] = useState('')
     const [newPsw, setNewPsw] = useState('')

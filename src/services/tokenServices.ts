@@ -4,15 +4,22 @@ import { getToken, headers } from './functions'
 const base: string = `${SERVER}/api/token`
 const setToken = (newToken: string) => localStorage.setItem('token', newToken)
 export const clearToken = () => localStorage.removeItem('token')
+const clearUser = () => localStorage.removeItem('user')
 
-export const loginService = async (email: string, password: string, recaptchaToken: string): Promise<any|null> => {
+type responseType = {
+    success: boolean,
+    newToken?: string,
+    recaptchaFails?: boolean
+    isDisabled?: boolean
+}
+export const loginService = async (email: string, password: string, recaptchaToken: string): Promise<responseType|null> => {
     try {
         const request: any = await fetch(`${base}/`, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({ email, password, recaptchaToken })
         })
-        const response: any|null = await request.json()
+        const response: responseType|null = await request.json()
         if (response && response.success && response.newToken) setToken(response.newToken)
         return response
     } catch (error) {
@@ -23,6 +30,7 @@ export const loginService = async (email: string, password: string, recaptchaTok
 
 export const logoutService = (): void => {
     clearToken()
+    clearUser()
 }
 
 export const logoutAllService = async (): Promise<boolean> => {

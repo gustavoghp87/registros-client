@@ -52,7 +52,7 @@ export const EstadisticasLocalPage = () => {
 
     const llamadas: number = datos ? datos.countContesto + datos.countNoContesto + datos.countNoLlamar + datos.countNoAbonado + datos.countDejarCarta : 0
 
-    const llamadasRel: number = datos ? Math.round( llamadas / datos.count * 1000 )/10 : 0
+    const llamadasRel: number = datos ? Math.round(llamadas / datos.count * 1000 )/10 : 0
 
     const predicadas: number = datos ? datos.countContesto + datos.countNoLlamar + datos.countDejarCarta : 0
 
@@ -96,7 +96,7 @@ export const EstadisticasLocalPage = () => {
 
                     <br/>
 
-                    <h4> Libres para llamar: {datos.libres} <span style={{ fontSize: 21 }}>({100-llamadasRel}%)</span> </h4>
+                    <h4> Libres para llamar: {datos.libres} <span style={{ fontSize: 21 }}>({(1000 - Math.round(llamadasRel*10))/10}%)</span> </h4>
 
                     <br/>
 

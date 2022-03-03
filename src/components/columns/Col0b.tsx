@@ -1,11 +1,12 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { isMobile } from '../../services/functions'
+import { useAuth } from '../../context/authContext'
 import { typeUser } from '../../models/typesUsuarios'
 import { typeBlock } from '../../models/typesTerritorios'
 
 export const Col0b = (props: any) => {
 
-    const user: typeUser = props.user
+    const user: typeUser|undefined = useAuth().user
     const isTodo: boolean = props.isTodo
     const isStatistics: boolean = props.isStatistics
     const territorio: string = props.territorio

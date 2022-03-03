@@ -4,8 +4,8 @@ import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeVivienda 
 
 export const Col3 = (props: any) => {
 
-    const vivienda: typeVivienda = props.vivienda
-    const cambiarEstado: any = props.cambiarEstado
+    const vivienda: typeVivienda = props?.vivienda
+    const cambiarEstado: (inner_id: string, estado: string, noAbonado: boolean|null, asignado: boolean|undefined) => Promise<void> = props?.cambiarEstado
 
     return (
     

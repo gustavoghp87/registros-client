@@ -1,10 +1,11 @@
+import { useAuth } from '../context/authContext'
 import { isMobile } from '../services/functions'
 import { H2 } from './css/css'
 import { typeUser } from '../models/typesUsuarios'
 
-export const HomePage = (props: any) => {
+export const HomePage = () => {
 
-    const user: typeUser = props.user
+    const user: typeUser|undefined = useAuth().user
     
     return (
     <>
