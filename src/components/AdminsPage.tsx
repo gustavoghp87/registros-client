@@ -3,7 +3,7 @@ import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 
 import { confirmAlert } from 'react-confirm-alert'
 import { ReturnBtn } from './commons/Return'
 import { Loading } from './commons/Loading'
-//import { useAuth } from '../context/authContext'
+import { useAuth } from '../context/authContext'
 import io from 'socket.io-client'
 import { assignTerritoryService, modifyUserService, getUsersService } from '../services/userServices'
 import { changePswOtherUserService } from '../services/tokenServices'
@@ -23,7 +23,7 @@ export const AdminsPage = () => {
     const [viendo, setViendo] = useState<string>("todos")
     const [socket, setSocket] = useState<any>(null)
 
-    // const { loading, login, logout, user } = useAuth()
+    const { refreshUser, user } = useAuth()
     
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsersObj({ users }) })
@@ -40,15 +40,21 @@ export const AdminsPage = () => {
 
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
         const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
-        if (updatedUser) sendUpdatedUser(updatedUser)
-        else alert("Algo falló al modificar usuario")
+        if (!updatedUser) return alert("Algo falló al modificar usuario")
+        sendUpdatedUser(updatedUser)
+        refreshUserHandler(user_id)
     }
 
-    const assignTerritoryHandler = (user_id: string, all: boolean): void => {
+    const assignTerritoryHandler = (user_id: string, all: boolean, inputId: string | null): void => {
         const assignTerritory = async (user_id: string, asignar: number|null, desasignar: number|null, all: boolean) => {
             const updatedUser: typeUser|null = await assignTerritoryService(user_id, asignar, desasignar, all)
-            if (updatedUser) sendUpdatedUser(updatedUser)
-            else alert("Algo falló al cambiar las asignaciones")
+            if (!updatedUser) return alert("Algo falló al cambiar las asignaciones")
+            sendUpdatedUser(updatedUser)
+            refreshUserHandler(user_id)
+        }
+        const resetInputHandler = (id: string): void => {
+            const input = document.getElementById(id) as HTMLInputElement
+            if (input) input.value = ""
         }
         let asignar, desasignar
         if (asig[0] === user_id && asig[1]) asignar = parseInt(asig[1])
@@ -56,12 +62,17 @@ export const AdminsPage = () => {
         if (asignar) assignTerritory(user_id, asignar, null, false)
         if (desasignar) assignTerritory(user_id, null, desasignar, false)
         if (all) assignTerritory(user_id, null, null, all)
+        if (inputId) resetInputHandler(inputId)
         setAsig([])
         setDesasig([])
     }
 
     const sendUpdatedUser = (updatedUser: typeUser): void => {
         if (socket) socket.emit('user: change', updatedUser)
+    }
+
+    const refreshUserHandler = (user_id: string): void => {
+        if (user_id === user?._id && refreshUser) refreshUser()
     }
     
     const resetPasswordHandler = (email: string): void => {
@@ -98,7 +109,7 @@ export const AdminsPage = () => {
 
         <H2 style={{ fontSize: isMobile ? '2.2rem' : '' }}> ADMINISTRADORES </H2>
 
-        <div style={{ display: 'block', margin: isMobile ? '40px auto' : '80px auto'}}>
+        <div style={{ display: 'block', margin: isMobile ? '40px auto' : '80px auto' }}>
 
             {(!usersObj || !usersObj.users.length) && <Loading />}
 
@@ -141,8 +152,7 @@ export const AdminsPage = () => {
                             {number}
                         </Pagination.Item>
                     )
-                }
-                    
+                }  
                     
                 return (
 
@@ -198,6 +208,7 @@ export const AdminsPage = () => {
                             }}>
                                 <div style={{ marginTop: '12px' }}>
                                     <input type={'number'}
+                                        id={index.toString()}
                                         style={{ width: '60px' }}
                                         min={1}
                                         onChange={(event: any) => setAsig([user._id?.toString(), event.target.value])}
@@ -205,24 +216,27 @@ export const AdminsPage = () => {
                                     
                                     &nbsp;
                                     
-                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), false)}>
+                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), false, index.toString())}>
                                         &nbsp; Asignar &nbsp;
                                     </Button>
 
                                 </div>
 
                                 <div style={{ marginTop: '12px' }}>
-                                    <input type={'number'} style={{ width: '60px' }} min={1}
+                                    <input type={'number'}
+                                        id={index.toString() + "-b"}
+                                        style={{ width: '60px' }}
+                                        min={1}
                                         onChange={(event: any) => setDesasig([user._id?.toString(), event.target.value])}
                                     />
                                     &nbsp;
-                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), false)}>
+                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), false, index.toString() + "-b")}>
                                         Desasignar
                                     </Button>
                                 </div>
 
                                 <div style={{ marginTop: '12px' }}>
-                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), true)}>
+                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), true, null)}>
                                         Desasignar todos
                                     </Button>
                                 </div>
