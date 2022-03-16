@@ -25,7 +25,7 @@ export const getAllLocalStatisticsService = async (): Promise<localStatistic[]|n
     const token: string|null = getToken()
     if (!token) return null
     try {
-        const request = await fetch(`${base}/`, {
+        const request = await fetch(`${base}`, {
             method: 'GET',
             headers: headers
         })
@@ -42,7 +42,7 @@ export const getGlobalStatisticsService = async (): Promise<statistic|null> => {
     const token: string|null = getToken()
     if (!token) return null
     try {
-        const request = await fetch(`${base}/`, {
+        const request = await fetch(`${base}`, {
             method: 'POST',
             headers: headers
         })

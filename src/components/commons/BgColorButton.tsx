@@ -3,7 +3,8 @@ import { isMobile } from "../../services/functions"
 
 export const BgColorButton = (props: any) => {
 
-    const { darkMode, changeDarkMode } = props
+    const darkMode: boolean = props.darkMode
+    const changeDarkMode: Function = props.changeDarkMode
 
     return (
         <div className={'custom-control custom-switch'} style={{ position: 'fixed', bottom: '20px' }}>

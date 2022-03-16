@@ -13,6 +13,8 @@ type defaultValueType = {
     user: typeUser | undefined
 }
 
+const userKey: string = "user"
+
 const defaultValue: defaultValueType = {
     loading: true,
     login: undefined,
@@ -41,7 +43,7 @@ export const AuthProvider = ({ children }: any) => {
     }
 
     const refreshUser = (): void => {
-        localStorage.removeItem("user")
+        localStorage.removeItem(userKey)
         setUser(undefined)
     }
 
@@ -49,7 +51,7 @@ export const AuthProvider = ({ children }: any) => {
     useEffect(() => {
         if (user) return
 
-        const userInLocalStorage: string|null = localStorage.getItem("user")
+        const userInLocalStorage: string|null = localStorage.getItem(userKey)
         if (userInLocalStorage) {
             try {
                 const user0: typeUser = JSON.parse(userInLocalStorage);
@@ -57,7 +59,7 @@ export const AuthProvider = ({ children }: any) => {
                 return
             } catch (error) {
                 console.log(error);
-                localStorage.removeItem("user")
+                localStorage.removeItem(userKey)
             }
         }
 
@@ -66,7 +68,7 @@ export const AuthProvider = ({ children }: any) => {
                 if (user0) {
                     setUser(user0)
                     setLoading(false)
-                    localStorage.setItem("user", JSON.stringify(user0))
+                    localStorage.setItem(userKey, JSON.stringify(user0))
                 }
             })
         }

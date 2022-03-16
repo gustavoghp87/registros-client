@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { confirmAlert } from 'react-confirm-alert'
+import { ConfirmAlert } from './commons/ConfirmAlert'
 import { useAuth } from '../context/authContext'
 import { isMobile } from '../services/functions'
-import { typeUser } from '../models/typesUsuarios'
 import { sendLinkToRecoverAccount } from '../services/userServices'
+import { typeUser } from '../models/typesUsuarios'
 
 
 export const LoginPage = () => {
@@ -15,7 +15,7 @@ export const LoginPage = () => {
     const { executeRecaptcha } = useGoogleReCaptcha()
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
-
+    const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
 
     useEffect(() => {
         if (user && user.isAuth) window.location.href = "/index"
@@ -46,34 +46,16 @@ export const LoginPage = () => {
         }
     }
 
-    const resetPasswordHandler = (email: string): void => {
-        confirmAlert({
-            title: `¿Recuperar cuenta?`,
-            message: `Esto enviará un correo a ${email} para cambiar la contraseña`,
-            buttons: [
-                {
-                    label: 'ENVIAR',
-                    onClick: () => sendEmail()
-                },
-                {
-                    label: 'CANCELAR',
-                    onClick: () => {}
-                }
-            ]
-        })
-
-        const sendEmail = async (): Promise<void> => {
-            const response: any = await sendLinkToRecoverAccount(email)
-            if (response && response.success)
-                alert(`Se envió un correo a ${email}`)
-            else if (response && response.noUser)
-                alert(`Este email no es de un usuario registrado: ${email}`)
-            else if (response && response.notSent)
-                alert(`No se pudo mandar un correo a ${email}`)
-            else
-                alert(`Algo falló`)
-        }
+    const sendEmail = async (): Promise<void> => {
+        setShowConfirmAlertHandler()
+        const response: any = await sendLinkToRecoverAccount(email)
+        if (response && response.success) alert(`Se envió un correo a ${email}`)
+        else if (response && response.noUser) alert(`Este email no es de un usuario registrado: ${email}`)
+        else if (response && response.notSent) alert(`No se pudo mandar un correo a ${email}`)
+        else alert(`Algo falló`)
     }
+
+    const setShowConfirmAlertHandler = (): void => setShowConfirmAlert(false)
 
     const containerLogin = {
         paddingTop: '50px', marginBottom: '50px', border: 'black 1px solid', borderRadius: '12px',
@@ -81,6 +63,15 @@ export const LoginPage = () => {
     }
     
     return (
+    <>
+        {showConfirmAlert &&
+            <ConfirmAlert
+                title={"¿Recuperar cuenta?"}
+                message={`Esto enviará un correo a ${email} para cambiar la contraseña`}
+                execution={sendEmail}
+                cancelAction={setShowConfirmAlertHandler}
+            />
+        }
 
         <div className={"container"} style={{ maxWidth: '100%', marginTop: '50px', padding: '0' }}>
 
@@ -138,7 +129,7 @@ export const LoginPage = () => {
                         <p
                             style={{ fontSize: '1rem', margin: '0px 0 22px', textAlign: 'end' }}
                             onClick={() => {
-                                if (email && email.includes("@") && email.includes(".")) resetPasswordHandler(email)
+                                if (email && email.includes("@") && email.includes(".")) setShowConfirmAlert(true)
                                 else alert("Escribir el email primero")
                             }}
                         >
@@ -149,5 +140,6 @@ export const LoginPage = () => {
                 </div>
             </div>
         </div>
+    </>
     )
 }

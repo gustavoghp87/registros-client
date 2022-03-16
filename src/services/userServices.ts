@@ -56,24 +56,6 @@ export const getUsersService = async (): Promise<typeUser[]|null> => {
     }
 }
 
-export const changeDarkModeService = async (newMode: boolean): Promise<boolean> => {
-    const token: string|null = getToken()
-    if (!token) return false
-    try {
-        const request: any|null = await fetch(`${base}/`, {
-            method: 'PUT',
-            headers: headers,
-            body: JSON.stringify({ darkMode: newMode })
-        })
-        const response: any|null = await request.json()
-        if (!response || !response.success) return false
-        return true
-    } catch (error) {
-        console.log(error)
-        return false
-    }
-}
-
 export const modifyUserService = async (user_id: string, estado: boolean, role: number, group: number): Promise<typeUser|null> => {
     const token: string|null = getToken()
     if (!token) return null
@@ -92,13 +74,31 @@ export const modifyUserService = async (user_id: string, estado: boolean, role: 
     }
 }
 
+export const changeDarkModeService = async (newMode: boolean): Promise<boolean> => {
+    const token: string|null = getToken()
+    if (!token) return false
+    try {
+        const request: any|null = await fetch(`${base}/mode`, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify({ darkMode: newMode })
+        })
+        const response: any|null = await request.json()
+        if (!response || !response.success) return false
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 export const assignTerritoryService = async (user_id: string,
      asignar: number|null, desasignar: number|null, all: boolean|null): Promise<typeUser|null> => {
     const token: string|null = getToken()
     if (!token) return null
     try {
         all = !all ? false : true
-        const request: any|null = await fetch(`${base}/`, {
+        const request: any|null = await fetch(`${base}/assignment`, {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify({ user_id, asignar, desasignar, all })

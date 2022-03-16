@@ -2,8 +2,12 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router'
 import io from 'socket.io-client'
+import { SERVER } from '../config'
 import { Loading } from './commons/Loading'
 import { ReturnBtn } from './commons/Return'
+import { RefreshButton } from './commons/RefreshButton'
+import { WarningToaster } from './commons/WarningToaster'
+import { ConfirmAlert } from './commons/ConfirmAlert'
 import { Col0a } from './columns/Col0a'
 import { Col0b } from './columns/Col0b'
 import { Col1 } from './columns/Col1'
@@ -11,14 +15,10 @@ import { Col2 } from './columns/Col2'
 import { Col3 } from './columns/Col3'
 import { Col4 } from './columns/Col4'
 import { BsToaster } from './columns/BsToaster'
-import { RefreshButton } from './commons/RefreshButton'
-import { WarningToaster } from './commons/WarningToaster'
 import { useAuth } from '../context/authContext'
-import { confirmAlert } from 'react-confirm-alert'
 import { markTerritoryAsFinishedService, getStateOfTerritoryService } from '../services/stateTerritoryServices'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService } from '../services/territoryServices'
 import { isMobile } from '../services/functions'
-import { SERVER } from '../config'
 import * as types from '../models/typesTerritorios'
 import { typeUser } from '../models/typesUsuarios'
 import 'react-confirm-alert/src/react-confirm-alert.css'
@@ -28,7 +28,7 @@ export const TerritoriosPage = () => {
     const navigate = useNavigate()
     const user: typeUser|undefined = useAuth().user
     const { territorio, manzana, todo } = useParams<any>()
-    const [householdsObj, setHouseholdsObj] = useState<types.typeTerritorio>({ households: [] })
+    const [households, setHouseholds] = useState<types.typeVivienda[]>()
     const [isFinished, setIsFinished] = useState<boolean>(false)
     const [showMap, setShowMap] = useState<boolean>(false)
     const [brought, setBrought] = useState<number>(10)
@@ -41,16 +41,17 @@ export const TerritoriosPage = () => {
     //const [showWarningToasterPermanently, setShowWarningToasterPermanently] = useState<boolean>(false);
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null);
     const showingAll = todo === 'todo'
+    const [showConfirmAlertOpen, setShowConfirmAlertOpen] = useState<boolean>(false)
+    const [showConfirmAlertClose, setShowConfirmAlertClose] = useState<boolean>(false)
     
     
     useEffect(() => {
         // window.scrollTo(0, 0)
-        if (territorio) getBlocksService(territorio)
-            .then((blocks: string[]|null) => { if (blocks) setBlocks(blocks) })
+        if (territorio) getBlocksService(territorio).then((blocks: string[]|null) => { if (blocks) setBlocks(blocks) })
         if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, showingAll, brought, broughtAll)
             .then((households: types.typeVivienda[]|null) => {
                 if (households) {
-                    setHouseholdsObj({ households })
+                    setHouseholds(households)
                     new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
                     setTextBtn(`Traer 10 más (${brought + 10})`)
                     getStateOfTerritoryService(territorio).then((stateOfTerritory: types.typeStateOfTerritory|null) => {
@@ -59,13 +60,12 @@ export const TerritoriosPage = () => {
                 }
             })
         ;
-        // socket:
-        if (!socket && user && user.email) {
+        if (!socket && user && user.email) {    // socket
             const newSocket = io(SERVER, { withCredentials: true })
             newSocket.on('household: change', (updatedHouseholds: types.typeVivienda[], userEmail: string) => {
                 if (updatedHouseholds && updatedHouseholds[0].territorio === territorio) {
                     if (updatedHouseholds[0].manzana === manzana) {
-                        setHouseholdsObj({ households: updatedHouseholds })
+                        setHouseholds(updatedHouseholds)
                     }
                     if (user && userEmail && userEmail !== user.email) {
                         setShowWarningToaster(true)
@@ -77,11 +77,10 @@ export const TerritoriosPage = () => {
             if (newSocket) setSocket(newSocket)
         }
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
-        return () => { }
+        return () => setHouseholds(undefined)
     }, [showingAll, manzana, territorio, brought, broughtAll, socket, socket?.connected, user, user?.email])
     
-    const modifyHouseholdHandler = async (inner_id: string,
-         estado: string, noAbonado: boolean|null, asignado: boolean|null): Promise<void> => {
+    const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean|null, asignado: boolean|null): Promise<void> => {
         noAbonado = !noAbonado ? false : true
         asignado = !asignado ? false : true
         const household: types.typeVivienda|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
@@ -95,58 +94,31 @@ export const TerritoriosPage = () => {
     }
 
     const markAsFinishedHandler = async (): Promise<void> => {
+        setShowConfirmAlertCloseHandler()
         if (!territorio) return
         const success = await markTerritoryAsFinishedService(territorio, true)
-        if (success) navigate("/index")
+        if (!success) return alert("Algo falló")
+        navigate("/index")
     }
 
     const markAsUnfinishedHandler = async (): Promise<void> => {
+        setShowConfirmAlertOpenHandler()
         if (!territorio) return
         const success: boolean = await markTerritoryAsFinishedService(territorio, false)
-        if (success) window.location.reload()
+        if (!success) alert("Algo falló")
+        window.location.reload()
     }
 
-    const submit1Handler = (): void => {
-        confirmAlert({
-            title: '¿Confirmar finalizar territorio?',
-            message: `El territorio ${territorio} se dará por terminado y se te desasignará`,
-            buttons: [
-                {
-                    label: `Terminar Territorio ${territorio}`,
-                    onClick: () => markAsFinishedHandler()
-                },
-                {
-                    label: 'Cancelar',
-                    onClick: () => {}
-                }
-            ]
-        })
-    }
-
-    const submit2Handler = (): void => {
-        confirmAlert({
-            title: '¿Confirmar abrir territorio?',
-            message: `El territorio ${territorio} se abrirá de nuevo`,
-            buttons: [
-                {
-                    label: `Abrir Territorio ${territorio}`,
-                    onClick: () => markAsUnfinishedHandler()
-                },
-                {
-                    label: 'Cancelar',
-                    onClick: () => {}
-                }
-            ]
-        })
-    }
+    const setShowConfirmAlertOpenHandler = (): void => setShowConfirmAlertOpen(false)
+    const setShowConfirmAlertCloseHandler = (): void => setShowConfirmAlertClose(false)
 
     const sendUpdatedHousehold = (updatedHousehold: types.typeVivienda): void => {
-        let indexOfHousehold = 0
-        householdsObj.households.forEach((household: types.typeVivienda, index: number) => {
+        let indexOfHousehold: number = 0
+        households?.forEach((household: types.typeVivienda, index: number) => {
             if (household.inner_id === updatedHousehold.inner_id) indexOfHousehold = index
         })
         const objPackage: any = {
-            households: householdsObj.households,
+            households,
             updatedHousehold,
             indexOfHousehold,
             userEmail: user?.email
@@ -176,6 +148,24 @@ export const TerritoriosPage = () => {
 
             <BsToaster />
 
+            {showConfirmAlertOpen &&
+                <ConfirmAlert
+                    title={"¿Confirmar abrir territorio?"}
+                    message={`El territorio ${territorio} se abrirá de nuevo`}
+                    execution={markAsUnfinishedHandler}
+                    cancelAction={setShowConfirmAlertOpenHandler}
+                />
+            }
+
+            {showConfirmAlertClose &&
+                <ConfirmAlert
+                    title={"¿Confirmar finalizar territorio?"}
+                    message={`El territorio ${territorio} se dará por terminado y se te desasignará`}
+                    execution={markAsFinishedHandler}
+                    cancelAction={setShowConfirmAlertCloseHandler}
+                />
+            }
+
             <WarningToaster
                 showWarningToaster={showWarningToaster}
                 //showWarningToasterPermanently={showWarningToasterPermanently}
@@ -190,7 +180,7 @@ export const TerritoriosPage = () => {
                 fontSize: isMobile ? '2.3rem' : '2.8rem',
                 fontWeight: 'bolder'
             }}>
-                TERRITORIO {territorio} {isFinished ? `- TERMINADO` : ``} 
+                TERRITORIO {territorio} {isFinished ? "- TERMINADO" : ""} 
             </h1>
 
 
@@ -229,7 +219,7 @@ export const TerritoriosPage = () => {
             />
 
             <Button size={isMobile ? 'sm' : 'lg'}
-                onClick={() => submit1Handler()}
+                onClick={() => setShowConfirmAlertClose(true)}
                 style={{
                     backgroundColor: '#4a6da7',
                     border: '1px solid #4a6da7',
@@ -244,7 +234,7 @@ export const TerritoriosPage = () => {
             </Button>
 
             <Button size={isMobile ? 'sm' : 'lg'}
-                onClick={() => submit2Handler()}
+                onClick={() => setShowConfirmAlertOpen(true)}
                 style={{
                     backgroundColor: 'red',
                     border: '1px solid red',
@@ -259,47 +249,46 @@ export const TerritoriosPage = () => {
             </Button>
 
 
-            {householdsObj && householdsObj.households && !!householdsObj.households.length &&
-                householdsObj.households.map((vivienda: types.typeVivienda) => {
+            {households && !!households.length && households.map((household: types.typeVivienda) => {
 
-                if (vivienda.estado === types.noPredicado) vivienda = { ...vivienda, variante: types.success }
-                if (vivienda.estado === types.contesto) vivienda = { ...vivienda, variante: types.primary }
-                if (vivienda.estado === types.noContesto) vivienda = { ...vivienda, variante: types.warning }
-                if (vivienda.estado === types.aDejarCarta) vivienda = { ...vivienda, variante: types.danger }
-                if (vivienda.estado === types.noLlamar) vivienda = { ...vivienda, variante: types.dark }
+                if (household.estado === types.noPredicado) household = { ...household, variante: types.success }
+                if (household.estado === types.contesto) household = { ...household, variante: types.primary }
+                if (household.estado === types.noContesto) household = { ...household, variante: types.warning }
+                if (household.estado === types.aDejarCarta) household = { ...household, variante: types.danger }
+                if (household.estado === types.noLlamar) household = { ...household, variante: types.dark }
 
                 return (
                 
-                    <Card key={vivienda.inner_id}
-                        id={`card_${vivienda.inner_id}`}
+                    <Card key={household?.inner_id}
+                        id={`card_${household?.inner_id}`}
                         style={{
                             marginBottom: '50px',
                             border: '1px solid gray',
                             boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-                            backgroundColor: vivienda.asignado ? '#B0B0B0' : ''
+                            backgroundColor: household?.asignado ? '#B0B0B0' : ''
                         }}
-                        onMouseOver={() => vivienda.asignado ? null : highligthCard(`card_${vivienda.inner_id}`)}
-                        onMouseOut={() => stopHighligthCard(`card_${vivienda.inner_id}`, vivienda.asignado ? '#B0B0B0' : '')}
+                        onMouseOver={() => household?.asignado ? null : highligthCard(`card_${household?.inner_id}`)}
+                        onMouseOut={() => stopHighligthCard(`card_${household?.inner_id}`, household?.asignado ? '#B0B0B0' : '')}
                     >
                         <Container fluid={'lg'}>
 
                             <Row style={{ margin: '0 25px', paddingTop: '15px', paddingBottom: '15px' }}>
 
                                 <Col1
-                                    vivienda={vivienda}
+                                    vivienda={household}
                                 />
 
                                 <Col2
-                                    vivienda={vivienda}
+                                    vivienda={household}
                                 />
 
                                 <Col3
-                                    vivienda={vivienda}
+                                    vivienda={household}
                                     cambiarEstado={modifyHouseholdHandler}
                                 />
 
                                 <Col4
-                                    vivienda={vivienda}
+                                    vivienda={household}
                                     cambiarEstado={modifyHouseholdHandler}
                                 />
 
@@ -309,7 +298,7 @@ export const TerritoriosPage = () => {
                 )
             })}
 
-            {householdsObj && householdsObj.households && !!householdsObj.households.length && loaded &&
+            {households && !!households.length && loaded &&
             <>
                 <Pagination size='lg'
                     style={{
@@ -332,20 +321,19 @@ export const TerritoriosPage = () => {
             </>
             }
 
-            {householdsObj && householdsObj.households && !householdsObj.households.length && !loaded &&
+            {(!households || !households.length) && !loaded &&
                 <>
                     <br/>
                     <Loading />
                 </>
             }
 
-            {householdsObj && householdsObj.households && !householdsObj.households.length && !showingAll && loaded &&
-                <h3 style={{ textAlign: 'center' }}>
+            {households && !households.length && !showingAll && loaded &&
+                <h3 className={'text-center'}>
                     <br/>
                     No hay viviendas no llamadas en esta manzana {manzana} del territorio {territorio}
                 </h3>
             }
-
         </>
     )
 }

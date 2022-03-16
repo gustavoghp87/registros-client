@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
-import { confirmAlert } from 'react-confirm-alert'
+import { ConfirmAlert } from './commons/ConfirmAlert'
 import { ReturnBtn } from './commons/Return'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
@@ -11,26 +11,28 @@ import { SERVER } from '../config'
 import { H2 } from './css/css'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
+import { danger } from '../models/typesTerritorios'
 
 
 export const AdminsPage = () => {
     
-    const [usersObj, setUsersObj] = useState<any>({ users: [] })
+    const { refreshUser, user } = useAuth()
+    const [users, setUsers] = useState<typeUser[]>()
     const [asignVisible, setAsignVisible] = useState<boolean>(false)
     const [groupVisible, setGroupVisible] = useState<boolean>(false)
     const [asig, setAsig] = useState<string[]>([])
     const [desasig, setDesasig] = useState<string[]>([])
     const [viendo, setViendo] = useState<string>("todos")
     const [socket, setSocket] = useState<any>(null)
-
-    const { refreshUser, user } = useAuth()
+    const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
+    const [email, setEmail] = useState<string>()
     
     useEffect(() => {
-        getUsersService().then((users: typeUser[]|null) => { if (users) setUsersObj({ users }) })
+        getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
         if (!socket) {
             const newSocket = io(SERVER, { withCredentials: true })
             newSocket.on("user: change", (updatedUser: typeUser) => {
-                getUsersService().then((users: typeUser[]|null) => { if (users) setUsersObj({ users }) })
+                getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
             })
             if (newSocket) setSocket(newSocket)
         }
@@ -75,45 +77,46 @@ export const AdminsPage = () => {
         if (user_id === user?._id && refreshUser) refreshUser()
     }
     
-    const resetPasswordHandler = (email: string): void => {
-        confirmAlert({
-            title: `¿Resetear clave?`,
-            message: `Esto reseteará la contraseña del usuario ${email},
-            cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`,
-            buttons: [
-                {
-                    label: 'ACEPTAR',
-                    onClick: () => resetPassword()
-                },
-                {
-                    label: 'CANCELAR',
-                    onClick: () => {}
-                }
-            ]
-        })
-        const resetPassword = async (): Promise<void> => {
-            const response: any|null = await changePswOtherUserService(email)
-            if (response && response.success && response.newPassword)
-                alert(`Clave reseteada y enviada por email a ${email}\nNueva clave: ${response.newPassword}`)
-            else if (response && response.newPassword && response.emailFailed)
-                alert(`Se reseteó la contraseña pero falló el envío del email\nNueva clave: ${response.newPassword}`)
-            else
-                alert(`Algo falló al resetear la contraseña de ${email}`)
-        }
+    const resetPassword = async (): Promise<void> => {
+        setShowConfirmAlertHandler()
+        if (!email) return
+        const response: any|null = await changePswOtherUserService(email)
+        if (response && response.success && response.newPassword)
+            alert(`Clave reseteada y enviada por email a ${email}\nNueva clave: ${response.newPassword}`)
+        else if (response && response.newPassword && response.emailFailed)
+            alert(`Se reseteó la contraseña pero falló el envío del email\nNueva clave: ${response.newPassword}`)
+        else
+            alert(`Algo falló al resetear la contraseña de ${email}`)
     }
+
+    const setShowConfirmAlertHandler = (): void => setShowConfirmAlert(false)
 
 
     return (
     <>
         {ReturnBtn()}
 
+        {showConfirmAlert &&
+            <ConfirmAlert
+                title={"¿Resetear clave?"}
+                message={`Esto reseteará la contraseña del usuario ${email}, cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`}
+                execution={resetPassword}
+                cancelAction={setShowConfirmAlertHandler}
+            />
+        }
+
         <H2 style={{ fontSize: isMobile ? '2.2rem' : '' }}> ADMINISTRADORES </H2>
+
+        <Button variant={danger} style={{ display: 'block', margin:'30px auto 0 auto' }}
+            onClick={() => window.location.href='/celulares-admins'}>
+            Ir a Campaña Celulares 2022
+        </Button>
 
         <div style={{ display: 'block', margin: isMobile ? '40px auto' : '80px auto' }}>
 
-            {(!usersObj || !usersObj.users.length) && <Loading />}
+            {(!users || !users.length) && <Loading />}
 
-            {usersObj && usersObj.users && !!usersObj.users.length &&
+            {users && !!users.length &&
             <>
                 <h2 className={'text-center mb-3'}> Viendo {viendo} </h2>
                 
@@ -136,11 +139,10 @@ export const AdminsPage = () => {
             </>
             }
 
-            {usersObj && usersObj.users && !!usersObj.users &&
-                usersObj.users.map((user: typeUser, index: number) => {
+            {users && !!users.length && users.map((user: typeUser, index: number) => {
                     
                 let active: number = user.group
-                let items: any[] = []
+                let items: JSX.Element[] = []
                 for (let number: number = 1; number <= 6; number++) {
                     items.push(
                         <Pagination.Item key={number}
@@ -273,8 +275,7 @@ export const AdminsPage = () => {
                             <br/>
 
                             <Button className={'col-12 m-2'} variant={user.role === 1 ? 'danger' : 'primary'}
-                                onClick = {() =>
-                                    modifyUserHandler(user._id?.toString(), user.estado, user.role === 1 ? 0 : 1, user.group)}
+                                onClick = {() => modifyUserHandler(user._id?.toString(), user.estado, user.role === 1 ? 0 : 1, user.group)}
                             >
 
                                 {user.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
@@ -284,7 +285,7 @@ export const AdminsPage = () => {
                             <br/>
 
                             <Button className={'col-12 m-2'} variant={'primary'}
-                                onClick = {() => resetPasswordHandler(user.email)}
+                                onClick = {() => { setEmail(user.email); setShowConfirmAlert(true) }}
                             >
 
                                 RESETEAR CONTRASEÑA

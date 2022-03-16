@@ -13,6 +13,8 @@ import { UserPage } from './UserPage'
 import { AdminsPage } from './AdminsPage'
 import { RecoveryPage } from './RecoveryPage'
 import { CasaEnCasaPage } from './CasaEnCasaPage'
+import { CampaignPage } from './campaigns/CampaignPage'
+import { CampaignAdminsPage } from './campaigns/CampaignAdminsPage'
 import { BgColorButton } from './commons/BgColorButton'
 import { AuthProvider, useAuth } from '../context/authContext'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
@@ -57,9 +59,9 @@ export const App = () => {
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>
             <GoogleReCaptchaProvider reCaptchaKey={recaptchaPublicKey}>
-                <div style={{ backgroundColor: darkMode ? 'black' : 'white' }}>
-
-                    <AuthProvider>
+                <AuthProvider>
+                    
+                    <div style={{ backgroundColor: darkMode ? 'black' : 'white' }}>
 
                         <NavBar />
 
@@ -83,6 +85,8 @@ export const App = () => {
                                 <Route element={ <UserPage /> } path={"/user"} />
                                 <Route element={ <AdminsPage /> } path={"/admins"} />
                                 <Route element={ <RecoveryPage /> } path={"/recovery/:id"} />
+                                <Route element={ <CampaignPage /> } path={"/celulares/:id"} />
+                                <Route element={ <CampaignAdminsPage /> } path={"/celulares-admins"} />
                                 <Route element={ <HomePage /> } path={"*"} />
                             </Routes>
 
@@ -92,9 +96,8 @@ export const App = () => {
 
                         <Footer />
 
-                    </AuthProvider>
-
-                </div>
+                    </div>
+                </AuthProvider>
             </GoogleReCaptchaProvider>
         </Suspense>
     )

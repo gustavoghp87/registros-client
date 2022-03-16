@@ -11,8 +11,5 @@ export type typeUser = {
     isAdmin?: boolean
     asign?: number[]
     darkMode?: boolean
-}
-
-export type typeUsers = {
-    usuarios: typeUser[]
+    campaign?: number[]
 }

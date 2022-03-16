@@ -14,6 +14,7 @@ export const BsToaster = () => {
     useEffect(() => {
         if (territorio) getLocalStatisticsService(territorio)
             .then((datos: localStatistic|null) => { if (datos) setLocalStat(datos) })
+        return () => setLocalStat(undefined)
     }, [territorio])
 
     const toggleShowA = () => setShowA(!showA)

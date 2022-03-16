@@ -1,51 +1,51 @@
 import { useEffect, useState } from 'react'
-import { H2 } from './css/css'
 import { Card, Button } from 'react-bootstrap'
 import { Loading } from './commons/Loading'
 import { useParams } from 'react-router'
-import { ReturnBtn } from './commons/Return'
 import { Col0b } from './columns/Col0b'
-import { confirmAlert } from 'react-confirm-alert'
+import { ReturnBtn } from './commons/Return'
+import { ConfirmAlert } from './commons/ConfirmAlert'
 import { isMobile, timeConverter } from '../services/functions'
+import { H2 } from './css/css'
 import { resetTerritoryService } from '../services/territoryServices'
 import { getLocalStatisticsService } from '../services/statisticsServices'
-import { localStatistic } from '../models/statistic'
-import 'react-confirm-alert/src/react-confirm-alert.css'
 import { getStateOfTerritoryService } from '../services/stateTerritoryServices'
+import { localStatistic } from '../models/statistic'
 import { typeResetDate, typeStateOfTerritory } from '../models/typesTerritorios'
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const EstadisticasLocalPage = () => {
 
     const { territorio } = useParams<string>()
     const [datos, setDatos] = useState<localStatistic>()
     const [stateOfTerritory, setStateOfTerritory] = useState<typeStateOfTerritory>()
+    const [option, setOption] = useState<number>()
+    const [message, setMessage] = useState<string>()
+    const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
 
     useEffect(() => {
-        if (territorio) getLocalStatisticsService(territorio)
-            .then((data: localStatistic|null) => { if (data) setDatos(data) })
-        if (territorio) getStateOfTerritoryService(territorio).then((stateOfTerritory: typeStateOfTerritory|null) => {
-            if (stateOfTerritory !== null) { setStateOfTerritory(stateOfTerritory) }
-        })
+        if (territorio) {
+            getLocalStatisticsService(territorio).then((data: localStatistic|null) => { if (data) setDatos(data) })
+            getStateOfTerritoryService(territorio).then((stateOfTerritory: typeStateOfTerritory|null) => {
+                if (stateOfTerritory !== null) { setStateOfTerritory(stateOfTerritory) }
+            })
+        }
     }, [territorio])
 
     const resetHandler = async (option: number): Promise<void> => {
-        let message = ""
-        if (option === 1) message = "Esta opción resetea los predicados más viejos (más de 6 meses)"
-        else if (option === 2) message = "Esta opción resetea predicados (no hace nada con los no abonados)"
-        else if (option === 3) message = "Esta opción resetea todos los predicados y, además, los no abonados de más de 6 meses"
-        else if (option === 4) message = "Esta opción resetea ABSOLUTAMENTE TODO"
-        confirmAlert({
-            title: `¿Resetear Territorio ${territorio}?`,
-            message,
-            buttons: [
-                { label: 'Yes', onClick: () => resetNow(option) },
-                { label: 'No', onClick: () => {} }
-            ]
-        })
+        setOption(option)
+        if (option === 1) setMessage("Esta opción resetea los predicados más viejos (más de 6 meses)")
+        else if (option === 2) setMessage("Esta opción resetea predicados (no hace nada con los no abonados)")
+        else if (option === 3) setMessage("Esta opción resetea todos los predicados y, además, los no abonados de más de 6 meses")
+        else if (option === 4) setMessage("Esta opción resetea ABSOLUTAMENTE TODO")
+        setTimeout(() => setShowConfirmAlert(true), 1000)
     }
+
+    const setShowConfirmAlertHandler = (): void => setShowConfirmAlert(false)
     
-    const resetNow = async (option: number): Promise<void> => {
-        if (!territorio) return
+    const resetNow = async (): Promise<void> => {
+        setShowConfirmAlertHandler()
+        if (!territorio || !option) return
         const success: boolean = await resetTerritoryService(territorio, option)
         if (success) window.location.reload()
     }
@@ -69,6 +69,15 @@ export const EstadisticasLocalPage = () => {
     return (
         <>
         {ReturnBtn()}
+
+        {showConfirmAlert &&
+            <ConfirmAlert
+                title={`¿Resetear Territorio ${territorio}?`}
+                message={message}
+                execution={resetNow}
+                cancelAction={setShowConfirmAlertHandler}
+            />
+        }
         
         <H2> ESTADÍSTICAS </H2>
 

@@ -1,9 +1,7 @@
 export const isLocalhost: boolean = Boolean(
     window.location.hostname === 'localhost' ||
     window.location.hostname === '[::1]' ||
-    window.location.hostname.match(
-        /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-    )
+    window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
 )
 
 export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {
@@ -22,12 +20,14 @@ export const timeConverter = (UNIX_timestamp: string, parse: boolean): string =>
     } catch {return "No se pudo recuperar la fecha..."}
 }
 
-export const colocarGuiones = (tel: number): string => {
-    if (!tel) return ""
-    let tel2: string
-    if (tel.toString()[0] === '1') tel2 = tel.toString().slice(0,2) + "-" + tel.toString().slice(2,6) + "-" + tel.toString().slice(-4)
-    else tel2 = tel.toString().slice(0,3) + "-" + tel.toString().slice(3,6) + "-" + tel.toString().slice(-4)
-    return tel2
+export const putHyphens = (phoneNumber: number): string => {
+    if (!phoneNumber) return ""
+    let phoneNumberStr = phoneNumber.toString()
+    if (phoneNumberStr.length < 7) return phoneNumberStr
+    if (phoneNumberStr[0] === "1") return phoneNumberStr.slice(0,2) + "-" + phoneNumberStr.slice(2,6) + "-" + phoneNumberStr.slice(-4)    // mobile
+    if (phoneNumberStr.slice(0,3) === "223") return "223-" + phoneNumberStr.slice(3,6) + "-" + phoneNumberStr.slice(6,10)    // campaign
+    if (phoneNumberStr.slice(0,4) === "2284") return "2284-" + phoneNumberStr.slice(4,7) + "-" + phoneNumberStr.slice(7,10)    // campaign
+    return phoneNumberStr.slice(0,3) + "-" + phoneNumberStr.slice(3,6) + "-" + phoneNumberStr.slice(-4)    // house
 }
 
 export let isMobile: boolean = window.screen.width < 990 ? true : false

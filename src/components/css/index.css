@@ -16,6 +16,7 @@ input[type="checkbox"].checkboxuno {
 
 input[type="checkbox"].checkboxdos {
   zoom: 2.2;
+  padding-top: 10px;
 }
 
 /* Or transform:"scale(1.5)" */

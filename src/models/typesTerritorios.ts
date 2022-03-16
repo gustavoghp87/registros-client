@@ -34,6 +34,7 @@ export const dark: variant = "dark"
 export const primary: variant = "primary"
 export const danger: variant = "danger"
 export const warning: variant = "warning"
+export const secondary: variant = "secondary"
 
 export type typeStateOfTerritory = {
     _id?: object
@@ -46,3 +47,5 @@ export type typeResetDate = {
     date: number
     option: number
 }
+
+export const noAsignado: string = 'No asignado'

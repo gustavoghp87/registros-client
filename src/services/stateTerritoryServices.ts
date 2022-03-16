@@ -10,7 +10,7 @@ export const getStateOfTerritoryService = async (territorio: string): Promise<an
     try {
         const request: any|null = await fetch(`${base}/${territorio}`, {
             method: 'GET',
-            headers: headers
+            headers
         })
         const response: any|null = await request.json()
         if (!response || !response.success || !response.obj || response.obj.isFinished === null
@@ -28,7 +28,7 @@ export const getStateOfTerritoriesService = async (): Promise<typeStateOfTerrito
     try {
         const request: any|null = await fetch(`${base}`, {
             method: 'GET',
-            headers: headers
+            headers
         })
         const response: any|null = await request.json()
         if (!response || !response.success || !response.obj) return null
@@ -46,7 +46,7 @@ export const markTerritoryAsFinishedService = async (territory: string, isFinish
     try {
         const request: any|null = await fetch(`${base}`, {
             method: 'PATCH',
-            headers: headers,
+            headers,
             body: JSON.stringify({ territory, isFinished })
         })
         const response: any|null = await request.json()

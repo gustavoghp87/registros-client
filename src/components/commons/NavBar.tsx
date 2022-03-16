@@ -16,7 +16,7 @@ export const NavBar = () => {
             if (window.scrollY > 100) setScrollDown(true)
             else setScrollDown(false)
         })
-        return () => { }
+        return
     }, [])
     
     const logoutHandler = async () => {
