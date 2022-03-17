@@ -17,7 +17,7 @@ export const timeConverter = (UNIX_timestamp: string, parse: boolean): string =>
         let min = a.getMinutes() < 10 ? "0" + a.getMinutes() : a.getMinutes()
         let time = date + ' ' + month + ' ' + year + ' - ' + hour + ':' + min + ' hs'
         return time
-    } catch {return "No se pudo recuperar la fecha..."}
+    } catch { return "No se pudo recuperar la fecha..." }
 }
 
 export const putHyphens = (phoneNumber: number): string => {
@@ -30,7 +30,13 @@ export const putHyphens = (phoneNumber: number): string => {
     return phoneNumberStr.slice(0,3) + "-" + phoneNumberStr.slice(3,6) + "-" + phoneNumberStr.slice(-4)    // house
 }
 
-export let isMobile: boolean = window.screen.width < 990 ? true : false
+export const isMobile: boolean = window.screen.width < 990 ? true : false
+
+export const getDarkModeLocalStorage = (): boolean => localStorage.getItem('darkMode') === 'true'
+
+export const setDarkModeLocalStorage = (darkMode: boolean): void => {
+    if (darkMode !== null && darkMode !== undefined) localStorage.setItem('darkMode', darkMode.toString())
+}
 
 export const getToken = (): string|null => localStorage.getItem('token')
 

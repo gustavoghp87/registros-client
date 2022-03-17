@@ -6,10 +6,11 @@ import { logoutService } from '../../services/tokenServices'
 import { isMobile } from '../../services/functions'
 import { typeUser } from '../../models/typesUsuarios'
 
-export const NavBar = () => {
+export const NavBar = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const [scrollDown, setScrollDown] = useState<boolean>(false)
+    const secondaryColor: string = props.secondaryColor
 
     useEffect(() => {
         document.addEventListener("scroll", () => {
@@ -32,9 +33,9 @@ export const NavBar = () => {
 
             <Navbar.Brand href={"/"} style={{ color }}>&nbsp; INICIO</Navbar.Brand>
 
-            <Navbar.Toggle aria-controls={"responsive-navbar-nav"} />
+            <Navbar.Toggle aria-controls={'responsive-navbar-nav'} />
             
-            <Navbar.Collapse id={"responsive-navbar-nav"}>
+            <Navbar.Collapse id={'responsive-navbar-nav'}>
 
             <Nav className={'mr-auto'}>
 
@@ -80,7 +81,10 @@ export const NavBar = () => {
       
 
         {user && user.isAuth && ((isMobile && !scrollDown) || !isMobile) &&
-            <div style={{ position: 'fixed', right: '0', marginRight: '18px', marginTop: '5px', zIndex: 1 }}>
+            <div 
+                className={secondaryColor ? 'text-white' : ''}
+                style={{ position: 'fixed', right: '0', marginRight: '18px', marginTop: '5px', zIndex: 1 }}
+            >
                 <p style={{ textAlign: 'right', marginBottom: '0' }}> {user.email} </p>
                 <p style={{ textAlign: 'right', marginBottom: '0' }}> Grupo {user.group} </p>
                 <p style={{ textAlign: 'right' }}> {user.role ? "Administrador" : ""} </p>

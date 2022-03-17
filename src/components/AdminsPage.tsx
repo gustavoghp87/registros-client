@@ -12,9 +12,11 @@ import { H2 } from './css/css'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
 import { danger } from '../models/typesTerritorios'
+import { getAllLogsService } from '../services/logServices'
+import { typeLogsObj } from '../models/log'
 
 
-export const AdminsPage = () => {
+export const AdminsPage = (props: any) => {
     
     const { refreshUser, user } = useAuth()
     const [users, setUsers] = useState<typeUser[]>()
@@ -26,6 +28,8 @@ export const AdminsPage = () => {
     const [socket, setSocket] = useState<any>(null)
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
     const [email, setEmail] = useState<string>()
+    const secondaryColor: string = props.secondaryColor
+
     
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
@@ -37,9 +41,9 @@ export const AdminsPage = () => {
             if (newSocket) setSocket(newSocket)
         }
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
+        getAllLogsService().then((logsObject: typeLogsObj|null) => console.log(logsObject))
     }, [socket, socket?.connected])
     
-
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
         const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
         if (!updatedUser) return alert("Algo falló al modificar usuario")
@@ -105,7 +109,12 @@ export const AdminsPage = () => {
             />
         }
 
-        <H2 style={{ fontSize: isMobile ? '2.2rem' : '' }}> ADMINISTRADORES </H2>
+        <H2
+            className={secondaryColor ? 'text-white' : ''}
+            style={{ fontSize: isMobile ? '2.2rem' : '' }}
+        >
+            ADMINISTRADORES
+        </H2>
 
         <Button variant={danger} style={{ display: 'block', margin:'30px auto 0 auto' }}
             onClick={() => window.location.href='/celulares-admins'}>
@@ -118,7 +127,7 @@ export const AdminsPage = () => {
 
             {users && !!users.length &&
             <>
-                <h2 className={'text-center mb-3'}> Viendo {viendo} </h2>
+                <h2 className={`text-center mb-3 ${secondaryColor ? 'text-white' : ''}`}> Viendo {viendo} </h2>
                 
                 <DropdownButton
                     as={ButtonGroup}
@@ -159,6 +168,7 @@ export const AdminsPage = () => {
                 return (
 
                     <Card key={index} 
+                        className={secondaryColor ? 'bg-dark text-white' : ''}
                         style={{
                             width: isMobile ? '332px': '500px',
                             margin: '30px auto 60px auto',
@@ -248,7 +258,7 @@ export const AdminsPage = () => {
 
                             <Card.Text style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 600 }}>
                                 Grupo: {user.group} &nbsp;&nbsp;
-                                <Button variant={'dark'} onClick={() => setGroupVisible(!groupVisible)}>
+                                <Button variant={secondaryColor ? 'danger' : 'dark'} onClick={() => setGroupVisible(!groupVisible)}>
                                     CAMBIAR GRUPO
                                 </Button>
                             </Card.Text>

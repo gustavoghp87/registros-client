@@ -8,12 +8,13 @@ import { askForANewCampaignPackService, getCampaignPacksServiceByUser } from '..
 import { typeUser } from '../../models/typesUsuarios'
 import { typeCampaignPack } from '../../models/campaign'
 
-export const TerritoryCampaigneNumberBlock = () => {
+export const TerritoryCampaigneNumberBlock = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const [showForm, setShowForm] = useState<boolean>(false)
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
+    const secondaryColor: string = props.secondaryColor
     
     useEffect(() => {
         if (user && user.isAuth)
@@ -80,13 +81,16 @@ export const TerritoryCampaigneNumberBlock = () => {
                 )}
 
                 {((user && user.isAuth && (!campaignPacks || campaignPacks.length === 0)) || showForm) &&
-                    <h3 className={'text-center mb-4'}>
-                        No hay paquetes asignados <br /> Para recibir otro, hacer click en este botón:
+                    <h3 className={`text-center mb-4 ${secondaryColor ? 'text-white' : ''}`}>
+                        No hay paquetes asignados <br /> Para recibir uno, hacer click en este botón:
                     </h3>
                 }
             </Row>
 
-            <Button className={`btn btn-success d-block m-auto mt-4 py-3 px-4 ${showForm ? '' : 'd-none'}`} onClick={() => setShowConfirmAlert(true)}>
+            <Button
+                className={`btn btn-success d-block m-auto mt-4 py-3 px-4 ${showForm ? '' : 'd-none'}`}
+                onClick={() => setShowConfirmAlert(true)}
+            >
                 <span>Pedir un nuevo paquete de teléfonos <br /> para la campaña de celulares 2022</span>
             </Button>
 

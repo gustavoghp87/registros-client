@@ -23,7 +23,7 @@ import * as types from '../models/typesTerritorios'
 import { typeUser } from '../models/typesUsuarios'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const TerritoriosPage = () => {
+export const TerritoriosPage = (props: any) => {
 
     const navigate = useNavigate()
     const user: typeUser|undefined = useAuth().user
@@ -43,6 +43,7 @@ export const TerritoriosPage = () => {
     const showingAll = todo === 'todo'
     const [showConfirmAlertOpen, setShowConfirmAlertOpen] = useState<boolean>(false)
     const [showConfirmAlertClose, setShowConfirmAlertClose] = useState<boolean>(false)
+    const secondaryColor: string = props.secondaryColor
     
     
     useEffect(() => {
@@ -127,15 +128,26 @@ export const TerritoriosPage = () => {
         else alert("No estás conectado")
     }
 
-    const highligthCard = (id: string): void => {
-        const element = document.getElementById(id)
-        if (element) element.style.backgroundColor = "yellow"
-    }
+    // const highligthCard = (id: string): void => {
+    //     const element: HTMLElement|null = document.getElementById(id)
+    //     if (element) {
+    //         element.classList.remove('bg-dark')
+    //         element.classList.remove('bg-light')
+    //         element.classList.remove('bg-secondary')
+    //         element.classList.add('bg-info')
+    //     }
+    // }
 
-    const stopHighligthCard = (id: string, backgroundColor: string): void => {
-        const element = document.getElementById(id)
-        if (element) element.style.backgroundColor = backgroundColor
-    }
+    // const stopHighligthCard = (id: string, backgroundColorClasses: string): void => {
+    //     const element: HTMLElement|null = document.getElementById(id)
+    //     if (element) {
+    //         element.classList.remove('bg-info')
+    //         const bgColorClasses: string[] = backgroundColorClasses.split(' ')
+    //         for (let bgColorClass of bgColorClasses) {
+    //             element.classList.add(bgColorClass)
+    //         }
+    //     }
+    // }
 
     const toggleshowWarningToaster = (): void => setShowWarningToaster(false)
 
@@ -257,22 +269,28 @@ export const TerritoriosPage = () => {
                 if (household.estado === types.aDejarCarta) household = { ...household, variante: types.danger }
                 if (household.estado === types.noLlamar) household = { ...household, variante: types.dark }
 
+                const secColorClass: string = secondaryColor && household?.asignado ? 'assigned-household' : (
+                    secondaryColor ? 'bg-dark text-white' : (
+                        household?.asignado ? 'assigned-household' : 'bg-white'
+                    )
+                )
+
                 return (
                 
                     <Card key={household?.inner_id}
                         id={`card_${household?.inner_id}`}
+                        className={secColorClass}
                         style={{
                             marginBottom: '50px',
                             border: '1px solid gray',
-                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-                            backgroundColor: household?.asignado ? '#B0B0B0' : ''
+                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
                         }}
-                        onMouseOver={() => household?.asignado ? null : highligthCard(`card_${household?.inner_id}`)}
-                        onMouseOut={() => stopHighligthCard(`card_${household?.inner_id}`, household?.asignado ? '#B0B0B0' : '')}
-                    >
+                        // onMouseOver={() => household?.asignado ? null : highligthCard(`card_${household?.inner_id}`)}
+                        // onMouseOut={() => stopHighligthCard(`card_${household?.inner_id}`, secColorClass)}
+                    >   
                         <Container fluid={'lg'}>
 
-                            <Row style={{ margin: '0 25px', paddingTop: '15px', paddingBottom: '15px' }}>
+                            <Row style={{ margin: '0 25px', paddingTop: '15px', paddingBottom: '12px' }}>
 
                                 <Col1
                                     vivienda={household}
@@ -280,11 +298,13 @@ export const TerritoriosPage = () => {
 
                                 <Col2
                                     vivienda={household}
+                                    id={`card_${household?.inner_id}`}
                                 />
 
                                 <Col3
                                     vivienda={household}
                                     cambiarEstado={modifyHouseholdHandler}
+                                    secondaryColor={secondaryColor}
                                 />
 
                                 <Col4

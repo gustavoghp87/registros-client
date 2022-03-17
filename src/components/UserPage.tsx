@@ -7,13 +7,14 @@ import { H2 } from './css/css'
 import { changePswService, logoutAllService } from '../services/tokenServices'
 import { typeUser } from '../models/typesUsuarios'
 
-export const UserPage = () => {
+export const UserPage = (props: any) => {
     
     const user: typeUser|undefined = useAuth().user
     const [show, setShow] = useState(false)
     const [psw, setPsw] = useState('')
     const [newPsw, setNewPsw] = useState('')
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
+    const secondaryColor: string = props.secondaryColor
     
     const changePswHandler = async (): Promise<void> => {
         alert("Cambiando password de " + psw + " a " + newPsw)
@@ -54,11 +55,14 @@ export const UserPage = () => {
             />
         }
 
-        <H2 className={'text-center'}> Usuario </H2>
+        <H2 className={`text-center ${secondaryColor ? 'text-white' : ''}`}> Usuario </H2>
 
         {user &&
         <>
-            <Card className={'text-center'} style={{ padding: '25px', margin: '30px auto' }}>
+            <Card
+                className={`text-center ${secondaryColor ? 'bg-dark text-white' : ''}`}
+                style={{ padding: '25px', margin: '30px auto' }}
+            >
                 
                 <p className={'h1 mt-2'}> {user.email} </p>
                 
@@ -90,7 +94,8 @@ export const UserPage = () => {
             </Card>
 
             {show &&
-                <Card style={{ padding: '25px', margin: '60px auto', maxWidth: '600px' }}>
+                <Card className={secondaryColor ? 'bg-dark text-white' : ''}
+                    style={{ padding: '25px', margin: '60px auto', maxWidth: '600px' }}>
                     <Card.Title className={'mb-4'}> CAMBIAR CONTRASEÑA </Card.Title>
                     <Form.Group>
                         <Form.Label> Contraseña actual </Form.Label>

@@ -14,7 +14,7 @@ import { localStatistic } from '../models/statistic'
 import { typeResetDate, typeStateOfTerritory } from '../models/typesTerritorios'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const EstadisticasLocalPage = () => {
+export const EstadisticasLocalPage = (props: any) => {
 
     const { territorio } = useParams<string>()
     const [datos, setDatos] = useState<localStatistic>()
@@ -22,6 +22,7 @@ export const EstadisticasLocalPage = () => {
     const [option, setOption] = useState<number>()
     const [message, setMessage] = useState<string>()
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
+    const secondaryColor: string = props.secondaryColor
 
     useEffect(() => {
         if (territorio) {
@@ -79,9 +80,11 @@ export const EstadisticasLocalPage = () => {
             />
         }
         
-        <H2> ESTADÍSTICAS </H2>
+        <H2 className={secondaryColor ? 'text-white' : ''}> ESTADÍSTICAS </H2>
 
-        <h1 style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '25px' }}>
+        <h1 className={secondaryColor ? 'text-white' : ''}
+            style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '25px' }}
+        >
             TERRITORIO {territorio}
         </h1>
 
@@ -94,8 +97,13 @@ export const EstadisticasLocalPage = () => {
         {datos
         ?
             <div style={{ margin: isMobile ? '0' : '0 10%' }}>
+
                 <br/>
-                <Card style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}>
+                
+                <Card
+                    className={secondaryColor ? 'bg-dark text-white' : ''}
+                    style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}
+                >
 
                     <h3 className={'text-center mt-3'}>{`Generales`}</h3>
 

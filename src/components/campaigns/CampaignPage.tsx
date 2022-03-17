@@ -4,7 +4,7 @@ import { Button, Col, Row, Toast } from 'react-bootstrap'
 import { ReturnBtn } from '../commons/Return'
 import { ConfirmAlert } from '../commons/ConfirmAlert'
 import { H2 } from '../css/css'
-import { editCampaignPackService, getCampaignPackService, markEverythingLikeCalledService } from '../../services/campaignServices'
+import { editCampaignPackService, getCampaignPackService, closeCampaignPackService } from '../../services/campaignServices'
 import { putHyphens, isMobile } from '../../services/functions'
 import { typeCampaignPack } from '../../models/campaign'
 import { success } from '../../models/typesTerritorios'
@@ -18,50 +18,54 @@ export const CampaignPage = () => {
     const [campaignPack, setCampaignPack] = useState<typeCampaignPack>()
     const [phoneNumbers, setPhoneNumbers] = useState<number[]>()
     
-    const refresh = (): void => {
+    const refresh = (): void => {    // rep
         getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
-            if (campaignPack) {
-                if (campaignPack.llamados?.length === 50) return window.location.href = "/index"
-                setCampaignPack(campaignPack)
-                let phones: number[] = []
-                let i: number = 0
-                while (i < 50) {
-                    phones.push(campaignPack?.desde + i)
-                    i++
-                }
-                setPhoneNumbers(phones)
+            if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
+                return window.location.href = "/index"
             }
+            setCampaignPack(campaignPack)
+            let phones: number[] = []
+            let i: number = 0
+            while (i < 50) {
+                phones.push(campaignPack?.desde + i)
+                i++
+            }
+            setPhoneNumbers(phones)
         })
     }
 
     useEffect(() => {
         window.scrollTo(0, 0)
         getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
-            if (campaignPack) {
-                if (campaignPack.llamados?.length === 50) return window.location.href = "/index"
-                setCampaignPack(campaignPack)
-                let phones: number[] = []
-                let i: number = 0
-                while (i < 50) {
-                    phones.push(campaignPack?.desde + i)
-                    i++
-                }
-                setPhoneNumbers(phones)
+            if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
+                return window.location.href = "/index"
             }
+            setCampaignPack(campaignPack)
+            let phones: number[] = []
+            let i: number = 0
+            while (i < 50) {
+                phones.push(campaignPack?.desde + i)
+                i++
+            }
+            setPhoneNumbers(phones)
         })
         return () => { setCampaignPack(undefined) }
     }, [id])
 
-    const editCampaignPack = (phoneNumber: number, checked: boolean): void => {
+    const editCampaignPackHandler = (phoneNumber: number, checked: boolean): void => {
+        let areThere49: boolean = false
+        if (campaignPack?.llamados?.length === 49) areThere49 = true
+        else areThere49 = false
         editCampaignPackService(phoneNumber, checked, id).then((success: boolean) => {
-            if (!success) alert("Algo falló")
+            if (success && !checked && areThere49) alert("¡Paquete terminado, felicitaciones! Si no tienes otro, podrás solicitar uno más en la próxima pantalla si lo deseas")
+            else if (!success) alert("Algo falló")
             refresh()
         })
     }
 
     const markEverythingLikeCalled = (): void => {
         setShowConfirmAlertHandler()
-        markEverythingLikeCalledService(id).then(() => {
+        closeCampaignPackService(id).then(() => {
             if (!success) return alert("Algo falló")
             window.location.href = "/index"
         })
@@ -81,7 +85,7 @@ export const CampaignPage = () => {
                 <input className={'checkboxdos'} type={'checkbox'}
                     style={{ display: 'inline' }}
                     checked={(campaignPack && campaignPack.llamados && campaignPack.llamados.includes(phoneNumber)) ? true : false}
-                    onChange={() => editCampaignPack(phoneNumber, campaignPack && campaignPack.llamados && campaignPack.llamados.includes(phoneNumber) ? true : false)}
+                    onChange={() => editCampaignPackHandler(phoneNumber, campaignPack && campaignPack.llamados && campaignPack.llamados.includes(phoneNumber) ? true : false)}
                 />
             </div>
         )

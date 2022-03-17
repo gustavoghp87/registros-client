@@ -6,7 +6,7 @@ import { ConfirmAlert } from '../commons/ConfirmAlert'
 import { H2 } from '../css/css'
 import { putHyphens, isMobile } from '../../services/functions'
 import { getUsersService } from '../../services/userServices'
-import { getCampaignPacksService, markEverythingLikeCalledService, assignCampaignPackByEmailService } from '../../services/campaignServices'
+import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService } from '../../services/campaignServices'
 import { typeCampaignPack } from '../../models/campaign'
 import { typeUser } from '../../models/typesUsuarios'
 import { danger, noAsignado, primary, secondary } from '../../models/typesTerritorios'
@@ -35,7 +35,7 @@ export const CampaignAdminsPage = () => {
 
     const markEverythingLikeCalled = async () => {
         setShowConfirmAlertHandler()
-        if (id) markEverythingLikeCalledService(id).then((success: boolean) => {
+        if (id) closeCampaignPackService(id).then((success: boolean) => {
             if (!success) return alert("Algo falló")
             refresh()
         })
@@ -81,7 +81,7 @@ export const CampaignAdminsPage = () => {
                     return (
 
                     <Card key={campaignPack?.id}
-                        className={`pt-2 py-3 ${campaignPack?.terminado ? 'bg-info text-white mb-4' : 'bg-dark text-white mb-4'}`}
+                        className={`pt-2 py-3 mb-4 text-white ${campaignPack?.terminado ? 'bg-info' : 'bg-dark'}`}
                         style={{ display: filtered ? 'none' : '' }}
                     >
                         <Card.Body>

@@ -9,13 +9,14 @@ import { isMobile } from '../services/functions'
 import { localStatistic, statistic } from '../models/statistic'
 import { typeStateOfTerritory } from '../models/typesTerritorios'
 
-export const EstadisticasPage = () => {
+export const EstadisticasPage = (props: any) => {
 
     const [globalStatistics, setGlobalStatistics] = useState<statistic|null>()
     const [localStatisticsArray, setLocalStatisticsArray] = useState<localStatistic[]|null>()
     const [loading, setLoading] = useState<boolean>(false)
     const [showBtn, setShowBtn] = useState<boolean>(true)
     const [states, setStates] = useState<typeStateOfTerritory[]>()
+    const secondaryColor: string = props.secondaryColor
 
     useEffect(() => {
         getGlobalStatisticsService().then((data: statistic|null) => { if (data) setGlobalStatistics(data) })
@@ -37,14 +38,17 @@ export const EstadisticasPage = () => {
     <>
         {ReturnBtn()}
 
-        <H2> ESTADÍSTICAS GLOBALES </H2>
+        <H2 className={secondaryColor ? 'text-white' : ''}> ESTADÍSTICAS GLOBALES </H2>
 
         {globalStatistics
         ?
             <div style={{ margin: isMobile ? '0' : '0 10%' }}>
                 <br/>
                 <br/>
-                <Card style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}>
+                <Card
+                    className={secondaryColor ? 'bg-dark text-white' : ''}
+                    style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}
+                >
 
                     <h4>{`Hay ${globalStatistics.count} viviendas, ${globalStatistics.countNoAbonado} no abonadas. Neto: ${globalStatistics.count - globalStatistics.countNoAbonado}`} </h4>
 

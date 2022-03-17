@@ -14,7 +14,7 @@ export const TerritoryNumberBlock = (props: any) => {
         width: '120px',
         height: '100px',
         borderRadius: '15px',
-        margin: '0 1% 40px 1%',
+        margin: '0 1% 40px 1%'
     }
 
     return (

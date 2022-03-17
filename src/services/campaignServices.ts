@@ -50,13 +50,18 @@ export const getCampaignPacksServiceByUser = async (): Promise<typeCampaignPack[
 export const getCampaignPackService = async (id: number): Promise<typeCampaignPack|null> => {
     const token: string|null = getToken()
     if (!token || !id) return null
+    console.log("1");
+    
     try {
         const response: any = await fetch(`${base}/${id.toString()}`, {
             method: 'GET',
             headers
         })
+        console.log("2");
         const data: campaignResponse1|null = await response?.json()
+        console.log("3");
         if (!data || !data.success || !data.pack) return null
+        console.log("4");
         return data.pack
     } catch (error) {
         console.log(error)
@@ -82,7 +87,7 @@ export const editCampaignPackService = async (phoneNumber: number, checked: bool
     }
 }
 
-export const markEverythingLikeCalledService = async (id: number): Promise<boolean> => {
+export const closeCampaignPackService = async (id: number): Promise<boolean> => {
     const token: string|null = getToken()
     if (!token || !id) return false
     try {

@@ -1,6 +1,6 @@
-import { SERVER } from "../config"
-import { typeVivienda } from "../models/typesTerritorios"
-import { getToken, headers } from "./functions"
+import { SERVER } from '../config'
+import { typeVivienda } from '../models/typesTerritorios'
+import { getToken, headers } from './functions'
 
 const base: string = `${SERVER}/api/territory`
 

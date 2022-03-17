@@ -4,10 +4,11 @@ import { isMobile } from '../../services/functions'
 
 export const Col2 = (props: any) => {
 
-    const vivienda: typeVivienda = props?.vivienda
+    const vivienda: typeVivienda = props.vivienda
+    const id: string = props.id
 
     const getReducedPhoneNumber = (phoneNumber: string): string => {
-        if (!phoneNumber) return phoneNumber
+        if (!phoneNumber || phoneNumber.length < 7) return phoneNumber
         if (phoneNumber.substring(0, 6) === "54-11-") return phoneNumber.substring(6)
         if (phoneNumber.substring(0, 3) === "54-") return phoneNumber.substring(3)
         return phoneNumber
@@ -27,15 +28,27 @@ export const Col2 = (props: any) => {
 
             <Row style={{ padding: '20px 0 1% 0' }}>
                 
-                <h4 style={{
-                    textAlign: 'center',
-                    display: vivienda?.noAbonado ? 'none' : 'block',
-                    margin: 'auto',
-                    fontSize: isMobile ? '2.5rem' : '3rem'
-                }}>
+                <h4 className={'text-center m-auto'}
+                    style={{
+                        display: vivienda?.noAbonado ? 'none' : 'block',
+                        fontSize: isMobile ? '2.5rem' : '3rem'
+                    }}
+                    onMouseOver={() => {
+                        //document.getElementById(id)!.style.marginTop = '140px'
+                        document.getElementById(id)!.style.marginBottom = '160px'
+                    }}
+                    // onMouseOut={() => {
+                    //     document.getElementById(id)!.style.marginTop = '0'
+                    //     document.getElementById(id)!.style.marginBottom = '50px'
+                    // }}
+                >
 
                     Teléfono:
-                    <div style={{ marginTop: '7px' }}>
+                    
+                    <div
+                        className={'pb-2'}
+                        style={{ marginTop: '7px' }}
+                    >
                         <a href={`tel:${vivienda?.telefono}`}>
                             {getReducedPhoneNumber(vivienda?.telefono)}
                         </a>
