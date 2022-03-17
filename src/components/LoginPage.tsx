@@ -30,9 +30,6 @@ export const LoginPage = () => {
         // const response1 = await loginService(email, password, recaptchaToken)
         if (!login) { alert("Problemas, refresque la página"); return }
         const response = await login(email, password, recaptchaToken)
-        
-        console.log(response);
-        
         if (response && response.success && response.newToken)
             window.location.href = "/index"
         else if (!response || response.recaptchaFails) {

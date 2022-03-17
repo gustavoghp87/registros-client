@@ -50,18 +50,13 @@ export const getCampaignPacksServiceByUser = async (): Promise<typeCampaignPack[
 export const getCampaignPackService = async (id: number): Promise<typeCampaignPack|null> => {
     const token: string|null = getToken()
     if (!token || !id) return null
-    console.log("1");
-    
     try {
         const response: any = await fetch(`${base}/${id.toString()}`, {
             method: 'GET',
             headers
         })
-        console.log("2");
         const data: campaignResponse1|null = await response?.json()
-        console.log("3");
         if (!data || !data.success || !data.pack) return null
-        console.log("4");
         return data.pack
     } catch (error) {
         console.log(error)
@@ -97,7 +92,6 @@ export const closeCampaignPackService = async (id: number): Promise<boolean> => 
             body: JSON.stringify({ token, id })
         })
         const data: any = await response.json()
-        console.log(data)
         if (!data || !data.success) return false
         return data.success
     } catch (error) {
