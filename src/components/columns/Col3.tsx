@@ -6,7 +6,7 @@ export const Col3 = (props: any) => {
 
     const vivienda: typeVivienda = props?.vivienda
     const cambiarEstado: (inner_id: string, estado: string, noAbonado: boolean|null, asignado: boolean|undefined) => Promise<void> = props?.cambiarEstado
-    const secondaryColor: string = props.secondaryColor
+    const isDarkMode: string = props.isDarkMode
 
     return (
     
@@ -55,7 +55,7 @@ export const Col3 = (props: any) => {
 
         <Row style={{ height: '40%', marginTop: '15px' }}>
             {vivienda.fechaUlt &&
-                <div className={`card border-dark mb-3 p-0 ${secondaryColor ? 'bg-white text-black' : ''}`}
+                <div className={`card border-dark mb-3 p-0 ${isDarkMode ? 'bg-white text-black' : ''}`}
                     style={{
                         maxWidth: '18rem',
                         //backgroundColor: 'rgb(214, 214, 214)',

@@ -50,9 +50,10 @@ export const Col0b = (props: any) => {
                 <ToggleButton
                     key={'1'}
                     type={'radio'}
-                    variant={'danger'}
+                    variant={isTodo ? 'dark' : (isStatistics ? 'dark' : 'danger')}
                     name={"radio"}
-                    value={radios[0].value} style={{ padding: '0' }}
+                    value={radios[0].value}
+                    style={{ padding: '0' }}
                     checked={isTodo ? false : (isStatistics ? false : true )}
                 >
 
@@ -71,7 +72,7 @@ export const Col0b = (props: any) => {
                 <ToggleButton
                     key={'2'}
                     type={'radio'}
-                    variant={'danger'}
+                    variant={isTodo ? 'danger' : 'dark'}
                     name={"radio"}
                     value={radios[1].value}
                     style={{ padding: '0' }}
@@ -93,11 +94,11 @@ export const Col0b = (props: any) => {
                     <ToggleButton
                         key={'3'}
                         type={'radio'}
-                        variant={'danger'}
+                        variant={isStatistics ? 'danger' : 'dark'}
                         name={"radio"}
                         value={radios[2].value}
                         style={{ padding: '0' }}
-                        // checked={isStatistics ? true : false }
+                        checked={isStatistics ? true : false }
                     >
 
                         <a href={`/estadisticas/${territorio}`} style={{ color: 'white', textDecoration: 'none' }}>

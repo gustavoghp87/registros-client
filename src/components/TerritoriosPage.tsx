@@ -4,8 +4,6 @@ import { useNavigate, useParams } from 'react-router'
 import io from 'socket.io-client'
 import { SERVER } from '../config'
 import { Loading } from './commons/Loading'
-import { ReturnBtn } from './commons/Return'
-import { RefreshButton } from './commons/RefreshButton'
 import { WarningToaster } from './commons/WarningToaster'
 import { ConfirmAlert } from './commons/ConfirmAlert'
 import { Col0a } from './columns/Col0a'
@@ -22,6 +20,7 @@ import { isMobile } from '../services/functions'
 import * as types from '../models/typesTerritorios'
 import { typeUser } from '../models/typesUsuarios'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import { generalBlue } from './_App'
 
 export const TerritoriosPage = (props: any) => {
 
@@ -43,7 +42,7 @@ export const TerritoriosPage = (props: any) => {
     const showingAll = todo === 'todo'
     const [showConfirmAlertOpen, setShowConfirmAlertOpen] = useState<boolean>(false)
     const [showConfirmAlertClose, setShowConfirmAlertClose] = useState<boolean>(false)
-    const secondaryColor: string = props.secondaryColor
+    const isDarkMode: string = props.isDarkMode
     
     
     useEffect(() => {
@@ -154,10 +153,6 @@ export const TerritoriosPage = (props: any) => {
 
     return (
         <>
-            <ReturnBtn />
-
-            <RefreshButton />
-
             <BsToaster />
 
             {showConfirmAlertOpen &&
@@ -186,12 +181,14 @@ export const TerritoriosPage = (props: any) => {
                 currentUserEmail={user?.email}
             />
 
-            <h1 style={{
-                textAlign: 'center',
-                margin: isMobile ? '80px auto 20px auto' : '60px auto 40px auto',
-                fontSize: isMobile ? '2.3rem' : '2.8rem',
-                fontWeight: 'bolder'
-            }}>
+            <h1 className={isDarkMode ? 'text-white' : ''}
+                style={{
+                    textAlign: 'center',
+                    margin: isMobile ? '80px auto 20px auto' : '60px auto 40px auto',
+                    fontSize: isMobile ? '2.3rem' : '2.8rem',
+                    fontWeight: 'bolder'
+                }}
+            >
                 TERRITORIO {territorio} {isFinished ? "- TERMINADO" : ""} 
             </h1>
 
@@ -233,8 +230,8 @@ export const TerritoriosPage = (props: any) => {
             <Button size={isMobile ? 'sm' : 'lg'}
                 onClick={() => setShowConfirmAlertClose(true)}
                 style={{
-                    backgroundColor: '#4a6da7',
-                    border: '1px solid #4a6da7',
+                    backgroundColor: generalBlue,
+                    border: '1px solid ' + generalBlue,
                     borderRadius: '5px',
                     display: isFinished ? 'none' : 'block',
                     margin: 'auto',
@@ -269,8 +266,8 @@ export const TerritoriosPage = (props: any) => {
                 if (household.estado === types.aDejarCarta) household = { ...household, variante: types.danger }
                 if (household.estado === types.noLlamar) household = { ...household, variante: types.dark }
 
-                const secColorClass: string = secondaryColor && household?.asignado ? 'assigned-household' : (
-                    secondaryColor ? 'bg-dark text-white' : (
+                const secColorClass: string = isDarkMode && household?.asignado ? 'assigned-household' : (
+                    isDarkMode ? 'bg-dark text-white' : (
                         household?.asignado ? 'assigned-household' : 'bg-white'
                     )
                 )
@@ -304,7 +301,7 @@ export const TerritoriosPage = (props: any) => {
                                 <Col3
                                     vivienda={household}
                                     cambiarEstado={modifyHouseholdHandler}
-                                    secondaryColor={secondaryColor}
+                                    isDarkMode={isDarkMode}
                                 />
 
                                 <Col4

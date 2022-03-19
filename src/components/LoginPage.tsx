@@ -8,7 +8,7 @@ import { sendLinkToRecoverAccount } from '../services/userServices'
 import { typeUser } from '../models/typesUsuarios'
 
 
-export const LoginPage = () => {
+export const LoginPage = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const { login } = useAuth()
@@ -16,6 +16,7 @@ export const LoginPage = () => {
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
+    const isDarkMode: string = props.isDarkMode
 
     useEffect(() => {
         if (user && user.isAuth) window.location.href = "/index"
@@ -70,19 +71,19 @@ export const LoginPage = () => {
             />
         }
 
-        <div className={"container"} style={{ maxWidth: '100%', marginTop: '50px', padding: '0' }}>
+        <div className={'container'} style={{ maxWidth: '100%', marginTop: '50px', padding: '0' }}>
 
-            <div className={"container"} style={containerLogin}>
+            <div className={`container ${isDarkMode ? 'bg-dark text-white' : ''}`} style={containerLogin}>
             
                 <h2 style={{ textAlign: 'center', textShadow: '0 0 1px gray', fontSize: isMobile ? '1.7rem' : '2rem' }}>
                     INGRESAR
                 </h2>
 
-                <div className={"container"} style={{ paddingTop: '35px', display: 'block', margin: 'auto', maxWidth: '500px' }}>
+                <div className={'container'} style={{ paddingTop: '35px', display: 'block', margin: 'auto', maxWidth: '500px' }}>
 
                     <div style={{ display: 'block', margin: 'auto' }}>
 
-                        <input className={"form-control"} type={"email"} name={"email"}
+                        <input className={'form-control'} type={'email'} name={'email'}
                             value={email}
                             style={{ marginBottom: '12px' }}
                             placeholder={"Correo electrónico"}
@@ -91,7 +92,7 @@ export const LoginPage = () => {
                             onChange={(e: any) => setEmail((e.target as HTMLInputElement).value)}
                         />
 
-                        <input className={"form-control"} type={"password"} name={"password"}
+                        <input className={'form-control'} type={'password'} name={'password'}
                             value={password}
                             style={{ marginBottom: '30px' }}
                             placeholder={"Contraseña"}
@@ -107,7 +108,7 @@ export const LoginPage = () => {
                         </Form.Group> */}
 
                         <button
-                            className={"btn btn-success"}
+                            className={'btn btn-success'}
                             style={{ width: '100%', height: '50px', display: 'block', margin: 'auto' }}
                             onClick={() => loginHandler()}
                         >

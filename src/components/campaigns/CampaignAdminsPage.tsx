@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
-import { ReturnBtn } from '../commons/Return'
 import { Loading } from '../commons/Loading'
 import { ConfirmAlert } from '../commons/ConfirmAlert'
 import { H2 } from '../css/css'
@@ -12,12 +11,14 @@ import { typeUser } from '../../models/typesUsuarios'
 import { danger, noAsignado, primary, secondary } from '../../models/typesTerritorios'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const CampaignAdminsPage = () => {
+export const CampaignAdminsPage = (props: any) => {
     const [users, setUsers] = useState<typeUser[]>()
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
     const [showFiltered, setShowFiltered] = useState(false)
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
     const [id, setId] = useState<number>()
+    const isDarkMode: string = props.isDarkMode
+
     
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => {
@@ -53,9 +54,11 @@ export const CampaignAdminsPage = () => {
 
     return (
     <>
-        {ReturnBtn()}
-
-        <H2 style={{ fontSize: isMobile ? '2.2rem' : '', marginBottom: isMobile ? '20px' : '' }}> CAMPAÑA CELULARES 2022 </H2>
+        <H2 className={isDarkMode ? 'text-white' : ''}
+            style={{ fontSize: isMobile ? '2.2rem' : '', marginBottom: isMobile ? '20px' : '' }}
+        >
+            CAMPAÑA CELULARES 2022
+        </H2>
 
         {showConfirmAlert &&
             <ConfirmAlert

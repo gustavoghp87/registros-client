@@ -4,12 +4,13 @@ import { getEmailByEmailLink } from '../services/userServices'
 import { isMobile } from '../services/functions'
 import { changePswService } from '../services/tokenServices'
 
-export const RecoveryPage = () => {
+export const RecoveryPage = (props: any) => {
 
     const { id } = useParams<string>()
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [confPassword, setConfPassword] = useState<string>('')
+    const isDarkMode: string = props.isDarkMode
 
     useEffect(() => {
         if (!id) return
@@ -37,12 +38,19 @@ export const RecoveryPage = () => {
     }
     
     return (
-        <div className={'container container2'} style={{ maxWidth: '95%', marginTop: '50px', padding: '0' }}>
+        <div className={'container'}
+            style={{ maxWidth: '95%', marginTop: '50px', padding: '0' }}>
 
-            <div className={'container'} style={{
-                paddingTop: '40px', marginBottom: '40px', border: 'gray 1px solid', borderRadius: '12px', maxWidth: '600px',
-                boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-            }}>
+            <div className={`container ${isDarkMode ? 'bg-dark text-white' : ''}`}
+                style={{
+                    paddingTop: '40px',
+                    marginBottom: '40px',
+                    border: 'gray 1px solid',
+                    borderRadius: '12px',
+                    maxWidth: '600px',
+                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+                }}
+            >
 
                 <h2
                     style={{

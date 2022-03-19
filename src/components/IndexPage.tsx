@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ReturnBtn } from './commons/Return'
 import { TerritoryNumberBlock } from './commons/TerritoryNumberBlock'
-import { RefreshButton } from './commons/RefreshButton'
 import { TerritoryCampaigneNumberBlock } from './campaigns/TerritoryCampaignNumberBlock'
 import { useAuth } from '../context/authContext'
 import { H2 } from './css/css'
@@ -17,7 +15,7 @@ export const IndexPage = (props: any) => {
     const [showedMode2, setShowedMode2] = useState<boolean>(true)
     const [showedMode3, setShowedMode3] = useState<boolean>(true)
     const [territories, setTerritories] = useState<number[]>()
-    const secondaryColor: string = props.secondaryColor
+    const isDarkMode: string = props.isDarkMode
 
     const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,
         31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
@@ -43,13 +41,9 @@ export const IndexPage = (props: any) => {
 
     return (
         <>
-            {ReturnBtn()}
-            
-            {RefreshButton()}
-
             {isGhp &&
             <>
-                <H2 className={secondaryColor ? 'text-white' : ''}> CASA EN CASA </H2>
+                <H2 className={isDarkMode ? 'text-white' : ''}> CASA EN CASA </H2>
 
                 <button className={`btn btn-success btn-block mt-4`}
                     type={'button'}
@@ -78,7 +72,7 @@ export const IndexPage = (props: any) => {
 
         
 
-            <H2 className={secondaryColor ? 'text-white' : ''}> TELEFÓNICA </H2>
+            <H2 className={isDarkMode ? 'text-white' : ''}> TELEFÓNICA </H2>
 
             <button className={`btn btn-danger btn-block mt-4`}
                 type={'button'}
@@ -88,11 +82,12 @@ export const IndexPage = (props: any) => {
             </button>
 
             <div className={`${showedMode2 === true ? '' : 'd-none'}`}>
-                <div className={`card card-body mt-4 ${secondaryColor ? 'bg-dark' : ''}`}>
+                <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
                     <TerritoryNumberBlock
                         user={user}
                         territories={territories}
                         mode={2}
+                        isDarkMode={isDarkMode}
                     />
                 </div>
             </div>
@@ -109,7 +104,7 @@ export const IndexPage = (props: any) => {
             
             {user && user.isAuth && + new Date() > 1647658800000 &&
                 <>
-                    <H2 className={secondaryColor ? 'text-white' : ''}> CAMPAÑA CELULARES 2022 </H2>
+                    <H2 className={isDarkMode ? 'text-white' : ''}> CAMPAÑA CELULARES 2022 </H2>
                     
                     <button className={'btn btn-success btn-block mt-4'}
                         type={'button'}
@@ -119,8 +114,8 @@ export const IndexPage = (props: any) => {
                     </button>
 
                     <div className={`${showedMode3 === true ? '' : 'd-none'}`}>
-                        <div className={`card card-body mt-4 ${secondaryColor ? 'bg-dark' : ''}`}>
-                            <TerritoryCampaigneNumberBlock secondaryColor={secondaryColor} />
+                        <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
+                            <TerritoryCampaigneNumberBlock isDarkMode={isDarkMode} />
                         </div>
                     </div>
                 </>

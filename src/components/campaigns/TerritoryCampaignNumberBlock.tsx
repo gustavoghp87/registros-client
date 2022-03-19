@@ -14,7 +14,7 @@ export const TerritoryCampaigneNumberBlock = (props: any) => {
     const [showForm, setShowForm] = useState<boolean>(false)
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const secondaryColor: string = props.secondaryColor
+    const isDarkMode: string = props.isDarkMode
     
     useEffect(() => {
         if (user && user.isAuth)
@@ -81,7 +81,7 @@ export const TerritoryCampaigneNumberBlock = (props: any) => {
                 )}
 
                 {((user && user.isAuth && (!campaignPacks || campaignPacks.length === 0)) || showForm) &&
-                    <h3 className={`text-center mb-4 ${secondaryColor ? 'text-white' : ''}`}>
+                    <h3 className={`text-center mb-4 ${isDarkMode ? 'text-white' : ''}`}>
                         No hay paquetes asignados <br /> Para recibir uno, hacer click en este botón:
                     </h3>
                 }
@@ -94,17 +94,6 @@ export const TerritoryCampaigneNumberBlock = (props: any) => {
                 <span>Pedir un nuevo paquete de teléfonos <br /> para la campaña de celulares 2022</span>
             </Button>
 
-            {/* <iframe src={"https://docs.google.com/forms/d/e/1FAIpQLScVMHycd-GYYMnPvQxuCaKB1mhS7gykuGqvbaxvYW3Dn-oNLw/viewform?embedded=true"}
-                    className={`mt-4 ${showForm ? '' : 'd-none'}`}
-                    title={"Campaña Celulares 2022"}
-                    width={"100%"}
-                    height={"1200"}
-                    frameBorder={"0"}
-                    marginHeight={0}
-                    marginWidth={0}
-            >
-                Cargando...
-            </iframe> */}
         </div>
     </>
     )

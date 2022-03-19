@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { ConfirmAlert } from './commons/ConfirmAlert'
-import { ReturnBtn } from './commons/Return'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
 import io from 'socket.io-client'
@@ -12,9 +11,6 @@ import { H2 } from './css/css'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
 import { danger } from '../models/typesTerritorios'
-import { getAllLogsService } from '../services/logServices'
-import { typeLogsObj } from '../models/log'
-
 
 export const AdminsPage = (props: any) => {
     
@@ -28,9 +24,8 @@ export const AdminsPage = (props: any) => {
     const [socket, setSocket] = useState<any>(null)
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
     const [email, setEmail] = useState<string>()
-    const secondaryColor: string = props.secondaryColor
+    const isDarkMode: string = props.isDarkMode
 
-    
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
         if (!socket) {
@@ -41,7 +36,6 @@ export const AdminsPage = (props: any) => {
             if (newSocket) setSocket(newSocket)
         }
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
-        getAllLogsService().then((logsObject: typeLogsObj|null) => console.log(logsObject))
     }, [socket, socket?.connected])
     
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
@@ -98,8 +92,6 @@ export const AdminsPage = (props: any) => {
 
     return (
     <>
-        {ReturnBtn()}
-
         {showConfirmAlert &&
             <ConfirmAlert
                 title={"¿Resetear clave?"}
@@ -110,7 +102,7 @@ export const AdminsPage = (props: any) => {
         }
 
         <H2
-            className={secondaryColor ? 'text-white' : ''}
+            className={isDarkMode ? 'text-white' : ''}
             style={{ fontSize: isMobile ? '2.2rem' : '' }}
         >
             ADMINISTRADORES
@@ -127,7 +119,7 @@ export const AdminsPage = (props: any) => {
 
             {users && !!users.length &&
             <>
-                <h2 className={`text-center mb-3 ${secondaryColor ? 'text-white' : ''}`}> Viendo {viendo} </h2>
+                <h2 className={`text-center mb-3 ${isDarkMode ? 'text-white' : ''}`}> Viendo {viendo} </h2>
                 
                 <DropdownButton
                     as={ButtonGroup}
@@ -168,7 +160,7 @@ export const AdminsPage = (props: any) => {
                 return (
 
                     <Card key={index} 
-                        className={secondaryColor ? 'bg-dark text-white' : ''}
+                        className={isDarkMode ? 'bg-dark text-white' : ''}
                         style={{
                             width: isMobile ? '332px': '500px',
                             margin: '30px auto 60px auto',
@@ -181,7 +173,7 @@ export const AdminsPage = (props: any) => {
                             <Card.Title style={{
                                 textAlign: 'center',
                                 padding: '20px',
-                                fontSize: isMobile ? '1.5rem' : '1.8rem'
+                                fontSize: isMobile ? '1.3rem' : '1.8rem'
                             }}>
                                 Usuario: <br/> {user.email}
                             </Card.Title>
@@ -258,7 +250,7 @@ export const AdminsPage = (props: any) => {
 
                             <Card.Text style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 600 }}>
                                 Grupo: {user.group} &nbsp;&nbsp;
-                                <Button variant={secondaryColor ? 'danger' : 'dark'} onClick={() => setGroupVisible(!groupVisible)}>
+                                <Button variant={isDarkMode ? 'danger' : 'dark'} onClick={() => setGroupVisible(!groupVisible)}>
                                     CAMBIAR GRUPO
                                 </Button>
                             </Card.Text>

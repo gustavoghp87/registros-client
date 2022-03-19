@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { Button, Col, Row, Toast } from 'react-bootstrap'
-import { ReturnBtn } from '../commons/Return'
 import { ConfirmAlert } from '../commons/ConfirmAlert'
 import { H2 } from '../css/css'
 import { editCampaignPackService, getCampaignPackService, closeCampaignPackService } from '../../services/campaignServices'
@@ -9,7 +8,7 @@ import { putHyphens, isMobile } from '../../services/functions'
 import { typeCampaignPack } from '../../models/campaign'
 import { success } from '../../models/typesTerritorios'
 
-export const CampaignPage = () => {
+export const CampaignPage = (props: any) => {
 
     const idString: string|undefined = useParams<string>()?.id
     const id: number = idString ? parseInt(idString) : 0
@@ -17,6 +16,7 @@ export const CampaignPage = () => {
     const [showConfirmAlert, setShowConfirmAlert] = useState(false)
     const [campaignPack, setCampaignPack] = useState<typeCampaignPack>()
     const [phoneNumbers, setPhoneNumbers] = useState<number[]>()
+    const isDarkMode: string = props.isDarkMode
     
     const refresh = (): void => {    // rep
         getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
@@ -77,7 +77,7 @@ export const CampaignPage = () => {
         const phoneNumber: number = parseInt(props.phoneNumber)
         const display: boolean = props.display
         return (
-            <div className={`${display ? '' : 'd-none'} p-3 my-3 border border-primary rounded text-center bg-light`}>
+            <div className={`${display ? '' : 'd-none'} p-3 my-3 border border-primary rounded text-center`}>
                 <h5 style={{ display: 'inline', fontSize: '2rem' }}>
                     <a href={`tel:${phoneNumber}`}> {putHyphens(phoneNumber)}</a>
                     &nbsp;&nbsp;
@@ -94,8 +94,6 @@ export const CampaignPage = () => {
 
     return (
     <>
-        {ReturnBtn()}
-
         {showConfirmAlert &&
             <ConfirmAlert
                 show={false}
@@ -106,11 +104,20 @@ export const CampaignPage = () => {
             />
         }
 
-        <H2 style={{ fontSize: isMobile ? '2.2rem' : '', marginBottom: isMobile ? '20px' : '' }}> CAMPAÑA CELULARES 2022 </H2>
+        <H2 className={isDarkMode ? 'text-white' : ''}
+            style={{ fontSize: isMobile ? '2.3rem' : '', marginBottom: isMobile ? '20px' : '', marginTop: isMobile ? '90px' : '' }}
+        >
+            CAMPAÑA CELULARES 2022
+        </H2>
 
-        <h1 style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '40px' }}> Paquete de teléfonos {id} </h1>
+        <h1 className={isDarkMode ? 'text-white' : ''}
+            style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '40px' }}>
+            Paquete de teléfonos {id}
+        </h1>
 
-        <Toast show={showToast} style={{ display: 'block', margin: 'auto', border: '1px solid lightgray', marginBottom: '50px' }}
+        <Toast show={showToast}
+            className={'d-block m-auto'}
+            style={{ border: '1px solid lightgray', marginBottom: '50px' }}
             onClose={() => setShowToast(false)}>
           <Toast.Header style={{ border:'1px solid lightgray' }}>
             <strong className={'mr-auto'}> Campaña Celulares 2022 </strong>

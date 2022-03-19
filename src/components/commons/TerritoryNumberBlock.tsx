@@ -9,6 +9,7 @@ export const TerritoryNumberBlock = (props: any) => {
     const user: typeUser|undefined = useAuth().user
     const territories: number[] = props.territories
     const mode: number = props.mode
+    const isDarkMode: boolean = props.isDarkMode
 
     const btnTerri = {
         width: '120px',
@@ -47,8 +48,8 @@ export const TerritoryNumberBlock = (props: any) => {
                     })
                 }
 
-                {user && user.isAuth && user.asign?.length === 0 && mode === 2 &&
-                    <h3 className={'text-center mb-4'} style={{ }}>
+                {user && user.isAuth && (!user.asign || !user.asign.length) && mode === 2 &&
+                    <h3 className={`text-center mb-4 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>
                         No hay territorios asignados <br /> Hablar con el grupo de territorios
                     </h3>
                 }

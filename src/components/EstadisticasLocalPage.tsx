@@ -3,7 +3,6 @@ import { Card, Button } from 'react-bootstrap'
 import { Loading } from './commons/Loading'
 import { useParams } from 'react-router'
 import { Col0b } from './columns/Col0b'
-import { ReturnBtn } from './commons/Return'
 import { ConfirmAlert } from './commons/ConfirmAlert'
 import { isMobile, timeConverter } from '../services/functions'
 import { H2 } from './css/css'
@@ -22,7 +21,7 @@ export const EstadisticasLocalPage = (props: any) => {
     const [option, setOption] = useState<number>()
     const [message, setMessage] = useState<string>()
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const secondaryColor: string = props.secondaryColor
+    const isDarkMode: string = props.isDarkMode
 
     useEffect(() => {
         if (territorio) {
@@ -69,8 +68,6 @@ export const EstadisticasLocalPage = (props: any) => {
 
     return (
         <>
-        {ReturnBtn()}
-
         {showConfirmAlert &&
             <ConfirmAlert
                 title={`¿Resetear Territorio ${territorio}?`}
@@ -80,9 +77,9 @@ export const EstadisticasLocalPage = (props: any) => {
             />
         }
         
-        <H2 className={secondaryColor ? 'text-white' : ''}> ESTADÍSTICAS </H2>
+        <H2 className={isDarkMode ? 'text-white' : ''}> ESTADÍSTICAS </H2>
 
-        <h1 className={secondaryColor ? 'text-white' : ''}
+        <h1 className={isDarkMode ? 'text-white' : ''}
             style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '25px' }}
         >
             TERRITORIO {territorio}
@@ -101,7 +98,7 @@ export const EstadisticasLocalPage = (props: any) => {
                 <br/>
                 
                 <Card
-                    className={secondaryColor ? 'bg-dark text-white' : ''}
+                    className={isDarkMode ? 'bg-dark text-white' : ''}
                     style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}
                 >
 

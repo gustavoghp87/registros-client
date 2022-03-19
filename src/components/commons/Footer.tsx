@@ -1,4 +1,5 @@
 import { isMobile } from "../../services/functions"
+import { generalBlue } from "../_App"
 
 export const Footer = () => {
 
@@ -6,7 +7,7 @@ export const Footer = () => {
         fontSize: isMobile ? '1rem' : '1.8rem',
         paddingTop: '20px',
         paddingBottom: '20px',
-        backgroundColor: '#4a6da7',
+        backgroundColor: generalBlue,
         height: '100px',
         marginTop: '200px'
     }

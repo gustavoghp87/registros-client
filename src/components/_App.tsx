@@ -13,6 +13,7 @@ import { UserPage } from './UserPage'
 import { AdminsPage } from './AdminsPage'
 import { RecoveryPage } from './RecoveryPage'
 import { CasaEnCasaPage } from './CasaEnCasaPage'
+import { LogsPage } from './LogsPage'
 import { CampaignPage } from './campaigns/CampaignPage'
 import { CampaignAdminsPage } from './campaigns/CampaignAdminsPage'
 import { BgColorButton } from './commons/BgColorButton'
@@ -23,10 +24,11 @@ import { recaptchaPublicKey } from '../config'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+export const generalBlue: string = "#4a6da7"
 
 export const App = () => {
 
-    const [darkMode, setDarkMode] = useState<boolean>(getDarkModeLocalStorage())
+    const [isDarkMode, setIsDarkMode] = useState<boolean>(getDarkModeLocalStorage())
     //const user: typeUser|undefined = useAuth().user
     
     // useEffect(() => {
@@ -38,23 +40,23 @@ export const App = () => {
     // }, [user, darkMode])
 
     const changeDarkMode = async (): Promise<void> => {
-        const newMode: boolean = !darkMode
-        setDarkMode(newMode)
+        const newMode: boolean = !isDarkMode
+        setIsDarkMode(newMode)
         setDarkModeLocalStorage(newMode)
     //     const success: boolean = await changeDarkModeService(newMode)
     //     if (!success) alert("Algo falló al guardar el cambio de modo")
     }
 
-    const secondaryColor: string = darkMode ? '#343a40' : ''
+    //const secondaryColor: string = darkMode ? '#343a40' : ''
 
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>
             <GoogleReCaptchaProvider reCaptchaKey={recaptchaPublicKey}>
                 <AuthProvider>
                     
-                    <div style={{ backgroundColor: darkMode ? 'black' : 'white' }}>
+                    <div style={{ backgroundColor: isDarkMode ? 'black' : 'white' }}>
 
-                        <NavBar secondaryColor={secondaryColor} />
+                        <NavBar isDarkMode={isDarkMode} />
 
                         <div style={{
                             maxWidth: isMobile ? '95%' : '90%',
@@ -64,24 +66,25 @@ export const App = () => {
                         }}>
 
                             <Routes>
-                                <Route element={ <HomePage /> } path={"/"} />
-                                <Route element={ <LoginPage /> } path={"/login"} />
-                                <Route element={ <RegisterPage /> } path={"/register"} />
-                                <Route element={ <IndexPage secondaryColor={secondaryColor} /> } path={"/index"} />
-                                <Route element={ <CasaEnCasaPage /> } path={"/casaencasa/:territory"} />
-                                <Route element={ <TerritoriosPage secondaryColor={secondaryColor} /> } path={"/territorios/:territorio/:manzana"} />
-                                <Route element={ <TerritoriosPage secondaryColor={secondaryColor} /> } path={"/territorios/:territorio/:manzana/:todo"} />
-                                <Route element={ <EstadisticasPage secondaryColor={secondaryColor} /> } path={"/estadisticas"} />
-                                <Route element={ <EstadisticasLocalPage secondaryColor={secondaryColor} /> } path={"/estadisticas/:territorio"} />
-                                <Route element={ <UserPage secondaryColor={secondaryColor} /> } path={"/user"} />
-                                <Route element={ <AdminsPage secondaryColor={secondaryColor} /> } path={"/admins"} />
-                                <Route element={ <RecoveryPage /> } path={"/recovery/:id"} />
-                                <Route element={ <CampaignPage /> } path={"/celulares/:id"} />
-                                <Route element={ <CampaignAdminsPage /> } path={"/celulares-admins"} />
-                                <Route element={ <HomePage /> } path={"*"} />
+                                <Route element={ <HomePage isDarkMode={isDarkMode} /> } path={"/"} />
+                                <Route element={ <LoginPage isDarkMode={isDarkMode} /> } path={"/login"} />
+                                <Route element={ <RegisterPage isDarkMode={isDarkMode} /> } path={"/register"} />
+                                <Route element={ <IndexPage isDarkMode={isDarkMode} /> } path={"/index"} />
+                                <Route element={ <CasaEnCasaPage isDarkMode={isDarkMode} /> } path={"/casaencasa/:territory"} />
+                                <Route element={ <TerritoriosPage isDarkMode={isDarkMode} /> } path={"/territorios/:territorio/:manzana"} />
+                                <Route element={ <TerritoriosPage isDarkMode={isDarkMode} /> } path={"/territorios/:territorio/:manzana/:todo"} />
+                                <Route element={ <EstadisticasPage isDarkMode={isDarkMode} /> } path={"/estadisticas"} />
+                                <Route element={ <EstadisticasLocalPage isDarkMode={isDarkMode} /> } path={"/estadisticas/:territorio"} />
+                                <Route element={ <UserPage isDarkMode={isDarkMode} /> } path={"/usuario"} />
+                                <Route element={ <AdminsPage isDarkMode={isDarkMode} /> } path={"/admins"} />
+                                <Route element={ <RecoveryPage isDarkMode={isDarkMode} /> } path={"/recovery/:id"} />
+                                <Route element={ <CampaignPage isDarkMode={isDarkMode} /> } path={"/celulares/:id"} />
+                                <Route element={ <CampaignAdminsPage isDarkMode={isDarkMode} /> } path={"/celulares-admins"} />
+                                <Route element={ <LogsPage isDarkMode={isDarkMode} /> } path={"/logs"} />
+                                <Route element={ <HomePage isDarkMode={isDarkMode} /> } path={"*"} />
                             </Routes>
 
-                            <BgColorButton darkMode={darkMode} changeDarkMode={changeDarkMode} />
+                            <BgColorButton darkMode={isDarkMode} changeDarkMode={changeDarkMode} />
                             
                         </div>
 

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Card, Button, Form } from 'react-bootstrap'
-import { ReturnBtn } from './commons/Return'
 import { ConfirmAlert } from './commons/ConfirmAlert'
 import { useAuth } from '../context/authContext'
 import { H2 } from './css/css'
@@ -14,7 +13,7 @@ export const UserPage = (props: any) => {
     const [psw, setPsw] = useState('')
     const [newPsw, setNewPsw] = useState('')
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const secondaryColor: string = props.secondaryColor
+    const isDarkMode: string = props.isDarkMode
     
     const changePswHandler = async (): Promise<void> => {
         alert("Cambiando password de " + psw + " a " + newPsw)
@@ -44,8 +43,6 @@ export const UserPage = (props: any) => {
 
     return (
         <>
-        {ReturnBtn()}
-
         {showConfirmAlert &&
             <ConfirmAlert
                 title={"¿Cerrar sesiones?"}
@@ -55,12 +52,12 @@ export const UserPage = (props: any) => {
             />
         }
 
-        <H2 className={`text-center ${secondaryColor ? 'text-white' : ''}`}> Usuario </H2>
+        <H2 className={`text-center ${isDarkMode ? 'text-white' : ''}`}> Usuario </H2>
 
         {user &&
         <>
             <Card
-                className={`text-center ${secondaryColor ? 'bg-dark text-white' : ''}`}
+                className={`text-center ${isDarkMode ? 'bg-dark text-white' : ''}`}
                 style={{ padding: '25px', margin: '30px auto' }}
             >
                 
@@ -94,7 +91,7 @@ export const UserPage = (props: any) => {
             </Card>
 
             {show &&
-                <Card className={secondaryColor ? 'bg-dark text-white' : ''}
+                <Card className={isDarkMode ? 'bg-dark text-white' : ''}
                     style={{ padding: '25px', margin: '60px auto', maxWidth: '600px' }}>
                     <Card.Title className={'mb-4'}> CAMBIAR CONTRASEÑA </Card.Title>
                     <Form.Group>

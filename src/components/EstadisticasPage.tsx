@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { H2 } from './css/css'
 import { Card, Button } from 'react-bootstrap'
 import { Loading } from './commons/Loading'
-import { ReturnBtn } from './commons/Return'
 import { getStateOfTerritoriesService } from '../services/stateTerritoryServices'
 import { getAllLocalStatisticsService, getGlobalStatisticsService } from '../services/statisticsServices'
 import { isMobile } from '../services/functions'
 import { localStatistic, statistic } from '../models/statistic'
 import { typeStateOfTerritory } from '../models/typesTerritorios'
+import { generalBlue } from './_App'
 
 export const EstadisticasPage = (props: any) => {
 
@@ -16,7 +16,7 @@ export const EstadisticasPage = (props: any) => {
     const [loading, setLoading] = useState<boolean>(false)
     const [showBtn, setShowBtn] = useState<boolean>(true)
     const [states, setStates] = useState<typeStateOfTerritory[]>()
-    const secondaryColor: string = props.secondaryColor
+    const isDarkMode: string = props.isDarkMode
 
     useEffect(() => {
         getGlobalStatisticsService().then((data: statistic|null) => { if (data) setGlobalStatistics(data) })
@@ -36,9 +36,7 @@ export const EstadisticasPage = (props: any) => {
 
     return (
     <>
-        {ReturnBtn()}
-
-        <H2 className={secondaryColor ? 'text-white' : ''}> ESTADÍSTICAS GLOBALES </H2>
+        <H2 className={isDarkMode ? 'text-white' : ''}> ESTADÍSTICAS GLOBALES </H2>
 
         {globalStatistics
         ?
@@ -46,7 +44,7 @@ export const EstadisticasPage = (props: any) => {
                 <br/>
                 <br/>
                 <Card
-                    className={secondaryColor ? 'bg-dark text-white' : ''}
+                    className={isDarkMode ? 'bg-dark text-white' : ''}
                     style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}
                 >
 
@@ -92,8 +90,13 @@ export const EstadisticasPage = (props: any) => {
         <br/>
 
         
-        <Button variant="primary"
-            className={showBtn ? 'd-block m-auto' : "d-none"}
+        <Button //variant={"primary"}
+            className={`${showBtn ? 'd-block m-auto' : 'd-none'}`}
+            style={{
+                backgroundColor: generalBlue,
+                border: '1px solid ' + generalBlue,
+                borderRadius:' 5px'
+            }}
             onClick={() => retrieveLocalStats()}
         >
             Traer Estadísticas por Territorio

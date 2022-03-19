@@ -6,7 +6,7 @@ import { registerUserService } from '../services/userServices'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
 
-export const RegisterPage = () => {
+export const RegisterPage = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const [email, setEmail] = useState<string>('')
@@ -14,7 +14,8 @@ export const RegisterPage = () => {
     const [confPassword, setConfPassword] = useState<string>('')
     const [group, setGroup] = useState<number>(0)
     const [recaptchaToken, setRecaptchaToken] = useState<string>('')
-    const { executeRecaptcha } = useGoogleReCaptcha();
+    const { executeRecaptcha } = useGoogleReCaptcha()
+    const isDarkMode: string = props.isDarkMode
 
     useEffect(() => {
         if (user && user.isAuth) window.location.href = "/index"
@@ -45,58 +46,65 @@ export const RegisterPage = () => {
 
     
     return (
-        <div className="container container2" style={{maxWidth:'95%', marginTop:'50px', padding:'0'}}>
+        <div className={'container'}
+            style={{ maxWidth: '95%', marginTop: '50px', padding: '0' }}>
 
-            <div className="container" style={{
-                paddingTop:'40px', marginBottom:'40px', border:'gray 1px solid', borderRadius:'12px', maxWidth:'600px',
-                boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-            }}>
+            <div className={`container ${isDarkMode ? 'bg-dark text-white' : ''}`}
+                style={{
+                    paddingTop: '40px',
+                    marginBottom: '40px',
+                    border: 'gray 1px solid',
+                    borderRadius: '12px',
+                    maxWidth: '600px',
+                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+                }}
+            >
 
-                <h2 style={{textAlign:'center', textShadow:'0 0 1px gray', fontSize: isMobile ? '1.6rem' : '2rem'}}>
+                <h2 style={{ textAlign: 'center', textShadow: '0 0 1px gray', fontSize: isMobile ? '1.6rem' : '2rem' }}>
                     REGISTRARSE
                 </h2>
 
-                <div className="container" style={{paddingTop:'35px', display:'block', margin:'auto', maxWidth:'500px'}}>
+                <div className={'container'} style={{ paddingTop: '35px', display: 'block', margin: 'auto', maxWidth: '500px' }}>
 
-                    <input className="form-control"
-                        type="email"
-                        style={{marginBottom: '12px'}}
-                        placeholder="Correo electrónico"
+                    <input className={'form-control'}
+                        type={'email'}
+                        style={{ marginBottom: '12px' }}
+                        placeholder={"Correo electrónico"}
                         autoFocus
-                        onChange={e => setEmail((e.target as HTMLInputElement).value)}
+                        onChange={(e: any) => setEmail((e.target as HTMLInputElement).value)}
                     />
 
-                    <input className="form-control"
-                        type="password"
-                        style={{marginBottom: '12px'}}
-                        placeholder="Contraseña"
-                        onChange={e => setPassword((e.target as HTMLInputElement).value)}
+                    <input className={'form-control'}
+                        type={'password'}
+                        style={{ marginBottom: '12px' }}
+                        placeholder={'Contraseña'}
+                        onChange={(e: any) => setPassword((e.target as HTMLInputElement).value)}
                     />
 
-                    <input className="form-control"
-                        type="password"
-                        style={{marginBottom: '12px'}}
-                        placeholder="Confirmar Contraseña"
-                        onChange={e => setConfPassword((e.target as HTMLInputElement).value)}
+                    <input className={'form-control'}
+                        type={'password'}
+                        style={{ marginBottom: '12px' }}
+                        placeholder='Confirmar Contraseña'
+                        onChange={(e: any) => setConfPassword((e.target as HTMLInputElement).value)}
                     />
 
-                    <input className="form-control"
-                        type="number"
-                        style={{marginBottom: '30px'}}
-                        min="1"
-                        placeholder="Número de Grupo de Predicación"
-                        onChange={e => setGroup((e.target as any).value)}
+                    <input className={'form-control'}
+                        type={'number'}
+                        style={{ marginBottom: '30px' }}
+                        min={"1"}
+                        placeholder={"Número de Grupo de Predicación"}
+                        onChange={(e: any) => setGroup((e.target as any).value)}
                     />
 
-                    <button className="btn btn-danger"
-                        style={{width:'100%', height:'50px'}}
+                    <button className={'btn btn-danger'}
+                        style={{ width: '100%', height: '50px' }}
                         onClick={() => sendFormHandler()}
                     >
                         REGISTRARSE
                     </button>
 
                     <Link to={"/login"}>
-                        <p style={{fontSize:'1.1rem', margin:'15px 0 20px 0', textAlign:'end'}}>
+                        <p style={{ fontSize:'1.1rem', margin: '15px 0 20px 0', textAlign: 'end' }}>
                             Volver a ingreso
                         </p>
                     </Link>
@@ -104,7 +112,8 @@ export const RegisterPage = () => {
                 </div>
             </div>
 
-            <p style={{fontSize:'0.9rem', paddingBottom:'12px', textAlign:'center', display:'block'}}>
+            <p className={isDarkMode ? 'text-white' : ''}
+                style={{ fontSize: '0.9rem', paddingBottom: '12px', textAlign: 'center', display: 'block' }}>
                 Luego de registrarse, se debe aguardar la autorización del grupo de territorios
             </p>
 

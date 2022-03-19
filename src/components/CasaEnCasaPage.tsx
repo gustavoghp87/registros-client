@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { Button, Container } from 'react-bootstrap'
-import { ReturnBtn } from './commons/Return'
 import { Loading } from './commons/Loading'
-import { RefreshButton } from './commons/RefreshButton'
 import { useAuth } from '../context/authContext'
 import io from 'socket.io-client'
 import { SERVER } from './../config'
@@ -17,7 +15,7 @@ import { typeUser } from '../models/typesUsuarios'
 import { typeHTHBuilding, typeHTHHousehold } from '../models/houseToHouse'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const CasaEnCasaPage = () => {
+export const CasaEnCasaPage = (props: any) => {
     
     const { territory } = useParams<any>()
     const user: typeUser|undefined = useAuth().user
@@ -28,6 +26,7 @@ export const CasaEnCasaPage = () => {
     const [showMap, setShowMap] = useState<boolean>(true)
     const [showAddHousehold, setShowAddHousehold] = useState<boolean>(false)
     const [socket, setSocket] = useState<any>(null)
+    const isDarkMode: string = props.isDarkMode
 
     useEffect(() => {
         //window.scrollTo(0, 0)
@@ -73,20 +72,21 @@ export const CasaEnCasaPage = () => {
 
     return (
     <>
-        {ReturnBtn()}
-
-        <RefreshButton />
-
-        <H2 style={{ fontSize: isMobile ? '2.2rem' : '' }}> CASA EN CASA - {user?.email} </H2>
+        <H2 className={isDarkMode ? 'text-white' : ''}
+            style={{ fontSize: isMobile ? '2.2rem' : '' }}>
+            CASA EN CASA - {user?.email}
+        </H2>
 
         <BsToaster />
 
-        <h1 style={{
-            textAlign: 'center',
-            margin: isMobile ? '80px auto 20px auto' : '60px auto 40px auto',
-            fontSize: isMobile ? '2.3rem' : '2.8rem',
-            fontWeight: 'bolder'
-        }}>
+        <h1 className={isDarkMode ? 'text-white' : ''}
+            style={{
+                textAlign: 'center',
+                margin: isMobile ? '80px auto 20px auto' : '60px auto 40px auto',
+                fontSize: isMobile ? '2.3rem' : '2.8rem',
+                fontWeight: 'bolder'
+            }}
+        >
             TERRITORIO {territory} {isFinished ? `- TERMINADO` : ``} 
         </h1>
 
