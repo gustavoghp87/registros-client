@@ -48,6 +48,16 @@ export const LogsPage = (props: any) => {
         </Card>
     )
 
+    const showedLogs: any[][] = logs ? [
+        [logs.campaignAssignmentLogs, showCampaignAssignments, setShowCampaignAssignments, "Asignaciones de la Campaña 2022"],
+        [logs.campaignFinishingLogs, showCampaignFinishing, setShowCampaignFinishing, "Completados de la Campaña 2022"],
+        [logs.loginLogs, showLogins, setShowLogins, "Ingresos a la App"],
+        [logs.userChangesLogs, showUserChanges, setShowUserChanges, "Cambios en los Usuarios"],
+        [logs.stateOfTerritoryChangeLogs, showStateChanges, setShowStateChanges, "Cambios en estados de Territorios"],
+        [logs.territoryChangeLogs?.slice(0, 100), showPreaching, setShowPreaching, "Predicación"],
+        [logs.errorLogs,showErrors, setShowErrors, "Errores de la App"],
+    ] : []
+
     return (
     <>
         <H2 className={isDarkMode ? 'text-white' : ''}
@@ -60,58 +70,16 @@ export const LogsPage = (props: any) => {
 
         {!logs && <> <Loading /> </>}
 
-        {logs &&
-        <>
-            <LogsCard
-                logs={logs.campaignAssignmentLogs}
-                show={showCampaignAssignments}
-                setShow={setShowCampaignAssignments}
-                title={"Asignaciones de la Campaña 2022"}
-            />
-
-            <LogsCard
-                logs={logs.campaignFinishingLogs}
-                show={showCampaignFinishing}
-                setShow={setShowCampaignFinishing}
-                title={"Completados de la Campaña 2022"}
-            />
-
-            <LogsCard
-                logs={logs.loginLogs}
-                show={showLogins}
-                setShow={setShowLogins}
-                title={"Ingresos a la App"}
-            />
-
-            <LogsCard
-                logs={logs.userChangesLogs}
-                show={showUserChanges}
-                setShow={setShowUserChanges}
-                title={"Cambios en los Usuarios"}
-            />
-
-            <LogsCard
-                logs={logs.stateOfTerritoryChangeLogs}
-                show={showStateChanges}
-                setShow={setShowStateChanges}
-                title={"Cambios en estados de Territorios"}
-            />
-
-            <LogsCard
-                logs={logs.territoryChangeLogs?.slice(0, 100)}
-                show={showPreaching}
-                setShow={setShowPreaching}
-                title={"Predicación"}
-            />
-
-            <LogsCard
-                logs={logs.errorLogs}
-                show={showErrors}
-                setShow={setShowErrors}
-                title={"Errores de la App"}
-            />
-        </>
-        }
+        {logs && showedLogs && !!showedLogs.length && showedLogs.map((log: any[], index: number) =>
+            <div key={index}>
+                <LogsCard
+                    logs={log[0]}
+                    show={log[1]}
+                    setShow={log[2]}
+                    title={log[3]}
+                />
+            </div>
+        )}
     </>
     )
 }
