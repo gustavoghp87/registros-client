@@ -1,3 +1,5 @@
+import { getTokenService } from './tokenServices'
+
 export const isLocalhost: boolean = Boolean(
     window.location.hostname === 'localhost' ||
     window.location.hostname === '[::1]' ||
@@ -32,16 +34,8 @@ export const putHyphens = (phoneNumber: number): string => {
 
 export const isMobile: boolean = window.screen.width < 990 ? true : false
 
-export const getDarkModeLocalStorage = (): boolean => localStorage.getItem('darkMode') === 'true'
-
-export const setDarkModeLocalStorage = (darkMode: boolean): void => {
-    if (darkMode !== null && darkMode !== undefined) localStorage.setItem('darkMode', darkMode.toString())
-}
-
-export const getToken = (): string|null => localStorage.getItem('token')
-
 export const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'authorization': getToken() || 'abcdefghi0123456789'
+    'authorization': getTokenService() || 'abcdefghi0123456789'
 }

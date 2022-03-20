@@ -10,5 +10,5 @@ export type typeLogsObj = {
     territoryChangeLogs: typeLog[]
     stateOfTerritoryChangeLogs: typeLog[]
     errorLogs: typeLog[]
-    userChanges: typeLog[]
+    userChangesLogs: typeLog[]
 }

@@ -7,7 +7,7 @@ import io from 'socket.io-client'
 import { SERVER } from './../config'
 import { H2 } from './css/css'
 import { isMobile } from '../services/functions'
-import { BsToaster } from './columns/BsToaster'
+import { TerritoryWarningToaster } from './territory-components/TerritoryWarningToaster'
 import { HTHHouseholdModal } from './house-to-house/HTHHouseholdModal'
 import { HTHStreetCard } from './house-to-house/HTHStreetCard'
 import { getBuildingsService, getTerritoryStreetsService } from '../services/houseToHouseServices'
@@ -77,7 +77,7 @@ export const CasaEnCasaPage = (props: any) => {
             CASA EN CASA - {user?.email}
         </H2>
 
-        <BsToaster />
+        <TerritoryWarningToaster />
 
         <h1 className={isDarkMode ? 'text-white' : ''}
             style={{

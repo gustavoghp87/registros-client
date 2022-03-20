@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { loginService, logoutService } from '../services/tokenServices'
 import { typeUser } from '../models/typesUsuarios'
-import { getToken } from '../services/functions'
+import { getTokenService } from '../services/tokenServices'
 import { authUserService } from '../services/userServices'
 
 
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: any) => {
             }
         }
 
-        if (getToken()) {
+        if (getTokenService()) {
             authUserService().then((user0: typeUser|null) => {
                 if (user0) {
                     setUser(user0)

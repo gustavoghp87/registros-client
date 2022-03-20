@@ -32,7 +32,7 @@ export const RegisterPage = (props: any) => {
     }
 
     const sendForm = async (): Promise<void> => {
-        const data: any|null = await registerUserService(email, password, group, recaptchaToken)
+        const data: any = await registerUserService(email, password, group, recaptchaToken)
         if (data) {
             if (data.recaptchaFails) alert("Problemas, refresque la página")
             else if (data.userExists) alert("Ya existe un usuario con ese correo")

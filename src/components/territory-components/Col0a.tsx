@@ -9,7 +9,7 @@ export const Col0a = (props: any) => {
     const manzana: string = props.manzana
 
     let radiosManzana: any[] = []
-    manzanas.forEach((manzana: string) => {
+    manzanas?.forEach((manzana: string) => {
         radiosManzana.push({ name: `Manzana ${manzana}`, value: manzana })
     })
 
@@ -21,7 +21,7 @@ export const Col0a = (props: any) => {
                         vertical={isMobile && manzanas.length > 3 ? true : false}
                         style={{ maxWidth: '100%' }}
                     >
-                        {radiosManzana.map((radio: any, index: number) =>
+                        {radiosManzana?.map((radio: any, index: number) =>
                         
                             <BlockToggleButton
                                 key={index}
@@ -55,29 +55,29 @@ const BlockToggleButton = (props: any) => {
     
     return (
     <>
-    <ButtonGroup>
+        <ButtonGroup>
 
-        <ToggleButton
-            type={'radio'}
-            variant={isChecked ? 'danger' : 'dark'}
-            name={"radio"}
-            value={radio.value}
-            checked={isChecked}
-            style={{
-                padding: '0',
-                //backgroundColor: `${isChecked ? '#b02a37' : undefined}`,
-                borderTopLeftRadius: `${radio.value === "1" ? '3px' : ''}`,
-                borderBottomLeftRadius: `${radio.value === "1" ? '3px' : ''}`
-            }}
-            >
-            <a href={`/territorios/${territory}/${radio.value}`} style={{ color: 'white', textDecoration: 'none' }}>
-                <div style={{ height: '40px', width: '120px' }}>
-                    <div style={{ lineHeight: '40px' }}>
-                        {radio.name}
+            <ToggleButton
+                type={'radio'}
+                variant={isChecked ? 'danger' : 'dark'}
+                name={"radio"}
+                value={radio?.value}
+                //checked={isChecked}
+                style={{
+                    padding: '0',
+                    backgroundColor: `${isChecked ? '#b02a37' : undefined}`,
+                    borderTopLeftRadius: `${radio?.value === "1" ? '3px' : ''}`,
+                    borderBottomLeftRadius: `${radio?.value === "1" ? '3px' : ''}`
+                }}
+                >
+                <a href={`/territorios/${territory}/${radio?.value}`} style={{ color: 'white', textDecoration: 'none' }}>
+                    <div style={{ height: '40px', width: '120px' }}>
+                        <div style={{ lineHeight: '40px' }}>
+                            {radio?.name}
+                        </div>
                     </div>
-                </div>
-            </a>
-        </ToggleButton>
-    </ButtonGroup>
+                </a>
+            </ToggleButton>
+        </ButtonGroup>
     </>)
 }

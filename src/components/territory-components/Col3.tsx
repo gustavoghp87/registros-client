@@ -1,10 +1,10 @@
 import { Col, Row, Dropdown } from 'react-bootstrap'
 import { isMobile, timeConverter } from '../../services/functions'
-import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeVivienda } from '../../models/typesTerritorios'
+import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeHousehold } from '../../models/typesTerritorios'
 
 export const Col3 = (props: any) => {
 
-    const vivienda: typeVivienda = props?.vivienda
+    const vivienda: typeHousehold = props?.vivienda
     const cambiarEstado: (inner_id: string, estado: string, noAbonado: boolean|null, asignado: boolean|undefined) => Promise<void> = props?.cambiarEstado
     const isDarkMode: string = props.isDarkMode
 

@@ -1,19 +1,18 @@
-import { SERVER } from "../config"
-import { typeLogsObj } from "../models/log"
-import { getToken, headers } from "./functions"
+import { SERVER } from '../config'
+import { headers } from './functions'
+import { getTokenService } from './tokenServices'
+import { typeLogsObj } from '../models/log'
 
 const base: string = `${SERVER}/api/log`
 
 export const getAllLogsService = async (): Promise<typeLogsObj|null> => {
-    const token: string|null = getToken()
-    if (!token) return null
+    if (!getTokenService()) return null
     try {
-        const response: any|null = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'GET',
             headers
         })
-        const data: any|null = await response.json()
-        console.log("data:", data)
+        const data: any = await response.json()
         if (!data || !data.success || !data.logsObject) return null
         return data.logsObject
     } catch (error) {

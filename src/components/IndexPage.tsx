@@ -102,15 +102,15 @@ export const IndexPage = (props: any) => {
 
             {/* CAMPAÑA 2022 */}
             
-            {user && user.isAuth && + new Date() > 1647658800000 &&
+            {user && user.isAuth &&
                 <>
                     <H2 className={isDarkMode ? 'text-white' : ''}> CAMPAÑA CELULARES 2022 </H2>
                     
                     <button className={'btn btn-success btn-block mt-4'}
                         type={'button'}
-                        onClick={() => setShowedMode3(!showedMode3)}
+                        onClick={() => setShowedMode3(true)}    // dummy
                     >
-                        {showedMode3 === true ? 'Ocultar' : 'Ver paquetes asignados'}
+                        {showedMode3 === true ? 'Paquetes asignados' : 'Ver paquetes asignados'}
                     </button>
 
                     <div className={`${showedMode3 === true ? '' : 'd-none'}`}>

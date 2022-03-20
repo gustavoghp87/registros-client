@@ -3,10 +3,10 @@ import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { FaUserAlt } from 'react-icons/fa'
 import { ReturnBtn } from './ReturnBtn'
 import { useAuth } from '../../context/authContext'
+import { generalBlue } from '../_App'
 import { logoutService } from '../../services/tokenServices'
 import { isMobile } from '../../services/functions'
 import { typeUser } from '../../models/typesUsuarios'
-import { generalBlue } from '../_App'
 import { danger } from '../../models/typesTerritorios'
 
 export const NavBar = (props: any) => {
@@ -42,7 +42,6 @@ export const NavBar = (props: any) => {
                 <Navbar.Toggle aria-controls={'responsive-navbar-nav'} />
                 
                 <Navbar.Collapse id={'responsive-navbar-nav'}>
-
                     <Nav className={'mr-auto'}>
                         <Nav.Link className={user && user.isAuth ? '' : 'd-none'} href={"/index"} style={{ color }}>
                             &nbsp; &nbsp;Territorios&nbsp; &nbsp;
@@ -60,12 +59,11 @@ export const NavBar = (props: any) => {
                         </Nav.Link>
                     </Nav>
 
-
                     <Nav.Link href={"/usuario"}
                         className={`d-flex align-items-center ${user && user.isAuth ? '' : 'd-none'}`}
                         style={ isMobile ? {
                             marginBottom: '15px', paddingLeft: '13px', marginTop: '10px'
-                        } :  {
+                        } : {
                             marginBottom: '0', paddingLeft: '', marginTop: ''
                         }}
                     >
@@ -76,13 +74,14 @@ export const NavBar = (props: any) => {
                         <span style={{ color }}> Mi Usuario </span> &nbsp;
                     </Nav.Link>
 
-                    <Nav>
+                    <Nav className={user && user.isAuth ? '' : 'd-none'}>
                         <Form>
                             <Button variant={'outline-info'} style={{ color, borderColor: color }} onClick={() => logoutHandler()}>
                                 CERRAR SESIÓN
                             </Button>
                         </Form>
                     </Nav>
+
                 </Navbar.Collapse>
             </Navbar>
 

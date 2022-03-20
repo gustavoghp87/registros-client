@@ -19,7 +19,8 @@ import { CampaignAdminsPage } from './campaigns/CampaignAdminsPage'
 import { BgColorButton } from './commons/BgColorButton'
 import { AuthProvider } from '../context/authContext'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
-import { getDarkModeLocalStorage, isMobile, setDarkModeLocalStorage } from '../services/functions'
+import { isMobile } from '../services/functions'
+import { getDarkModeService, setDarkModeService } from '../services/userServices'
 import { recaptchaPublicKey } from '../config'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -28,7 +29,7 @@ export const generalBlue: string = "#4a6da7"
 
 export const App = () => {
 
-    const [isDarkMode, setIsDarkMode] = useState<boolean>(getDarkModeLocalStorage())
+    const [isDarkMode, setIsDarkMode] = useState<boolean>(getDarkModeService())
     //const user: typeUser|undefined = useAuth().user
     
     // useEffect(() => {
@@ -42,7 +43,7 @@ export const App = () => {
     const changeDarkMode = async (): Promise<void> => {
         const newMode: boolean = !isDarkMode
         setIsDarkMode(newMode)
-        setDarkModeLocalStorage(newMode)
+        setDarkModeService(newMode)
     //     const success: boolean = await changeDarkModeService(newMode)
     //     if (!success) alert("Algo falló al guardar el cambio de modo")
     }

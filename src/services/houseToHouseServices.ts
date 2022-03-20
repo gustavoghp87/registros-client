@@ -1,18 +1,18 @@
-import { SERVER } from "../config"
-import { typeHTHBuilding, typeHTHHousehold } from "../models/houseToHouse"
-import { getToken, headers } from "./functions"
+import { SERVER } from '../config'
+import { headers } from './functions'
+import { getTokenService } from './tokenServices'
+import { typeHTHBuilding, typeHTHHousehold } from '../models/houseToHouse'
 
 const base: string = `${SERVER}/api/house-to-house`
 
 export const getBuildingsService = async (territory: string): Promise<typeHTHBuilding[]|null> => {
-    const token: string|null = getToken()
-    if (!token) return null
+    if (!getTokenService()) return null
     try {
-        const response: any|null = await fetch(`${base}/${territory}`, {
+        const response: any = await fetch(`${base}/${territory}`, {
             method: 'GET',
             headers
         })
-        const data: any|null = await response.json()
+        const data: any = await response.json()
         //console.log("data:", data)
         if (!data || !data.success || !data.hthTerritory || !data.hthTerritory.length) return null
         return data.hthTerritory
@@ -28,10 +28,9 @@ export type responseType = {
     exists?: boolean
 }
 export const addBuildingService = async (building: typeHTHBuilding): Promise<responseType|null> => {
-    const token: string|null = getToken()
-    if (!token) return null
+    if (!getTokenService()) return null
     try {
-        const response: any|null = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'POST',
             headers,
             body: JSON.stringify({ building })
@@ -46,15 +45,14 @@ export const addBuildingService = async (building: typeHTHBuilding): Promise<res
 }
 
 export const modifyHTHHouseholdStateService = async (household: typeHTHHousehold, buildingId:string): Promise<boolean> => {
-    const token: string|null = getToken()
-    if (!token) return false
+    if (!getTokenService()) return false
     try {
-        const response: any|null = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'PATCH',
             headers,
             body: JSON.stringify({ household, buildingId })
         })
-        const data: any|null = await response.json()
+        const data: any = await response.json()
         if (!data || !data.success) return false
         return true
     } catch (error) {
@@ -64,15 +62,14 @@ export const modifyHTHHouseholdStateService = async (household: typeHTHHousehold
 }
 
 export const modifyHTHBuildingService = async (building: typeHTHBuilding): Promise<boolean> => {
-    const token: string|null = getToken()
-    if (!token) return false
+    if (!getTokenService()) return false
     try {
-        const response: any|null = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'PUT',
             headers,
             body: JSON.stringify({ building })
         })
-        const data: any|null = await response.json()
+        const data: any = await response.json()
         if (!data || !data.success) return false
         return true
     } catch (error) {
@@ -82,14 +79,13 @@ export const modifyHTHBuildingService = async (building: typeHTHBuilding): Promi
 }
 
 export const getTerritoryStreetsService = async (territory: string): Promise<string[]|null> => {
-    const token: string|null = getToken()
-    if (!token) return null
+    if (!getTokenService()) return null
     try {
-        const response: any|null = await fetch(`${base}/streets/${territory}`, {
+        const response: any = await fetch(`${base}/streets/${territory}`, {
             method: 'GET',
             headers
         })
-        const data: any|null = await response.json()
+        const data: any = await response.json()
         if (!data || !data.success || !data.streets) return null
         return data.streets
     } catch (error) {

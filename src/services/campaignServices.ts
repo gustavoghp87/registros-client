@@ -1,21 +1,21 @@
-import { getToken, headers } from './functions'
 import { SERVER } from '../config'
+import { headers } from './functions'
+import { getTokenService } from './tokenServices'
 import { typeCampaignPack } from '../models/campaign'
 
 const base: string = `${SERVER}/api/campaign`
 
 type campaignResponse = {
-    success: boolean,
+    success: boolean
     packs: typeCampaignPack[]
 }
 type campaignResponse1 = {
-    success: boolean,
+    success: boolean
     pack: typeCampaignPack
 }
 
 export const getCampaignPacksService = async (): Promise<typeCampaignPack[]|null> => {
-    const token: string|null = getToken()
-    if (!token) return null
+    if (!getTokenService()) return null
     try {
         const response: any = await fetch(`${base}/all`, {
             method: 'GET',
@@ -31,8 +31,7 @@ export const getCampaignPacksService = async (): Promise<typeCampaignPack[]|null
 }
 
 export const getCampaignPacksServiceByUser = async (): Promise<typeCampaignPack[]|null> => {
-    const token: string|null = getToken()
-    if (!token) return null
+    if (!getTokenService()) return null
     try {
         const response: any = await fetch(`${base}`, {
             method: 'GET',
@@ -48,8 +47,7 @@ export const getCampaignPacksServiceByUser = async (): Promise<typeCampaignPack[
 }
 
 export const getCampaignPackService = async (id: number): Promise<typeCampaignPack|null> => {
-    const token: string|null = getToken()
-    if (!token || !id) return null
+    if (!getTokenService() || !id) return null
     try {
         const response: any = await fetch(`${base}/${id.toString()}`, {
             method: 'GET',
@@ -65,13 +63,12 @@ export const getCampaignPackService = async (id: number): Promise<typeCampaignPa
 }
 
 export const editCampaignPackService = async (phoneNumber: number, checked: boolean, id: number): Promise<boolean> => {
-    const token: string|null = getToken()
-    if (!token || !phoneNumber || checked === undefined) return false
+    if (!getTokenService() || !phoneNumber || checked === undefined) return false
     try {
-        const response: any = await fetch(`${base}/`, {
+        const response: any = await fetch(`${base}`, {
             method: 'PATCH',
             headers,
-            body: JSON.stringify({ token, phoneNumber, id, checked })
+            body: JSON.stringify({ phoneNumber, id, checked })
         })
         const data: any = await response.json()
         if (!data || !data.success) return false
@@ -83,13 +80,12 @@ export const editCampaignPackService = async (phoneNumber: number, checked: bool
 }
 
 export const closeCampaignPackService = async (id: number): Promise<boolean> => {
-    const token: string|null = getToken()
-    if (!token || !id) return false
+    if (!getTokenService() || !id) return false
     try {
         const response: any = await fetch(`${base}/all`, {
             method: 'PATCH',
             headers,
-            body: JSON.stringify({ token, id })
+            body: JSON.stringify({ id })
         })
         const data: any = await response.json()
         if (!data || !data.success) return false
@@ -101,8 +97,7 @@ export const closeCampaignPackService = async (id: number): Promise<boolean> => 
 }
 
 export const assignCampaignPackByEmailService = async (id: number, email: string): Promise<boolean> => {
-    const token: string|null = getToken()
-    if (!token || !id || !email) return false
+    if (!getTokenService() || !id || !email) return false
     try {
         const response: any = await fetch(`${base}/${id.toString()}`, {
             method: 'PUT',
@@ -119,8 +114,7 @@ export const assignCampaignPackByEmailService = async (id: number, email: string
 }
 
 export const askForANewCampaignPackService = async (): Promise<boolean> => {
-    const token: string|null = getToken()
-    if (!token) return false
+    if (!getTokenService()) return false
     try {
         const response: any = await fetch(`${base}/new-pack`, {
             method: 'POST',

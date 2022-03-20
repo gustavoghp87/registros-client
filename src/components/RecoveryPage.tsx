@@ -24,7 +24,7 @@ export const RecoveryPage = (props: any) => {
         if (!id || !email || !password || !confPassword) return alert("Faltan datos")
         if (password.length < 8) return alert("La contraseña es demasiado corta (mín 8)")
         if (password !== confPassword) return alert("La contraseña no coincide con su confirmación")
-        const response: any|null = await changePswService(null, password, id)
+        const response: any = await changePswService(null, password, id)
         if (response && response.success) {
             alert("Clave cambiada con éxito")
             window.location.href = "/"

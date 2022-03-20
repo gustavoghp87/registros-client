@@ -1,10 +1,8 @@
 import { SERVER } from '../config'
-import { getToken, headers } from './functions'
+import { headers } from './functions'
+import { clearTokenFromLSService, clearUserFromLSService, getTokenFromLSService, setTokenFromLSService } from './localStorageServices'
 
 const base: string = `${SERVER}/api/token`
-const setToken = (newToken: string) => localStorage.setItem('token', newToken)
-export const clearToken = () => localStorage.removeItem('token')
-const clearUser = () => localStorage.removeItem('user')
 
 type responseType = {
     success: boolean,
@@ -12,15 +10,21 @@ type responseType = {
     recaptchaFails?: boolean
     isDisabled?: boolean
 }
+
+export const getTokenService = (): string|null => getTokenFromLSService()
+export const setTokenService = (newToken: string): void => setTokenFromLSService(newToken)
+export const clearTokenService = (): void => clearTokenFromLSService()
+const clearUserService = (): void => clearUserFromLSService()
+
 export const loginService = async (email: string, password: string, recaptchaToken: string): Promise<responseType|null> => {
     try {
-        const request: any = await fetch(`${base}/`, {
+        const request: any = await fetch(`${base}`, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({ email, password, recaptchaToken })
         })
         const response: responseType|null = await request.json()
-        if (response && response.success && response.newToken) setToken(response.newToken)
+        if (response && response.success && response.newToken) setTokenService(response.newToken)
         return response
     } catch (error) {
         console.log(error)
@@ -29,21 +33,20 @@ export const loginService = async (email: string, password: string, recaptchaTok
 }
 
 export const logoutService = (): void => {
-    clearToken()
-    clearUser()
+    clearTokenService()
+    clearUserService()
 }
 
 export const logoutAllService = async (): Promise<boolean> => {
-    const token: string|null = getToken()
-    if (!token) return false;
+    if (!getTokenService()) return false;
     try {
-        const request = await fetch(`${base}/`, {
+        const request = await fetch(`${base}`, {
             method: 'DELETE',
             headers: headers
         })
-        const response: any|null = await request.json()
+        const response: any = await request.json()
         if (!response || !response.success || !response.newToken) return false
-        setToken(response.newToken)
+        setTokenService(response.newToken)
         return true
     } catch (error) {
         console.log(error)
@@ -52,16 +55,15 @@ export const logoutAllService = async (): Promise<boolean> => {
 }
 
 export const changePswService = async (psw: string|null, newPsw: string, id: string|null): Promise<object|null> => {
-    const token: string|null = getToken()
-    if (!token && !id) return null
+    if (!getTokenService() && !id) return null
     try {
-        const fetchy = await fetch(`${base}/`, {
+        const fetchy = await fetch(`${base}`, {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify({ psw, newPsw, id })
         })
-        const response: any|null = await fetchy.json()
-        if (response && response.success && response.newToken) setToken(response.newToken)
+        const response: any = await fetchy.json()
+        if (response && response.success && response.newToken) setTokenService(response.newToken)
         return response
     } catch (error) {
         console.log(error)
@@ -70,15 +72,14 @@ export const changePswService = async (psw: string|null, newPsw: string, id: str
 }
 
 export const changePswOtherUserService = async (email: string): Promise<object|null> => {
-    const token: string|null = getToken()
-    if (!token) return null
+    if (!getTokenService()) return null
     try {
-        const request = await fetch(`${base}/`, {
+        const request = await fetch(`${base}`, {
             method: 'PATCH',
             headers: headers,
             body: JSON.stringify({ email })
         })
-        const response: any|null = await request.json()
+        const response: any = await request.json()
         return response
     } catch (error) {
         console.log(error)

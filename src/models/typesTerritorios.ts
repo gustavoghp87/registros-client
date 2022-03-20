@@ -1,5 +1,5 @@
 
-export type typeVivienda = {
+export type typeHousehold = {
     _id?: Object
     inner_id: string
     territorio: string
@@ -11,10 +11,6 @@ export type typeVivienda = {
     fechaUlt?: string
     variante: variant
     asignado?: boolean
-}
-
-export type typeTerritorio = {
-    households: typeVivienda[]
 }
 
 export type typeBlock = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 

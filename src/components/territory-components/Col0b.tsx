@@ -53,8 +53,11 @@ export const Col0b = (props: any) => {
                     variant={isTodo ? 'dark' : (isStatistics ? 'dark' : 'danger')}
                     name={"radio"}
                     value={radios[0].value}
-                    style={{ padding: '0' }}
-                    checked={isTodo ? false : (isStatistics ? false : true )}
+                    style={{
+                        backgroundColor: `${isTodo || isStatistics ? undefined : '#b02a37'}`,
+                        padding: '0'
+                    }}
+                    //checked={isTodo ? false : (isStatistics ? false : true )}
                 >
 
                     <a href={`/territorios/${territorio}/${manzana}`}

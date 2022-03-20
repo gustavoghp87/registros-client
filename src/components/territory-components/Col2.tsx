@@ -1,10 +1,10 @@
 import { Col, Row } from 'react-bootstrap'
-import { typeVivienda } from '../../models/typesTerritorios'
+import { typeHousehold } from '../../models/typesTerritorios'
 import { isMobile } from '../../services/functions'
 
 export const Col2 = (props: any) => {
 
-    const vivienda: typeVivienda = props.vivienda
+    const vivienda: typeHousehold = props.vivienda
     const id: string = props.id
 
     const getReducedPhoneNumber = (phoneNumber: string): string => {

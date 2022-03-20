@@ -4,42 +4,42 @@ import { useNavigate, useParams } from 'react-router'
 import io from 'socket.io-client'
 import { SERVER } from '../config'
 import { Loading } from './commons/Loading'
+import { generalBlue } from './_App'
 import { WarningToaster } from './commons/WarningToaster'
 import { ConfirmAlert } from './commons/ConfirmAlert'
-import { Col0a } from './columns/Col0a'
-import { Col0b } from './columns/Col0b'
-import { Col1 } from './columns/Col1'
-import { Col2 } from './columns/Col2'
-import { Col3 } from './columns/Col3'
-import { Col4 } from './columns/Col4'
-import { BsToaster } from './columns/BsToaster'
+import { Col0a } from './territory-components/Col0a'
+import { Col0b } from './territory-components/Col0b'
+import { Col1 } from './territory-components/Col1'
+import { Col2 } from './territory-components/Col2'
+import { Col3 } from './territory-components/Col3'
+import { Col4 } from './territory-components/Col4'
+import { TerritoryWarningToaster } from './territory-components/TerritoryWarningToaster'
 import { useAuth } from '../context/authContext'
-import { markTerritoryAsFinishedService, getStateOfTerritoryService } from '../services/stateTerritoryServices'
+import { markTerritoryAsFinishedService as closeTerritoryService, getStateOfTerritoryService } from '../services/stateOfTerritoryServices'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService } from '../services/territoryServices'
 import { isMobile } from '../services/functions'
 import * as types from '../models/typesTerritorios'
 import { typeUser } from '../models/typesUsuarios'
 import 'react-confirm-alert/src/react-confirm-alert.css'
-import { generalBlue } from './_App'
 
 export const TerritoriosPage = (props: any) => {
 
     const navigate = useNavigate()
     const user: typeUser|undefined = useAuth().user
     const { territorio, manzana, todo } = useParams<any>()
-    const [households, setHouseholds] = useState<types.typeVivienda[]>()
+    const showingAll: boolean = todo === 'todo'
+    const [households, setHouseholds] = useState<types.typeHousehold[]>()
     const [isFinished, setIsFinished] = useState<boolean>(false)
     const [showMap, setShowMap] = useState<boolean>(false)
     const [brought, setBrought] = useState<number>(10)
-    const [broughtAll, setBroughtAll] = useState<boolean>(false)
     const [loaded, setLoaded] = useState<boolean>(false)
-    const [blocks, setBlocks] = useState<string[]>(['1'])
+    const [blocks, setBlocks] = useState<string[]>()
     const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
     const [socket, setSocket] = useState<any>(null)
-    const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false);
+    const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
+    const [showBottomBtns, setShowBottomBtns] = useState<boolean>(true)
     //const [showWarningToasterPermanently, setShowWarningToasterPermanently] = useState<boolean>(false);
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null);
-    const showingAll = todo === 'todo'
     const [showConfirmAlertOpen, setShowConfirmAlertOpen] = useState<boolean>(false)
     const [showConfirmAlertClose, setShowConfirmAlertClose] = useState<boolean>(false)
     const isDarkMode: string = props.isDarkMode
@@ -48,11 +48,17 @@ export const TerritoriosPage = (props: any) => {
     useEffect(() => {
         // window.scrollTo(0, 0)
         if (territorio) getBlocksService(territorio).then((blocks: string[]|null) => { if (blocks) setBlocks(blocks) })
-        if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, showingAll, brought, broughtAll)
-            .then((households: types.typeVivienda[]|null) => {
-                if (households) {
-                    setHouseholds(households)
+        if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, brought, showingAll)
+            .then((response: [types.typeHousehold[], boolean]|null) => {
+                if (response && response[0]) {
                     new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
+                    const households: types.typeHousehold[] = response[0]
+                    setHouseholds(households)
+                    if (response[1]) setShowBottomBtns(false)
+
+                    // if trajo todos
+                    //     setBroughtAll(true)
+                    //     setTextBtn('')
                     setTextBtn(`Traer 10 más (${brought + 10})`)
                     getStateOfTerritoryService(territorio).then((stateOfTerritory: types.typeStateOfTerritory|null) => {
                         if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory.isFinished) }
@@ -62,7 +68,7 @@ export const TerritoriosPage = (props: any) => {
         ;
         if (!socket && user && user.email) {    // socket
             const newSocket = io(SERVER, { withCredentials: true })
-            newSocket.on('household: change', (updatedHouseholds: types.typeVivienda[], userEmail: string) => {
+            newSocket.on('household: change', (updatedHouseholds: types.typeHousehold[], userEmail: string) => {
                 if (updatedHouseholds && updatedHouseholds[0].territorio === territorio) {
                     if (updatedHouseholds[0].manzana === manzana) {
                         setHouseholds(updatedHouseholds)
@@ -78,14 +84,14 @@ export const TerritoriosPage = (props: any) => {
         }
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
         return () => setHouseholds(undefined)
-    }, [showingAll, manzana, territorio, brought, broughtAll, socket, socket?.connected, user, user?.email])
+    }, [showingAll, manzana, territorio, brought, socket, socket?.connected, user, user?.email])
     
-    const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean|null, asignado: boolean|null): Promise<void> => {
+    const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
         noAbonado = !noAbonado ? false : true
         asignado = !asignado ? false : true
-        const household: types.typeVivienda|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
-        if (household) sendUpdatedHousehold(household)
-        else alert("Algo falló al modificar")
+        const household: types.typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
+        if (!household) return alert("Algo falló al modificar")
+        sendUpdatedHousehold(household)
     }
 
     const getTenMoreHandler = (): void => {
@@ -93,28 +99,33 @@ export const TerritoriosPage = (props: any) => {
         setBrought(brought + 10)
     }
 
-    const markAsFinishedHandler = async (): Promise<void> => {
+    const closeTerritoryHandler = async (): Promise<void> => {
         setShowConfirmAlertCloseHandler()
         if (!territorio) return
-        const success = await markTerritoryAsFinishedService(territorio, true)
+        const success = await closeTerritoryService(territorio, true)
         if (!success) return alert("Algo falló")
         navigate("/index")
     }
 
-    const markAsUnfinishedHandler = async (): Promise<void> => {
+    const openTerritoryHandler = async (): Promise<void> => {
         setShowConfirmAlertOpenHandler()
         if (!territorio) return
-        const success: boolean = await markTerritoryAsFinishedService(territorio, false)
+        const success: boolean = await closeTerritoryService(territorio, false)
         if (!success) alert("Algo falló")
         window.location.reload()
+    }
+
+    const setBroughtAllHandler = (): void => {
+        setShowBottomBtns(false)
+        setBrought(10000)
     }
 
     const setShowConfirmAlertOpenHandler = (): void => setShowConfirmAlertOpen(false)
     const setShowConfirmAlertCloseHandler = (): void => setShowConfirmAlertClose(false)
 
-    const sendUpdatedHousehold = (updatedHousehold: types.typeVivienda): void => {
+    const sendUpdatedHousehold = (updatedHousehold: types.typeHousehold): void => {
         let indexOfHousehold: number = 0
-        households?.forEach((household: types.typeVivienda, index: number) => {
+        households?.forEach((household: types.typeHousehold, index: number) => {
             if (household.inner_id === updatedHousehold.inner_id) indexOfHousehold = index
         })
         const objPackage: any = {
@@ -153,13 +164,13 @@ export const TerritoriosPage = (props: any) => {
 
     return (
         <>
-            <BsToaster />
+            <TerritoryWarningToaster />
 
             {showConfirmAlertOpen &&
                 <ConfirmAlert
                     title={"¿Confirmar abrir territorio?"}
                     message={`El territorio ${territorio} se abrirá de nuevo`}
-                    execution={markAsUnfinishedHandler}
+                    execution={openTerritoryHandler}
                     cancelAction={setShowConfirmAlertOpenHandler}
                 />
             }
@@ -168,7 +179,7 @@ export const TerritoriosPage = (props: any) => {
                 <ConfirmAlert
                     title={"¿Confirmar finalizar territorio?"}
                     message={`El territorio ${territorio} se dará por terminado y se te desasignará`}
-                    execution={markAsFinishedHandler}
+                    execution={closeTerritoryHandler}
                     cancelAction={setShowConfirmAlertCloseHandler}
                 />
             }
@@ -258,7 +269,7 @@ export const TerritoriosPage = (props: any) => {
             </Button>
 
 
-            {households && !!households.length && households.map((household: types.typeVivienda) => {
+            {households && !!households.length && households.map((household: types.typeHousehold) => {
 
                 if (household.estado === types.noPredicado) household = { ...household, variante: types.success }
                 if (household.estado === types.contesto) household = { ...household, variante: types.primary }
@@ -317,21 +328,18 @@ export const TerritoriosPage = (props: any) => {
 
             {households && !!households.length && loaded &&
             <>
-                <Pagination size='lg'
+                <Pagination size={'lg'}
+                    className={`text-center align-items-center justify-content-center ${showBottomBtns ? '' : 'd-none'}`}
                     style={{
-                        textAlign: 'center',
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         marginTop: '80px',
                         fontWeight: 'bolder',
-                        display: broughtAll ? 'none' : ''
                     }
                 }>
                     <Pagination.Item onClick={() => getTenMoreHandler()}>
                         {textBtn}
                     </Pagination.Item>
 
-                    <Pagination.Item onClick={() => setBroughtAll(true)}>
+                    <Pagination.Item onClick={() => setBroughtAllHandler()}>
                         Traer todos
                     </Pagination.Item>
                 </Pagination>
@@ -346,7 +354,7 @@ export const TerritoriosPage = (props: any) => {
             }
 
             {households && !households.length && !showingAll && loaded &&
-                <h3 className={'text-center'}>
+                <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
                     <br/>
                     No hay viviendas no llamadas en esta manzana {manzana} del territorio {territorio}
                 </h3>

@@ -78,7 +78,7 @@ export const AdminsPage = (props: any) => {
     const resetPassword = async (): Promise<void> => {
         setShowConfirmAlertHandler()
         if (!email) return
-        const response: any|null = await changePswOtherUserService(email)
+        const response: any = await changePswOtherUserService(email)
         if (response && response.success && response.newPassword)
             alert(`Clave reseteada y enviada por email a ${email}\nNueva clave: ${response.newPassword}`)
         else if (response && response.newPassword && response.emailFailed)
