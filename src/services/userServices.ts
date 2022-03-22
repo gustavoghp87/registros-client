@@ -12,13 +12,13 @@ export const setDarkModeService = (darkMode: boolean): void => setDarkModeLocalS
 export const authUserService = async (): Promise<typeUser|null> => {
     if (!getTokenService()) return null
     try {
-        const request: any = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'GET',
-            headers: headers
+            headers
         })
-        const response: any = await request.json()
-        if (!response || !response.success || !response.user || !response.user.isAuth) clearTokenService()
-        return response.user
+        const data: any = await response.json()
+        if (!data || !data.success || !data.user || !data.user.isAuth) clearTokenService()
+        return data.user
     } catch (error) {
         console.log(error)
         return null
@@ -27,14 +27,15 @@ export const authUserService = async (): Promise<typeUser|null> => {
 
 export const registerUserService = async (email: string, password: string, group: number, recaptchaToken: string): Promise<object|null> => {
     try {
-        const request: any = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'POST',
-            headers: headers,
+            headers,
             body: JSON.stringify({ email, password, group, recaptchaToken })
         })
-        const response: any = await request.json()
-        if (!response || !response.success) return null
-        return response
+        const data: any = await response.json()
+        console.log(data)
+        if (!data) return null
+        return data
     } catch (error) {
         console.log(error)
         return null
@@ -44,13 +45,13 @@ export const registerUserService = async (email: string, password: string, group
 export const getUsersService = async (): Promise<typeUser[]|null> => {
     if (!getTokenService()) return null
     try {
-        const request: any = await fetch(`${base}/all`, {
+        const response: any = await fetch(`${base}/all`, {
             method: 'GET',
-            headers: headers
+            headers
         })
-        const response: any = await request.json()
-        if (!response || !response.success || !response.users) return null
-        return response.users
+        const data: any = await response.json()
+        if (!data || !data.success || !data.users) return null
+        return data.users
     } catch (error) {
         console.log(error)
         return null
@@ -60,14 +61,14 @@ export const getUsersService = async (): Promise<typeUser[]|null> => {
 export const modifyUserService = async (user_id: string, estado: boolean, role: number, group: number): Promise<typeUser|null> => {
     if (!getTokenService()) return null
     try {
-        const request: any = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'PUT',
-            headers: headers,
+            headers,
             body: JSON.stringify({ user_id, estado, role, group })
         })
-        const response: any = await request.json()
-        if (!response || !response.success || !response.user) return null
-        return response.user
+        const data: any = await response.json()
+        if (!data || !data.success || !data.user) return null
+        return data.user
     } catch (error) {
         console.log(error)
         return null
@@ -77,13 +78,13 @@ export const modifyUserService = async (user_id: string, estado: boolean, role: 
 export const changeDarkModeService = async (newMode: boolean): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
-        const request: any = await fetch(`${base}/mode`, {
+        const response: any = await fetch(`${base}/mode`, {
             method: 'PUT',
-            headers: headers,
+            headers,
             body: JSON.stringify({ darkMode: newMode })
         })
-        const response: any = await request.json()
-        if (!response || !response.success) return false
+        const data: any = await response.json()
+        if (!data || !data.success) return false
         return true
     } catch (error) {
         console.log(error)
@@ -95,14 +96,14 @@ export const assignTerritoryService = async (user_id: string, asignar: number|nu
     if (!getTokenService()) return null
     try {
         all = !all ? false : true
-        const request: any = await fetch(`${base}/assignment`, {
+        const response: any = await fetch(`${base}/assignment`, {
             method: 'PUT',
-            headers: headers,
+            headers,
             body: JSON.stringify({ user_id, asignar, desasignar, all })
         })
-        const response: any = await request.json()
-        if (!response || !response.success || !response.user) return null
-        return response.user
+        const data: any = await response.json()
+        if (!data || !data.success || !data.user) return null
+        return data.user
     } catch (error) {
         console.log(error)
         return null
@@ -111,13 +112,13 @@ export const assignTerritoryService = async (user_id: string, asignar: number|nu
 
 export const getEmailByEmailLink = async (id: string): Promise<string|null> => {
     try {
-        const request: any = await fetch(`${base}/recovery/${id}`, {
+        const response: any = await fetch(`${base}/recovery/${id}`, {
             method: 'GET',
-            headers: headers
+            headers
         })
-        const response: any = await request.json()
-        if (!response || !response.success || !response.email) return null
-        return response.email
+        const data: any = await response.json()
+        if (!data || !data.success || !data.email) return null
+        return data.email
     } catch (error) {
         console.log(error)
         return null
@@ -126,13 +127,13 @@ export const getEmailByEmailLink = async (id: string): Promise<string|null> => {
 
 export const sendLinkToRecoverAccount = async (email: string): Promise<any> => {
     try {
-        const request: any = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'PATCH',
-            headers: headers,
+            headers,
             body: JSON.stringify({ email })
         })
-        const response: any = await request.json()
-        return response
+        const data: any = await response.json()
+        return data
     } catch (error) {
         console.log(error)
         return null

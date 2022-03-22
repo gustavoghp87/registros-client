@@ -10,7 +10,7 @@ export const getBlocksService = async (territory: string): Promise<string[]|null
     try {
         const response: any = await fetch(`${base}/blocks/${territory}`, {
             method: 'GET',
-            headers: headers
+            headers
         })
         const data: any = await response?.json()
         if (!data || !data.success || !data.blocks) return null
@@ -26,7 +26,7 @@ export const getHouseholdsByTerritoryService = async (territory: string, manzana
    try {
     const request: any = await fetch(`${base}`, {
         method: 'POST',
-        headers: headers,
+        headers,
         body: JSON.stringify({ territory, manzana, aTraer, traerTodos })
     })
     const response: any = await request.json()
@@ -43,7 +43,7 @@ export const modifyHouseholdService = async (inner_id: string, estado: string, n
     try {
         const request: any = await fetch(`${base}`, {
             method: 'PUT',
-            headers: headers,
+            headers,
             body: JSON.stringify({ inner_id, estado, noAbonado, asignado })
         })
         const response: any = await request.json()
@@ -60,7 +60,7 @@ export const resetTerritoryService = async (territory: string, option: number): 
     try {
         const request: any = await fetch(`${base}`, {
             method: 'DELETE',
-            headers: headers,
+            headers,
             body: JSON.stringify({ territory, option })
         })
         const response: any = await request.json()

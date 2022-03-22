@@ -7,13 +7,13 @@ export const ConfirmAlert = (props: any) => {
     const title: string = props.title
     const message: string = props.message
     const execution: Function = props.execution
-    const cancelAction: Function = props.cancelAction
+    const cancelAction: Function|null = props.cancelAction
 
     useEffect(() => {
         confirmAlert({
             title,
             message,
-            buttons: [
+            buttons: cancelAction ? [
                 {
                     label: 'ACEPTAR',
                     onClick: () => execution()
@@ -21,6 +21,11 @@ export const ConfirmAlert = (props: any) => {
                 {
                     label: 'CANCELAR',
                     onClick: () => cancelAction()
+                }
+            ] : [
+                {
+                    label: 'ACEPTAR',
+                    onClick: () => execution()
                 }
             ],
             closeOnEscape: true,

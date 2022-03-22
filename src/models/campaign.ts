@@ -5,4 +5,5 @@ export type typeCampaignPack = {
     id: number
     llamados?: number[]
     terminado?: boolean
+    accessible?: boolean
 }

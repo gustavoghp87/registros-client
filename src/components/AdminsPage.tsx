@@ -4,13 +4,13 @@ import { ConfirmAlert } from './commons/ConfirmAlert'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
 import io from 'socket.io-client'
+import { SERVER } from '../config'
 import { assignTerritoryService, modifyUserService, getUsersService } from '../services/userServices'
 import { changePswOtherUserService } from '../services/tokenServices'
-import { SERVER } from '../config'
-import { H2 } from './css/css'
 import { isMobile } from '../services/functions'
 import { typeUser } from '../models/typesUsuarios'
-import { danger } from '../models/typesTerritorios'
+import { danger, primary, dark } from '../models/typesTerritorios'
+import { H2 } from './css/css'
 
 export const AdminsPage = (props: any) => {
     
@@ -23,7 +23,7 @@ export const AdminsPage = (props: any) => {
     const [viendo, setViendo] = useState<string>("todos")
     const [socket, setSocket] = useState<any>(null)
     const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const [email, setEmail] = useState<string>()
+    const [alertText, setAlertText] = useState<[string, string, Function|null, Function|null]>(["", "", null, null])
     const isDarkMode: string = props.isDarkMode
 
     useEffect(() => {
@@ -31,16 +31,17 @@ export const AdminsPage = (props: any) => {
         if (!socket) {
             const newSocket = io(SERVER, { withCredentials: true })
             newSocket.on("user: change", (updatedUser: typeUser) => {
-                getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
+                if (updatedUser) getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
             })
             if (newSocket) setSocket(newSocket)
         }
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
+        return () => closeAlertModalHandler()
     }, [socket, socket?.connected])
     
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
         const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
-        if (!updatedUser) return alert("Algo falló al modificar usuario")
+        if (!updatedUser) return openAlertModal("Error", "Algo falló al modificar usuario", null, null)
         sendUpdatedUser(updatedUser)
         refreshUserHandler(user_id)
     }
@@ -48,7 +49,7 @@ export const AdminsPage = (props: any) => {
     const assignTerritoryHandler = (user_id: string, all: boolean, inputId: string | null): void => {
         const assignTerritory = async (user_id: string, asignar: number|null, desasignar: number|null, all: boolean) => {
             const updatedUser: typeUser|null = await assignTerritoryService(user_id, asignar, desasignar, all)
-            if (!updatedUser) return alert("Algo falló al cambiar las asignaciones")
+            if (!updatedUser) return openAlertModal("Error", "Algo falló al cambiar las asignaciones", null, null)
             sendUpdatedUser(updatedUser)
             refreshUserHandler(user_id)
         }
@@ -74,30 +75,39 @@ export const AdminsPage = (props: any) => {
     const refreshUserHandler = (user_id: string): void => {
         if (user_id === user?._id && refreshUser) refreshUser()
     }
+
+    let email: string = ""
+
+    const openAlertModal = (title: string, message: string, execution: Function|null, cancelAction: Function|null, selectedEmail: string|null = null): void => {
+        if (!execution) execution = closeAlertModalHandler
+        else if (selectedEmail) email = selectedEmail
+        setAlertText([title, message, execution, cancelAction])
+        setShowConfirmAlert(true)
+    }
     
+    const closeAlertModalHandler = (): void => setShowConfirmAlert(false)
+
     const resetPassword = async (): Promise<void> => {
-        setShowConfirmAlertHandler()
+        closeAlertModalHandler()
         if (!email) return
         const response: any = await changePswOtherUserService(email)
         if (response && response.success && response.newPassword)
-            alert(`Clave reseteada y enviada por email a ${email}\nNueva clave: ${response.newPassword}`)
+            openAlertModal("Logrado", `Clave reseteada y enviada por email a ${email}\nNueva clave: ${response.newPassword}`, null, null)
         else if (response && response.newPassword && response.emailFailed)
-            alert(`Se reseteó la contraseña pero falló el envío del email\nNueva clave: ${response.newPassword}`)
+            openAlertModal("Atención", `Se reseteó la contraseña pero falló el envío del email
+            Nueva clave: ${response.newPassword}`, null, null)
         else
-            alert(`Algo falló al resetear la contraseña de ${email}`)
+            openAlertModal("Error", `Algo falló al resetear la contraseña de ${email}`, null, null)
     }
-
-    const setShowConfirmAlertHandler = (): void => setShowConfirmAlert(false)
-
 
     return (
     <>
         {showConfirmAlert &&
             <ConfirmAlert
-                title={"¿Resetear clave?"}
-                message={`Esto reseteará la contraseña del usuario ${email}, cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`}
-                execution={resetPassword}
-                cancelAction={setShowConfirmAlertHandler}
+                title={alertText[0]}
+                message={alertText[1]}
+                execution={alertText[2]}
+                cancelAction={alertText[3]}
             />
         }
 
@@ -109,7 +119,7 @@ export const AdminsPage = (props: any) => {
         </H2>
 
         <Button variant={danger} style={{ display: 'block', margin:'30px auto 0 auto' }}
-            onClick={() => window.location.href='/celulares-admins'}>
+            onClick={() => window.location.href="/celulares-admins"}>
             Ir a Campaña Celulares 2022
         </Button>
 
@@ -142,14 +152,14 @@ export const AdminsPage = (props: any) => {
 
             {users && !!users.length && users.map((user: typeUser, index: number) => {
                     
-                let active: number = user.group
+                let active: number = user?.group
                 let items: JSX.Element[] = []
                 for (let number: number = 1; number <= 6; number++) {
                     items.push(
                         <Pagination.Item key={number}
                             active={number === active}
                             onClick={() => {
-                                modifyUserHandler(user._id?.toString(), user.estado, user.role, number)
+                                modifyUserHandler(user?._id?.toString(), user?.estado, user?.role, number)
                             }}
                         >
                             {number}
@@ -165,7 +175,7 @@ export const AdminsPage = (props: any) => {
                             width: isMobile ? '332px': '500px',
                             margin: '30px auto 60px auto',
                             backgroundColor: '#f6f6f8',
-                            display: viendo === 'todos' || (user && user.group && user.group.toString()) === viendo.slice(-1) ? '' : 'none'
+                            display: viendo === 'todos' || (user && user?.group && user?.group.toString()) === viendo.slice(-1) ? '' : 'none'
                         }}>
                         
                         <Card.Body style={{ padding: '30px' }}>
@@ -175,7 +185,7 @@ export const AdminsPage = (props: any) => {
                                 padding: '20px',
                                 fontSize: isMobile ? '1.3rem' : '1.8rem'
                             }}>
-                                Usuario: <br/> {user.email}
+                                Usuario: <br/> {user?.email}
                             </Card.Title>
 
 
@@ -184,21 +194,21 @@ export const AdminsPage = (props: any) => {
 
                             <Card.Text style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
                                 Territorios asignados: &nbsp;
-                                {user.asign && !!user.asign.length &&
-                                    user.asign.map((asign: number) => (
+                                {user?.asign && !!user?.asign.length &&
+                                    user?.asign.map((asign: number) => (
                                         <span key={asign} className={'d-inline-block'}>
                                             {asign} &nbsp;
                                         </span>
                                     ))
                                 }
-                                {(!user.asign || !user.asign.length) &&
+                                {(!user?.asign || !user?.asign.length) &&
                                     <span> ninguno </span>
                                 }
                             </Card.Text>
 
 
                             <Button className={'col-12 m-2'}
-                                variant={'primary'}
+                                variant={primary}
                                 style={{ marginTop: '10px' }}
                                 onClick={() => setAsignVisible(!asignVisible)}
                             >
@@ -215,12 +225,12 @@ export const AdminsPage = (props: any) => {
                                         id={index.toString()}
                                         style={{ width: '60px' }}
                                         min={1}
-                                        onChange={(event: any) => setAsig([user._id?.toString(), event.target.value])}
+                                        onChange={(event: any) => setAsig([user?._id?.toString(), event.target.value])}
                                     />
                                     
                                     &nbsp;
                                     
-                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), false, index.toString())}>
+                                    <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), false, index.toString())}>
                                         &nbsp; Asignar &nbsp;
                                     </Button>
 
@@ -231,16 +241,16 @@ export const AdminsPage = (props: any) => {
                                         id={index.toString() + "-b"}
                                         style={{ width: '60px' }}
                                         min={1}
-                                        onChange={(event: any) => setDesasig([user._id?.toString(), event.target.value])}
+                                        onChange={(event: any) => setDesasig([user?._id?.toString(), event.target.value])}
                                     />
                                     &nbsp;
-                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), false, index.toString() + "-b")}>
+                                    <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), false, index.toString() + "-b")}>
                                         Desasignar
                                     </Button>
                                 </div>
 
                                 <div style={{ marginTop: '12px' }}>
-                                    <Button onClick={() => assignTerritoryHandler(user._id?.toString(), true, null)}>
+                                    <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), true, null)}>
                                         Desasignar todos
                                     </Button>
                                 </div>
@@ -249,8 +259,8 @@ export const AdminsPage = (props: any) => {
                             <hr/>
 
                             <Card.Text style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 600 }}>
-                                Grupo: {user.group} &nbsp;&nbsp;
-                                <Button variant={isDarkMode ? 'danger' : 'dark'} onClick={() => setGroupVisible(!groupVisible)}>
+                                Grupo: {user?.group} &nbsp;&nbsp;
+                                <Button variant={isDarkMode ? danger : dark} onClick={() => setGroupVisible(!groupVisible)}>
                                     CAMBIAR GRUPO
                                 </Button>
                             </Card.Text>
@@ -267,27 +277,34 @@ export const AdminsPage = (props: any) => {
                             <hr/>
                         
 
-                            <Button className={'col-12 m-2'} variant={ user.estado ? 'danger' : 'primary' }
-                                onClick={() => modifyUserHandler(user._id?.toString(), !user.estado, user.role, user.group)}>
+                            <Button className={'col-12 m-2'} variant={ user?.estado ? danger : primary }
+                                onClick={() => modifyUserHandler(user?._id?.toString(), !user?.estado, user?.role, user?.group)}>
                                 
-                                {user.estado ? "DESACTIVAR" : "ACTIVAR"}
+                                {user?.estado ? "DESACTIVAR" : "ACTIVAR"}
                             
                             </Button>
 
                             <br/>
 
-                            <Button className={'col-12 m-2'} variant={user.role === 1 ? 'danger' : 'primary'}
-                                onClick = {() => modifyUserHandler(user._id?.toString(), user.estado, user.role === 1 ? 0 : 1, user.group)}
+                            <Button className={'col-12 m-2'} variant={user?.role === 1 ? danger : primary}
+                                onClick = {() => modifyUserHandler(user?._id?.toString(), user?.estado, user?.role === 1 ? 0 : 1, user?.group)}
                             >
 
-                                {user.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
+                                {user?.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
 
                             </Button>
 
                             <br/>
 
-                            <Button className={'col-12 m-2'} variant={'primary'}
-                                onClick = {() => { setEmail(user.email); setShowConfirmAlert(true) }}
+                            <Button className={'col-12 m-2'} variant={primary}
+                                onClick = {() => {
+                                    openAlertModal("¿Resetear clave?",
+                                        `Esto reseteará la contraseña del usuario ${user?.email}, cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`,
+                                        resetPassword,
+                                        closeAlertModalHandler,
+                                        user?.email
+                                    )
+                                }}
                             >
 
                                 RESETEAR CONTRASEÑA

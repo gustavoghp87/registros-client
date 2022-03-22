@@ -20,7 +20,7 @@ export const loginService = async (email: string, password: string, recaptchaTok
     try {
         const request: any = await fetch(`${base}`, {
             method: 'POST',
-            headers: headers,
+            headers,
             body: JSON.stringify({ email, password, recaptchaToken })
         })
         const response: responseType|null = await request.json()
@@ -42,7 +42,7 @@ export const logoutAllService = async (): Promise<boolean> => {
     try {
         const request = await fetch(`${base}`, {
             method: 'DELETE',
-            headers: headers
+            headers
         })
         const response: any = await request.json()
         if (!response || !response.success || !response.newToken) return false
@@ -59,7 +59,7 @@ export const changePswService = async (psw: string|null, newPsw: string, id: str
     try {
         const fetchy = await fetch(`${base}`, {
             method: 'PUT',
-            headers: headers,
+            headers,
             body: JSON.stringify({ psw, newPsw, id })
         })
         const response: any = await fetchy.json()
@@ -76,7 +76,7 @@ export const changePswOtherUserService = async (email: string): Promise<object|n
     try {
         const request = await fetch(`${base}`, {
             method: 'PATCH',
-            headers: headers,
+            headers,
             body: JSON.stringify({ email })
         })
         const response: any = await request.json()

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { FaUserAlt } from 'react-icons/fa'
 import { ReturnBtn } from './ReturnBtn'
+// import { SearchBar } from './SearchBar'
 import { useAuth } from '../../context/authContext'
 import { generalBlue } from '../_App'
 import { logoutService } from '../../services/tokenServices'
@@ -10,8 +11,6 @@ import { typeUser } from '../../models/typesUsuarios'
 import { danger } from '../../models/typesTerritorios'
 
 export const NavBar = (props: any) => {
-
-    // add searcher https://www.npmjs.com/package/react-ctrl-f
 
     const user: typeUser|undefined = useAuth().user
     const [scrollDown, setScrollDown] = useState<boolean>(false)
@@ -86,6 +85,8 @@ export const NavBar = (props: any) => {
             </Navbar>
 
             <ReturnBtn />
+
+            {/* <SearchBar /> */}
         
             <div className={`row`}>
 

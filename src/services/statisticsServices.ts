@@ -10,7 +10,7 @@ export const getNumberOfFreePhonesService = async (territory: string): Promise<n
     try {
         const response = await fetch(`${base}/free/${territory}`, {
             method: 'GET',
-            headers: headers
+            headers
         })
         const data: any = await response?.json()
         if (!data || !data.success || data.data === undefined) return null
@@ -26,7 +26,7 @@ export const getLocalStatisticsService = async (territory: string): Promise<loca
     try {
         const response = await fetch(`${base}/${territory}`, {
             method: 'GET',
-            headers: headers
+            headers
         })
         const data: any = await response?.json()
         if (!data || !data.success || !data.data) return null
@@ -42,7 +42,7 @@ export const getAllLocalStatisticsService = async (): Promise<localStatistic[]|n
     try {
         const response = await fetch(`${base}`, {
             method: 'GET',
-            headers: headers
+            headers
         })
         const data: any = await response.json()
         if (!data || !data.success || !data.data) return null
@@ -58,7 +58,7 @@ export const getGlobalStatisticsService = async (): Promise<statistic|null> => {
     try {
         const response = await fetch(`${base}`, {
             method: 'POST',
-            headers: headers
+            headers
         })
         const data: any = await response.json()
         if (!data || !data.success || !data.data) return null

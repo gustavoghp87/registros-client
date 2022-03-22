@@ -47,7 +47,8 @@ export const getCampaignPacksServiceByUser = async (): Promise<typeCampaignPack[
 }
 
 export const getCampaignPackService = async (id: number): Promise<typeCampaignPack|null> => {
-    if (!getTokenService() || !id) return null
+    // if (!getTokenService() || !id) return null    accessible
+    if (!id) return null
     try {
         const response: any = await fetch(`${base}/${id.toString()}`, {
             method: 'GET',
@@ -63,7 +64,8 @@ export const getCampaignPackService = async (id: number): Promise<typeCampaignPa
 }
 
 export const editCampaignPackService = async (phoneNumber: number, checked: boolean, id: number): Promise<boolean> => {
-    if (!getTokenService() || !phoneNumber || checked === undefined) return false
+    // if (!getTokenService() || !phoneNumber || checked === undefined) return false    accessible
+    if (!phoneNumber || checked === undefined) return false
     try {
         const response: any = await fetch(`${base}`, {
             method: 'PATCH',
@@ -72,7 +74,7 @@ export const editCampaignPackService = async (phoneNumber: number, checked: bool
         })
         const data: any = await response.json()
         if (!data || !data.success) return false
-        return data.success
+        return true
     } catch (error) {
         console.log(error)
         return false
@@ -80,7 +82,8 @@ export const editCampaignPackService = async (phoneNumber: number, checked: bool
 }
 
 export const closeCampaignPackService = async (id: number): Promise<boolean> => {
-    if (!getTokenService() || !id) return false
+    // if (!getTokenService() || !id) return false    accessible
+    if (!id) return false
     try {
         const response: any = await fetch(`${base}/all`, {
             method: 'PATCH',
@@ -89,7 +92,7 @@ export const closeCampaignPackService = async (id: number): Promise<boolean> => 
         })
         const data: any = await response.json()
         if (!data || !data.success) return false
-        return data.success
+        return true
     } catch (error) {
         console.log(error)
         return false
@@ -106,7 +109,7 @@ export const assignCampaignPackByEmailService = async (id: number, email: string
         })
         const data: any = await response.json()
         if (!data || !data.success) return false
-        return data.success
+        return true
     } catch (error) {
         console.log(error)
         return false
@@ -122,7 +125,24 @@ export const askForANewCampaignPackService = async (): Promise<boolean> => {
         })
         const data: any = await response.json()
         if (!data || !data.success) return false
-        return data.success
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export const enableAccesibilityModeService = async (id: number, accessible: boolean): Promise<boolean> => {
+    if (!getTokenService() || !id) return false
+    try {
+        const response: any = await fetch(`${base}/accessibility`, {
+            method: 'PATCH',
+            headers,
+            body: JSON.stringify({ id, accessible })
+        })
+        const data: any = await response.json()
+        if (!data || !data.success) return false
+        return true
     } catch (error) {
         console.log(error)
         return false

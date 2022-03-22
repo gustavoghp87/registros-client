@@ -37,5 +37,5 @@ export const isMobile: boolean = window.screen.width < 990 ? true : false
 export const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'authorization': getTokenService() || 'abcdefghi0123456789'
+    'authorization': getTokenService() || ""
 }
