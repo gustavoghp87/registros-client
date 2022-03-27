@@ -1,7 +1,10 @@
-import { isMobile } from "../../services/functions"
-import { generalBlue } from "../_App"
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
+import { generalBlue } from '../_App'
 
 export const Footer = () => {
+
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     const footerStyle1 = {
         fontSize: isMobile ? '1rem' : '1.8rem',
@@ -23,9 +26,9 @@ export const Footer = () => {
     
     return (
         <>
-            <div className="main-footer" style={footerStyle1}>
+            <div className={'main-footer'} style={footerStyle1}>
                 <div style={footerStyle2}>
-                    <a href="https://misericordiaweb.com/" style={{ color: 'white', fontWeight: 'bolder' }}>
+                    <a href={"https://misericordiaweb.com/"} style={{ color: 'white', fontWeight: 'bolder' }}>
                         misericordiaweb.com
                     </a>
                 </div>

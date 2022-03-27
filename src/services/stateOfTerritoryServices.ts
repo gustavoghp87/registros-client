@@ -1,21 +1,22 @@
 import { SERVER } from '../config'
 import { headers } from './functions'
 import { getTokenService } from './tokenServices'
-import { typeStateOfTerritory } from '../models/typesTerritorios'
+import { typeStateOfTerritory } from '../models/territory'
+import { typeResponseData } from '../models/httpResponse'
 
 const base: string = `${SERVER}/api/state-territory`
 
 export const getStateOfTerritoryService = async (territorio: string): Promise<any> => {
     if (!getTokenService()) return null
     try {
-        const request: any = await fetch(`${base}/${territorio}`, {
+        const response = await fetch(`${base}/${territorio}`, {
             method: 'GET',
             headers
         })
-        const response: any = await request.json()
-        if (!response || !response.success || !response.obj || response.obj.isFinished === null
-            || typeof response.obj.isFinished !== "boolean") return null
-        return response.obj
+        const data: typeResponseData = await response.json()
+        if (!data || !data.success || !data.stateOfTerritory || data.stateOfTerritory.isFinished === null
+            || typeof data.stateOfTerritory.isFinished !== "boolean") return null
+        return data.stateOfTerritory
     } catch (error) {
         console.log(error)
         return null
@@ -25,14 +26,13 @@ export const getStateOfTerritoryService = async (territorio: string): Promise<an
 export const getStateOfTerritoriesService = async (): Promise<typeStateOfTerritory[]|null> => {
     if (!getTokenService()) return null
     try {
-        const request: any = await fetch(`${base}`, {
+        const response = await fetch(`${base}`, {
             method: 'GET',
             headers
         })
-        const response: any = await request.json()
-        if (!response || !response.success || !response.obj) return null
-        const stateOfTerritories: typeStateOfTerritory[] = response.obj
-        return stateOfTerritories
+        const data: typeResponseData = await response.json()
+        if (!data || !data.success || !data.stateOfTerritories) return null
+        return data.stateOfTerritories
     } catch (error) {
         console.log(error)
         return null
@@ -42,13 +42,13 @@ export const getStateOfTerritoriesService = async (): Promise<typeStateOfTerrito
 export const markTerritoryAsFinishedService = async (territory: string, isFinished: boolean): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
-        const request: any = await fetch(`${base}`, {
+        const response = await fetch(`${base}`, {
             method: 'PATCH',
             headers,
             body: JSON.stringify({ territory, isFinished })
         })
-        const response: any = await request.json()
-        if (!response || !response.success) return false
+        const data: typeResponseData = await response.json()
+        if (!data || !data.success) return false
         return true
     } catch (error) {
         console.log(error)

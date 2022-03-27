@@ -1,11 +1,13 @@
 import { Col, Row } from 'react-bootstrap'
-import { typeHousehold } from '../../models/typesTerritorios'
-import { isMobile } from '../../services/functions'
+import { useSelector } from 'react-redux'
+import { typeHousehold } from '../../models/territory'
+import { typeRootState } from '../../store/store'
 
 export const Col2 = (props: any) => {
 
-    const vivienda: typeHousehold = props.vivienda
-    const id: string = props.id
+    const household: typeHousehold = props?.household
+    const id: string = props?.id
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     const getReducedPhoneNumber = (phoneNumber: string): string => {
         if (!phoneNumber || phoneNumber.length < 7) return phoneNumber
@@ -22,7 +24,7 @@ export const Col2 = (props: any) => {
                 <h4 style={{ textAlign: 'center', display: 'block', margin: 'auto', fontSize: '1.9rem' }}>
                     Dirección:
                     <br/>
-                    {vivienda?.direccion}
+                    {household?.direccion}
                 </h4>
             </Row>
 
@@ -30,7 +32,7 @@ export const Col2 = (props: any) => {
                 
                 <h4 className={'text-center m-auto'}
                     style={{
-                        display: vivienda?.noAbonado ? 'none' : 'block',
+                        display: household?.noAbonado ? 'none' : 'block',
                         fontSize: isMobile ? '2.5rem' : '3rem'
                     }}
                     onMouseOver={() => {
@@ -49,8 +51,8 @@ export const Col2 = (props: any) => {
                         className={'pb-2'}
                         style={{ marginTop: '7px' }}
                     >
-                        <a href={`tel:${vivienda?.telefono}`}>
-                            {getReducedPhoneNumber(vivienda?.telefono)}
+                        <a href={`tel:${household?.telefono}`}>
+                            {getReducedPhoneNumber(household?.telefono)}
                         </a>
                     </div>
 

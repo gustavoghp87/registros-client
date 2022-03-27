@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { loginService, logoutService } from '../services/tokenServices'
-import { typeUser } from '../models/typesUsuarios'
+import { typeUser } from '../models/user'
 import { getTokenService } from '../services/tokenServices'
 import { authUserService } from '../services/userServices'
 

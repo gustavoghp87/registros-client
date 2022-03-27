@@ -1,34 +1,35 @@
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
 import { Row } from 'react-bootstrap'
 import { useAuth } from '../../context/authContext'
-import { isMobile } from '../../services/functions'
-import { typeUser } from '../../models/typesUsuarios'
+import { typeUser } from '../../models/user'
 
 export const TerritoryNumberBlock = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const territories: number[] = props.territories
     const mode: number = props.mode
-    const isDarkMode: boolean = props.isDarkMode
-
-    const btnTerri = {
-        width: '120px',
-        height: '100px',
-        borderRadius: '15px',
-        margin: '0 1% 40px 1%'
-    }
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     return (
-        <div className={'container'} style={{ paddingTop: '0', marginBottom: '50px' }}>
+        <div className={'container'} style={{ paddingTop: '0', marginBottom: '0px' }}>
 
-            <Row style={{ padding: isMobile ? '40px' : '70px 40px 0px 40px', justifyContent: 'space-evenly' }}>
+            <Row style={{ padding: isMobile ? '40px' : '40px 40px 40px 40px', justifyContent: 'space-evenly' }}>
 
                 {user && user.isAuth && territories && !!territories.length &&
                     territories.map((territory: number, index: number) => {
                         if (territory) return (
                             <Link type={'button'} key={index}
-                                className={mode === 1 ? 'btn btn-success' : 'btn btn-danger'} style={btnTerri}
-                                to={mode === 1 ? `/casaencasa/${territory?.toString()}` : `/territorios/${territory?.toString()}/1`}
+                                className={mode === 1 ? 'btn btn-success' : 'btn btn-danger'}
+                                style={{
+                                    width: '120px',
+                                    height: '100px',
+                                    borderRadius: '15px',
+                                    margin: '0 1% 40px 1%'
+                                }}
+                                to={mode === 1 ? `/casa-en-casa/${territory?.toString()}` : `/territorios/${territory?.toString()}/1`}
                             >
 
                                 <h2 className={'h-100'}
@@ -49,8 +50,8 @@ export const TerritoryNumberBlock = (props: any) => {
                 }
 
                 {user && user.isAuth && (!user.asign || !user.asign.length) && mode === 2 &&
-                    <h3 className={`text-center mb-4 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>
-                        No hay territorios asignados <br /> Hablar con el grupo de territorios
+                    <h3 className={`text-center mb-1 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>
+                        No hay territorios de la telefónica asignados <br /> Hablar con el grupo de territorios
                     </h3>
                 }
 

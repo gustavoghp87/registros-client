@@ -1,4 +1,4 @@
-import { getTokenService } from './tokenServices'
+import { getTokenFromLSService } from './localStorageServices'
 
 export const isLocalhost: boolean = Boolean(
     window.location.hostname === 'localhost' ||
@@ -37,5 +37,17 @@ export const isMobile: boolean = window.screen.width < 990 ? true : false
 export const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'authorization': getTokenService() || ""
+    'authorization': getTokenFromLSService() || ""
 }
+
+export const adjustModalStyles = (): NodeJS.Timeout => setTimeout((): void => {
+    const bodyElements: HTMLCollectionOf<Element> = document.getElementsByClassName('react-confirm-alert-body')
+    bodyElements[0]?.classList?.add('text-center')
+    bodyElements[0]?.firstElementChild?.classList?.add('h3')
+    bodyElements[0]?.firstElementChild?.classList?.add('mb-3')
+    const buttonGroupElements: HTMLCollectionOf<Element> = document.getElementsByClassName('react-confirm-alert-button-group')
+    buttonGroupElements[0]?.classList?.add('d-block')
+    buttonGroupElements[0]?.classList?.add('m-auto')
+    buttonGroupElements[0]?.classList?.add('mt-4')
+    buttonGroupElements[0]?.firstElementChild?.classList?.add('bg-danger')
+}, 200)

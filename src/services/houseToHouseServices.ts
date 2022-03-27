@@ -8,7 +8,7 @@ const base: string = `${SERVER}/api/house-to-house`
 export const getBuildingsService = async (territory: string): Promise<typeHTHBuilding[]|null> => {
     if (!getTokenService()) return null
     try {
-        const response: any = await fetch(`${base}/${territory}`, {
+        const response = await fetch(`${base}/${territory}`, {
             method: 'GET',
             headers
         })
@@ -30,7 +30,7 @@ export type responseType = {
 export const addBuildingService = async (building: typeHTHBuilding): Promise<responseType|null> => {
     if (!getTokenService()) return null
     try {
-        const response: any = await fetch(`${base}`, {
+        const response = await fetch(`${base}`, {
             method: 'POST',
             headers,
             body: JSON.stringify({ building })
@@ -47,7 +47,7 @@ export const addBuildingService = async (building: typeHTHBuilding): Promise<res
 export const modifyHTHHouseholdStateService = async (household: typeHTHHousehold, buildingId:string): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
-        const response: any = await fetch(`${base}`, {
+        const response = await fetch(`${base}`, {
             method: 'PATCH',
             headers,
             body: JSON.stringify({ household, buildingId })
@@ -64,7 +64,7 @@ export const modifyHTHHouseholdStateService = async (household: typeHTHHousehold
 export const modifyHTHBuildingService = async (building: typeHTHBuilding): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
-        const response: any = await fetch(`${base}`, {
+        const response = await fetch(`${base}`, {
             method: 'PUT',
             headers,
             body: JSON.stringify({ building })
@@ -81,7 +81,7 @@ export const modifyHTHBuildingService = async (building: typeHTHBuilding): Promi
 export const getTerritoryStreetsService = async (territory: string): Promise<string[]|null> => {
     if (!getTokenService()) return null
     try {
-        const response: any = await fetch(`${base}/streets/${territory}`, {
+        const response = await fetch(`${base}/streets/${territory}`, {
             method: 'GET',
             headers
         })

@@ -1,13 +1,13 @@
 // import { useContext, useState } from "react"
 // import { Button } from "react-bootstrap"
 // import { MatchText, SearchProvider, SearchContext, SearchEventContext } from 'react-ctrl-f'
-// import { isMobile } from "../../services/functions"
 
 export const SearchBar = () => {
 
     // const [show, setShow] = useState<boolean>(true)
     // const { searchValue, activeCount, totalCount } = useContext(SearchContext);
     // const { onSearchChange, onPrev, onNext } = useContext(SearchEventContext);
+    // const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     return (
     <>

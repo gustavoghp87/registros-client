@@ -1,13 +1,15 @@
-import { useAuth } from '../context/authContext'
-import { isMobile } from '../services/functions'
-import { H2 } from './css/css'
-import { typeUser } from '../models/typesUsuarios'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../store/store'
 import { generalBlue } from './_App'
+import { H2 } from './css/css'
+import { useAuth } from '../context/authContext'
+import { typeUser } from '../models/user'
 
-export const HomePage = (props: any) => {
+export const HomePage = () => {
 
     const user: typeUser|undefined = useAuth().user
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     
     return (
     <>
@@ -33,7 +35,7 @@ export const HomePage = (props: any) => {
 
         <div style={{ textAlign: 'center', marginTop: isMobile ? '30px' : '40px' }}>
             
-            <img src={"/img/world.png"} alt={"world"} style={{ margin: '15px auto 0 auto', maxWidth: '100%' }} />
+            <img src={"/img/world.png"} alt={"jw"} style={{ margin: '15px auto 0 auto', maxWidth: '100%' }} />
         
 
             <div style={{

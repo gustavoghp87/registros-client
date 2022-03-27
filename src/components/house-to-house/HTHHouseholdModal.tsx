@@ -200,7 +200,7 @@ export const HTHHouseholdModal = (props: any) => {
                     <Modal.Title className={'text-center'}> {building ? "Editar edificio" : "Agregar edificio"} </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={submitHandler}>
+                    <Form onSubmit={(event: any) => submitHandler(event)}>
 
                         <div className={'mb-3 d-flex align-self-center'}>
                             <Form.Group

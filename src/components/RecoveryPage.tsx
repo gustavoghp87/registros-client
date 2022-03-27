@@ -1,40 +1,57 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getEmailByEmailLink } from '../services/userServices'
-import { isMobile } from '../services/functions'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeAppDispatch, typeRootState } from '../store/store'
+import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
+import { getEmailByEmailLink as getEmailByEmailToken } from '../services/userServices'
 import { changePswService } from '../services/tokenServices'
 
-export const RecoveryPage = (props: any) => {
+export const RecoveryPage = () => {
 
     const { id } = useParams<string>()
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [confPassword, setConfPassword] = useState<string>('')
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+
+    const dispatch: typeAppDispatch = useDispatch()
 
     useEffect(() => {
-        if (!id) return
-        getEmailByEmailLink(id).then((email: string|null) => {
+        if (id && !email) getEmailByEmailToken(id).then((email: string|null) => {
             if (email) setEmail(email)
-            else alert("Algo falló")
+            else {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "El link no es válido",
+                    message: "",
+                    execution: () => window.location.href = "/"
+                }))
+            }
         })
-    }, [id])
+    }, [id, email, dispatch])
 
+    const openAlertModalHandler = (title: string, message: string, execution: Function|undefined = undefined): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title,
+            message,
+            execution
+        }))
+    }
+    
     const sendFormHandler = async (): Promise<void> => {
-        if (!id || !email || !password || !confPassword) return alert("Faltan datos")
-        if (password.length < 8) return alert("La contraseña es demasiado corta (mín 8)")
-        if (password !== confPassword) return alert("La contraseña no coincide con su confirmación")
-        const response: any = await changePswService(null, password, id)
+        if (!id || !email || !password || !confPassword) return openAlertModalHandler("Faltan datos", "")
+        if (password.length < 8) return openAlertModalHandler("La contraseña es demasiado corta (mín 8)", "")
+        if (password !== confPassword) return openAlertModalHandler("La contraseña no coincide con su confirmación", "")
+        const response = await changePswService(null, password, id)
         if (response && response.success) {
-            alert("Clave cambiada con éxito")
-            window.location.href = "/"
+            openAlertModalHandler("Clave cambiada con éxito", "", () => window.location.href = "/")
         } else if (response && response.expired) {
-            alert("Este link ya expiró; pedir otro")
-            window.location.href = "/login"
+            openAlertModalHandler("Este link ya expiró; pedir otro", "", () => window.location.href = "/login")
         } else if (response && response.used) {
-            alert("Este link de recuperación ya se usó antes")
-            window.location.href = "/login"
-        } else alert("Algo salió mal")
+            openAlertModalHandler("Este link de recuperación ya se usó antes", "", () => window.location.href = "/login")
+        } else openAlertModalHandler("Algo salió mal", "")
     }
     
     return (

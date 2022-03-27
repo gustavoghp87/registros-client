@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
+import { typeAppDispatch, typeRootState } from '../../store/store'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 import { Loading } from '../commons/Loading'
-import { ConfirmAlert } from '../commons/ConfirmAlert'
 import { H2 } from '../css/css'
 import { putHyphens, isMobile } from '../../services/functions'
 import { getUsersService } from '../../services/userServices'
 import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService } from '../../services/campaignServices'
 import { typeCampaignPack } from '../../models/campaign'
-import { typeUser } from '../../models/typesUsuarios'
-import { danger, noAsignado, primary, secondary } from '../../models/typesTerritorios'
+import { typeUser } from '../../models/user'
+import { danger, noAsignado, primary, secondary } from '../../models/territory'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const CampaignAdminsPage = (props: any) => {
+export const CampaignAdminsPage = () => {
     const [users, setUsers] = useState<typeUser[]>()
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
     const [showFiltered, setShowFiltered] = useState(false)
-    const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const [id, setId] = useState<number>()
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
 
     
     useEffect(() => {
@@ -31,28 +31,53 @@ export const CampaignAdminsPage = (props: any) => {
     }, [])
 
     const refreshHandler = (): void => {
-        getCampaignPacksService().then((campaignPacks: typeCampaignPack[]|null) => { if (campaignPacks) setCampaignPacks(campaignPacks) })
+        getCampaignPacksService().then((campaignPacks: typeCampaignPack[]|null) => {
+            if (campaignPacks) setCampaignPacks(campaignPacks)
+        })
+    }
+
+    const dispatch: typeAppDispatch = useDispatch()
+
+    const openAlertModalHandler = (title: string, message: string): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title,
+            message
+        }))
+    }
+
+    let id: number = 0
+
+    const openConfirmModalHandler = (selecterId: number): void => {
+        id = selecterId
+        if (!id) return
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: `¿Confirmar marcar este paquete como terminado`,
+            message: `El paquete ${id} será desasignado y dado por terminado`,
+            execution: closeCampaignPackHandler
+        }))
     }
 
     const closeCampaignPackHandler = async () => {
-        closeConfirmAlertHandler()
         if (id) closeCampaignPackService(id).then((success: boolean) => {
-            if (!success) return alert("Algo falló")
+            if (!success) return openAlertModalHandler("Algo falló", "")
             refreshHandler()
         })
     }
 
-    const closeConfirmAlertHandler = (): void => setShowConfirmAlert(false)
-
     const assignCampaignPackByEmailHandler = async (id: number, email: string) => {
-        assignCampaignPackByEmailService(id, email).then((success: boolean) => {
-            if (!success) return alert("Algo falló")
+        if (id && email) assignCampaignPackByEmailService(id, email).then((success: boolean) => {
+            if (!success) return openAlertModalHandler("Algo falló", "")
             refreshHandler()
         })
     }
 
     const enableAccesibilityModeHandler = (id: number, accessible: boolean): void => {
-        enableAccesibilityModeService(id, accessible).then((success: boolean) => { if (success) refreshHandler() })
+        enableAccesibilityModeService(id, accessible).then((success: boolean) => {
+            if (!success) return openAlertModalHandler("Algo falló", "")
+            refreshHandler()
+        })
     }
     
 
@@ -63,15 +88,6 @@ export const CampaignAdminsPage = (props: any) => {
         >
             CAMPAÑA CELULARES 2022
         </H2>
-
-        {showConfirmAlert &&
-            <ConfirmAlert
-                title={`¿Confirmar marcar este paquete como terminado`}
-                message={`El paquete ${id} será desasignado y dado por terminado`}
-                execution={closeCampaignPackHandler}
-                cancelAction={closeConfirmAlertHandler}
-            />
-        }
 
         <Button variant={showFiltered ? primary : danger} style={{ display: 'block', margin: '30px auto 0 auto' }}
             onClick={() => setShowFiltered(!showFiltered)}>
@@ -103,18 +119,21 @@ export const CampaignAdminsPage = (props: any) => {
 
                                 <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
                                     <h4> Asignado a: </h4>
-                                    <SplitButton id={'1'}
+                                    <SplitButton
                                         variant={(!campaignPack?.asignado || campaignPack?.asignado === noAsignado) ? primary : danger}
                                         className={'mt-2'}
                                         title={campaignPack?.asignado ? campaignPack?.asignado : noAsignado}
                                     >
-                                        <Dropdown.Item key={0} eventKey={'0'} onClick={() => assignCampaignPackByEmailHandler(campaignPack?.id, 'Nadie')}>
+                                        <Dropdown.Item onClick={() => assignCampaignPackByEmailHandler(campaignPack?.id, 'Nadie')}>
                                             Nadie
                                         </Dropdown.Item>
-                                        <Dropdown.Item key={0} eventKey={'0'} onClick={() => assignCampaignPackByEmailHandler(campaignPack?.id, 'Alguien sin cuenta')}>
+
+                                        <Dropdown.Item onClick={() => assignCampaignPackByEmailHandler(campaignPack?.id, 'Alguien sin cuenta')}>
                                             Alguien sin cuenta
                                         </Dropdown.Item>
+
                                         <Dropdown.Divider />
+                                        
                                         {users.map((user: typeUser, index: number) => (
                                             <Dropdown.Item key={index}
                                                 eventKey={index.toString()}
@@ -122,6 +141,7 @@ export const CampaignAdminsPage = (props: any) => {
                                                 {user.email}
                                             </Dropdown.Item>
                                         ))}
+                                        
                                     </SplitButton>
 
                                     <br/>
@@ -129,22 +149,27 @@ export const CampaignAdminsPage = (props: any) => {
 
                                     <Button variant={secondary}
                                         style={{ display: campaignPack?.terminado ? 'none' : '' }}
-                                        onClick={() => { setId(campaignPack?.id); setShowConfirmAlert(!showConfirmAlert) }}
+                                        onClick={() => { openConfirmModalHandler(campaignPack?.id) }}
                                     >
                                         Marcar como terminado
                                     </Button>
                                 </Col>
 
                                 <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
-                                    
-                                    <h4 className={'mt-3 mb-2'}> {campaignPack?.terminado ? "TERMINADO" : "NO TERMINADO"} </h4>
-                                    <h4> Llamados: {campaignPack?.terminado ? '50' : campaignPack?.llamados ? campaignPack?.llamados.length : '0'} </h4>
+                                    <h4 className={'mt-3 mb-2'}>
+                                        {campaignPack?.terminado ? "TERMINADO" : "NO TERMINADO"}
+                                    </h4>
+                                    <h4>
+                                        Llamados: {campaignPack?.terminado ? '50' : campaignPack?.llamados ? campaignPack?.llamados.length : '0'}
+                                    </h4>
                                     <Button variant={campaignPack?.accessible ? primary : danger}
                                         className={`mt-2 ${campaignPack?.terminado ? 'd-none' : ''}`}
-                                        onClick={() => enableAccesibilityModeHandler(campaignPack?.id, !campaignPack?.accessible)}>
+                                        onClick={() => enableAccesibilityModeHandler(campaignPack?.id, !campaignPack?.accessible)}
+                                    >
                                         {campaignPack?.accessible ? "Paquete accesible" : "Habilitar accesibilidad"}
                                     </Button>
                                 </Col>
+
                             </Row>
                         </Card.Body>
                     </Card>
@@ -152,9 +177,7 @@ export const CampaignAdminsPage = (props: any) => {
                 })
             }
 
-            {(!users || !users.length) && <Loading />}
-
-            {(!campaignPacks || !campaignPacks.length) && <Loading />}
+            {(!users || !users.length || !campaignPacks || !campaignPacks.length) && <><br /> <br /> <Loading /></>}
 
         </div>
     </>

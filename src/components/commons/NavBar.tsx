@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { FaUserAlt } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeAppDispatch, typeRootState } from '../../store/store'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 import { ReturnBtn } from './ReturnBtn'
 // import { SearchBar } from './SearchBar'
 import { useAuth } from '../../context/authContext'
 import { generalBlue } from '../_App'
 import { logoutService } from '../../services/tokenServices'
-import { isMobile } from '../../services/functions'
-import { typeUser } from '../../models/typesUsuarios'
-import { danger } from '../../models/typesTerritorios'
+import { typeUser } from '../../models/user'
+import { danger } from '../../models/territory'
 
-export const NavBar = (props: any) => {
+export const NavBar = () => {
 
     const user: typeUser|undefined = useAuth().user
     const [scrollDown, setScrollDown] = useState<boolean>(false)
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
         document.addEventListener("scroll", () => {
@@ -23,10 +26,19 @@ export const NavBar = (props: any) => {
         })
         return () => setScrollDown(false)
     }, [])
+
+    const dispatch: typeAppDispatch = useDispatch()
     
     const logoutHandler = async (): Promise<void> => {
-        logoutService()
-        window.location.href = "/login"
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: "confirm",
+            title: "¿Cerrar sesión?",
+            message: "",
+            execution: () => {
+                logoutService()
+                window.location.href = "/login"
+            }
+        }))
     }
 
     const color = '#fbfbfb'
@@ -36,7 +48,9 @@ export const NavBar = (props: any) => {
         <div style={{ position: 'fixed', width: '100%', zIndex: 4 }}>
             <Navbar style={{ backgroundColor: generalBlue }} collapseOnSelect expand={'lg'}>
 
-                <Navbar.Brand href={"/"} style={{ color }}>&nbsp; INICIO</Navbar.Brand>
+                <Navbar.Brand href={"/"} style={{ color }}>
+                    &nbsp; INICIO
+                </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls={'responsive-navbar-nav'} />
                 

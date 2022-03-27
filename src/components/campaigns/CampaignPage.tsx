@@ -1,25 +1,26 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router'
 import { Button, Col, Row, Toast } from 'react-bootstrap'
-import { ConfirmAlert } from '../commons/ConfirmAlert'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeAppDispatch, typeRootState } from '../../store/store'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 import { H2 } from '../css/css'
 import { editCampaignPackService, getCampaignPackService, closeCampaignPackService } from '../../services/campaignServices'
 import { putHyphens, isMobile } from '../../services/functions'
 import { typeCampaignPack } from '../../models/campaign'
-import { success } from '../../models/typesTerritorios'
+import { success } from '../../models/territory'
 
-export const CampaignPage = (props: any) => {
+export const CampaignPage = () => {
 
     const idString: string|undefined = useParams<string>()?.id
     const id: number = idString ? parseInt(idString) : 0
     const [showToast, setShowToast] = useState(true)
-    const [showConfirmAlert, setShowConfirmAlert] = useState(false)
     const [campaignPack, setCampaignPack] = useState<typeCampaignPack>()
     const [phoneNumbers, setPhoneNumbers] = useState<number[]>()
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     
-    const refresh = (): void => {    // rep
-        getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
+    const refreshHandler = useCallback((): void => {
+        if (id) getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
             if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
                 return window.location.href = "/index"
             }
@@ -32,46 +33,53 @@ export const CampaignPage = (props: any) => {
             }
             setPhoneNumbers(phones)
         })
-    }
+    }, [id])
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
-            if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
-                return window.location.href = "/index"
-            }
-            setCampaignPack(campaignPack)
-            let phones: number[] = []
-            let i: number = 0
-            while (i < 50) {
-                phones.push(campaignPack?.desde + i)
-                i++
-            }
-            setPhoneNumbers(phones)
-        })
-        return () => { setCampaignPack(undefined) }
-    }, [id])
+        refreshHandler()
+        return () => setCampaignPack(undefined)
+    }, [refreshHandler])
+
+    const dispatch: typeAppDispatch = useDispatch()
+
+    const openAlertModalHandler = (title: string, message: string, execution: Function|undefined = undefined): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title,
+            message,
+            execution
+        }))
+    }
+
+    const openConfirmModalHandler = (): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: "¿Marcar paquete como terminado?",
+            message: "Este paquete te será desasignado y se informará al grupo de territorios que está terminado",
+            execution: closeCampaignPackHandler
+        }))
+    }
 
     const editCampaignPackHandler = (phoneNumber: number, checked: boolean): void => {
         let areThere49: boolean = false
         if (campaignPack?.llamados?.length === 49) areThere49 = true
-        else areThere49 = false
         editCampaignPackService(phoneNumber, checked, id).then((success: boolean) => {
-            if (success && !checked && areThere49) alert("¡Paquete terminado, felicitaciones! Si no tienes otro, podrás solicitar uno más en la próxima pantalla si lo deseas")
-            else if (!success) alert("Algo falló")
-            refresh()
+            if (success && !checked && areThere49)
+                openAlertModalHandler("¡Paquete terminado, felicitaciones!", "Si no tienes otro, podrás solicitar uno más en la próxima pantalla si lo deseas", refreshHandler)
+            else if (!success)
+                openAlertModalHandler("Algo falló", "", refreshHandler)
+            else
+                refreshHandler()
         })
     }
 
-    const markEverythingLikeCalled = (): void => {
-        setShowConfirmAlertHandler()
+    const closeCampaignPackHandler = (): void => {
         closeCampaignPackService(id).then(() => {
-            if (!success) return alert("Algo falló")
+            if (!success) return openAlertModalHandler("Algo falló", "")
             window.location.href = "/index"
         })
     }
-
-    const setShowConfirmAlertHandler = (): void => setShowConfirmAlert(false)
 
     const PhoneChecker1 = (props: any): any => {
         const phoneNumber: number = parseInt(props.phoneNumber)
@@ -94,16 +102,6 @@ export const CampaignPage = (props: any) => {
 
     return (
     <>
-        {showConfirmAlert &&
-            <ConfirmAlert
-                show={false}
-                title={"¿Marcar paquete como terminado?"}
-                message={"Este paquete te será desasignado y se informará al grupo de territorios que está terminado"}
-                execution={markEverythingLikeCalled}
-                cancelAction={setShowConfirmAlertHandler}
-            />
-        }
-
         <H2 className={isDarkMode ? 'text-white' : ''}
             style={{ fontSize: isMobile ? '2.3rem' : '', marginBottom: isMobile ? '20px' : '', marginTop: isMobile ? '90px' : '' }}
         >
@@ -119,19 +117,19 @@ export const CampaignPage = (props: any) => {
             className={'d-block m-auto'}
             style={{ border: '1px solid lightgray', marginBottom: '50px' }}
             onClose={() => setShowToast(false)}>
-          <Toast.Header style={{ border:'1px solid lightgray' }}>
-            <strong className={'mr-auto'}> Campaña Celulares 2022 </strong>
-            <small> </small>
-          </Toast.Header>
-          <Toast.Body> Estos registros serán eliminados al finalizar la campaña </Toast.Body>
+            <Toast.Header style={{ border: '1px solid lightgray' }}>
+                <strong className={'mr-auto'}> Campaña Celulares 2022 </strong>
+                <small> </small>
+            </Toast.Header>
+            <Toast.Body> Estos registros serán eliminados al finalizar la campaña </Toast.Body>
         </Toast>
 
         <Button className={`btn btn-danger d-block m-auto mt-4 mb-0 p-3 ${campaignPack?.terminado ? '' : ''}`}
-            onClick={() => setShowConfirmAlert(!showConfirmAlert)}>
+            onClick={() => openConfirmModalHandler()}>
             Marcar todos como terminados
         </Button>
 
-        <div style={{ display: 'block', margin: isMobile ? '40px auto' : '40px auto' }}>
+        <div style={{ display: 'block', margin: '40px auto' }}>
             <Row>
                 <Col lg={4} sm={6}>
                     {phoneNumbers && !!phoneNumbers.length && phoneNumbers.map((phoneNumber: number, index: number) => (

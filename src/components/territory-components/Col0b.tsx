@@ -1,18 +1,20 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
-import { isMobile } from '../../services/functions'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
 import { useAuth } from '../../context/authContext'
-import { typeUser } from '../../models/typesUsuarios'
-import { typeBlock } from '../../models/typesTerritorios'
+import { typeUser } from '../../models/user'
+import { typeBlock } from '../../models/territory'
 
 export const Col0b = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
-    const isTodo: boolean = props.isTodo
-    const isStatistics: boolean = props.isStatistics
-    const territorio: string = props.territorio
+    const isTodo: boolean = props?.isTodo
+    const isStatistics: boolean = props?.isStatistics
+    const territorio: string = props?.territorio
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     let radios: any[] = []
-    let manzana: typeBlock = props.manzana ? props.manzana : '1'
+    let manzana: typeBlock = props?.manzana ? props?.manzana : '1'
 
     if (isMobile)
         radios = user && user.isAdmin ? 
@@ -52,7 +54,7 @@ export const Col0b = (props: any) => {
                     type={'radio'}
                     variant={isTodo ? 'dark' : (isStatistics ? 'dark' : 'danger')}
                     name={"radio"}
-                    value={radios[0].value}
+                    value={radios[0]?.value}
                     style={{
                         backgroundColor: `${isTodo || isStatistics ? undefined : '#b02a37'}`,
                         padding: '0'
@@ -64,7 +66,7 @@ export const Col0b = (props: any) => {
                         style={{ color: 'white', textDecoration: 'none' }}>
                         
                         <div style={{ lineHeight: '40px', padding: '0 15px' }}>
-                            {radios[0].name}
+                            {radios[0]?.name}
                         </div>
 
                     </a>
@@ -77,7 +79,7 @@ export const Col0b = (props: any) => {
                     type={'radio'}
                     variant={isTodo ? 'danger' : 'dark'}
                     name={"radio"}
-                    value={radios[1].value}
+                    value={radios[1]?.value}
                     style={{ padding: '0' }}
                     checked={isTodo ? true : false}
                 >
@@ -85,7 +87,7 @@ export const Col0b = (props: any) => {
                     <a href={`/territorios/${territorio}/${manzana}/todo`} style={{ color: 'white', textDecoration: 'none' }}>
                         
                         <div style={{ lineHeight: '40px', padding: '0 15px' }}>
-                            {radios[1].name}
+                            {radios[1]?.name}
                         </div>
 
                     </a>
@@ -99,7 +101,7 @@ export const Col0b = (props: any) => {
                         type={'radio'}
                         variant={isStatistics ? 'danger' : 'dark'}
                         name={"radio"}
-                        value={radios[2].value}
+                        value={radios[2]?.value}
                         style={{ padding: '0' }}
                         checked={isStatistics ? true : false }
                     >
@@ -107,7 +109,7 @@ export const Col0b = (props: any) => {
                         <a href={`/estadisticas/${territorio}`} style={{ color: 'white', textDecoration: 'none' }}>
                             
                             <div style={{ lineHeight: '40px', padding: '0 15px' }}>
-                                {radios[2].name}
+                                {radios[2]?.name}
                             </div>
 
                         </a>

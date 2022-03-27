@@ -1,31 +1,35 @@
 import { useEffect, useState } from 'react'
-import { H2 } from './css/css'
 import { Card, Button } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../store/store'
+import { H2 } from './css/css'
+import { generalBlue } from './_App'
 import { Loading } from './commons/Loading'
 import { getStateOfTerritoriesService } from '../services/stateOfTerritoryServices'
 import { getAllLocalStatisticsService, getGlobalStatisticsService } from '../services/statisticsServices'
-import { isMobile } from '../services/functions'
-import { localStatistic, statistic } from '../models/statistic'
-import { typeStateOfTerritory } from '../models/typesTerritorios'
-import { generalBlue } from './_App'
+import { typeLocalStatistic, typeStatistic } from '../models/statistic'
+import { typeStateOfTerritory } from '../models/territory'
 
-export const EstadisticasPage = (props: any) => {
+export const EstadisticasPage = () => {
 
-    const [globalStatistics, setGlobalStatistics] = useState<statistic|null>()
-    const [localStatisticsArray, setLocalStatisticsArray] = useState<localStatistic[]|null>()
+    const [globalStatistics, setGlobalStatistics] = useState<typeStatistic|null>()
+    const [localStatisticsArray, setLocalStatisticsArray] = useState<typeLocalStatistic[]|null>()
     const [loading, setLoading] = useState<boolean>(false)
     const [showBtn, setShowBtn] = useState<boolean>(true)
     const [states, setStates] = useState<typeStateOfTerritory[]>()
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
-        getGlobalStatisticsService().then((data: statistic|null) => { if (data) setGlobalStatistics(data) })
+        getGlobalStatisticsService().then((data: typeStatistic|null) => {
+            if (data) setGlobalStatistics(data)
+        })
     }, [])
 
     const retrieveLocalStats = async () => {
         setLoading(true);
         setShowBtn(false);
-        const allLocalStatistics: localStatistic[]|null = await getAllLocalStatisticsService()
+        const allLocalStatistics: typeLocalStatistic[]|null = await getAllLocalStatisticsService()
         if (allLocalStatistics) {
             setLocalStatisticsArray(allLocalStatistics)
             setLoading(false)
@@ -103,7 +107,7 @@ export const EstadisticasPage = (props: any) => {
         </Button>
 
         {localStatisticsArray && !!localStatisticsArray.length &&
-            localStatisticsArray.map((territory: localStatistic, index: number) => {
+            localStatisticsArray.map((territory: typeLocalStatistic, index: number) => {
                 let isFinished = false
                 if (states) states.forEach((state: typeStateOfTerritory) => {
                     if (state && territory && state.territorio === territory.territorio) isFinished = state.isFinished

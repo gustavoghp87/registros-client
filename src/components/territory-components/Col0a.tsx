@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import { isMobile } from '../../services/functions'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
 
 export const Col0a = (props: any) => {
 
     const territory: string = props.territorio
     const manzanas: string[] = props.manzanas
     const manzana: string = props.manzana
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     let radiosManzana: any[] = []
     manzanas?.forEach((manzana: string) => {

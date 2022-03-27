@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, ListGroup } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../store/store'
+import { useAuth } from '../context/authContext'
 import { Loading } from './commons/Loading'
 import { generalBlue } from './_App'
 import { H2 } from './css/css'
-import { isMobile } from '../services/functions'
 import { getAllLogsService } from '../services/logServices'
 import { typeLog, typeLogsObj } from '../models/log'
+import { typeUser } from '../models/user'
 
-export const LogsPage = (props: any) => {
+export const LogsPage = () => {
     
-    const isDarkMode: string = props?.isDarkMode
+    const user: typeUser|undefined = useAuth().user
     const [logs, setLogs] = useState<typeLogsObj>()
     const [showCampaignAssignments, setShowCampaignAssignments] = useState<boolean>(false)
     const [showCampaignFinishing, setShowCampaignFinishing] = useState<boolean>(false)
@@ -18,12 +21,16 @@ export const LogsPage = (props: any) => {
     const [showStateChanges, setShowStateChanges] = useState<boolean>(false)
     const [showPreaching, setShowPreaching] = useState<boolean>(false)
     const [showUserChanges, setShowUserChanges] = useState<boolean>(false)
+    //const [showAppChanges, setShowAppChanges] = useState<boolean>(false)
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
+        if (user && !user.isAuth) { window.location.href = "/"; return }
         getAllLogsService().then((logsObject: typeLogsObj|null) => {
             if (logsObject) setLogs(logsObject)
         })
-    }, [])
+    }, [user])
 
     const LogsCard = (props: any) => (
         <Card className={`my-4 p-4 ${isDarkMode ? 'bg-dark text-white' : ''} ${props?.logs ? '' : 'd-none'}`}>
@@ -48,14 +55,17 @@ export const LogsPage = (props: any) => {
         </Card>
     )
 
-    const showedLogs: any[][] = logs ? [
+    type typeDoubleArray = [typeLog[], boolean, React.Dispatch<React.SetStateAction<boolean>>, string] | []
+
+    const showedLogs: typeDoubleArray[]|[] = logs ? [
         [logs.campaignAssignmentLogs, showCampaignAssignments, setShowCampaignAssignments, "Asignaciones de la Campaña 2022"],
         [logs.campaignFinishingLogs, showCampaignFinishing, setShowCampaignFinishing, "Completados de la Campaña 2022"],
         [logs.loginLogs, showLogins, setShowLogins, "Ingresos a la App"],
         [logs.userChangesLogs, showUserChanges, setShowUserChanges, "Cambios en los Usuarios"],
         [logs.stateOfTerritoryChangeLogs, showStateChanges, setShowStateChanges, "Cambios en estados de Territorios"],
-        [logs.territoryChangeLogs?.slice(0, 100), showPreaching, setShowPreaching, "Predicación"],
-        [logs.errorLogs,showErrors, setShowErrors, "Errores de la App"],
+        user && user.email === "ghp.2120@gmail.com" ? [logs.territoryChangeLogs?.slice(0, 100), showPreaching, setShowPreaching, "Predicación"] : [],
+        [logs.errorLogs, showErrors, setShowErrors, "Errores de la App"]
+        // [logs.appLogs.filter((log: typeLog) => !log.logText.includes("DB")), showAppChanges, setShowAppChanges, "Reinicios de la App"]
     ] : []
 
     return (
@@ -70,7 +80,7 @@ export const LogsPage = (props: any) => {
 
         {!logs && <> <Loading /> </>}
 
-        {logs && showedLogs && !!showedLogs.length && showedLogs.map((log: any[], index: number) =>
+        {logs && showedLogs && !!showedLogs.length && showedLogs.map((log: typeDoubleArray, index: number) =>
             <div key={index}>
                 <LogsCard
                     logs={log[0]}

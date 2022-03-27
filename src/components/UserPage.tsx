@@ -1,38 +1,53 @@
 import { useState } from 'react'
 import { Card, Button, Form } from 'react-bootstrap'
-import { ConfirmAlert } from './commons/ConfirmAlert'
-import { useAuth } from '../context/authContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeRootState } from '../store/store'
+import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import { H2 } from './css/css'
+import { useAuth } from '../context/authContext'
 import { changePswService, logoutAllService } from '../services/tokenServices'
-import { typeUser } from '../models/typesUsuarios'
+import { typeUser } from '../models/user'
 
-export const UserPage = (props: any) => {
+export const UserPage = () => {
     
     const user: typeUser|undefined = useAuth().user
     const [show, setShow] = useState(false)
     const [psw, setPsw] = useState('')
     const [newPsw, setNewPsw] = useState('')
-    const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const dispatch = useDispatch()
+
+    const openAlertModalHandler = (title: string, message: string): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title,
+            message
+        }))
+    }
+
+    const openConfirmModalHandler = (option: 1|2): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: option === 1 ? "¿Cerrar sesiones?" : "Atención",
+            message: option === 1 ? "Esta opción cerrará todas las sesiones en todos los dispositivos en que se haya ingresado excepto en este" : `Se cambiará la contraseña de ${psw} a ${newPsw}`,
+            execution: option === 1 ? logoutAll : changePswHandler
+        }))
+    }
     
     const changePswHandler = async (): Promise<void> => {
-        alert("Cambiando password de " + psw + " a " + newPsw)
-        const response: any = await changePswService(psw, newPsw, null)
-        if (response && response.newToken) { alert("Clave cambiada con éxito") }
-        else if (response && response.wrongPassword) alert("Clave incorrecta")
-        else alert("Algo falló")
+        const response = await changePswService(psw, newPsw, null)
         setPsw('')
         setNewPsw('')
+        if (response && response.newToken) openAlertModalHandler("Clave cambiada con éxito", "")
+        else if (response && response.wrongPassword) openAlertModalHandler("Clave incorrecta", "")
+        else openAlertModalHandler("Algo falló", "")
     }
 
     const logoutAll = async (): Promise<void> => {
-        setShowConfirmAlertHandler()
         const success: boolean = await logoutAllService()
-        if (!success) return alert("Algo falló; intente de nuevo")
-        alert("Cierre exitoso")
+        if (!success) return openAlertModalHandler("Algo falló", "Intentar de nuevo")
+        openAlertModalHandler("Cierre exitoso", "")
     }
-
-    const setShowConfirmAlertHandler = (): void => setShowConfirmAlert(false)
 
     const getAssignedTerritoriesSorted = (): number[] => {
         let sorted: number[] = []
@@ -42,16 +57,7 @@ export const UserPage = (props: any) => {
 
 
     return (
-        <>
-        {showConfirmAlert &&
-            <ConfirmAlert
-                title={"¿Cerrar sesiones?"}
-                message={"Esta opción cerrará todas las sesiones en todos los dispositivos en que se haya ingresado excepto en este"}
-                execution={logoutAll}
-                cancelAction={setShowConfirmAlertHandler}
-            />
-        }
-
+    <>
         <H2 className={`text-center ${isDarkMode ? 'text-white' : ''}`}> Usuario </H2>
 
         {user &&
@@ -71,6 +77,7 @@ export const UserPage = (props: any) => {
                             {territorio}
                         </Button>
                     ))}
+                    {(!user.asign || !user.asign.length) && <h4>Ninguno</h4>}
 
                 </div>
 
@@ -84,7 +91,7 @@ export const UserPage = (props: any) => {
                 <Button
                     variant={'danger'}
                     style={{ display: show ? 'none' : 'block', maxWidth: '400px', margin: '30px auto 30px auto' }}
-                    onClick={() => setShowConfirmAlert(true)}>
+                    onClick={() => openConfirmModalHandler(1)}>
                     Cerrar sesión en todos los dispositivos
                 </Button>
 
@@ -112,7 +119,12 @@ export const UserPage = (props: any) => {
                         />
                     </Form.Group>
 
-                    <Button variant={'primary'} className={'mt-4 mb-2'} type={'submit'} onClick={() => changePswHandler()}>
+                    <Button
+                        variant={'primary'}
+                        type={'submit'}
+                        className={'mt-4 mb-2'}
+                        onClick={() => openConfirmModalHandler(2)}
+                    >
                         Aceptar
                     </Button>
 

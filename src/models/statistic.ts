@@ -1,4 +1,4 @@
-export type statistic = {
+export type typeStatistic = {
     count: number
     countContesto: number
     countNoContesto: number
@@ -8,6 +8,6 @@ export type statistic = {
     libres: number
 }
 
-export interface localStatistic extends statistic {
+export interface typeLocalStatistic extends typeStatistic {
     territorio: string
 }

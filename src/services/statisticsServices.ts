@@ -1,7 +1,8 @@
 import { SERVER } from '../config'
 import { headers } from './functions'
 import { getTokenService } from './tokenServices'
-import { localStatistic, statistic } from '../models/statistic'
+import { typeLocalStatistic, typeStatistic } from '../models/statistic'
+import { typeResponseData } from '../models/httpResponse'
 
 const base: string = `${SERVER}/api/statistic`
 
@@ -12,57 +13,57 @@ export const getNumberOfFreePhonesService = async (territory: string): Promise<n
             method: 'GET',
             headers
         })
-        const data: any = await response?.json()
-        if (!data || !data.success || data.data === undefined) return null
-        return data.data
+        const data: typeResponseData = await response?.json()
+        if (!data || !data.success || data.numberOfFreePhones === undefined) return null
+        return data.numberOfFreePhones
     } catch (error) {
         console.log(error)
         return null
     }
 }
 
-export const getLocalStatisticsService = async (territory: string): Promise<localStatistic|null> => {
+export const getLocalStatisticsService = async (territory: string): Promise<typeLocalStatistic|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/${territory}`, {
             method: 'GET',
             headers
         })
-        const data: any = await response?.json()
-        if (!data || !data.success || !data.data) return null
-        return data.data
+        const data: typeResponseData = await response?.json()
+        if (!data || !data.success || !data.localStatistic) return null
+        return data.localStatistic
     } catch (error) {
         console.log(error)
         return null
     }
 }
 
-export const getAllLocalStatisticsService = async (): Promise<localStatistic[]|null> => {
+export const getAllLocalStatisticsService = async (): Promise<typeLocalStatistic[]|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}`, {
             method: 'GET',
             headers
         })
-        const data: any = await response.json()
-        if (!data || !data.success || !data.data) return null
-        return data.data
+        const data: typeResponseData = await response.json()
+        if (!data || !data.success || !data.localStatistics) return null
+        return data.localStatistics
     } catch (error) {
         console.log(error)
         return null
     }
 }
 
-export const getGlobalStatisticsService = async (): Promise<statistic|null> => {
+export const getGlobalStatisticsService = async (): Promise<typeStatistic|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}`, {
             method: 'POST',
             headers
         })
-        const data: any = await response.json()
-        if (!data || !data.success || !data.data) return null
-        return data.data
+        const data: typeResponseData = await response.json()
+        if (!data || !data.success || !data.statistic) return null
+        return data.statistic
     } catch (error) {
         console.log(error)
         return null

@@ -1,4 +1,4 @@
-import { typeBlock, variant } from "./typesTerritorios"
+import { typeBlock, variant } from "./territory"
 
 export type typeHTHState = "No predicado" | "No contestó" | "Contestó" | "No tocar" | "Carta dejada"
 

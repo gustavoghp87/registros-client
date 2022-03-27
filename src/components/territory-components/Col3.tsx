@@ -1,12 +1,14 @@
 import { Col, Row, Dropdown } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
 import { isMobile, timeConverter } from '../../services/functions'
-import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeHousehold } from '../../models/typesTerritorios'
+import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeHousehold } from '../../models/territory'
 
 export const Col3 = (props: any) => {
 
-    const vivienda: typeHousehold = props?.vivienda
-    const cambiarEstado: (inner_id: string, estado: string, noAbonado: boolean|null, asignado: boolean|undefined) => Promise<void> = props?.cambiarEstado
-    const isDarkMode: string = props.isDarkMode
+    const household: typeHousehold = props?.household
+    const modifyHouseholdHandler = props?.modifyHouseholdHandler
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
 
     return (
     
@@ -16,35 +18,35 @@ export const Col3 = (props: any) => {
 
             <Dropdown style={{ width: '100%', margin: isMobile ? '25px auto' : '30px auto' }}>
 
-                <Dropdown.Toggle variant={vivienda.variante}
+                <Dropdown.Toggle variant={household?.variante}
                     style={{ width: '80%', border: '1px solid black' }}
                 >
-                    {vivienda.estado}
+                    {household?.estado}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, noPredicado, vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => modifyHouseholdHandler(household?.inner_id, noPredicado, household?.noAbonado, household?.asignado)}>
                         {noPredicado}
                     </Dropdown.Item>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, contesto, vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => modifyHouseholdHandler(household?.inner_id, contesto, household?.noAbonado, household?.asignado)}>
                         {contesto}
                     </Dropdown.Item>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, noContesto, vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => modifyHouseholdHandler(household?.inner_id, noContesto, household?.noAbonado, household?.asignado)}>
                         {noContesto}
                     </Dropdown.Item>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, aDejarCarta, vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => modifyHouseholdHandler(household?.inner_id, aDejarCarta, household?.noAbonado, household?.asignado)}>
                         {aDejarCarta}
                     </Dropdown.Item>
                     
                     <Dropdown.Item
-                        onClick={() => cambiarEstado(vivienda.inner_id, noLlamar, vivienda.noAbonado, vivienda.asignado)}>
+                        onClick={() => modifyHouseholdHandler(household?.inner_id, noLlamar, household?.noAbonado, household?.asignado)}>
                         {noLlamar}
                     </Dropdown.Item>
                 </Dropdown.Menu>
@@ -54,19 +56,19 @@ export const Col3 = (props: any) => {
         </Row>
 
         <Row style={{ height: '40%', marginTop: '15px' }}>
-            {vivienda.fechaUlt &&
+            {household?.fechaUlt &&
                 <div className={`card border-dark mb-3 p-0 ${isDarkMode ? 'bg-white text-black' : ''}`}
                     style={{
                         maxWidth: '18rem',
                         //backgroundColor: 'rgb(214, 214, 214)',
-                        display: vivienda.estado === noPredicado ? 'none' : 'block',
+                        display: household?.estado === noPredicado ? 'none' : 'block',
                         margin: 'auto'
                     }}
                 >
                     
                     <div className={'card-header'} style={{ padding: '0.2rem 0.5rem' }}>
                         <p className={'card-text text-center'}>
-                            Se llamó el {timeConverter(vivienda.fechaUlt, true)}
+                            Se llamó el {timeConverter(household?.fechaUlt, true)}
                         </p>
                     </div>
 

@@ -2,49 +2,63 @@ import { useEffect, useState } from 'react'
 import { Card, Button } from 'react-bootstrap'
 import { Loading } from './commons/Loading'
 import { useParams } from 'react-router'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeAppDispatch, typeRootState } from '../store/store'
+import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import { Col0b } from './territory-components/Col0b'
-import { ConfirmAlert } from './commons/ConfirmAlert'
 import { isMobile, timeConverter } from '../services/functions'
 import { H2 } from './css/css'
 import { resetTerritoryService } from '../services/territoryServices'
 import { getLocalStatisticsService } from '../services/statisticsServices'
 import { getStateOfTerritoryService } from '../services/stateOfTerritoryServices'
-import { localStatistic } from '../models/statistic'
-import { typeResetDate, typeStateOfTerritory } from '../models/typesTerritorios'
+import { typeLocalStatistic } from '../models/statistic'
+import { typeResetDate, typeStateOfTerritory } from '../models/territory'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const EstadisticasLocalPage = (props: any) => {
+export const EstadisticasLocalPage = () => {
 
     const { territorio } = useParams<string>()
-    const [datos, setDatos] = useState<localStatistic>()
+    const [datos, setDatos] = useState<typeLocalStatistic>()
     const [stateOfTerritory, setStateOfTerritory] = useState<typeStateOfTerritory>()
-    const [option, setOption] = useState<number>()
-    const [message, setMessage] = useState<string>()
-    const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
 
     useEffect(() => {
         if (territorio) {
-            getLocalStatisticsService(territorio).then((data: localStatistic|null) => { if (data) setDatos(data) })
+            getLocalStatisticsService(territorio).then((data: typeLocalStatistic|null) => { if (data) setDatos(data) })
             getStateOfTerritoryService(territorio).then((stateOfTerritory: typeStateOfTerritory|null) => {
                 if (stateOfTerritory !== null) { setStateOfTerritory(stateOfTerritory) }
             })
         }
     }, [territorio])
-
-    const resetHandler = async (option: number): Promise<void> => {
-        setOption(option)
-        if (option === 1) setMessage("Esta opción resetea los predicados más viejos (más de 6 meses)")
-        else if (option === 2) setMessage("Esta opción resetea predicados (no hace nada con los no abonados)")
-        else if (option === 3) setMessage("Esta opción resetea todos los predicados y, además, los no abonados de más de 6 meses")
-        else if (option === 4) setMessage("Esta opción resetea ABSOLUTAMENTE TODO")
-        setTimeout(() => setShowConfirmAlert(true), 1000)
+    
+    type typeOption = 1 | 2 | 3 | 4
+    let option: typeOption = 1
+    
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    
+    const resetHandler = async (selectedOption: typeOption): Promise<void> => {
+        if (!selectedOption) return
+        option = selectedOption
+        let message: string = ""
+        if (option === 1)
+            message = "Esta opción resetea los predicados más viejos (más de 6 meses)"
+        else if (option === 2)
+            message = "Esta opción resetea predicados (no hace nada con los no abonados)"
+        else if (option === 3)
+            message = "Esta opción resetea todos los predicados y, además, los no abonados de más de 6 meses"
+        else if (option === 4)
+            message = "Esta opción resetea ABSOLUTAMENTE TODO"
+        else return
+        dispatch(setValuesAndOpenAlertModalReducer({
+            showingAlertModal: true,
+            mode: 'confirm',
+            title: `¿Resetear Territorio ${territorio}?`,
+            message,
+            execution: resetNow
+        }))
     }
-
-    const setShowConfirmAlertHandler = (): void => setShowConfirmAlert(false)
     
     const resetNow = async (): Promise<void> => {
-        setShowConfirmAlertHandler()
         if (!territorio || !option) return
         const success: boolean = await resetTerritoryService(territorio, option)
         if (success) window.location.reload()
@@ -67,16 +81,7 @@ export const EstadisticasLocalPage = (props: any) => {
     // const noLlamarRel: number = datos ? Math.round(datos.countNoLlamar*10000/datos.count/10)/10 : 0
 
     return (
-        <>
-        {showConfirmAlert &&
-            <ConfirmAlert
-                title={`¿Resetear Territorio ${territorio}?`}
-                message={message}
-                execution={resetNow}
-                cancelAction={setShowConfirmAlertHandler}
-            />
-        }
-        
+    <>        
         <H2 className={isDarkMode ? 'text-white' : ''}> ESTADÍSTICAS </H2>
 
         <h1 className={isDarkMode ? 'text-white' : ''}
@@ -150,7 +155,9 @@ export const EstadisticasLocalPage = (props: any) => {
                         
                     {stateOfTerritory && stateOfTerritory.resetDate && !!stateOfTerritory.resetDate.length &&
                         stateOfTerritory.resetDate.map((reset: typeResetDate, index: number) =>
-                            <h4 key={index}> &nbsp; {`-El ${timeConverter(reset.date.toString(), true)} con la opción ${reset.option}`} </h4>
+                            <h4 key={index}>
+                                &nbsp; {`-El ${timeConverter(reset.date.toString(), true)} con la opción ${reset.option}`}
+                            </h4>
                         )
                     }
 

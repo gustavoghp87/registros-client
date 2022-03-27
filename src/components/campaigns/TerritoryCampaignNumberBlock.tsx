@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Button } from 'react-bootstrap'
-import { ConfirmAlert } from '../commons/ConfirmAlert'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeAppDispatch, typeRootState } from '../../store/store'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 import { useAuth } from '../../context/authContext'
-import { isMobile } from '../../services/functions'
 import { askForANewCampaignPackService, getCampaignPacksServiceByUser } from '../../services/campaignServices'
-import { typeUser } from '../../models/typesUsuarios'
+import { typeUser } from '../../models/user'
 import { typeCampaignPack } from '../../models/campaign'
 
-export const TerritoryCampaigneNumberBlock = (props: any) => {
+export const TerritoryCampaigneNumberBlock = () => {
 
     const user: typeUser|undefined = useAuth().user
     const [showForm, setShowForm] = useState<boolean>(false)
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
-    const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     
     useEffect(() => {
         if (user && user.isAuth)
@@ -32,32 +33,39 @@ export const TerritoryCampaigneNumberBlock = (props: any) => {
         return () => setCampaignPacks(undefined)
     }, [user])
 
+    const dispatch: typeAppDispatch = useDispatch()
+
+    const openAlertModalHandler = (title: string, message: string, execution: Function|undefined = undefined): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title,
+            message,
+            execution
+        }))
+    }
+
+    const openConfirmModalHandler = (): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: "¿Pedir un nuevo paquete de números?",
+            message: "Se te asignará otro paquete de 50 números de inmediato",
+            execution: askForANewCampaignPack
+        }))
+    }
+
     const askForANewCampaignPack = (): void => {
-        setShowConfirmAlertHandler()
         askForANewCampaignPackService().then((success: boolean) => {
-            if (!success) alert("Algo falló")
+            if (!success) return openAlertModalHandler("Algo falló", "", () => window.location.reload())
             window.location.reload()
         })
     }
 
-    const setShowConfirmAlertHandler = (): void => setShowConfirmAlert(false)
-
 
     return (
     <>
-        {showConfirmAlert &&
-            <ConfirmAlert
-                show={false}
-                title={"¿Pedir un nuevo paquete de números?"}
-                message={"Se te asignará otro paquete de 50 números de inmediato"}
-                execution={askForANewCampaignPack}
-                cancelAction={setShowConfirmAlertHandler}
-            />
-        }
-        
-        <div className={'container'} style={{ paddingTop: '0', marginBottom: '50px' }}>
+        <div className={'container'} style={{ paddingTop: '0', marginBottom: '0px' }}>
 
-            <Row style={{ padding: isMobile ? '40px' : '70px 40px 0px 40px', justifyContent: 'space-evenly' }}>
+            <Row style={{ padding: isMobile ? '40px' : '40px', justifyContent: 'space-evenly' }}>
 
                 {user && user.isAuth && campaignPacks && !!campaignPacks.length && campaignPacks.map((campaignPack: typeCampaignPack, index: number) =>
                     <Link type={'button'} key={index}
@@ -65,7 +73,7 @@ export const TerritoryCampaigneNumberBlock = (props: any) => {
                         style={{
                             width: '140px',
                             borderRadius: '15px',
-                            margin: '0 1% 40px 1%'
+                            margin: '0 1% 0px 1%'
                         }}
                         to={`/celulares/${campaignPack?.id?.toString()}`}
                     >
@@ -81,7 +89,7 @@ export const TerritoryCampaigneNumberBlock = (props: any) => {
                 )}
 
                 {((user && user.isAuth && (!campaignPacks || campaignPacks.length === 0)) || showForm) &&
-                    <h3 className={`text-center mb-4 ${isDarkMode ? 'text-white' : ''}`}>
+                    <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
                         No hay paquetes asignados <br /> Para recibir uno, hacer click en este botón:
                     </h3>
                 }
@@ -89,9 +97,9 @@ export const TerritoryCampaigneNumberBlock = (props: any) => {
 
             <Button
                 className={`btn btn-success d-block m-auto mt-4 py-3 px-4 ${showForm ? '' : 'd-none'}`}
-                onClick={() => setShowConfirmAlert(true)}
+                onClick={() => openConfirmModalHandler()}
             >
-                <span>Pedir un nuevo paquete de teléfonos <br /> para la campaña de celulares 2022</span>
+                <span> Pedir un nuevo paquete de teléfonos <br /> para la Campaña de Celulares 2022 </span>
             </Button>
 
         </div>

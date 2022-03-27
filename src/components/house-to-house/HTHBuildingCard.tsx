@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Card, Row, Col, Button } from 'react-bootstrap'
-import { isMobile } from '../../services/functions'
 import { HTHStateDropdown } from './HTHStateDropdown'
 import { HTHHouseholdModal } from './HTHHouseholdModal'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
 import * as types from '../../models/houseToHouse'
 import { typeHTHBuilding, typeHTHHousehold } from '../../models/houseToHouse'
 
@@ -18,6 +19,7 @@ export const HTHBuildingCard = (props: any) => {
         .length
     const [showHouseholds, setShowHouseholds] = useState<boolean>(false)
     const [showModal, setShowModal] = useState<boolean>(false)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     const closeHTHModalHandler = (): void => setShowModal(false)
 

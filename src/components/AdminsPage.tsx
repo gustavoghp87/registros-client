@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
-import { ConfirmAlert } from './commons/ConfirmAlert'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeAppDispatch, typeRootState } from '../store/store'
+import { setValuesAndOpenAlertModalReducer, typeMode } from '../store/AlertModalSlice'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
 import io from 'socket.io-client'
 import { SERVER } from '../config'
 import { assignTerritoryService, modifyUserService, getUsersService } from '../services/userServices'
 import { changePswOtherUserService } from '../services/tokenServices'
-import { isMobile } from '../services/functions'
-import { typeUser } from '../models/typesUsuarios'
-import { danger, primary, dark } from '../models/typesTerritorios'
+import { typeUser } from '../models/user'
+import { danger, primary, dark } from '../models/territory'
 import { H2 } from './css/css'
 
-export const AdminsPage = (props: any) => {
+export const AdminsPage = () => {
     
     const { refreshUser, user } = useAuth()
     const [users, setUsers] = useState<typeUser[]>()
@@ -22,9 +23,8 @@ export const AdminsPage = (props: any) => {
     const [desasig, setDesasig] = useState<string[]>([])
     const [viendo, setViendo] = useState<string>("todos")
     const [socket, setSocket] = useState<any>(null)
-    const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false)
-    const [alertText, setAlertText] = useState<[string, string, Function|null, Function|null]>(["", "", null, null])
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
@@ -36,12 +36,12 @@ export const AdminsPage = (props: any) => {
             if (newSocket) setSocket(newSocket)
         }
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
-        return () => closeAlertModalHandler()
+        return
     }, [socket, socket?.connected])
-    
+
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
         const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
-        if (!updatedUser) return openAlertModal("Error", "Algo falló al modificar usuario", null, null)
+        if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al modificar usuario")
         sendUpdatedUser(updatedUser)
         refreshUserHandler(user_id)
     }
@@ -49,7 +49,7 @@ export const AdminsPage = (props: any) => {
     const assignTerritoryHandler = (user_id: string, all: boolean, inputId: string | null): void => {
         const assignTerritory = async (user_id: string, asignar: number|null, desasignar: number|null, all: boolean) => {
             const updatedUser: typeUser|null = await assignTerritoryService(user_id, asignar, desasignar, all)
-            if (!updatedUser) return openAlertModal("Error", "Algo falló al cambiar las asignaciones", null, null)
+            if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al cambiar las asignaciones")
             sendUpdatedUser(updatedUser)
             refreshUserHandler(user_id)
         }
@@ -76,41 +76,43 @@ export const AdminsPage = (props: any) => {
         if (user_id === user?._id && refreshUser) refreshUser()
     }
 
-    let email: string = ""
-
-    const openAlertModal = (title: string, message: string, execution: Function|null, cancelAction: Function|null, selectedEmail: string|null = null): void => {
-        if (!execution) execution = closeAlertModalHandler
-        else if (selectedEmail) email = selectedEmail
-        setAlertText([title, message, execution, cancelAction])
-        setShowConfirmAlert(true)
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    
+    const openAlertModalHandler = (mode: typeMode, title: string, message: string, execution: Function|undefined = undefined): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode,
+            title,
+            message,
+            execution
+        }))
     }
     
-    const closeAlertModalHandler = (): void => setShowConfirmAlert(false)
+    let email: string = ""
+    const openConfirmModalHandler = (selectedEmail: string): void => {
+        if (selectedEmail) email = selectedEmail
+        else return
+        openAlertModalHandler(
+            'confirm',
+            "¿Resetear clave?",
+            `Esto reseteará la contraseña del usuario ${email}, cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`,
+            resetPasswordHandler
+        )
+    }
 
-    const resetPassword = async (): Promise<void> => {
-        closeAlertModalHandler()
-        if (!email) return
-        const response: any = await changePswOtherUserService(email)
+    const resetPasswordHandler = async (): Promise<void> => {
+        if (!email)
+            return openAlertModalHandler('alert', "Algo falló", "Refrescar la página y volver a intentar")
+        const response = await changePswOtherUserService(email)
         if (response && response.success && response.newPassword)
-            openAlertModal("Logrado", `Clave reseteada y enviada por email a ${email}\nNueva clave: ${response.newPassword}`, null, null)
+            openAlertModalHandler('alert', `Clave reseteada y enviada por email a ${email}`, `Nueva clave: ${response.newPassword}`)
         else if (response && response.newPassword && response.emailFailed)
-            openAlertModal("Atención", `Se reseteó la contraseña pero falló el envío del email
-            Nueva clave: ${response.newPassword}`, null, null)
+            openAlertModalHandler('alert', "Se reseteó la contraseña pero falló el envío del email", `Nueva clave: ${response.newPassword}`)
         else
-            openAlertModal("Error", `Algo falló al resetear la contraseña de ${email}`, null, null)
+            openAlertModalHandler('alert', "Error", `Algo falló al resetear la contraseña de ${email}`)
     }
 
     return (
     <>
-        {showConfirmAlert &&
-            <ConfirmAlert
-                title={alertText[0]}
-                message={alertText[1]}
-                execution={alertText[2]}
-                cancelAction={alertText[3]}
-            />
-        }
-
         <H2
             className={isDarkMode ? 'text-white' : ''}
             style={{ fontSize: isMobile ? '2.2rem' : '' }}
@@ -118,12 +120,19 @@ export const AdminsPage = (props: any) => {
             ADMINISTRADORES
         </H2>
 
-        <Button variant={danger} style={{ display: 'block', margin:'30px auto 0 auto' }}
-            onClick={() => window.location.href="/celulares-admins"}>
+        <Button variant={danger} style={{ display: 'block', margin: '50px auto 0 auto', width: '227px' }}
+            onClick={() => window.location.href = "/logs"}>
+            Ir a Logs de la Aplicación
+        </Button>
+
+        <Button variant={danger} style={{ display: 'block', margin: '30px auto 60px auto' }}
+            onClick={() => window.location.href = "/celulares-admins"}>
             Ir a Campaña Celulares 2022
         </Button>
 
-        <div style={{ display: 'block', margin: isMobile ? '40px auto' : '80px auto' }}>
+        <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
+
+        <div style={{ display: 'block', margin: isMobile ? '40px auto' : '40px auto' }}>
 
             {(!users || !users.length) && <Loading />}
 
@@ -172,7 +181,7 @@ export const AdminsPage = (props: any) => {
                     <Card key={index} 
                         className={isDarkMode ? 'bg-dark text-white' : ''}
                         style={{
-                            width: isMobile ? '332px': '500px',
+                            width: isMobile ? '95%': '500px',
                             margin: '30px auto 60px auto',
                             backgroundColor: '#f6f6f8',
                             display: viendo === 'todos' || (user && user?.group && user?.group.toString()) === viendo.slice(-1) ? '' : 'none'
@@ -297,14 +306,7 @@ export const AdminsPage = (props: any) => {
                             <br/>
 
                             <Button className={'col-12 m-2'} variant={primary}
-                                onClick = {() => {
-                                    openAlertModal("¿Resetear clave?",
-                                        `Esto reseteará la contraseña del usuario ${user?.email}, cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`,
-                                        resetPassword,
-                                        closeAlertModalHandler,
-                                        user?.email
-                                    )
-                                }}
+                                onClick = {() => openConfirmModalHandler(user?.email)}
                             >
 
                                 RESETEAR CONTRASEÑA

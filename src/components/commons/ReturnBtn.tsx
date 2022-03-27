@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { Button } from 'react-bootstrap'
 import { BsBackspace } from 'react-icons/bs'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
-import { isMobile } from '../../services/functions'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
 import { generalBlue } from '../_App'
 
 export const ReturnBtn = () => {
 
     const navigate: NavigateFunction = useNavigate()
     const [show, setShow] = useState<boolean>(false)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
         if (window.location.pathname === '/index') setShow(true)

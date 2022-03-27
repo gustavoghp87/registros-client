@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeAppDispatch, typeRootState } from '../store/store'
+import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import io from 'socket.io-client'
 import { SERVER } from '../config'
 import { Loading } from './commons/Loading'
 import { generalBlue } from './_App'
 import { WarningToaster } from './commons/WarningToaster'
-import { ConfirmAlert } from './commons/ConfirmAlert'
 import { Col0a } from './territory-components/Col0a'
 import { Col0b } from './territory-components/Col0b'
 import { Col1 } from './territory-components/Col1'
@@ -17,12 +19,11 @@ import { TerritoryWarningToaster } from './territory-components/TerritoryWarning
 import { useAuth } from '../context/authContext'
 import { markTerritoryAsFinishedService as closeTerritoryService, getStateOfTerritoryService } from '../services/stateOfTerritoryServices'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService } from '../services/territoryServices'
-import { isMobile } from '../services/functions'
-import * as types from '../models/typesTerritorios'
-import { typeUser } from '../models/typesUsuarios'
+import * as types from '../models/territory'
+import { typeUser } from '../models/user'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const TerritoriosPage = (props: any) => {
+export const TerritoriosPage = () => {
 
     const navigate = useNavigate()
     const user: typeUser|undefined = useAuth().user
@@ -33,21 +34,18 @@ export const TerritoriosPage = (props: any) => {
     const [showMap, setShowMap] = useState<boolean>(false)
     const [brought, setBrought] = useState<number>(10)
     const [loaded, setLoaded] = useState<boolean>(false)
-    const [blocks, setBlocks] = useState<string[]>()
+    const [blocks, setBlocks] = useState<types.typeBlock[]>()
     const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
     const [socket, setSocket] = useState<any>(null)
     const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
     const [showBottomBtns, setShowBottomBtns] = useState<boolean>(true)
-    //const [showWarningToasterPermanently, setShowWarningToasterPermanently] = useState<boolean>(false);
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null);
-    const [showConfirmAlertOpen, setShowConfirmAlertOpen] = useState<boolean>(false)
-    const [showConfirmAlertClose, setShowConfirmAlertClose] = useState<boolean>(false)
-    const isDarkMode: string = props.isDarkMode
-    
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     
     useEffect(() => {
         // window.scrollTo(0, 0)
-        if (territorio) getBlocksService(territorio).then((blocks: string[]|null) => { if (blocks) setBlocks(blocks) })
+        if (territorio) getBlocksService(territorio).then((blocks: types.typeBlock[]|null) => { if (blocks) setBlocks(blocks) })
         if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, brought, showingAll)
             .then((response: [types.typeHousehold[], boolean]|null) => {
                 if (response && response[0]) {
@@ -55,10 +53,6 @@ export const TerritoriosPage = (props: any) => {
                     const households: types.typeHousehold[] = response[0]
                     setHouseholds(households)
                     if (response[1]) setShowBottomBtns(false)
-
-                    // if trajo todos
-                    //     setBroughtAll(true)
-                    //     setTextBtn('')
                     setTextBtn(`Traer 10 más (${brought + 10})`)
                     getStateOfTerritoryService(territorio).then((stateOfTerritory: types.typeStateOfTerritory|null) => {
                         if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory.isFinished) }
@@ -75,7 +69,6 @@ export const TerritoriosPage = (props: any) => {
                     }
                     if (user && userEmail && userEmail !== user.email) {
                         setShowWarningToaster(true)
-                        //setShowWarningToasterPermanently(true)
                         setUserEmailWarningToaster(userEmail)
                     }
                 }
@@ -85,44 +78,48 @@ export const TerritoriosPage = (props: any) => {
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
         return () => setHouseholds(undefined)
     }, [showingAll, manzana, territorio, brought, socket, socket?.connected, user, user?.email])
+
+    const dispatch: typeAppDispatch = useDispatch()
+
+    const openAlertModalHandler = (title: string, message: string): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title,
+            message
+        }))
+    }
+
+    const openConfirmModalHandler = (modal: number) => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: modal === 1 ? "¿Confirmar abrir territorio?" : "¿Confirmar finalizar territorio?",
+            message: modal === 1 ? `El territorio ${territorio} se abrirá de nuevo` : `El territorio ${territorio} se dará por terminado y se te desasignará`,
+            execution: modal === 1 ? openTerritoryHandler : closeTerritoryHandler
+        }))
+    }
     
-    const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
-        noAbonado = !noAbonado ? false : true
-        asignado = !asignado ? false : true
-        const household: types.typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
-        if (!household) return alert("Algo falló al modificar")
-        sendUpdatedHousehold(household)
-    }
-
-    const getTenMoreHandler = (): void => {
-        setTextBtn('...buscando...')
-        setBrought(brought + 10)
-    }
-
     const closeTerritoryHandler = async (): Promise<void> => {
-        setShowConfirmAlertCloseHandler()
         if (!territorio) return
         const success = await closeTerritoryService(territorio, true)
-        if (!success) return alert("Algo falló")
+        if (!success) return openAlertModalHandler("Algo falló", "")
         navigate("/index")
     }
 
     const openTerritoryHandler = async (): Promise<void> => {
-        setShowConfirmAlertOpenHandler()
         if (!territorio) return
         const success: boolean = await closeTerritoryService(territorio, false)
-        if (!success) alert("Algo falló")
+        if (!success) openAlertModalHandler("Algo falló", "")
         window.location.reload()
     }
 
-    const setBroughtAllHandler = (): void => {
-        setShowBottomBtns(false)
-        setBrought(10000)
+    const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
+        noAbonado = !noAbonado ? false : true
+        asignado = !asignado ? false : true
+        const household: types.typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
+        if (!household) return openAlertModalHandler("Algo falló al modificar", "")
+        sendUpdatedHousehold(household)
     }
-
-    const setShowConfirmAlertOpenHandler = (): void => setShowConfirmAlertOpen(false)
-    const setShowConfirmAlertCloseHandler = (): void => setShowConfirmAlertClose(false)
-
+    
     const sendUpdatedHousehold = (updatedHousehold: types.typeHousehold): void => {
         let indexOfHousehold: number = 0
         households?.forEach((household: types.typeHousehold, index: number) => {
@@ -135,9 +132,21 @@ export const TerritoriosPage = (props: any) => {
             userEmail: user?.email
         }
         if (socket && socket.connected && objPackage) socket.emit('household: change', objPackage)
-        else alert("No estás conectado")
+        else openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet")
+    }
+    
+    const getTenMoreHandler = (): void => {
+        setTextBtn('...buscando...')
+        setBrought(brought + 10)
     }
 
+    const setBroughtAllHandler = (): void => {
+        setShowBottomBtns(false)
+        setBrought(10000)
+    }
+
+    const toggleshowWarningToaster = (): void => setShowWarningToaster(false)
+    
     // const highligthCard = (id: string): void => {
     //     const element: HTMLElement|null = document.getElementById(id)
     //     if (element) {
@@ -159,34 +168,13 @@ export const TerritoriosPage = (props: any) => {
     //     }
     // }
 
-    const toggleshowWarningToaster = (): void => setShowWarningToaster(false)
-
 
     return (
         <>
             <TerritoryWarningToaster />
 
-            {showConfirmAlertOpen &&
-                <ConfirmAlert
-                    title={"¿Confirmar abrir territorio?"}
-                    message={`El territorio ${territorio} se abrirá de nuevo`}
-                    execution={openTerritoryHandler}
-                    cancelAction={setShowConfirmAlertOpenHandler}
-                />
-            }
-
-            {showConfirmAlertClose &&
-                <ConfirmAlert
-                    title={"¿Confirmar finalizar territorio?"}
-                    message={`El territorio ${territorio} se dará por terminado y se te desasignará`}
-                    execution={closeTerritoryHandler}
-                    cancelAction={setShowConfirmAlertCloseHandler}
-                />
-            }
-
             <WarningToaster
                 showWarningToaster={showWarningToaster}
-                //showWarningToasterPermanently={showWarningToasterPermanently}
                 toggleshowWarningToaster={toggleshowWarningToaster}
                 userEmailWarningToaster={userEmailWarningToaster}
                 currentUserEmail={user?.email}
@@ -195,8 +183,8 @@ export const TerritoriosPage = (props: any) => {
             <h1 className={isDarkMode ? 'text-white' : ''}
                 style={{
                     textAlign: 'center',
-                    margin: isMobile ? '80px auto 20px auto' : '60px auto 40px auto',
-                    fontSize: isMobile ? '2.3rem' : '2.8rem',
+                    margin: isMobile ? '80px auto 40px auto' : '60px auto 40px auto',
+                    fontSize: isMobile ? '2.6rem' : '2.8rem',
                     fontWeight: 'bolder'
                 }}
             >
@@ -239,7 +227,7 @@ export const TerritoriosPage = (props: any) => {
             />
 
             <Button size={isMobile ? 'sm' : 'lg'}
-                onClick={() => setShowConfirmAlertClose(true)}
+                onClick={() => openConfirmModalHandler(2)}
                 style={{
                     backgroundColor: generalBlue,
                     border: '1px solid ' + generalBlue,
@@ -254,7 +242,7 @@ export const TerritoriosPage = (props: any) => {
             </Button>
 
             <Button size={isMobile ? 'sm' : 'lg'}
-                onClick={() => setShowConfirmAlertOpen(true)}
+                onClick={() => openConfirmModalHandler(1)}
                 style={{
                     backgroundColor: 'red',
                     border: '1px solid red',
@@ -301,23 +289,22 @@ export const TerritoriosPage = (props: any) => {
                             <Row style={{ margin: '0 25px', paddingTop: '15px', paddingBottom: '12px' }}>
 
                                 <Col1
-                                    vivienda={household}
+                                    household={household}
                                 />
 
                                 <Col2
-                                    vivienda={household}
+                                    household={household}
                                     id={`card_${household?.inner_id}`}
                                 />
 
                                 <Col3
-                                    vivienda={household}
-                                    cambiarEstado={modifyHouseholdHandler}
-                                    isDarkMode={isDarkMode}
+                                    household={household}
+                                    modifyHouseholdHandler={modifyHouseholdHandler}
                                 />
 
                                 <Col4
-                                    vivienda={household}
-                                    cambiarEstado={modifyHouseholdHandler}
+                                    household={household}
+                                    modifyHouseholdHandler={modifyHouseholdHandler}
                                 />
 
                             </Row>

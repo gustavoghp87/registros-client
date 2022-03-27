@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../store/store'
+import { H2 } from './css/css'
 import { TerritoryNumberBlock } from './commons/TerritoryNumberBlock'
 import { TerritoryCampaigneNumberBlock } from './campaigns/TerritoryCampaignNumberBlock'
 import { useAuth } from '../context/authContext'
-import { H2 } from './css/css'
 import { authUserService } from '../services/userServices'
-import { typeUser } from '../models/typesUsuarios'
+import { typeUser } from '../models/user'
 
-export const IndexPage = (props: any) => {
+export const IndexPage = () => {
     //const user: typeUser|undefined = useAuth().user
     const refreshUser: (() => void) | undefined = useAuth().refreshUser
     const [user, setUser] = useState<typeUser>()
@@ -15,7 +17,7 @@ export const IndexPage = (props: any) => {
     const [showedMode2, setShowedMode2] = useState<boolean>(true)
     const [showedMode3, setShowedMode3] = useState<boolean>(true)
     const [territories, setTerritories] = useState<number[]>()
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
 
     const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,
         31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
@@ -24,17 +26,17 @@ export const IndexPage = (props: any) => {
         if (!user || !user.isAuth) {
             if (refreshUser) refreshUser()
             authUserService().then((user0: typeUser|null) => {
+                if (user0 && (!user0.asign || !user0.asign.length)) setShowedMode2(false)
                 if (user0) setUser(user0)
-                else window.location.href = "/"
+                else { window.location.href = "/"; return }
             })
         }
-        //if (!user) window.location.href = "/login"
         if (user && (!territories || !territories.length)) {
             let asignados: number[] = user.asign || []
             if (asignados.length) {
                 asignados.sort((a: number, b: number) => a - b)
                 setTerritories(asignados)
-            } else setShowedMode2(false)
+            }
             if (user.email === 'ghp.2120@gmail.com2') setIsGhp(true)
         }
     }, [user, territories, refreshUser])
@@ -64,8 +66,8 @@ export const IndexPage = (props: any) => {
                 
                 {!showedMode1 && <><br/><br/><br/></>}
 
-                <hr />
-                <hr />
+                <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
+                <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
             </>
             }
 
@@ -87,15 +89,16 @@ export const IndexPage = (props: any) => {
                         user={user}
                         territories={territories}
                         mode={2}
-                        isDarkMode={isDarkMode}
                     />
                 </div>
             </div>
 
             {!showedMode2 && <><br/><br/><br/></>}
 
-            <hr />
-            <hr />
+            <br/><br/><br/>
+
+            <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
+            <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
 
 
 
@@ -115,7 +118,7 @@ export const IndexPage = (props: any) => {
 
                     <div className={`${showedMode3 === true ? '' : 'd-none'}`}>
                         <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
-                            <TerritoryCampaigneNumberBlock isDarkMode={isDarkMode} />
+                            <TerritoryCampaigneNumberBlock />
                         </div>
                     </div>
                 </>

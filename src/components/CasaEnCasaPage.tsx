@@ -1,21 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { Button, Container } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../store/store'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
 import io from 'socket.io-client'
 import { SERVER } from './../config'
 import { H2 } from './css/css'
-import { isMobile } from '../services/functions'
 import { TerritoryWarningToaster } from './territory-components/TerritoryWarningToaster'
 import { HTHHouseholdModal } from './house-to-house/HTHHouseholdModal'
 import { HTHStreetCard } from './house-to-house/HTHStreetCard'
 import { getBuildingsService, getTerritoryStreetsService } from '../services/houseToHouseServices'
-import { typeUser } from '../models/typesUsuarios'
+import { typeUser } from '../models/user'
 import { typeHTHBuilding, typeHTHHousehold } from '../models/houseToHouse'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const CasaEnCasaPage = (props: any) => {
+export const CasaEnCasaPage = () => {
     
     const { territory } = useParams<any>()
     const user: typeUser|undefined = useAuth().user
@@ -26,7 +27,8 @@ export const CasaEnCasaPage = (props: any) => {
     const [showMap, setShowMap] = useState<boolean>(true)
     const [showAddHousehold, setShowAddHousehold] = useState<boolean>(false)
     const [socket, setSocket] = useState<any>(null)
-    const isDarkMode: string = props.isDarkMode
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
         //window.scrollTo(0, 0)

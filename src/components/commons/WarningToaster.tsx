@@ -1,12 +1,13 @@
 import { Toast } from 'react-bootstrap'
 import { AiOutlineWarning } from 'react-icons/ai'
-import { isMobile } from '../../services/functions'
-import { danger } from '../../models/typesTerritorios'
-
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
+import { danger } from '../../models/territory'
 
 export const WarningToaster = (props: any) => {
 
     const { showWarningToaster, toggleshowWarningToaster, userEmailWarningToaster, currentUserEmail } = props
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     return (
         <Toast

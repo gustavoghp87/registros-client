@@ -1,10 +1,12 @@
 import { Col } from 'react-bootstrap'
-import { isMobile } from '../../services/functions'
-import { typeHousehold } from '../../models/typesTerritorios'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
+import { typeHousehold } from '../../models/territory'
 
 export const Col1 = (props: any) => {
 
-    const vivienda: typeHousehold = props.vivienda
+    const household: typeHousehold = props?.household
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     return (
 
@@ -12,11 +14,11 @@ export const Col1 = (props: any) => {
 
             <h4 style={{ textAlign: 'center', fontSize: isMobile ? '1.1rem' : '1.3rem' }}>
 
-                Territorio {vivienda.territorio}
+                Territorio {household?.territorio}
                 <br/>
-                Manzana {vivienda.manzana}
+                Manzana {household?.manzana}
                 <br/>
-                Vivienda {vivienda.inner_id}
+                Vivienda {household?.inner_id}
 
             </h4>
 
