@@ -12,14 +12,14 @@ const clearUserService = (): void => clearUserFromLSService()
 
 export const loginService = async (email: string, password: string, recaptchaToken: string): Promise<typeResponseData|null> => {
     try {
-        const request: any = await fetch(`${base}`, {
+        const response: any = await fetch(`${base}`, {
             method: 'POST',
             headers,
             body: JSON.stringify({ email, password, recaptchaToken })
         })
-        const response: typeResponseData = await request.json()
-        if (response && response.success && response.newToken) setTokenService(response.newToken)
-        return response
+        const data: typeResponseData = await response.json()
+        if (data && data.success && data.newToken) setTokenService(data.newToken)
+        return data
     } catch (error) {
         console.log(error)
         return null

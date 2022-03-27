@@ -27,7 +27,7 @@ export const HomePage = () => {
                 backgroundColor: 'lightgray',
                 padding: '32px 0',
                 maxWidth: isMobile ? '100%' : '1136px',
-                fontSize: isMobile ? '' : '2.7rem'
+                fontSize: isMobile ? '2.4rem' : '2.7rem'
             }}>
                 ENTRAR
             </h3>
