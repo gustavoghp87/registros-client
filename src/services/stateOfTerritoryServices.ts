@@ -26,7 +26,7 @@ export const getStateOfTerritoryService = async (territorio: string): Promise<an
 export const getStateOfTerritoriesService = async (): Promise<typeStateOfTerritory[]|null> => {
     if (!getTokenService()) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'GET',
             headers
         })
@@ -42,7 +42,7 @@ export const getStateOfTerritoriesService = async (): Promise<typeStateOfTerrito
 export const markTerritoryAsFinishedService = async (territory: string, isFinished: boolean): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'PATCH',
             headers,
             body: JSON.stringify({ territory, isFinished })

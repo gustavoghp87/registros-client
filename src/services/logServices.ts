@@ -9,7 +9,7 @@ const base: string = `${SERVER}/api/log`
 export const getAllLogsService = async (): Promise<typeLogsObj|null> => {
     if (!getTokenService()) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'GET',
             headers
         })

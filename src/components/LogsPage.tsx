@@ -13,59 +13,44 @@ import { typeUser } from '../models/user'
 export const LogsPage = () => {
     
     const user: typeUser|undefined = useAuth().user
-    const [logs, setLogs] = useState<typeLogsObj>()
+    const [logsPackage, setLogsPackage] = useState<typeLogsObj>()
     const [showCampaignAssignments, setShowCampaignAssignments] = useState<boolean>(false)
     const [showCampaignFinishing, setShowCampaignFinishing] = useState<boolean>(false)
-    const [showErrors, setShowErrors] = useState<boolean>(false)
     const [showLogins, setShowLogins] = useState<boolean>(false)
+    const [showUserChanges, setShowUserChanges] = useState<boolean>(false)
     const [showStateChanges, setShowStateChanges] = useState<boolean>(false)
     const [showPreaching, setShowPreaching] = useState<boolean>(false)
-    const [showUserChanges, setShowUserChanges] = useState<boolean>(false)
+    const [showErrors, setShowErrors] = useState<boolean>(false)
     //const [showAppChanges, setShowAppChanges] = useState<boolean>(false)
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
-        if (user && !user.isAuth) { window.location.href = "/"; return }
-        getAllLogsService().then((logsObject: typeLogsObj|null) => {
-            if (logsObject) setLogs(logsObject)
+        //if (user && !user.isAuth) { window.location.href = "/"; return }
+        if (!logsPackage) getAllLogsService().then((logsObject: typeLogsObj|null) => {
+            if (logsObject) setLogsPackage(logsObject)
         })
-    }, [user])
+    }, [user, logsPackage])
 
-    const LogsCard = (props: any) => (
-        <Card className={`my-4 p-4 ${isDarkMode ? 'bg-dark text-white' : ''} ${props?.logs ? '' : 'd-none'}`}>
-            <Card.Header className={`text-center h1 py-4`}>
-                <div className={'mb-3'}> {props?.title} </div>
-                <Button style={{ backgroundColor: generalBlue, width: '200px' }}
-                    size={undefined}
-                    onClick={() => props?.setShow(!props?.show)}>
-                    {props?.show ? "Ocultar" : "Ver"}
-                </Button>
-            </Card.Header>
-            <br />
-            <ListGroup variant={'flush'} className={`${props?.show ? '' : 'd-none'}`}>
-                {props?.logs && !!props?.logs.length && props?.logs.map((log: typeLog, index: number) =>
-                    <div key={index}>
-                        <ListGroup.Item className={`${isDarkMode ? 'bg-dark text-white' : ''}`}>
-                            {log.logText}
-                        </ListGroup.Item>
-                    </div>
-                )}
-            </ListGroup>
-        </Card>
-    )
+    const setShowCampaignAssignmentsHandler = (): void => setShowCampaignAssignments(!showCampaignAssignments)
+    const setShowCampaignFinishingHandler = (): void => setShowCampaignFinishing(!showCampaignFinishing)
+    const setShowLoginsHandler = (): void => setShowLogins(!showLogins)
+    const setShowUserChangesHandler = (): void => setShowUserChanges(!showUserChanges)
+    const setShowStateChangesHandler = (): void => setShowStateChanges(!showStateChanges)
+    const setShowPreachingHandler = (): void => setShowPreaching(!showPreaching)
+    const setShowErrorsHandler = (): void => setShowErrors(!showErrors)
 
     type typeDoubleArray = [typeLog[], boolean, React.Dispatch<React.SetStateAction<boolean>>, string] | []
 
-    const showedLogs: typeDoubleArray[]|[] = logs ? [
-        [logs.campaignAssignmentLogs, showCampaignAssignments, setShowCampaignAssignments, "Asignaciones de la Campaña 2022"],
-        [logs.campaignFinishingLogs, showCampaignFinishing, setShowCampaignFinishing, "Completados de la Campaña 2022"],
-        [logs.loginLogs, showLogins, setShowLogins, "Ingresos a la App"],
-        [logs.userChangesLogs, showUserChanges, setShowUserChanges, "Cambios en los Usuarios"],
-        [logs.stateOfTerritoryChangeLogs, showStateChanges, setShowStateChanges, "Cambios en estados de Territorios"],
-        user && user.email === "ghp.2120@gmail.com" ? [logs.territoryChangeLogs?.slice(0, 100), showPreaching, setShowPreaching, "Predicación"] : [],
-        [logs.errorLogs, showErrors, setShowErrors, "Errores de la App"]
-        // [logs.appLogs.filter((log: typeLog) => !log.logText.includes("DB")), showAppChanges, setShowAppChanges, "Reinicios de la App"]
+    const showedLogs: typeDoubleArray[]|[] = logsPackage ? [
+        [logsPackage.campaignAssignmentLogs, showCampaignAssignments, setShowCampaignAssignmentsHandler, "Asignaciones de la Campaña 2022"],
+        [logsPackage.campaignFinishingLogs, showCampaignFinishing, setShowCampaignFinishingHandler, "Completados de la Campaña 2022"],
+        [logsPackage.loginLogs, showLogins, setShowLoginsHandler, "Ingresos a la App"],
+        [logsPackage.userChangesLogs, showUserChanges, setShowUserChangesHandler, "Cambios en los Usuarios"],
+        [logsPackage.stateOfTerritoryChangeLogs, showStateChanges, setShowStateChangesHandler, "Cambios en estados de Territorios"],
+        user && user.email === "ghp.2120@gmail.com" ? [logsPackage.territoryChangeLogs?.slice(0, 100), showPreaching, setShowPreachingHandler, "Predicación"] : [],
+        [logsPackage.errorLogs, showErrors, setShowErrorsHandler, "Errores de la App"]
+        // [logs.appLogs.filter((log: typeLog) => !log.logText.includes("DB")), showAppChanges, setShowAppChangesHandler, "Reinicios de la App"]
     ] : []
 
     return (
@@ -78,18 +63,39 @@ export const LogsPage = () => {
 
         <br /> <br /> <br />
 
-        {!logs && <> <Loading /> </>}
+        {!logsPackage && <> <Loading /> </>}
 
-        {logs && showedLogs && !!showedLogs.length && showedLogs.map((log: typeDoubleArray, index: number) =>
-            <div key={index}>
-                <LogsCard
-                    logs={log[0]}
-                    show={log[1]}
-                    setShow={log[2]}
-                    title={log[3]}
-                />
-            </div>
-        )}
+        {logsPackage && showedLogs.map((log: typeDoubleArray, index: number) => {
+            if (!log) return (<></>)
+            const logs: typeLog[] = log[0] ? log[0] : []
+            const show: boolean = log[1] ? true : false
+            const setShow: Function = log[2] ? log[2] : () => { }
+            const title: string = log[3] ? log[3] : ""
+
+            return (
+                <Card key={index} className={`my-4 p-4 ${isDarkMode ? 'bg-dark text-white' : ''} ${logs ? '' : 'd-none'}`}>
+                    <Card.Header className={'text-center h1 py-4'}>
+                        <div className={'mb-3'}> {title} </div>
+                        <Button style={{ backgroundColor: generalBlue, width: '200px' }}
+                            size={undefined}
+                            onClick={() => setShow()}
+                        >
+                            {show ? "Ocultar" : "Ver"}
+                        </Button>
+                    </Card.Header>
+                    <br />
+                    <ListGroup variant={'flush'} className={show ? '' : 'd-none'}>
+                        {logs && !!logs.length && logs.map((log: typeLog, index: number) =>
+                            <div key={index}>
+                                <ListGroup.Item className={isDarkMode ? 'bg-dark text-white' : ''}>
+                                    {log.logText}
+                                </ListGroup.Item>
+                            </div>
+                        )}
+                    </ListGroup>
+                </Card>
+            )
+        })}
     </>
     )
 }

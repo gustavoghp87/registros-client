@@ -41,7 +41,7 @@ export const getLocalStatisticsService = async (territory: string): Promise<type
 export const getAllLocalStatisticsService = async (): Promise<typeLocalStatistic[]|null> => {
     if (!getTokenService()) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'GET',
             headers
         })
@@ -57,7 +57,7 @@ export const getAllLocalStatisticsService = async (): Promise<typeLocalStatistic
 export const getGlobalStatisticsService = async (): Promise<typeStatistic|null> => {
     if (!getTokenService()) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'POST',
             headers
         })

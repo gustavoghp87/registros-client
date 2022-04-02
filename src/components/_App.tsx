@@ -21,12 +21,11 @@ import { CasaEnCasaPage } from './CasaEnCasaPage'
 import { LogsPage } from './LogsPage'
 import { CampaignPage } from './campaigns/CampaignPage'
 import { CampaignAdminsPage } from './campaigns/CampaignAdminsPage'
+import { changeMobileModeReducer } from '../store/MobileMode.Slice'
 import { AuthProvider } from '../context/authContext'
 import { recaptchaPublicKey } from '../config'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-
-import { changeMobileModeReducer } from '../store/MobileMode.Slice'
 
 export const generalBlue: string = "#4a6da7"
 

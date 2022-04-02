@@ -52,9 +52,9 @@ export const NavBar = () => {
                     &nbsp; INICIO
                 </Navbar.Brand>
 
-                <Navbar.Toggle aria-controls={'responsive-navbar-nav'} />
+                <Navbar.Toggle aria-controls={"responsive-navbar-nav"} />
                 
-                <Navbar.Collapse id={'responsive-navbar-nav'}>
+                <Navbar.Collapse id={"responsive-navbar-nav"}>
                     <Nav className={'mr-auto'}>
                         <Nav.Link className={user && user.isAuth ? '' : 'd-none'} href={"/index"} style={{ color }}>
                             &nbsp; &nbsp;Territorios&nbsp; &nbsp;

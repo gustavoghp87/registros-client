@@ -25,7 +25,7 @@ export const getCampaignPacksService = async (): Promise<typeCampaignPack[]|null
 export const getCampaignPacksServiceByUser = async (): Promise<typeCampaignPack[]|null> => {
     if (!getTokenService()) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'GET',
             headers
         })
@@ -59,7 +59,7 @@ export const editCampaignPackService = async (phoneNumber: number, checked: bool
     // if (!getTokenService() || !phoneNumber || checked === undefined) return false    accessible
     if (!phoneNumber || checked === undefined) return false
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'PATCH',
             headers,
             body: JSON.stringify({ phoneNumber, id, checked })

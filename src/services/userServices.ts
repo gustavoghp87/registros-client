@@ -13,7 +13,7 @@ export const setDarkModeService = (darkMode: boolean): void => setDarkModeLocalS
 export const authUserService = async (): Promise<typeUser|null> => {
     if (!getTokenService()) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'GET',
             headers
         })
@@ -29,7 +29,7 @@ export const authUserService = async (): Promise<typeUser|null> => {
 
 export const registerUserService = async (email: string, password: string, group: number, recaptchaToken: string): Promise<typeResponseData|null> => {
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'POST',
             headers,
             body: JSON.stringify({ email, password, group, recaptchaToken })
@@ -63,7 +63,7 @@ export const getUsersService = async (): Promise<typeUser[]|null> => {
 export const modifyUserService = async (user_id: string, estado: boolean, role: number, group: number): Promise<typeUser|null> => {
     if (!getTokenService()) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'PUT',
             headers,
             body: JSON.stringify({ user_id, estado, role, group })
@@ -129,7 +129,7 @@ export const getEmailByEmailLink = async (id: string): Promise<string|null> => {
 
 export const sendLinkToRecoverAccount = async (email: string): Promise<any> => {
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'PATCH',
             headers,
             body: JSON.stringify({ email })

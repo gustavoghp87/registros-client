@@ -12,7 +12,7 @@ const clearUserService = (): void => clearUserFromLSService()
 
 export const loginService = async (email: string, password: string, recaptchaToken: string): Promise<typeResponseData|null> => {
     try {
-        const response: any = await fetch(`${base}`, {
+        const response: any = await fetch(base, {
             method: 'POST',
             headers,
             body: JSON.stringify({ email, password, recaptchaToken })
@@ -34,7 +34,7 @@ export const logoutService = (): void => {
 export const logoutAllService = async (): Promise<boolean> => {
     if (!getTokenService()) return false;
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'DELETE',
             headers
         })
@@ -51,7 +51,7 @@ export const logoutAllService = async (): Promise<boolean> => {
 export const changePswService = async (psw: string|null, newPsw: string, id: string|null): Promise<typeResponseData|null> => {
     if (!getTokenService() && !id) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'PUT',
             headers,
             body: JSON.stringify({ psw, newPsw, id })
@@ -68,7 +68,7 @@ export const changePswService = async (psw: string|null, newPsw: string, id: str
 export const changePswOtherUserService = async (email: string): Promise<typeResponseData|null> => {
     if (!getTokenService()) return null
     try {
-        const response = await fetch(`${base}`, {
+        const response = await fetch(base, {
             method: 'PATCH',
             headers,
             body: JSON.stringify({ email })
