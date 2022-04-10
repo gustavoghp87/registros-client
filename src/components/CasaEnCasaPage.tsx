@@ -75,8 +75,8 @@ export const CasaEnCasaPage = () => {
     return (
     <>
         <H2 className={isDarkMode ? 'text-white' : ''}
-            style={{ fontSize: isMobile ? '2.2rem' : '' }}>
-            CASA EN CASA - {user?.email}
+            style={{ fontSize: isMobile ? '2.7rem' : '' }}>
+            CASA EN CASA
         </H2>
 
         <TerritoryWarningToaster />

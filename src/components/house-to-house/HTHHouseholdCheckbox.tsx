@@ -7,7 +7,7 @@ export const HTHHouseholdCheckbox = (props: any) => {
     const depto: string = props.depto
     const register: any = props.register
     const isCheckedEdit: boolean = props.isCheckedEdit
-    const [isChecked, setIsChecked] = useState<boolean>()
+    const [isChecked, setIsChecked] = useState<boolean>(isCheckedEdit)
     
     useEffect(() => {
         if (isChecked === undefined && isCheckedEdit === null) setIsChecked(true)                  // add

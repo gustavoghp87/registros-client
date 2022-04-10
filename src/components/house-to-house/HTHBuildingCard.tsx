@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import { typeRootState } from '../../store/store'
 import * as types from '../../models/houseToHouse'
 import { typeHTHBuilding, typeHTHHousehold } from '../../models/houseToHouse'
+import { danger, primary, success, warning, info } from '../../models/territory'
 
 export const HTHBuildingCard = (props: any) => {
 
@@ -57,7 +58,7 @@ export const HTHBuildingCard = (props: any) => {
                 </Col>
 
                 <div className={`${isMobile && showHouseholds ? '' : 'd-none'} text-center my-1 font-weight-bold blockquote`}
-                onClick={() => {if (showHouseholds) setShowModal(true)}}>
+                onClick={() => { if (showHouseholds) setShowModal(true)} }>
                     <hr className={'mb-2'} />
                     <span className={'mt-0'} style={{ fontSize: '1.1rem' }}> Editar </span>
                 </div>
@@ -66,11 +67,11 @@ export const HTHBuildingCard = (props: any) => {
             {showHouseholds && building.households && !!building.households.length &&
                 building.households.map((household: typeHTHHousehold, index: number) => {
                     
-                if (household.estado === types.noPredicado) household = { ...household, variant: 'success' }
-                if (household.estado === types.contesto) household = { ...household, variant: 'primary' }
-                if (household.estado === types.noContesto) household = { ...household, variant: 'warning' }
-                if (household.estado === types.cartaDejada) household = { ...household, variant: 'info' }
-                if (household.estado === types.noTocar) household = { ...household, variant: 'danger' }
+                if (household.estado === types.noPredicado) household = { ...household, variant: success }
+                if (household.estado === types.contesto) household = { ...household, variant: primary }
+                if (household.estado === types.noContesto) household = { ...household, variant: warning }
+                if (household.estado === types.cartaDejada) household = { ...household, variant: info }
+                if (household.estado === types.noTocar) household = { ...household, variant: danger }
 
                 return (
                     <Card key={index}
@@ -81,14 +82,13 @@ export const HTHBuildingCard = (props: any) => {
                             maxWidth: '90%'
                         }}
                     >
-
                         <div className={'my-auto pt-4 pb-2'}>
 
                             <p className={'text-center font-weight-bold text-white'}>
                                 <Button className={'btn btn-secondary active mt-3'}>
                                     {household.piso}° {household.depto}
-                                &nbsp;
-                                <span className={'pb-1'}> - {building.street} {building.streetNumber} </span>
+                                    &nbsp;
+                                    <span className={'pb-1'}> - {building.street} {building.streetNumber} </span>
                                 </Button>
                             </p>
 

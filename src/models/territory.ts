@@ -31,6 +31,7 @@ export const primary: variant = "primary"
 export const danger: variant = "danger"
 export const warning: variant = "warning"
 export const secondary: variant = "secondary"
+export const info: variant = "info"
 
 export type typeStateOfTerritory = {
     _id?: object

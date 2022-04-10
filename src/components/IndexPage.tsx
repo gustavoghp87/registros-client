@@ -37,7 +37,7 @@ export const IndexPage = () => {
                 asignados.sort((a: number, b: number) => a - b)
                 setTerritories(asignados)
             }
-            if (user.email === 'ghp.2120@gmail.com2') setIsGhp(true)
+            if (user.email === 'ghp.2120@gmail.com') setIsGhp(true)
         }
     }, [user, territories, refreshUser])
 
@@ -55,7 +55,7 @@ export const IndexPage = () => {
                 </button>
 
                 <div className={`${showedMode1 === true ? '' : 'd-none'}`}>
-                    <div className={'card card-body'}>
+                    <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
                         <TerritoryNumberBlock
                             user={user}
                             territories={territoriesAll}
@@ -65,6 +65,8 @@ export const IndexPage = () => {
                 </div>
                 
                 {!showedMode1 && <><br/><br/><br/></>}
+
+                <br/><br/><br/>
 
                 <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
                 <hr style={{ color: isDarkMode ? 'white' : 'black' }} />

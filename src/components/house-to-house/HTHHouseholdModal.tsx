@@ -3,6 +3,9 @@ import { Button, Col, Form, Modal, Row, Card } from 'react-bootstrap'
 import { addBuildingService, modifyHTHBuildingService, responseType } from '../../services/houseToHouseServices'
 import { HTHHouseholdCheckbox } from './HTHHouseholdCheckbox'
 import { typeHTHBuilding, typeHTHHousehold } from '../../models/houseToHouse'
+import { success, secondary } from '../../models/territory'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../store/store'
 
 export const HTHHouseholdModal = (props: any) => {
 
@@ -24,6 +27,8 @@ export const HTHHouseholdModal = (props: any) => {
     const [sinPB, setSinPB] = useState<boolean>(false)
     const [street, setStreet] = useState<string>("")
     const [streetNumber, setStreetNumber] = useState<number>(0)
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     
     useEffect(() => {
@@ -191,6 +196,8 @@ export const HTHHouseholdModal = (props: any) => {
         <>
             <Modal
                 show={showModal}
+                backdropClassName={isDarkMode ? 'bg-dark': ''}
+                contentClassName={isDarkMode ? 'bg-dark text-white' : ''}
                 onHide={() => closeHandler()}
                 backdrop={'static'}
                 keyboard={false}
@@ -202,9 +209,9 @@ export const HTHHouseholdModal = (props: any) => {
                 <Modal.Body>
                     <Form onSubmit={(event: any) => submitHandler(event)}>
 
-                        <div className={'mb-3 d-flex align-self-center'}>
+                        <div className={'mb-3 mt-2 d-flex align-self-center'}>
                             <Form.Group
-                                className={'col-6'}
+                                className={'col-6 font-weight-bolder'}
                                 // as={Col} style={{ maxWidth: '180px' }}
                             >
                                 <Form.Label> Calle </Form.Label>
@@ -223,7 +230,7 @@ export const HTHHouseholdModal = (props: any) => {
                             </Form.Group>
 
                             <Form.Group
-                                className={'col-6'}
+                                className={'col-6 font-weight-bolder'}
                                 // as={Col} style={{ maxWidth: '180px' }}
                             >
                                 <Form.Label> Número </Form.Label>
@@ -251,9 +258,9 @@ export const HTHHouseholdModal = (props: any) => {
 
 
 
-                        <div className={'my-3 d-flex align-self-center'}>
+                        <div className={'my-4 d-flex align-self-center'}>
                             <Form.Group
-                                className={'col-6'}
+                                className={'col-6 font-weight-bolder'}
                                 //as={Col} style={{ maxWidth: '180px' }}
                             >
                                 <Form.Label> Pisos </Form.Label>
@@ -275,7 +282,7 @@ export const HTHHouseholdModal = (props: any) => {
                             </Form.Group>
 
                             <Form.Group
-                                className={'col-6'}
+                                className={'col-6 font-weight-bolder'}
                                 // as={Col} style={{ maxWidth: '180px' }}
                             >
                                 <Form.Label> Deptos. por piso </Form.Label>
@@ -294,27 +301,27 @@ export const HTHHouseholdModal = (props: any) => {
                             </Form.Group>
                         </div>
 
+                        <br />
 
 
-
-                        <Row className={'mt-4'}>
-                            <Form.Group as={Col} className={'mb-3'} onClick={() => setConLetras(!conLetras)}>
+                        <Row className={`mt-0 justify-content-center align-items-center font-weight-bolder ${isMobile ? 'col-10 offset-2' : 'text-center'}`}>
+                            <Form.Group className={'col-md-4 mb-3'} onClick={() => setConLetras(!conLetras)}>
                                 <Form.Check type={'checkbox'}
-                                    label={`Deptos. con letras`}
+                                    label={'Deptos. con letras'}
                                     onChange={() => setConLetras(!conLetras)}
                                     checked={conLetras}
                                 />
                             </Form.Group>
-                            <Form.Group as={Col} className={'mb-3'} onClick={() => setNumCorrido(!numCorrido)}>
+                            <Form.Group className={'col-md-4 mb-3'} onClick={() => setNumCorrido(!numCorrido)}>
                                 <Form.Check type={'checkbox'}
-                                    label={`Numeración de corrido`}
+                                    label={'Numeración de corrido'}
                                     onChange={() => setNumCorrido(!numCorrido)}
                                     checked={numCorrido}
                                 />
                             </Form.Group>
-                            <Form.Group as={Col} className={'mb-3'} onClick={() => setSinPB(!sinPB)}>
+                            <Form.Group className={'col-md-4 mb-3'} onClick={() => setSinPB(!sinPB)}>
                                 <Form.Check type={'checkbox'}
-                                    label={`Sin PB`}
+                                    label={'Sin PB'}
                                     onChange={() => setSinPB(!sinPB)}
                                     checked={sinPB}
                                 />
@@ -323,10 +330,12 @@ export const HTHHouseholdModal = (props: any) => {
 
 
 
-                        <Card className={'my-4 '}>
+                        <Card className={'my-4 bg-dark'}>
 
-                            <p className={'mt-4 mb-2 justify-content-center align-items-center text-center font-weight-bolder'}>
-                                Esquema del Edificio:
+                            <p className={'mt-4 mb-2 justify-content-center align-items-center text-center font-weight-bolder'}
+                                style={{ fontSize: '1.6rem', border: isDarkMode ? '' : '1px solid black' }}
+                            >
+                                <span> Esquema del Edificio: </span>
                             </p>
 
                             <hr />
@@ -380,11 +389,11 @@ export const HTHHouseholdModal = (props: any) => {
 
 
                         
-                        <Modal.Footer>
-                            <Button variant={'success'} type={'submit'}>
+                        <Modal.Footer className={'justify-content-center align-items-center'}>
+                            <Button variant={success} type={'submit'} style={{ height: '40px', width: '120px' }}>
                                 ACEPTAR
                             </Button>
-                            <Button variant={'secondary'} onClick={() => closeHandler()}>
+                            <Button variant={secondary} style={{ height: '40px', width: '120px' }} onClick={() => closeHandler()}>
                                 CANCELAR
                             </Button>
                         </Modal.Footer>
