@@ -98,7 +98,7 @@ export const NavBar = () => {
                 </Navbar.Collapse>
             </Navbar>
 
-            <ReturnBtn />
+            {!scrollDown && <ReturnBtn />}
 
             {/* <SearchBar /> */}
         

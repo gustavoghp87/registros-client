@@ -22,7 +22,7 @@ export const TerritoryNumberBlock = (props: any) => {
                     territories.map((territory: number, index: number) => {
                         if (territory) return (
                             <Link type={'button'} key={index}
-                                className={mode === 1 ? 'btn btn-success' : 'btn btn-danger'}
+                                className={`animate__animated animate__bounce btn ${mode === 1 ? 'btn-success' : 'btn-danger'}`}
                                 style={{
                                     width: '120px',
                                     height: '100px',
