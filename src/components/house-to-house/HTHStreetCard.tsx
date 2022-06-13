@@ -1,15 +1,13 @@
 import { useState } from 'react'
 import { Card, Row } from 'react-bootstrap'
-import { HTHBuildingCard } from './HTHBuildingCard'
-import { typeHTHBuilding } from '../../models/houseToHouse'
 
 export const HTHStreetCard = (props: any) => {
 
-    const buildings: typeHTHBuilding[] = props.buildings
+    const buildings = props.buildings
     const street: string = props.street
     const streets: string[] = props.streets
     const sendUpdateBySocket: any = props.sendUpdateBySocket
-    const buildingNumber: number = buildings.filter((building: typeHTHBuilding) => building.street === street).length
+    const buildingNumber: number = buildings.filter((building: any) => building.street === street).length
     const [showBuildings, setShowBuildings] = useState<boolean>(false)
 
 
@@ -37,15 +35,11 @@ export const HTHStreetCard = (props: any) => {
 
 
             {showBuildings && buildings && !!buildings.length &&
-                buildings.map((building: typeHTHBuilding, index: number) => {
+                buildings.map((building: any, index: number) => {
                     if (building.street === street) return (
                         <div key={index} className={''} style={{ maxWidth: '90%' }}>
                             <br />
-                            <HTHBuildingCard
-                                building={building}
-                                sendUpdateBySocket={sendUpdateBySocket}
-                                streets={streets}
-                            />
+                            
                         </div>
                     )
                     else {return (<div key={index}></div>)}

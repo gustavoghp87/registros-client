@@ -60,6 +60,7 @@ export const IndexPage = () => {
                             user={user}
                             territories={territoriesAll}
                             mode={1}
+                            style={{ cursor: 'pointer' }}
                         />
                     </div>
                 </div>
@@ -78,7 +79,7 @@ export const IndexPage = () => {
 
             <H2 className={isDarkMode ? 'text-white' : ''}> TELEFÓNICA </H2>
 
-            <button className={`btn btn-danger btn-block mt-4`}
+            <button className={`btn btn-danger btn-block mt-4`} style={{ cursor: 'pointer' }}
                 type={'button'}
                 onClick={() => setShowedMode2(!showedMode2)}
             >
@@ -91,6 +92,7 @@ export const IndexPage = () => {
                         user={user}
                         territories={territories}
                         mode={2}
+                        style={{ cursor: 'pointer' }}
                     />
                 </div>
             </div>

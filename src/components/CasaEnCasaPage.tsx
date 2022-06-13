@@ -5,70 +5,65 @@ import { useSelector } from 'react-redux'
 import { typeRootState } from '../store/store'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
-import io from 'socket.io-client'
-import { SERVER } from './../config'
 import { H2 } from './css/css'
-import { TerritoryWarningToaster } from './territory-components/TerritoryWarningToaster'
-import { HTHHouseholdModal } from './house-to-house/HTHHouseholdModal'
-import { HTHStreetCard } from './house-to-house/HTHStreetCard'
-import { getBuildingsService, getTerritoryStreetsService } from '../services/houseToHouseServices'
 import { typeUser } from '../models/user'
-import { typeHTHBuilding, typeHTHHousehold } from '../models/houseToHouse'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import { dark } from '../models/territory'
 
 export const CasaEnCasaPage = () => {
     
     const { territory } = useParams<any>()
-    const user: typeUser|undefined = useAuth().user
-    const [buildings, setBuildings] = useState<typeHTHBuilding[]>([])
-    const [streets, setStreets] = useState<string[]>([])
-    const [isFinished, setIsFinished] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [showMap, setShowMap] = useState<boolean>(true)
-    const [showAddHousehold, setShowAddHousehold] = useState<boolean>(false)
-    const [socket, setSocket] = useState<any>(null)
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const user: typeUser|undefined = useAuth().user
+    const isFinished = false
+    const [loading, setLoading] = useState(true)
+    const [block, setBlock] = useState('')
+    const [blocks, setBlocks] = useState([''])
+    const [face, setFace] = useState('')
+    const [imageSrc, setImageSrc] = useState<string>(isMobile ? `/img/img-hth/${territory}v00.png` : `/img/img-hth/${territory}h00.png`)
 
     useEffect(() => {
-        //window.scrollTo(0, 0)
-        if (territory && !streets.length) getTerritoryStreetsService(territory)
-            .then((streets: string[]|null) => {
-                if (!streets || !streets.length) return
-                setStreets(streets.sort())
-            })
-        if ((!buildings || !buildings.length) && territory) {
-            setLoading(true)
-            getBuildingsService(territory).then((buildings: typeHTHBuilding[]|null) => {
-                if (buildings) setBuildings(buildings)
-                setLoading(false)
-                setIsFinished(false)
-            })
-        }
-        if (!socket) {
-            const newSocket = io(SERVER, { withCredentials: true })
-            newSocket.on('hth: change', (updatedBuildings: typeHTHBuilding[]) => {
-                console.log("Recibido:", updatedBuildings);
-                if (territory === updatedBuildings[0].territory) setBuildings(updatedBuildings)
-            })
-            if (newSocket) setSocket(newSocket)
-        }
-        if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
+        setBlocks(['1', '2', '3'])
+        if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
+        else setImageSrc(`/img/img-hth/${territory}h00.png`)
         return () => { }
-    }, [territory, streets, buildings, socket, socket?.connected])
+    }, [isMobile, territory])
 
-    const closeHTHModalHandler = (): void => setShowAddHousehold(false)
+    const blockSelection = (blockSelected: string) => {
+        setBlock(blockSelected)
+        setFace('')
+        if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
+        else setImageSrc(`/img/img-hth/${territory}h00.png`)
+    }
 
-    const sendUpdateBySocket = (updatedHousehold: typeHTHHousehold, buildingId: string): void => {
-        for (let i = 0; i < buildings.length; i++) {
-            if (buildings[i]._id === buildingId) for (let j = 0; j < buildings[i].households.length; j++) {
-                if (buildings[i].households[j].idNumber === updatedHousehold.idNumber) buildings[i].households[j] = updatedHousehold
-            }
-        }
-        console.log("Enviando:", buildings);
-        
-        if (socket && socket.connected && buildings) socket.emit('hth: change', buildings)
-        else alert("Hay un problema de conexión; refrescar")
+    const executeX = (e: any) => {
+        const x = parseInt(e.pageX) - parseInt(e.target.offsetLeft);
+        const y = parseInt(e.pageY) - parseInt(e.target.offsetTop);
+        console.log("X:", x, ", Y:", y);
+    }
+
+    const setBlockAndFaceHandler = (selectedBlock: string, selectedFace: string) => {             //     HERE      <---------------------
+        setBlock(selectedBlock)
+        setFace(selectedFace)
+        //changeImageSrc(selectedBlock, selectedFace)
+        setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
+    }
+    
+    const changeImageSrc = (selectedBlock: string = "0", selectedFace: string = "0") => {
+        if (face !== '') return
+        setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
+    }
+
+
+    const imagesStyle = {
+        border: '1px solid black',
+        borderRadius: '8px',
+        display: 'block',
+        height: 'auto',
+        margin: '60px auto',
+        padding: 0,
+        width: isMobile ? '280px' : '800px'
     }
     
 
@@ -79,77 +74,150 @@ export const CasaEnCasaPage = () => {
             CASA EN CASA
         </H2>
 
-        <TerritoryWarningToaster />
+        <h1 className={`text-center mt-4 ${isDarkMode ? 'text-white' : ''}`} style={{ fontWeight: 'bolder' }}>
+            SELECCIONAR CARA DE MANZANA
+        </h1>
+
+        <img id={"imgx"} alt={'map'} useMap={"#workmap"}
+            src={imageSrc}
+            style={ imagesStyle }
+            onClick={(e) => executeX(e)}
+        />
+
+        <div className={'row d-flex align-items-center'} style={{ justifyContent: 'space-evenly' }}>
+            {(blocks && !!blocks.length && blocks.map((currentBlock: string) =>
+                <button className={`btn ${block === currentBlock && face === '' ? 'btn-general-blue' : 'btn-dark'} mx-1 my-2`}
+                    style={{ width: isMobile ? '120px' : '220px' }}
+                    onClick={() => blockSelection("1")}
+                >
+                    {`Manzana ${currentBlock}`}
+                </button>
+            ))}
+        </div>
+
+        <map name={"workmap"}>
+            {
+                territory === "1" ? <>
+                    <area></area>
+                </> :
+                territory === "2" ? <>
+                    {isMobile ?
+                        <>
+                        <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                            coords={"135,114, 227,168, 223,55"}
+                            onMouseOver={() => changeImageSrc("1", "A")}
+                            onMouseLeave={() => changeImageSrc()}
+                            onClick={() => setBlockAndFaceHandler("1", "A")}
+                        ></area>
+                        <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                            coords={"135,114, 57,169, 227,168"}
+                            onMouseOver={() => changeImageSrc("1", "B")}
+                            onMouseLeave={() => changeImageSrc()}
+                            onClick={() => setBlockAndFaceHandler("1", "B")}
+                        ></area>
+                        <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                            coords={"135,114, 57,55, 57,169"}
+                            onMouseOver={() => changeImageSrc("1", "C")}
+                            onMouseLeave={() => changeImageSrc()}
+                            onClick={() => setBlockAndFaceHandler("1", "C")}
+                        ></area>
+                        <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                            coords={"135,114, 57,55, 223,55"}
+                            onMouseOver={() => changeImageSrc("1", "D")}
+                            onMouseLeave={() => changeImageSrc()}
+                            onClick={() => setBlockAndFaceHandler("1", "D")}
+                        ></area>
+                        </>
+                        :
+                        <>
+                        <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                            coords={"78,77, 169,210, 251,70"}
+                            onMouseOver={() => changeImageSrc("1", "A")}
+                            onMouseLeave={() => changeImageSrc()}
+                            onClick={() => setBlockAndFaceHandler("1", "A")}
+                        ></area>
+                        <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                            coords={"215,70, 169,210, 252,328"}
+                            onMouseOver={() => changeImageSrc("1", "B")}
+                            onMouseLeave={() => changeImageSrc()}
+                            onClick={() => setBlockAndFaceHandler("1", "B")}
+                        ></area>
+                        <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                            coords={"252,328, 169,210, 78,328"}
+                            onMouseOver={() => changeImageSrc("1", "C")}
+                            onMouseLeave={() => changeImageSrc()}
+                            onClick={() => setBlockAndFaceHandler("1", "C")}
+                        ></area>
+                        <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                            coords={"78,77, 78,328, 169,210"}
+                            onMouseOver={() => changeImageSrc("1", "D")}
+                            onMouseLeave={() => changeImageSrc()}
+                            onClick={() => setBlockAndFaceHandler("1", "D")}
+                        ></area>
+                        </>}
+                </> :
+                territory === "3" ? <>
+                    <area></area>
+                </> :
+                territory === "56" ? <>
+                    <area></area>
+                </> : <></>
+            }
+        </map>
+
 
         <h1 className={isDarkMode ? 'text-white' : ''}
             style={{
                 textAlign: 'center',
-                margin: isMobile ? '80px auto 20px auto' : '60px auto 40px auto',
+                margin: isMobile ? '30px auto 20px auto' : '60px auto 40px auto',
                 fontSize: isMobile ? '2.3rem' : '2.8rem',
                 fontWeight: 'bolder'
             }}
         >
-            TERRITORIO {territory} {isFinished ? `- TERMINADO` : ``} 
+            {block ? `MANZANA ${block}` : ''} {face ? `CARA ${face}` : ''}
+            <br/>
+            TERRITORIO {territory}
         </h1>
 
 
-        <Button variant={'dark'}
-            onClick={() => setShowMap(!showMap)}
-            style={{ display: 'block', margin: '22px auto' }}
-        >
-            {showMap ? 'Ocultar Mapa' : 'Ver Mapa'}
-        </Button>
+
+            {/* <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                coords={"58,99, 114,186, 167,98"}
+                onClick={() => setBlockAndFaceHandler("1", "A")}
+            ></area>
+            <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                coords={"58,99, 58,276, 114,186"}
+                onClick={() => setBlockAndFaceHandler("1", "B")}
+            ></area>
+            <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                coords={"58,276, 114,186, 176,280"}
+                onClick={() => setBlockAndFaceHandler("1", "C")}
+            ></area>
+            <area shape={'poly'} alt={`Manzana 1 de Territorio ${territory}`} style={{ cursor: 'pointer' }}
+                coords={"114,186, 176,280, 167,98"}
+                onClick={() => setBlockAndFaceHandler("1", "D")}
+            ></area> */}
+
+            {/* <area shape="rect" coords="34,44,270,350" alt="Computer" href="#computer" />
+            <area shape="rect" coords="290,172,333,250" alt="Phone" href="#phone" />
+            <area shape="circle" coords="337,300,44" alt="Cup of coffee" href="#coffee" /> */}
+            {/* rect - defines a rectangular region    shape="rect" coords="34, 44, 270, 350"         x1-y1 x2-y2
+            circle - defines a circular region         shape="circle" coords="337, 300, 44"           x y radius
+            poly - defines a polygonal region          shape="poly" coords="140,121,181,116,204,160   x1-y1 x2-y2 x3-y3 etc
+            default - defines the entire region */}
 
 
-        <img src={`/img/${territory}.jpg`} alt={'map'}
-            style={{
-                border: '1px solid black',
-                borderRadius: '8px',
-                width: isMobile ? '99%' : '40%',
-                height: 'auto',
-                display: showMap ? 'block' : 'none',
-                margin: '30px auto',
-                padding: isMobile ? '10px' : '20px'
-            }}
-        />
-
-
-        <Container fluid={'lg'} className={'mb-2'} style={{ marginTop: '60px' }}>
-            <Button className={'btn btn-danger btn-block w-100 p-3 text-uppercase'}
-                onClick={() => setShowAddHousehold(!showAddHousehold)}
-            >
-                + Agregar edificio
-            </Button>
-        </Container>
-
-        <HTHHouseholdModal
-            closeHTHModalHandler={closeHTHModalHandler}
-            showModal={showAddHousehold}
-            streets={streets}
-            territory={territory}
-        />
 
         <br />
         <hr style={{ border: '1px solid black' }} />
 
 
-
-        {streets && !!streets.length && streets.map((street: string, index: number) =>
-            <HTHStreetCard
-                key={index}
-                buildings={buildings}
-                sendUpdateBySocket={sendUpdateBySocket}
-                street={street}
-                streets={streets}
-            />
-        )}
-
-        {loading &&
+        {/* {loading &&
             <>
                 <br/>
                 <Loading />
             </>
-        }
+        } */}
 
     </>
     )

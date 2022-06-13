@@ -37,6 +37,12 @@
   }
 }
 
+.btn-general-blue {
+  background-color: #4a6da7;
+  color: white !important;
+  font-size: 1.2rem;
+}
+
 
 /* statistics animation */
 

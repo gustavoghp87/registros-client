@@ -21,6 +21,7 @@ export const ReturnBtn = () => {
         else if (window.location.pathname.split('/')[1] === 'celulares-admins') setShow(true)
         else if (window.location.pathname.split('/')[1] === 'celulares') setShow(true)
         else if (window.location.pathname.split('/')[1] === 'logs') setShow(true)
+        else if (window.location.pathname.split('/')[1] === 'casa-en-casa') setShow(true)
     }, [])
     
     return (
