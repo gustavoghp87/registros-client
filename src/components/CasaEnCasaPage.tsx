@@ -9,32 +9,62 @@ import { H2 } from './css/css'
 import { typeUser } from '../models/user'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import { dark } from '../models/territory'
+import { generalBlue } from './_App'
+import { NoTocar, typeNoTocar } from './house-to-house/NoTocarHTH'
+import { ObservacionesHTH } from './house-to-house/ObservacionesHTH'
+
+export type typeHTHTerritory = {
+
+    noTocar: typeNoTocar[]
+}
 
 export const CasaEnCasaPage = () => {
     
     const { territory } = useParams<any>()
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+
     const user: typeUser|undefined = useAuth().user
     const isFinished = false
-    const [loading, setLoading] = useState(true)
-    const [block, setBlock] = useState('')
-    const [blocks, setBlocks] = useState([''])
-    const [face, setFace] = useState('')
+    const [loading, setLoading] = useState<boolean>(true)
+
+    const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>();
+    const [block, setBlock] = useState<string>('')
+    const [blocks, setBlocks] = useState<string[]>([''])
+    const [face, setFace] = useState<string>('')
+    const [wholeTerritory, setWholeTerritory] = useState<boolean>(true)
     const [imageSrc, setImageSrc] = useState<string>(isMobile ? `/img/img-hth/${territory}v00.png` : `/img/img-hth/${territory}h00.png`)
 
     useEffect(() => {
         setBlocks(['1', '2', '3'])
-        if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
-        else setImageSrc(`/img/img-hth/${territory}h00.png`)
+        setTerritoryHTH({
+            noTocar: [
+                { direccion: 'Directorio 123', block: '1', face: 'A', date: '2022-06-12' },
+                { direccion: 'Directorio 456', block: '1', face: 'A', date: '2022-06-11' },
+                { direccion: 'Directorio 789', block: '1', face: 'B', date: '2022-06-10' }]
+        })
+        
+        if (!block) {
+            if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
+            else setImageSrc(`/img/img-hth/${territory}h00.png`)
+        }
+        
+        setLoading(false)
         return () => { }
-    }, [isMobile, territory])
+    }, [isMobile, territory, block, face, loading])
 
     const blockSelection = (blockSelected: string) => {
         setBlock(blockSelected)
         setFace('')
+        setWholeTerritory(false)
         if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
         else setImageSrc(`/img/img-hth/${territory}h00.png`)
+    }
+
+    const selectWholeTerritory = () => {
+        setWholeTerritory(true)
+        setFace('')
+        setBlock('')
     }
 
     const executeX = (e: any) => {
@@ -46,7 +76,7 @@ export const CasaEnCasaPage = () => {
     const setBlockAndFaceHandler = (selectedBlock: string, selectedFace: string) => {             //     HERE      <---------------------
         setBlock(selectedBlock)
         setFace(selectedFace)
-        //changeImageSrc(selectedBlock, selectedFace)
+        setWholeTerritory(false)
         setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
     }
     
@@ -54,6 +84,9 @@ export const CasaEnCasaPage = () => {
         if (face !== '') return
         setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
     }
+
+    
+    
 
 
     const imagesStyle = {
@@ -65,7 +98,7 @@ export const CasaEnCasaPage = () => {
         padding: 0,
         width: isMobile ? '280px' : '800px'
     }
-    
+
 
     return (
     <>
@@ -84,16 +117,25 @@ export const CasaEnCasaPage = () => {
             onClick={(e) => executeX(e)}
         />
 
-        <div className={'row d-flex align-items-center'} style={{ justifyContent: 'space-evenly' }}>
-            {(blocks && !!blocks.length && blocks.map((currentBlock: string) =>
-                <button className={`btn ${block === currentBlock && face === '' ? 'btn-general-blue' : 'btn-dark'} mx-1 my-2`}
-                    style={{ width: isMobile ? '120px' : '220px' }}
-                    onClick={() => blockSelection("1")}
-                >
-                    {`Manzana ${currentBlock}`}
-                </button>
-            ))}
-        </div>
+        <button className={`btn ${wholeTerritory ? 'btn-general-blue' : 'btn-dark'} mt-2 mb-4 d-block mx-auto`}
+            style={{ width: isMobile ? '120px' : '420px' }}
+            onClick={() => selectWholeTerritory()}>
+                Todo el Territorio {territory}
+        </button>
+
+        {blocks && !!blocks.length &&
+            <div className={'row d-flex align-items-center'} style={{ justifyContent: 'space-evenly' }}>
+                {blocks.map((currentBlock: string) =>
+                    <button key={currentBlock}
+                        className={`btn ${block === currentBlock && face === '' ? 'btn-general-blue' : 'btn-dark'} mx-1 my-2`}
+                        style={{ width: isMobile ? '120px' : '220px' }}
+                        onClick={() => blockSelection(currentBlock)}
+                    >
+                        {`Manzana ${currentBlock}`}
+                    </button>
+                )}
+            </div>
+        }
 
         <map name={"workmap"}>
             {
@@ -166,18 +208,73 @@ export const CasaEnCasaPage = () => {
         </map>
 
 
-        <h1 className={isDarkMode ? 'text-white' : ''}
+        <h1 className={'text-white py-3'}
             style={{
-                textAlign: 'center',
-                margin: isMobile ? '30px auto 20px auto' : '60px auto 40px auto',
+                backgroundColor: generalBlue,
                 fontSize: isMobile ? '2.3rem' : '2.8rem',
-                fontWeight: 'bolder'
+                fontWeight: 'bolder',
+                margin: isMobile ? '30px auto 20px auto' : '60px auto 40px auto',
+                textAlign: 'center'
             }}
         >
-            {block ? `MANZANA ${block}` : ''} {face ? `CARA ${face}` : ''}
-            <br/>
-            TERRITORIO {territory}
+            <span> TERRITORIO {territory} </span>
+            <br className={block ? '' : 'd-none'} />
+            <span className={'mb-2'}> {block ? `MANZANA ${block}` : ''} </span>
+            <br className={face ? '' : 'd-none'} />
+            <span> {face ? `CARA ${face}` : ''} </span>
         </h1>
+
+        {!block && !face &&
+            <button className={'btn btn-general-blue d-block m-auto mb-4'}>
+                Marcar esta TERRITORIO {territory} como terminado
+            </button>
+        }
+
+        {block && !face &&
+            <button className={'btn btn-general-blue d-block m-auto mb-4'}>
+                Marcar esta MANZANA {block} como terminada
+            </button>
+        }
+        
+        {block && face &&
+            <button className={'btn btn-general-blue d-block m-auto mb-4'}>
+                Marcar esta CARA {face} de MANZANA {block} como terminada
+            </button>
+        }
+
+        {block &&
+            <ObservacionesHTH
+                territory={territory}
+                block={block}
+                face={face}
+            />
+        }
+
+        {face && territoryHTH && territoryHTH.noTocar && !!territoryHTH.noTocar.length &&
+            <NoTocar
+                block={block}
+                face={face}
+                noTocarArray={ territoryHTH.noTocar }
+            />
+        }
+
+
+        <br />
+        <hr style={{ border: '1px solid black' }} />
+
+
+
+
+
+        {loading &&
+            <>
+                <br/>
+                <Loading />
+            </>
+        }
+
+
+
 
 
 
@@ -206,19 +303,7 @@ export const CasaEnCasaPage = () => {
             poly - defines a polygonal region          shape="poly" coords="140,121,181,116,204,160   x1-y1 x2-y2 x3-y3 etc
             default - defines the entire region */}
 
+        </>
 
-
-        <br />
-        <hr style={{ border: '1px solid black' }} />
-
-
-        {/* {loading &&
-            <>
-                <br/>
-                <Loading />
-            </>
-        } */}
-
-    </>
     )
 }
