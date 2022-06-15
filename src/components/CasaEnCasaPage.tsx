@@ -1,21 +1,20 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
-import { Button, Container } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { typeRootState } from '../store/store'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
 import { H2 } from './css/css'
 import { typeUser } from '../models/user'
-import 'react-confirm-alert/src/react-confirm-alert.css'
-import { dark } from '../models/territory'
 import { generalBlue } from './_App'
 import { NoTocar, typeNoTocar } from './house-to-house/NoTocarHTH'
-import { ObservacionesHTH } from './house-to-house/ObservacionesHTH'
+import { ObservacionesHTH, typeObservacion } from './house-to-house/ObservacionesHTH'
+import 'react-confirm-alert/src/react-confirm-alert.css'
+import { Button, Card, Nav } from 'react-bootstrap'
 
 export type typeHTHTerritory = {
-
     noTocar: typeNoTocar[]
+    observaciones: typeObservacion[]
 }
 
 export const CasaEnCasaPage = () => {
@@ -23,11 +22,8 @@ export const CasaEnCasaPage = () => {
     const { territory } = useParams<any>()
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-
     const user: typeUser|undefined = useAuth().user
-    const isFinished = false
     const [loading, setLoading] = useState<boolean>(true)
-
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>();
     const [block, setBlock] = useState<string>('')
     const [blocks, setBlocks] = useState<string[]>([''])
@@ -36,12 +32,21 @@ export const CasaEnCasaPage = () => {
     const [imageSrc, setImageSrc] = useState<string>(isMobile ? `/img/img-hth/${territory}v00.png` : `/img/img-hth/${territory}h00.png`)
 
     useEffect(() => {
+        if (user && !user.isAdmin) window.location.href = "/"
         setBlocks(['1', '2', '3'])
         setTerritoryHTH({
             noTocar: [
-                { direccion: 'Directorio 123', block: '1', face: 'A', date: '2022-06-12' },
-                { direccion: 'Directorio 456', block: '1', face: 'A', date: '2022-06-11' },
-                { direccion: 'Directorio 789', block: '1', face: 'B', date: '2022-06-10' }]
+                { direccion: 'Directorio 123', block: '1', face: 'A', date: '2022-06-12', id: '1' },
+                { direccion: 'Directorio 456', block: '1', face: 'A', date: '2022-06-11', id: '2' },
+                { direccion: 'Directorio 789', block: '1', face: 'B', date: '2022-06-10', id: '3' }
+            ],
+            observaciones: [
+                { text: 'Directorio no completado 1', block: '1', face: 'A', date: '2022-06-08', id: '1' },
+                { text: 'Directorio no completado 2', block: '1', face: 'A', date: '2022-06-09', id: '2' },
+                { text: 'Directorio no completado 3', block: '1', face: 'B', date: '2022-06-10', id: '3' },
+                { text: 'Directorio no completado 4', block: '1', face: '', date: '2022-06-11', id: '4' },
+                { text: 'Directorio no completado 5', block: '', face: '', date: '2022-06-12', id: '5' }
+            ]
         })
         
         if (!block) {
@@ -51,7 +56,7 @@ export const CasaEnCasaPage = () => {
         
         setLoading(false)
         return () => { }
-    }, [isMobile, territory, block, face, loading])
+    }, [isMobile, territory, block, face, loading, user])
 
     const blockSelection = (blockSelected: string) => {
         setBlock(blockSelected)
@@ -117,8 +122,8 @@ export const CasaEnCasaPage = () => {
             onClick={(e) => executeX(e)}
         />
 
-        <button className={`btn ${wholeTerritory ? 'btn-general-blue' : 'btn-dark'} mt-2 mb-4 d-block mx-auto`}
-            style={{ width: isMobile ? '120px' : '420px' }}
+        <button className={`btn ${wholeTerritory ? 'btn-general-blue' : 'btn-dark'} mt-2 mb-4 d-block mx-auto py-3`}
+            style={{ width: isMobile ? '220px' : '420px' }}
             onClick={() => selectWholeTerritory()}>
                 Todo el Territorio {territory}
         </button>
@@ -137,10 +142,31 @@ export const CasaEnCasaPage = () => {
             </div>
         }
 
+        <Card>
+            <Card.Header>
+                <Nav variant="tabs" defaultActiveKey="#first">
+                    <Nav.Item>
+                        <Nav.Link href="#first">Manzana 1</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#block2">Manzana 2</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#block3">Manzana 3</Nav.Link>
+                    </Nav.Item>
+                </Nav>
+            </Card.Header>
+            <Card.Body>
+                <Card.Title>Special title treatment</Card.Title>
+                <Card.Text>With supporting text below as a natural lead-in to additional content.</Card.Text>
+                <Button variant="primary">Go somewhere</Button>
+            </Card.Body>
+        </Card>
+
         <map name={"workmap"}>
             {
                 territory === "1" ? <>
-                    <area></area>
+                    <area alt=""></area>
                 </> :
                 territory === "2" ? <>
                     {isMobile ?
@@ -242,19 +268,21 @@ export const CasaEnCasaPage = () => {
             </button>
         }
 
-        {block &&
+        {territoryHTH && territoryHTH.observaciones && !!territoryHTH.observaciones.length &&
             <ObservacionesHTH
                 territory={territory}
                 block={block}
                 face={face}
+                observacionesArray={territoryHTH.observaciones}
             />
         }
 
         {face && territoryHTH && territoryHTH.noTocar && !!territoryHTH.noTocar.length &&
             <NoTocar
+                territory={territory}
                 block={block}
                 face={face}
-                noTocarArray={ territoryHTH.noTocar }
+                noTocarArray={territoryHTH.noTocar}
             />
         }
 
