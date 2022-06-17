@@ -1,8 +1,8 @@
-import { typeCampaignPack } from "./campaign"
-import { typeLogsObj } from "./log"
-import { typeLocalStatistic, typeStatistic } from "./statistic"
-import { typeHousehold, typeStateOfTerritory, typeBlock } from "./territory"
-import { typeUser } from "./user"
+import { typeCampaignPack } from './campaign'
+import { typeLogsObj } from './log'
+import { typeLocalStatistic, typeStatistic } from './statistic'
+import { typeHousehold, typeStateOfTerritory, typeBlock } from './territory'
+import { typeUser } from './user'
 
 export type typeResponseData = {
     success: boolean

@@ -1,37 +1,29 @@
-import { typeBlock, variant } from "./territory"
+import { typeBlock, typeTerritoryNumber } from "./territory"
 
-export type typeHTHState = "No predicado" | "No contestó" | "Contestó" | "No tocar" | "Carta dejada"
+export type typeFace = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 
-export const noPredicado: typeHTHState = "No predicado"
-export const noContesto: typeHTHState = "No contestó"
-export const contesto: typeHTHState = "Contestó"
-export const noTocar: typeHTHState = "No tocar"
-export const cartaDejada: typeHTHState = "Carta dejada"
-
-export type typeHTHBuilding = {
+export type typeHTHTerritory = {
     _id?: Object
-    territory: string
-    manzana?: typeBlock           // ?
-    street: string
-    streetNumber: number
-    
-    pisosX: number
-    deptosX: number
-    conLetras: boolean
-    numCorrido: boolean
-    sinPB: boolean
-    
-    households: typeHTHHousehold[]
+    territory: typeTerritoryNumber
+    doNotCalls: typeDoNotCall[]
+    observations: typeObservation[]
 }
 
-export type typeHTHHousehold = {
-    isChecked: boolean
-    pisoN: number
-    deptoN: number
-    piso: string
-    depto: string
-    idNumber: number
-    estado: typeHTHState
-    lastTime: string
-    variant: variant
+export type typeDoNotCall = {
+    block: typeBlock
+    date: string
+    doorBell: string
+    face: typeFace
+    id: number
+    street: string
+    streetNumber: number
+}
+
+export type typeObservation = {
+    block: typeBlock | ''
+    date: string
+    face: typeFace | ''
+    id: number
+    street: string
+    text: string
 }

@@ -1,40 +1,40 @@
 import { useState } from 'react'
-import { Button, Card, Container, Form } from 'react-bootstrap'
-import { dark } from '../../models/territory'
+import { Button, Container, Form, Row } from 'react-bootstrap'
+import { dark, typeBlock, typeTerritoryNumber } from '../../models/territory'
 import { MdDelete, MdEdit } from 'react-icons/md'
 import { generalBlue } from '../_App'
 import { useSelector } from 'react-redux'
 import { typeRootState } from '../../store/store'
+import { typeUser } from '../../models/user'
+import { useAuth } from '../../context/authContext'
+import { typeDoNotCall, typeFace } from '../../models/houseToHouse'
+import { deleteHTHDoNotCallService, editHTHDoNotCallService } from '../../services/houseToHouseServices'
 
-export type typeNoTocar = {
-    block: string
-    date: string
-    direccion: string
-    face: string
-    id: string
-}
+export const NoTocarHTH = (props: any) => {
 
-export const NoTocar = (props: any) => {
-
+    const user: typeUser|undefined = useAuth().user
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const territory: string = props.territory
-    const block: string = props.block
-    const face: string = props.face
-    const noTocarArray: typeNoTocar[] = props.noTocarArray
-        .filter((noTocar: typeNoTocar) => noTocar.block === block && noTocar.face === face)
-        .sort((a: typeNoTocar, b: typeNoTocar) => a.direccion.localeCompare(b.direccion))
-    const date = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
+    const territory: typeTerritoryNumber = props.territory
+    const block: typeBlock = props.block
+    const face: typeFace = props.face
+    const doNotCalls: typeDoNotCall[] = props.doNotCalls ? props.doNotCalls
+        .filter((noTocar: typeDoNotCall) => noTocar.block === block && noTocar.face === face)
+        .sort((a: typeDoNotCall, b: typeDoNotCall) => a.street.localeCompare(b.street)) : ['']
+    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
     const [showForm, setShowForm] = useState<boolean>(false)
     const [street, setStreet] = useState<string>('')
-    const [streetNumber, setStreetNumber] = useState<string>('')
+    const [streetNumber, setStreetNumber] = useState<number>(0)
+    const [doorBell, setDoorBell] = useState<string>('')
 
-    const editNoTocarHandler = (id: string) => {
-        console.log("Editando no tocar...", id)
+    const editHandler = (doNotCall: typeDoNotCall) => {
+        console.log("Editando no tocar...", doNotCall)
+        editHTHDoNotCallService(doNotCall, territory).then((success: boolean) => console.log(success))
     }
 
-    const deleteNoTocarHandler = (id: string) => {
+    const deleteHandler = (id: number) => {
         console.log("Eliminando no tocar...", id)
+        deleteHTHDoNotCallService(id, territory).then((success: boolean) => console.log(success))
     }
 
     const submitHandler = (e: Event) => {
@@ -47,6 +47,17 @@ export const NoTocar = (props: any) => {
         console.log("streetNumber", streetNumber)
         console.log("date", date)
         console.log("id", +new Date())
+        if (streetNumber < 1 || street === 'Seleccionar la calle') return
+        const doNotCall: typeDoNotCall = {
+            block,
+            date,
+            doorBell,
+            face,
+            id: +new Date(),
+            street,
+            streetNumber
+        }
+        //addHTHDoNotCallService(doNotCall, territory)
     }
 
     const cancelForm = () => {
@@ -59,10 +70,10 @@ export const NoTocar = (props: any) => {
             <h1 className={'text-center text-white d-block mx-auto pt-3 mt-4'}
                 style={{ backgroundColor: generalBlue, minHeight: '80px', width: '80%' }}
             >
-                {noTocarArray && !!noTocarArray.length ? 'Listado de No Tocar' : 'No hay No Tocar en esta cara'}
+                {doNotCalls && !!doNotCalls.length ? 'Listado de No Tocar' : 'No hay No Tocar en esta cara'}
             </h1>
                 
-            {noTocarArray && !!noTocarArray.length && noTocarArray.map((noTocar: typeNoTocar, index: number) => (
+            {doNotCalls && !!doNotCalls.length && doNotCalls.map((noTocar: typeDoNotCall, index: number) => (
                 <div key={index}
                     className={`${isMobile ? 'text-center' : 'd-flex'} align-items-center justify-content-center mt-4 ${isDarkMode ? 'text-white' : ''}`}>
 
@@ -70,61 +81,70 @@ export const NoTocar = (props: any) => {
                         <div style={{ border: '1px solid white', borderRadius: '7px' }}>
                             <div>
                                 <h2 className={'mr-2'}>
-                                    {noTocar.direccion}
-                                    <br/>
-                                    <small className={'text-muted'}> Fecha {noTocar.date} </small>
+                                    {noTocar.street} {noTocar.streetNumber} {noTocar.doorBell}
                                 </h2>
+                                <small className={'text-muted'}> Fecha: {noTocar.date} </small>
                             </div>
 
-                            <div>
-                                <h4 className={'d-inline'} style={{ cursor: 'pointer' }}
-                                    onClick={() => editNoTocarHandler(noTocar.id)}
-                                >
-                                    Editar &nbsp;
-                                </h4>
+                            {user && user.isAdmin &&
+                            <>
+                                <div>
+                                    <h4 className={'d-inline'} style={{ cursor: 'pointer' }}
+                                        onClick={() => editHandler(noTocar)}
+                                    >
+                                        Editar &nbsp;
+                                    </h4>
 
-                                <MdEdit className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                                    onClick={() => editNoTocarHandler(noTocar.id)}
-                                />
-                            </div>
+                                    <MdEdit className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
+                                        onClick={() => editHandler(noTocar)}
+                                    />
+                                </div>
 
-                            <div>
-                                <h4 className={'d-inline'} style={{ cursor: 'pointer' }}
-                                    onClick={() => deleteNoTocarHandler(noTocar.id)}
-                                >
-                                    Eliminar &nbsp;
-                                </h4>
-                                
-                                <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                                    onClick={() => deleteNoTocarHandler(noTocar.id)}
-                                />
-                            </div>
+                                <div>
+                                    <h4 className={'d-inline'} style={{ cursor: 'pointer' }}
+                                        onClick={() => deleteHandler(noTocar.id)}
+                                    >
+                                        Eliminar &nbsp;
+                                    </h4>
+                                    
+                                    <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
+                                        onClick={() => deleteHandler(noTocar.id)}
+                                    />
+                                </div>
+                            </>
+                            }
+
                         </div>
                     :
                         <>
                             <h2 className={'d-inline mr-2'}>
-                                {noTocar.direccion} | <small className={'text-muted'}> Fecha {noTocar.date} </small> |
+                                {noTocar.street} {noTocar.streetNumber} {noTocar.doorBell} | <small className={'text-muted'}> Fecha: {noTocar.date} </small> |
                             </h2>
-                            
-                            <h4 style={{ cursor: 'pointer' }}
-                                onClick={() => editNoTocarHandler(noTocar.id)}
-                            >
-                                &nbsp; Editar &nbsp;
-                            </h4>
-                            
-                            <MdEdit className={'d-inline align-top'} size={'2rem'} style={{ cursor: 'pointer' }}
-                                onClick={() => editNoTocarHandler(noTocar.id)}
-                            />
-                            
-                            <h4 style={{ cursor: 'pointer' }}
-                                onClick={() => deleteNoTocarHandler(noTocar.id)}
-                            >
-                                &nbsp; | &nbsp; Eliminar &nbsp;
-                            </h4>
-                            
-                            <MdDelete className={'d-inline align-top'} size={'2rem'} style={{ cursor: 'pointer' }}
-                                onClick={() => deleteNoTocarHandler(noTocar.id)}
-                            />
+
+                            {user && user.isAdmin &&
+                            <>
+                                
+                                <h4 style={{ cursor: 'pointer' }}
+                                    onClick={() => editHandler(noTocar)}
+                                >
+                                    &nbsp; Editar &nbsp;
+                                </h4>
+                                
+                                <MdEdit className={'d-inline align-top'} size={'2rem'} style={{ cursor: 'pointer' }}
+                                    onClick={() => editHandler(noTocar)}
+                                />
+                                
+                                <h4 style={{ cursor: 'pointer' }}
+                                    onClick={() => deleteHandler(noTocar.id)}
+                                >
+                                    &nbsp; | &nbsp; Eliminar &nbsp;
+                                </h4>
+                                
+                                <MdDelete className={'d-inline align-top'} size={'2rem'} style={{ cursor: 'pointer' }}
+                                    onClick={() => deleteHandler(noTocar.id)}
+                                />
+                            </>
+                            }
                         </>
                     }
                 </div>
@@ -135,8 +155,8 @@ export const NoTocar = (props: any) => {
                 {showForm ? 'Ocultar' : 'Agregar No Tocar'}
             </button>
 
-            {showForm &&
-                <Container style={{ maxWidth: '600px' }}>
+            {showForm && user && user.isAdmin &&
+                <Container className={'mt-4'} style={{ maxWidth: '600px' }}>
                     <Form onSubmit={(e: any) => submitHandler(e)} className={isDarkMode ? 'text-white' : ''}>
 
                         <Form.Group className={'mb-3'}>
@@ -150,46 +170,59 @@ export const NoTocar = (props: any) => {
                             </Form.Select>
                         </Form.Group>
 
-                        <Form.Group className={'mb-3'}>
-                            <Form.Label> Altura y timbre </Form.Label>
-                            <Form.Control placeholder={'Altura y timbre'}
-                                value={streetNumber}
-                                onChange={(e: any) => setStreetNumber(e.target.value)}
-                            />
-                        </Form.Group>
+                        <Row className={'d-flex justify-content-center'}>
+                            <Form.Group className={'mb-3 w-50'}>
+                                <Form.Label> Altura </Form.Label>
+                                <Form.Control placeholder={'Altura'}
+                                    type={'number'}
+                                    min={0}
+                                    value={streetNumber ? streetNumber : ''}
+                                    onChange={(e: any) => setStreetNumber(e.target.value)}
+                                />
+                            </Form.Group>
 
-                        <Form.Group className={'mb-3'}>
-                            <Form.Label> Territorio </Form.Label>
-                            <Form.Control
-                                value={territory}
-                                disabled
-                            />
-                        </Form.Group>
+                            <Form.Group className={'mb-3 w-50'}>
+                                <Form.Label> Timbre </Form.Label>
+                                <Form.Control
+                                    value={doorBell}
+                                    onChange={(e: any) => setDoorBell(e.target.value)}
+                                />
+                            </Form.Group>
+                        </Row>
 
-                        <Form.Group className={'mb-3'}>
-                            <Form.Label> Manzana </Form.Label>
-                            <Form.Control
-                                value={block ? block : 'Todas'}
-                                disabled
-                            />
-                        </Form.Group>
+                        <Row className={'mt-2'}>
+                            <Form.Group className={'mb-3 w-25'}>
+                                <Form.Label> Territorio </Form.Label>
+                                <Form.Control
+                                    value={territory}
+                                    disabled
+                                />
+                            </Form.Group>
+                            
+                            <Form.Group className={'mb-3 w-25'}>
+                                <Form.Label> Manzana </Form.Label>
+                                <Form.Control
+                                    value={block ? block : 'Todas'}
+                                    disabled
+                                />
+                            </Form.Group>
 
-                        <Form.Group className={'mb-3'}>
-                            <Form.Label> Cara </Form.Label>
-                            <Form.Control
-                                value={face ? face : 'Todas'}
-                                disabled
-                            />
-                        </Form.Group>
+                            <Form.Group className={'mb-3 w-25'}>
+                                <Form.Label> Cara </Form.Label>
+                                <Form.Control
+                                    value={face}
+                                    disabled
+                                />
+                            </Form.Group>
 
-                        <Form.Group className={'mb-3'}>
-                            <Form.Label> Fecha </Form.Label>
-                            <Form.Control
-                                value={date}
-                                disabled
-                            />
-                        </Form.Group>
-
+                            <Form.Group className={'mb-3 w-25'}>
+                                <Form.Label> Fecha </Form.Label>
+                                <Form.Control
+                                    value={date}
+                                    disabled
+                                />
+                            </Form.Group>
+                        </Row>
 
                         {isMobile ?
                             <div className={'pt-3'}>
