@@ -4,6 +4,7 @@ export type typeFace = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 
 export type typeHTHTerritory = {
     _id?: Object
+    isFinished: boolean
     territory: typeTerritoryNumber
     doNotCalls: typeDoNotCall[]
     observations: typeObservation[]
@@ -11,6 +12,7 @@ export type typeHTHTerritory = {
 
 export type typeDoNotCall = {
     block: typeBlock
+    creator: string
     date: string
     doorBell: string
     face: typeFace
@@ -20,9 +22,10 @@ export type typeDoNotCall = {
 }
 
 export type typeObservation = {
-    block: typeBlock | ''
+    block: typeBlock
+    creator: string
     date: string
-    face: typeFace | ''
+    face: typeFace
     id: number
     street: string
     text: string

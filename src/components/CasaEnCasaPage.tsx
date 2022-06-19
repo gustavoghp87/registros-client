@@ -23,40 +23,79 @@ export const CasaEnCasaPage = () => {
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const [loading, setLoading] = useState<boolean>(true)
-    const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>();
+    const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
     const [block, setBlock] = useState<string>('')
-    const [blocks, setBlocks] = useState<(typeBlock|'')[]>([''])
+    const [blocks, setBlocks] = useState<(typeBlock)[]>()
     const [face, setFace] = useState<string>('')
     const [street, setStreet] = useState<string>('')
     const [streets, setStreets] = useState<string[]>([''])
     const [wholeTerritory, setWholeTerritory] = useState<boolean>(true)
     const [imageSrc, setImageSrc] = useState<string>(isMobile ? `/img/img-hth/${territory}v00.png` : `/img/img-hth/${territory}h00.png`)
 
+    const hthT: typeHTHTerritory = {
+        territory: '2',
+        isFinished: false,
+        // finishedFaces: [
+        //     { block: '1', face: 'A' },
+        //     { block: '1', face: 'B' },
+        //     { block: '1', face: 'C' }
+        // ],
+        doNotCalls: [{
+            block: '2',
+            creator: 'ghp',
+            date: '',
+            doorBell: '',
+            face: 'A',
+            id: 123,
+            street: '',
+            streetNumber: 2323
+        }],
+        observations: [{
+            block: '2',
+            creator: 'ghp',
+            date: '',
+            face: 'A',
+            id: 123,
+            street: '',
+            text: ''
+        }]
+    }
+    
+
+
+
     useEffect(() => {
-        if (user && !user.isAdmin) window.location.href = "/"
-        if (territory) getBlocksService(territory).then((blocks: typeBlock[]|null) => {
-            if (blocks && blocks.length) setBlocks(blocks)
-        })
-        if (!block) {
+        if (user && !user.isAdmin) window.location.href = "/"                   // to change
+        if (!territory || !loading) return
+        
+        if (!blocks) {
+            getBlocksService(territory).then((blocks: typeBlock[]|null) => {
+                if (blocks && blocks.length) setBlocks(blocks)
+            })
             if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
             else setImageSrc(`/img/img-hth/${territory}h00.png`)
         }
-        if (territory) getHTHTerritoryService(territory).then((hthTerritory: typeHTHTerritory|null) => {
-            if (hthTerritory) setTerritoryHTH(hthTerritory)
-            console.log(hthTerritory);
-            
-        })
-        if (territory) getHTHStreetsByTerritoryService(territory).then((streets: string[]|null) => {
-            if (streets && streets.length) {
-                setStreets(streets)
-                setStreet(streets[0])
-            }
-        })
-        
+
+        if (territory && !territoryHTH) {
+            getHTHTerritoryService(territory).then((hthTerritory: typeHTHTerritory|null) => {
+                if (hthTerritory) setTerritoryHTH(hthTerritory)
+            })
+        }
+        if (territory && !streets) {        
+            getHTHStreetsByTerritoryService(territory).then((streets: string[]|null) => {
+                if (streets && streets.length) {
+                    setStreets(streets)
+                    setStreet(streets[0])
+                }
+            })
+        }
         
         setLoading(false)
-        return () => { }
-    }, [isMobile, territory, block, face, loading, user])
+        return () => {
+            setTerritoryHTH(undefined)
+            setBlocks(undefined)
+        }
+    }, [isMobile, territory, block, face, loading, user, streets, territoryHTH])
 
     const blockSelection = (blockSelected: string) => {
         setBlock(blockSelected)
@@ -90,7 +129,15 @@ export const CasaEnCasaPage = () => {
         setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
     }
 
-    
+    const refreshDoNotCallHandler = (): void => {
+        setLoading(true)
+        if (territory) getHTHTerritoryService(territory).then((hthTerritory: typeHTHTerritory|null) => {
+            if (hthTerritory) setTerritoryHTH(hthTerritory)
+            console.log(hthTerritory);
+            
+        })
+        setLoading(false)
+    }
     
 
 
@@ -119,13 +166,13 @@ export const CasaEnCasaPage = () => {
             onClick={(e) => executeX(e)}
         />
 
-        <button className={`btn ${wholeTerritory ? 'btn-general-blue' : 'btn-dark'} mt-2 mb-4 d-block mx-auto py-3`}
+        {/* <button className={`btn ${wholeTerritory ? 'btn-general-blue' : 'btn-dark'} mt-2 mb-4 d-block mx-auto py-3`}
             style={{ width: isMobile ? '220px' : '420px' }}
             onClick={() => selectWholeTerritory()}>
                 Todo el Territorio {territory}
-        </button>
+        </button> */}
 
-        {blocks && !!blocks.length &&
+        {/* {blocks && !!blocks.length &&
             <div className={'row d-flex align-items-center'} style={{ justifyContent: 'space-evenly' }}>
                 {blocks.map((currentBlock: string) =>
                     <button key={currentBlock}
@@ -137,7 +184,7 @@ export const CasaEnCasaPage = () => {
                     </button>
                 )}
             </div>
-        }
+        } */}
 
         <map name={"workmap"}>
             {
@@ -212,6 +259,7 @@ export const CasaEnCasaPage = () => {
 
 
         <Container className={`${isDarkMode ? 'bg-dark text-white' : ''}`}>
+
             <h1 className={'text-white py-3'}
                 style={{
                     backgroundColor: generalBlue,
@@ -228,9 +276,9 @@ export const CasaEnCasaPage = () => {
                 <span> {face ? `CARA ${face}` : ''} </span>
             </h1>
 
-            {!block && !face &&
-                <button className={'btn btn-general-blue d-block m-auto mb-4'}>
-                    Marcar esta TERRITORIO {territory} como terminado
+            {/* {territoryHTH && !block && !face &&
+                <button className={`btn ${territoryHTH.isFinished ? 'btn-danger' : 'btn-general-blue'} d-block m-auto mb-4`}>
+                    Marcar TERRITORIO {territory} como terminado
                 </button>
             }
 
@@ -238,7 +286,7 @@ export const CasaEnCasaPage = () => {
                 <button className={'btn btn-general-blue d-block m-auto mb-4'}>
                     Marcar esta MANZANA {block} como terminada
                 </button>
-            }
+            } */}
             
             {block && face &&
                 <button className={'btn btn-general-blue d-block m-auto mb-4'}>
@@ -249,32 +297,31 @@ export const CasaEnCasaPage = () => {
 
 
 
-            {territoryHTH &&
+            {territoryHTH && block && face &&
                 <ObservacionesHTH
                     territory={territory}
                     block={block}
                     face={face}
                     street={street}
                     observations={territoryHTH.observations}
+                    refreshDoNotCallHandler={refreshDoNotCallHandler}
                 />
             }
 
-            {face &&
+            {territoryHTH && block && face &&
                 <NoTocarHTH
                     territory={territory}
                     block={block}
                     face={face}
-                    doNotCalls={territoryHTH?.doNotCalls}
+                    doNotCalls={territoryHTH.doNotCalls}
+                    streets={streets}
+                    refreshDoNotCallHandler={refreshDoNotCallHandler}
                 />
             }
 
 
             <br />
             <hr style={{ border: '1px solid black' }} />
-
-
-
-
 
             {loading &&
                 <>

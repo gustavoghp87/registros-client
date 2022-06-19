@@ -8,7 +8,7 @@ import { typeDoNotCall, typeHTHTerritory, typeObservation } from '../models/hous
 const base: string = `${SERVER}/api/house-to-house`
 
 export const getHTHTerritoryService = async (territory: string): Promise<typeHTHTerritory|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenService() || !territory) return null
     try {
         const response = await fetch(`${base}/${territory}`, {
             method: 'GET',
@@ -24,7 +24,7 @@ export const getHTHTerritoryService = async (territory: string): Promise<typeHTH
 }
 
 export const getHTHStreetsByTerritoryService = async (territory: typeTerritoryNumber): Promise<string[]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenService() || !territory) return null
     try {
         const response = await fetch(`${base}/street/${territory}`, {
             method: 'GET',
@@ -40,7 +40,7 @@ export const getHTHStreetsByTerritoryService = async (territory: typeTerritoryNu
 }
 
 export const addHTHDoNotCallService = async (doNotCall: typeDoNotCall, territory: typeTerritoryNumber): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenService() || !territory || !doNotCall) return false
     try {
         const response = await fetch(`${base}/do-not-call/${territory}`, {
             method: 'POST',
@@ -57,7 +57,7 @@ export const addHTHDoNotCallService = async (doNotCall: typeDoNotCall, territory
 }
 
 export const addHTHObservationService = async (observation: typeObservation, territory: typeTerritoryNumber): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenService() || !territory || !observation) return false
     try {
         const response = await fetch(`${base}/observation/${territory}`, {
             method: 'POST',
@@ -74,7 +74,7 @@ export const addHTHObservationService = async (observation: typeObservation, ter
 }
 
 export const deleteHTHDoNotCallService = async (doNotCallId: number, territory: typeTerritoryNumber): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenService() || !territory || !doNotCallId) return false
     try {
         const response = await fetch(`${base}/do-not-call/${territory}`, {
             method: 'DELETE',
@@ -91,7 +91,7 @@ export const deleteHTHDoNotCallService = async (doNotCallId: number, territory: 
 }
 
 export const deleteHTHObservationService = async (observationId: number, territory: typeTerritoryNumber): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenService() || !territory || !observationId) return false
     try {
         const response = await fetch(`${base}/observation/${territory}`, {
             method: 'DELETE',
@@ -108,7 +108,7 @@ export const deleteHTHObservationService = async (observationId: number, territo
 }
 
 export const editHTHDoNotCallService = async (doNotCall: typeDoNotCall, territory: typeTerritoryNumber): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenService() || !territory || !doNotCall) return false
     try {
         const response = await fetch(`${base}/do-not-call/${territory}`, {
             method: 'PATCH',
@@ -125,7 +125,7 @@ export const editHTHDoNotCallService = async (doNotCall: typeDoNotCall, territor
 }
 
 export const editHTHObservationService = async (observation: typeObservation, territory: typeTerritoryNumber): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenService() || !territory || !observation) return false
     try {
         const response = await fetch(`${base}/observation/${territory}`, {
             method: 'PATCH',
