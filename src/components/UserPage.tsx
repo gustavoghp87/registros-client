@@ -26,8 +26,10 @@ export const UserPage = () => {
     }
 
     const openConfirmModalHandler = (option: 1|2): void => {
-        if (!psw || !newPsw || psw.length < 8) return openAlertModalHandler("Completar los campos primero", "")
-        if (newPsw.length < 8) return openAlertModalHandler("La clave debe tener al menos 8 caracteres", "")
+        if (option === 2) {
+            if (!psw || !newPsw || psw.length < 8) return openAlertModalHandler("Completar los campos primero", "")
+            if (newPsw.length < 8) return openAlertModalHandler("La clave debe tener al menos 8 caracteres", "")
+        }
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: option === 1 ? "¿Cerrar sesiones?" : "Atención",
