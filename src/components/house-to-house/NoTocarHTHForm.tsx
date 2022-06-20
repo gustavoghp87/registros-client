@@ -27,14 +27,6 @@ export const NoTocarHTHForm = (props: any) => {
     
     const submitHandler = (e: Event) => {
         e.preventDefault()
-        console.log("Submitting")
-        console.log("territory", territory)
-        console.log("block", block)
-        console.log("face", face)
-        console.log("street", street)
-        console.log("streetNumber", streetNumber)
-        console.log("date", date)
-        console.log("id", +new Date())
         if (!user || streetNumber < 1 || street === 'Seleccionar la calle') return
         const doNotCall: typeDoNotCall = {
             block,

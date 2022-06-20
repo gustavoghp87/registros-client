@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { typeBlock, typeTerritoryNumber } from '../../models/territory'
-import { MdDelete, MdEdit } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md'
 import { generalBlue } from '../_App'
-import { useSelector } from 'react-redux'
-import { typeRootState } from '../../store/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { typeAppDispatch, typeRootState } from '../../store/store'
 import { typeUser } from '../../models/user'
 import { useAuth } from '../../context/authContext'
 import { typeDoNotCall, typeFace } from '../../models/houseToHouse'
-import { deleteHTHDoNotCallService, editHTHDoNotCallService } from '../../services/houseToHouseServices'
+import { deleteHTHDoNotCallService } from '../../services/houseToHouseServices'
 import { NoTocarHTHForm } from './NoTocarHTHForm'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 
 export const NoTocarHTH = (props: any) => {
 
@@ -28,11 +29,16 @@ export const NoTocarHTH = (props: any) => {
     }
 
     return (
-        <>
-            <h1 className={'text-center text-white d-block mx-auto pt-3 mt-4'}
-                style={{ backgroundColor: generalBlue, minHeight: '80px', width: '80%' }}
+        <div style={{ marginTop: '100px', marginBottom: '50px' }}>
+
+            <h1 className={'py-3 text-center text-white d-block mx-auto'}
+                style={{ backgroundColor: generalBlue, minHeight: '80px', width: '80%', marginBottom: '40px' }}
             >
-                {doNotCalls && !!doNotCalls.length ? 'Listado de No Tocar' : 'No hay No Tocar en esta cara'}
+                {doNotCalls && !!doNotCalls.length ?
+                    'No Tocar:'
+                    :
+                    'No hay No Tocar en esta cara'
+                }
             </h1>
 
             {doNotCalls && !!doNotCalls.length && doNotCalls.map((doNotCall: typeDoNotCall, index: number) => (
@@ -45,10 +51,12 @@ export const NoTocarHTH = (props: any) => {
                 </div>
             ))}
 
-            <button className={'btn btn-general-blue d-block m-auto mt-4'} onClick={() => setShowForm(!showForm)}>
+            <button className={'btn btn-general-blue d-block mx-auto'}
+                style={{ marginTop: '50px' }}
+                onClick={() => setShowForm(!showForm)}
+            >
                 {showForm ? 'Ocultar' : 'Agregar No Tocar'}
             </button>
-
 
             {showForm && user && user.isAdmin &&
                 <NoTocarHTHForm
@@ -60,7 +68,7 @@ export const NoTocarHTH = (props: any) => {
                     refreshDoNotCallHandler={refreshDoNotCallHandler}
                 />
             }
-        </>
+        </div>
     )
 }
 
@@ -73,33 +81,33 @@ const NoTocarHTHItem = (props: any) => {
     const user: typeUser|undefined = useAuth().user
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const dispatch: typeAppDispatch = useDispatch()
     const territory: typeTerritoryNumber = props.territory
     const doNotCall: typeDoNotCall = props.doNotCall
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
-    
-    const editHandler = (doNotCall: typeDoNotCall): void => {
-        console.log("Editando no tocar...", doNotCall)
-        editHTHDoNotCallService(doNotCall, territory).then((success: boolean) => {
-            console.log(success)
-            if (success) {
 
-            } else {
-
-            }
-            refreshDoNotCallHandler()
-        })
+    const deleteHandler = (): void => {
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: '¿Eliminar No Tocar?',
+            message: `Se va a eliminar este No Tocar de la Manzana ${doNotCall.block} Cara ${doNotCall.face}: ${doNotCall.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
+            execution: deleteConfirmedHandler
+        }))
     }
 
-    const deleteHandler = (id: number): void => {
-        console.log("Eliminando no tocar...", id)
-        deleteHTHDoNotCallService(id, territory).then((success: boolean) => {
+    const deleteConfirmedHandler = (): void => {
+        deleteHTHDoNotCallService(doNotCall.id, territory).then((success: boolean) => {
             console.log(success)
             if (success) {
-
+                refreshDoNotCallHandler()
             } else {
-
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: 'Algo falló',
+                    message: `No se pudo eliminar este No Tocar de la Manzana ${doNotCall.block} Cara ${doNotCall.face}: ${doNotCall.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
+                    execution: refreshDoNotCallHandler
+                }))
             }
-            refreshDoNotCallHandler()
         })
     }
 
@@ -113,67 +121,42 @@ const NoTocarHTHItem = (props: any) => {
                     <h2 className={'mr-2'}>
                         {doNotCall.street} {doNotCall.streetNumber} {doNotCall.doorBell}
                     </h2>
-                    <small className={'text-muted'}> Fecha: {doNotCall.date} </small>
                 </div>
+
+                <small className={'text-muted'}> Fecha: {doNotCall.date} </small>
 
                 {user && user.isAdmin &&
                     <>
                         <div>
-                            <h4 className={'d-inline'} style={{ cursor: 'pointer' }}
-                                onClick={() => editHandler(doNotCall)}
-                            >
-                                Editar &nbsp;
-                            </h4>
-
-                            <MdEdit className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                                onClick={() => editHandler(doNotCall)}
-                            />
-                        </div>
-
-                        <div>
-                            <h4 className={'d-inline'} style={{ cursor: 'pointer' }}
-                                onClick={() => deleteHandler(doNotCall.id)}
-                            >
+                            <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => deleteHandler()}>
                                 Eliminar &nbsp;
                             </h4>
-                            
                             <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                                onClick={() => deleteHandler(doNotCall.id)}
+                                onClick={() => deleteHandler()}
                             />
                         </div>
                     </>
                 }
             </div>
         :
-            <div className={`mt-4 p-3 d-flex align-items-center justify-content-center ${isDarkMode ? 'text-white' : ''}`}
+            <div className={`my-4 p-3 d-block mx-auto w-75 d-flex align-items-center justify-content-center ${isDarkMode ? 'text-white' : ''}`}
                 style={{ border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}
             >
 
                 <h2 className={'d-inline mr-2'}>
-                    {doNotCall.street} {doNotCall.streetNumber} {doNotCall.doorBell} | <small className={'text-muted'}> Fecha: {doNotCall.date} </small> |
+                    {doNotCall.street} {doNotCall.streetNumber} {doNotCall.doorBell}
+                    &nbsp;|
+                    <small className={'text-muted'}> Fecha: {doNotCall.date} </small>
+                    |
                 </h2>
 
                 {user && user.isAdmin &&
                     <>
-                        
-                        <h4 style={{ cursor: 'pointer' }}
-                            onClick={() => editHandler(doNotCall)}
-                        >
-                            &nbsp; Editar &nbsp;
+                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => deleteHandler()}>
+                            &nbsp; Eliminar &nbsp;
                         </h4>
-                        
-                        <MdEdit className={'d-inline align-top'} size={'2rem'} style={{ cursor: 'pointer' }}
-                            onClick={() => editHandler(doNotCall)}
-                        />
-                        
-                        <h4 style={{ cursor: 'pointer' }}
-                            onClick={() => deleteHandler(doNotCall.id)}
-                        >
-                            &nbsp; | &nbsp; Eliminar &nbsp;
-                        </h4>
-                        
-                        <MdDelete className={'d-inline align-top'} size={'2rem'} style={{ cursor: 'pointer' }}
-                            onClick={() => deleteHandler(doNotCall.id)}
+                        <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
+                            onClick={() => deleteHandler()}
                         />
                     </>
                 }

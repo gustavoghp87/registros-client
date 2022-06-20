@@ -31,18 +31,15 @@ export const ObservacionesHTH = (props: any) => {
     }
 
     return (
-        <>
-        <br />
-        <br />
-        <br />
-
-            <h1 className={'text-center text-white d-block mx-auto pt-3 mt-4'}
+        <div style={{ marginTop: '100px', marginBottom: '50px' }}>
+            
+            <h1 className={'pt-3 text-center text-white d-block mx-auto'}
                 style={{ backgroundColor: generalBlue, minHeight: '80px', width: '80%' }}
             >
                 {observations && !!observations.length ?
-                    'Observaciones'
+                    'Observaciones:'
                     :
-                    `No hay Observaciones en ${face ? 'esta cara' : block ? 'esta manzana' : 'este territorio'}`}
+                    'No hay Observaciones en esta cara'}
             </h1>
 
             {observations && !!observations.length && observations.map((observation: typeObservation, index: number) => (
@@ -52,13 +49,16 @@ export const ObservacionesHTH = (props: any) => {
                         block={block}
                         face={face}
                         observation={observation}
+                        closeShowFormHandler={closeShowFormHandler}
                         refreshDoNotCallHandler={refreshDoNotCallHandler}
                     />
                 </div>
             ))}
 
-
-            <button className={'btn btn-general-blue d-block m-auto mt-4'} onClick={() => setShowForm(!showForm)}>
+            <button className={'btn btn-general-blue d-block mx-auto'}
+                style={{ marginTop: '50px' }}
+                onClick={() => setShowForm(!showForm)}
+            >
                 {showForm ? 'Ocultar' : 'Agregar Observación'}
             </button>
 
@@ -72,11 +72,7 @@ export const ObservacionesHTH = (props: any) => {
                 />
             }
 
-            <br />
-            <br />
-            <br />
-            <br />
-        </>
+        </div>
     )
 }
 
@@ -90,10 +86,13 @@ const ObservacionesHTHItem = (props: any) => {
     const block: typeBlock = props.block
     const face: typeFace = props.face
     const observation: typeObservation = props.observation
+    const closeShowAddFormHandler: Function = props.closeShowFormHandler
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
+    
     const [showForm, setShowForm] = useState<boolean>(false)
 
     const editHandler = (): void => {
+        closeShowAddFormHandler()
         setShowForm(true)
     }
 
@@ -104,7 +103,7 @@ const ObservacionesHTHItem = (props: any) => {
     const deleteHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
-            title: '¿Eliminar No Tocar?',
+            title: '¿Eliminar Observación?',
             message: `Se va a eliminar esta observación de la Manzana ${observation.block} Cara ${observation.face}: "${observation.text}"`,
             execution: deleteConfirmedHandler
         }))
@@ -128,10 +127,11 @@ const ObservacionesHTHItem = (props: any) => {
         setShowForm(false)
     }
 
+    
     return (<>
         {isMobile ?
             <div className={`my-4 p-3 text-center ${isDarkMode ? 'text-white' : ''}`}
-                style={{ border: '1px solid white', borderRadius: '7px' }}
+                style={{ border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}
             >
                 <div>
                     <h2 className={'mr-2'}>
@@ -143,23 +143,17 @@ const ObservacionesHTHItem = (props: any) => {
 
                 {user && user.isAdmin && <>
                     <div>
-                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }}
-                            onClick={() => editHandler()}
-                        >
+                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => editHandler()}>
                             Editar &nbsp;
                         </h4>
-
                         <MdEdit className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
                             onClick={() => editHandler()}
                         />
                     </div>
                     <div>
-                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }}
-                            onClick={() => deleteHandler()}
-                        >
+                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => deleteHandler()}>
                             Eliminar &nbsp;
                         </h4>
-                        
                         <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
                             onClick={() => deleteHandler()}
                         />
@@ -167,35 +161,32 @@ const ObservacionesHTHItem = (props: any) => {
                 </>}
             </div>
         :
-            <div className={`my-4 p-3 d-flex align-items-center justify-content-center ${isDarkMode ? 'text-white' : ''}`}
+            <div className={`my-4 p-3 d-block mx-auto w-75 d-flex align-items-center justify-content-center ${isDarkMode ? 'text-white' : ''}`}
                 style={{ border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}
             >
-                <h2 className={'d-inline mr-2'}>
+                <h2 className={'mr-2'}>
                     {observation.text}
                 </h2>
 
                 <small className={'text-muted'}> Fecha: {observation.date} </small>
 
                 {user && user.isAdmin && <>
-                    <h4 style={{ cursor: 'pointer' }}
-                        onClick={() => editHandler()}
-                    >
-                        &nbsp; Editar &nbsp;
-                    </h4>
-                    
-                    <MdEdit className={'d-inline align-top'} size={'2rem'} style={{ cursor: 'pointer' }}
-                        onClick={() => editHandler()}
-                    />
-                    
-                    <h4 style={{ cursor: 'pointer' }}
-                        onClick={() => deleteHandler()}
-                    >
-                        &nbsp; | &nbsp; Eliminar &nbsp;
-                    </h4>
-                    
-                    <MdDelete className={'d-inline align-top'} size={'2rem'} style={{ cursor: 'pointer' }}
-                        onClick={() => deleteHandler()}
-                    />
+                    <div>
+                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => editHandler()}>
+                        &nbsp; | &nbsp; Editar &nbsp;
+                        </h4>
+                        <MdEdit className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
+                            onClick={() => editHandler()}
+                        />
+                    </div>
+                    <div>
+                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => deleteHandler()}>
+                            &nbsp; | &nbsp; Eliminar &nbsp;
+                        </h4>
+                        <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
+                            onClick={() => deleteHandler()}
+                        />
+                    </div>
                 </>}
             </div>
         }
@@ -205,8 +196,10 @@ const ObservacionesHTHItem = (props: any) => {
                 territory={territory}
                 block={block}
                 face={face}
+                editText={observation.text}
                 closeShowFormHandler={closeShowFormHandler}
                 refreshDoNotCallHandler={refreshDoNotCallHandler}
+                idEdit={observation.id}
             />
         }
 

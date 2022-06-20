@@ -1,57 +1,76 @@
 import { useState } from 'react'
 import { Button, Container, Form, Row } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useAuth } from '../../context/authContext'
 import { typeFace, typeObservation } from '../../models/houseToHouse'
 import { dark, typeBlock, typeTerritoryNumber } from '../../models/territory'
 import { typeUser } from '../../models/user'
-import { addHTHObservationService } from '../../services/houseToHouseServices'
-import { typeRootState } from '../../store/store'
+import { addHTHObservationService, editHTHObservationService } from '../../services/houseToHouseServices'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { typeAppDispatch, typeRootState } from '../../store/store'
 
 export const ObservacionesHTHForm = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const dispatch: typeAppDispatch = useDispatch()
     const territory: typeTerritoryNumber = props.territory
     const block: typeBlock = props.block
     const face: typeFace = props.face
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
-    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
     const closeShowFormHandler: Function = props.closeShowFormHandler
+    const editText: string = props.editText
+    const idEdit: number = props.idEdit
+    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
 
-    const [text, setText] = useState<string>('')
+    const [text, setText] = useState<string>(editText ?? '')
     
     const submitHandler = (e: Event) => {
         e.preventDefault()
-        console.log("\n\nSubmitting")
-        console.log("territory", territory)
-        console.log("block", block)
-        console.log("face", face)
-        console.log("text", text)
-        console.log("date", date)
-        console.log("id", +new Date())
         if (!text || !user) return
         const observation: typeObservation = {
             block,
             creator: user.email,
             date,
             face,
-            id: +new Date(),
+            id: idEdit ?? +new Date(),
             street: '',
             text
         }
-        addHTHObservationService(observation, territory).then((success: boolean) => {
-            if (success) {
-
-            } else {
-                
-            }
-        })
-        closeShowFormHandler()
-        refreshDoNotCallHandler()
-        //setStreet('')
-        setText('')
+        console.log(observation);
+        
+        if (!editText) {
+            addHTHObservationService(observation, territory).then((success: boolean) => {
+                if (success) {
+                    closeShowFormHandler()
+                    refreshDoNotCallHandler()
+                    setText('')
+                } else {
+                    dispatch(setValuesAndOpenAlertModalReducer({
+                        mode: 'alert',
+                        title: 'Algo falló',
+                        message: `No se pudo agregar esta Observación de la Manzana ${observation.block} Cara ${observation.face}: "${observation.text}"`,
+                        execution: refreshDoNotCallHandler
+                    }))
+                }
+            })
+        } else {
+            editHTHObservationService(observation, territory).then((success: boolean) => {
+                if (success) {
+                    closeShowFormHandler()
+                    refreshDoNotCallHandler()
+                    setText('')
+                } else {
+                    dispatch(setValuesAndOpenAlertModalReducer({
+                        mode: 'alert',
+                        title: 'Algo falló',
+                        message: `No se pudo editar esta Observación de la Manzana ${observation.block} Cara ${observation.face}: "${observation.text}"`,
+                        execution: refreshDoNotCallHandler
+                    }))
+                }
+            })
+        }
     }
     
     const cancelForm = () => {
@@ -68,7 +87,16 @@ export const ObservacionesHTHForm = (props: any) => {
 
                 <Form.Group className={'mb-3'} controlId={""}>
                     <Form.Label> Observación </Form.Label>
-                    <Form.Control as={'textarea'} rows={3} value={text} onChange={(e: any) => setText(e.target.value)} />
+                    <Form.Control as={'textarea'} rows={3}
+                        value={text}
+                        autoFocus
+                        onFocus={(e) => {
+                            const val = e.target.value
+                            e.target.value = ''
+                            e.target.value = val
+                        }}
+                        onChange={(e: any) => setText(e.target.value)}
+                    />
                 </Form.Group>
 
                 <Row>
@@ -83,7 +111,7 @@ export const ObservacionesHTHForm = (props: any) => {
                     <Form.Group className={'mb-3 w-25'}>
                         <Form.Label> Manzana </Form.Label>
                         <Form.Control
-                            value={block ? block : 'Todas'}
+                            value={block}
                             disabled
                         />
                     </Form.Group>
@@ -91,7 +119,7 @@ export const ObservacionesHTHForm = (props: any) => {
                     <Form.Group className={'mb-3 w-25'}>
                         <Form.Label> Cara </Form.Label>
                         <Form.Control
-                            value={face ? face : 'Todas'}
+                            value={face}
                             disabled
                         />
                     </Form.Group>
@@ -99,7 +127,7 @@ export const ObservacionesHTHForm = (props: any) => {
                     {/* <Form.Group className={'mb-3 w-25'}>
                         <Form.Label> Calle </Form.Label>
                         <Form.Control
-                            value={street ? street : 'Todas'}
+                            value={street}
                             disabled
                         />
                     </Form.Group> */}

@@ -1,13 +1,13 @@
-import { typeBlock, typeTerritoryNumber } from "./territory"
+import { typeBlock, typeTerritoryNumber } from './territory'
 
 export type typeFace = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 
 export type typeHTHTerritory = {
     _id?: Object
-    isFinished: boolean
-    territory: typeTerritoryNumber
     doNotCalls: typeDoNotCall[]
+    finished: typeFinishedFace[]
     observations: typeObservation[]
+    territory: typeTerritoryNumber
 }
 
 export type typeDoNotCall = {
@@ -29,4 +29,9 @@ export type typeObservation = {
     id: number
     street: string
     text: string
+}
+
+export type typeFinishedFace = {
+    block: typeBlock
+    face: typeFace
 }

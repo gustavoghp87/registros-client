@@ -2,8 +2,8 @@ import { SERVER } from '../config'
 import { headers } from './functions'
 import { getTokenService } from './tokenServices'
 import { typeResponseData } from '../models/httpResponse'
-import { typeTerritoryNumber } from '../models/territory'
-import { typeDoNotCall, typeHTHTerritory, typeObservation } from '../models/houseToHouse'
+import { typeBlock, typeTerritoryNumber } from '../models/territory'
+import { typeDoNotCall, typeFace, typeHTHTerritory, typeObservation } from '../models/houseToHouse'
 
 const base: string = `${SERVER}/api/house-to-house`
 
@@ -107,13 +107,13 @@ export const deleteHTHObservationService = async (observationId: number, territo
     }
 }
 
-export const editHTHDoNotCallService = async (doNotCall: typeDoNotCall, territory: typeTerritoryNumber): Promise<boolean> => {
-    if (!getTokenService() || !territory || !doNotCall) return false
+export const editHTHObservationService = async (observation: typeObservation, territory: typeTerritoryNumber): Promise<boolean> => {
+    if (!getTokenService() || !territory || !observation) return false
     try {
-        const response = await fetch(`${base}/do-not-call/${territory}`, {
+        const response = await fetch(`${base}/observation/${territory}`, {
             method: 'PATCH',
             headers,
-            body: JSON.stringify({ doNotCall })
+            body: JSON.stringify({ observation })
         })
         const data: typeResponseData|null = await response.json()
         if (!data || !data.success) return false
@@ -124,13 +124,13 @@ export const editHTHDoNotCallService = async (doNotCall: typeDoNotCall, territor
     }
 }
 
-export const editHTHObservationService = async (observation: typeObservation, territory: typeTerritoryNumber): Promise<boolean> => {
-    if (!getTokenService() || !territory || !observation) return false
+export const setHTHIsFinishedService = async (isFinish: boolean, block: typeBlock, face: typeFace, territory: typeTerritoryNumber): Promise<boolean> => {
+    if (!getTokenService() || !territory || isFinish === undefined) return false
     try {
-        const response = await fetch(`${base}/observation/${territory}`, {
+        const response = await fetch(`${base}/state/${territory}`, {
             method: 'PATCH',
             headers,
-            body: JSON.stringify({ observation })
+            body: JSON.stringify({ isFinish, block, face })
         })
         const data: typeResponseData|null = await response.json()
         if (!data || !data.success) return false

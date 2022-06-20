@@ -12,8 +12,8 @@ import { ObservacionesHTH } from './house-to-house/ObservacionesHTH'
 import { Container } from 'react-bootstrap'
 import { typeBlock, typeTerritoryNumber } from '../models/territory'
 import { getBlocksService } from '../services/territoryServices'
-import { getHTHStreetsByTerritoryService, getHTHTerritoryService } from '../services/houseToHouseServices'
-import { typeHTHTerritory } from '../models/houseToHouse'
+import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../services/houseToHouseServices'
+import { typeFace, typeFinishedFace, typeHTHTerritory } from '../models/houseToHouse'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const CasaEnCasaPage = () => {
@@ -24,58 +24,74 @@ export const CasaEnCasaPage = () => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const [loading, setLoading] = useState<boolean>(true)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
-    const [block, setBlock] = useState<string>('')
-    const [blocks, setBlocks] = useState<(typeBlock)[]>()
-    const [face, setFace] = useState<string>('')
-    const [street, setStreet] = useState<string>('')
-    const [streets, setStreets] = useState<string[]>([''])
-    const [wholeTerritory, setWholeTerritory] = useState<boolean>(true)
-    const [imageSrc, setImageSrc] = useState<string>(isMobile ? `/img/img-hth/${territory}v00.png` : `/img/img-hth/${territory}h00.png`)
+    const [block, setBlock] = useState<typeBlock>()
+    const [blocks, setBlocks] = useState<typeBlock[]>()
+    const [face, setFace] = useState<typeFace>()
+    const [street, setStreet] = useState<string>()
+    const [streets, setStreets] = useState<string[]>()
+    const [imageSrc, setImageSrc] = useState<string>()
+    const [isFinished, setIsFinished] = useState<boolean>(false)
 
-    const hthT: typeHTHTerritory = {
-        territory: '2',
-        isFinished: false,
-        // finishedFaces: [
-        //     { block: '1', face: 'A' },
-        //     { block: '1', face: 'B' },
-        //     { block: '1', face: 'C' }
-        // ],
-        doNotCalls: [{
-            block: '2',
-            creator: 'ghp',
-            date: '',
-            doorBell: '',
-            face: 'A',
-            id: 123,
-            street: '',
-            streetNumber: 2323
-        }],
-        observations: [{
-            block: '2',
-            creator: 'ghp',
-            date: '',
-            face: 'A',
-            id: 123,
-            street: '',
-            text: ''
-        }]
+    const setHTHIsFinishedHandler = (): void => {
+        if (!block || !face) return
+        setHTHIsFinishedService(!isFinished, block, face, territory).then((success: boolean) => {
+            if (success) {
+                refreshDoNotCallHandler()
+            } else {
+                console.log("Algo falló")
+            }
+        })
     }
     
+    const executeX = (e: any) => {
+        const x = parseInt(e.pageX) - parseInt(e.target.offsetLeft);
+        const y = parseInt(e.pageY) - parseInt(e.target.offsetTop);
+        console.log("X:", x, ", Y:", y);
+    }
 
+    const setBlockAndFaceHandler = (selectedBlock: typeBlock, selectedFace: typeFace) => {
+        setBlock(selectedBlock)
+        setFace(selectedFace)
+        setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
+    }
+    
+    const changeImageSrc = (selectedBlock: typeBlock|'0' = '0', selectedFace: typeFace|'0' = '0') => {
+        if (face) return
+        setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
+        // TODO: click out of image => set image 2h00.png
+    }
+
+    const refreshDoNotCallHandler = (): void => {
+        setLoading(true)
+        if (territory) getHTHTerritoryService(territory).then((hthTerritory: typeHTHTerritory|null) => {
+            if (hthTerritory) {
+                setTerritoryHTH(hthTerritory)
+                if (hthTerritory.finished && hthTerritory.finished.length) {
+                    let isFinished: typeFinishedFace|undefined = hthTerritory.finished.find(x => x.block === block && x.face === face)
+                    setIsFinished(!isFinished ? false : true)
+                } else {
+                    setIsFinished(false)
+                }
+            } else {
+                console.log("Algo falló")
+            }
+        })
+        setLoading(false)
+    }
 
 
     useEffect(() => {
         if (user && !user.isAdmin) window.location.href = "/"                   // to change
         if (!territory || !loading) return
-        
-        if (!blocks) {
-            getBlocksService(territory).then((blocks: typeBlock[]|null) => {
-                if (blocks && blocks.length) setBlocks(blocks)
-            })
+        if (!imageSrc) {
             if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
             else setImageSrc(`/img/img-hth/${territory}h00.png`)
         }
-
+        if (!blocks || !face) {
+            getBlocksService(territory).then((blocks: typeBlock[]|null) => {
+                if (blocks && blocks.length) setBlocks(blocks)
+            })
+        }
         if (territory && !territoryHTH) {
             getHTHTerritoryService(territory).then((hthTerritory: typeHTHTerritory|null) => {
                 if (hthTerritory) setTerritoryHTH(hthTerritory)
@@ -89,56 +105,23 @@ export const CasaEnCasaPage = () => {
                 }
             })
         }
-        
+        if (block && face && territoryHTH && territoryHTH.finished && territoryHTH.finished.length) {
+            let isFinished: typeFinishedFace|undefined = territoryHTH.finished.find(x => x.block === block && x.face === face)
+            setIsFinished(!isFinished ? false : true)
+        } else {
+            setIsFinished(false)
+        }
         setLoading(false)
         return () => {
-            setTerritoryHTH(undefined)
-            setBlocks(undefined)
+            // setTerritoryHTH(undefined)
+            // setBlock(undefined)
+            // setBlocks(undefined)
+            // setFace(undefined)
+            // setStreet(undefined)
+            // setStreets(undefined)
+            // setImageSrc(undefined)
         }
-    }, [isMobile, territory, block, face, loading, user, streets, territoryHTH])
-
-    const blockSelection = (blockSelected: string) => {
-        setBlock(blockSelected)
-        setFace('')
-        setWholeTerritory(false)
-        if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
-        else setImageSrc(`/img/img-hth/${territory}h00.png`)
-    }
-
-    const selectWholeTerritory = () => {
-        setWholeTerritory(true)
-        setFace('')
-        setBlock('')
-    }
-
-    const executeX = (e: any) => {
-        const x = parseInt(e.pageX) - parseInt(e.target.offsetLeft);
-        const y = parseInt(e.pageY) - parseInt(e.target.offsetTop);
-        console.log("X:", x, ", Y:", y);
-    }
-
-    const setBlockAndFaceHandler = (selectedBlock: string, selectedFace: string) => {
-        setBlock(selectedBlock)
-        setFace(selectedFace)
-        setWholeTerritory(false)
-        setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
-    }
-    
-    const changeImageSrc = (selectedBlock: string = "0", selectedFace: string = "0") => {
-        if (face !== '') return
-        setImageSrc(`/img/img-hth/${territory}${isMobile ? 'v' : 'h'}${selectedBlock}${selectedFace}.png`)
-    }
-
-    const refreshDoNotCallHandler = (): void => {
-        setLoading(true)
-        if (territory) getHTHTerritoryService(territory).then((hthTerritory: typeHTHTerritory|null) => {
-            if (hthTerritory) setTerritoryHTH(hthTerritory)
-            console.log(hthTerritory);
-            
-        })
-        setLoading(false)
-    }
-    
+    }, [isMobile, territory, block, blocks, face, loading, user, streets, territoryHTH, imageSrc])
 
 
     return (
@@ -165,26 +148,6 @@ export const CasaEnCasaPage = () => {
             }}
             onClick={(e) => executeX(e)}
         />
-
-        {/* <button className={`btn ${wholeTerritory ? 'btn-general-blue' : 'btn-dark'} mt-2 mb-4 d-block mx-auto py-3`}
-            style={{ width: isMobile ? '220px' : '420px' }}
-            onClick={() => selectWholeTerritory()}>
-                Todo el Territorio {territory}
-        </button> */}
-
-        {/* {blocks && !!blocks.length &&
-            <div className={'row d-flex align-items-center'} style={{ justifyContent: 'space-evenly' }}>
-                {blocks.map((currentBlock: string) =>
-                    <button key={currentBlock}
-                        className={`btn ${block === currentBlock && face === '' ? 'btn-general-blue' : 'btn-dark'} mx-1 my-2`}
-                        style={{ width: isMobile ? '120px' : '220px' }}
-                        onClick={() => blockSelection(currentBlock)}
-                    >
-                        {`Manzana ${currentBlock}`}
-                    </button>
-                )}
-            </div>
-        } */}
 
         <map name={"workmap"}>
             {
@@ -248,10 +211,10 @@ export const CasaEnCasaPage = () => {
                         </>}
                 </> :
                 territory === "3" ? <>
-                    <area></area>
+                    {/* <area></area> */}
                 </> :
                 territory === "56" ? <>
-                    <area></area>
+                    {/* <area></area> */}
                 </> : <></>
             }
         </map>
@@ -289,8 +252,14 @@ export const CasaEnCasaPage = () => {
             } */}
             
             {block && face &&
-                <button className={'btn btn-general-blue d-block m-auto mb-4'}>
-                    Marcar esta CARA {face} de MANZANA {block} como terminada
+                <button className={`mb-4 btn ${isFinished ? 'btn-danger' : 'btn-general-blue'} d-block m-auto`}
+                    onClick={() => setHTHIsFinishedHandler()}
+                >
+                    {isFinished ?
+                        `Desmarcar Cara ${face} de Manzana ${block} como terminada`
+                        :
+                        `Marcar esta CARA ${face} de MANZANA ${block} como terminada`
+                    }
                 </button>
             }
 
