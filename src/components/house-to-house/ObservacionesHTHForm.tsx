@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button, Container, Form, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAuth } from '../../context/authContext'
@@ -78,16 +78,23 @@ export const ObservacionesHTHForm = (props: any) => {
         setText('')
     }
 
+    const textAreaRemain = 160 - text?.length + 1 || 161
 
     return (
         <Container className={'my-4'}
-            style={{ maxWidth: '600px', border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}>
+            style={{ maxWidth: '600px', border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}
+        >
 
             <Form onSubmit={(e: any) => submitHandler(e)} className={`p-3 ${isDarkMode ? 'text-white' : ''}`}>
 
                 <Form.Group className={'mb-3'} controlId={""}>
-                    <Form.Label> Observación </Form.Label>
-                    <Form.Control as={'textarea'} rows={3}
+                    <Form.Label>
+                        Observación ({textAreaRemain - 1})
+                    </Form.Label>
+                    <Form.Control
+                        as={'textarea'} 
+                        rows={isMobile ? 6 : 3}
+                        maxLength={160}
                         value={text}
                         autoFocus
                         onFocus={(e) => {
@@ -100,7 +107,7 @@ export const ObservacionesHTHForm = (props: any) => {
                 </Form.Group>
 
                 <Row>
-                    <Form.Group className={'mb-3 w-25'}>
+                    <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Territorio </Form.Label>
                         <Form.Control
                             value={territory}
@@ -108,7 +115,7 @@ export const ObservacionesHTHForm = (props: any) => {
                         />
                     </Form.Group>
 
-                    <Form.Group className={'mb-3 w-25'}>
+                    <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Manzana </Form.Label>
                         <Form.Control
                             value={block}
@@ -116,7 +123,7 @@ export const ObservacionesHTHForm = (props: any) => {
                         />
                     </Form.Group>
 
-                    <Form.Group className={'mb-3 w-25'}>
+                    <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Cara </Form.Label>
                         <Form.Control
                             value={face}
@@ -124,15 +131,7 @@ export const ObservacionesHTHForm = (props: any) => {
                         />
                     </Form.Group>
 
-                    {/* <Form.Group className={'mb-3 w-25'}>
-                        <Form.Label> Calle </Form.Label>
-                        <Form.Control
-                            value={street}
-                            disabled
-                        />
-                    </Form.Group> */}
-
-                    <Form.Group className={'mb-3 w-25'}>
+                    <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Fecha </Form.Label>
                         <Form.Control
                             value={date}

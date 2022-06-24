@@ -17,9 +17,13 @@ export const NoTocarHTH = (props: any) => {
     const territory: typeTerritoryNumber = props.territory
     const block: typeBlock = props.block
     const face: typeFace = props.face
-    const doNotCalls: typeDoNotCall[] = props.doNotCalls ? props.doNotCalls
-        .filter((noTocar: typeDoNotCall) => noTocar.block === block && noTocar.face === face)
-        .sort((a: typeDoNotCall, b: typeDoNotCall) => a.street.localeCompare(b.street)) : ['']
+    const doNotCalls: typeDoNotCall[] = props.doNotCalls ?
+        props.doNotCalls
+            .filter((noTocar: typeDoNotCall) => noTocar.block === block && noTocar.face === face)
+            .sort((a: typeDoNotCall, b: typeDoNotCall) => a.street.localeCompare(b.street) || a.streetNumber - b.streetNumber)
+            //.sort((a: typeDoNotCall, b: typeDoNotCall) => )
+        :
+        ['']
     const streets: string[] = props.streets
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
     const [showForm, setShowForm] = useState<boolean>(false)
@@ -123,17 +127,18 @@ const NoTocarHTHItem = (props: any) => {
                     </h2>
                 </div>
 
-                <small className={'text-muted'}> Fecha: {doNotCall.date} </small>
+                <small> Fecha: {doNotCall.date} </small>
 
                 {user && user.isAdmin &&
                     <>
-                        <div>
-                            <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => deleteHandler()}>
+                        <div className={'mt-2 py-1'}
+                            style={{ border: '1px solid lightgray', borderRadius: '5px', cursor: 'pointer' }}
+                            onClick={() => deleteHandler()}
+                        >
+                            <h4 className={'d-inline'} style={{ cursor: 'pointer' }}>
                                 Eliminar &nbsp;
                             </h4>
-                            <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                                onClick={() => deleteHandler()}
-                            />
+                            <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }} />
                         </div>
                     </>
                 }

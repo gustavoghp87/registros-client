@@ -83,7 +83,7 @@ export const NoTocarHTHForm = (props: any) => {
                 <Row className={'d-flex justify-content-center'}>
                     <Form.Group className={'mb-3 w-50'}>
                         <Form.Label> Altura </Form.Label>
-                        <Form.Control placeholder={'Altura'}
+                        <Form.Control
                             type={'number'}
                             min={0}
                             value={streetNumber ? streetNumber : ''}
@@ -101,7 +101,7 @@ export const NoTocarHTHForm = (props: any) => {
                 </Row>
 
                 <Row className={'mt-2'}>
-                    <Form.Group className={'mb-3 w-25'}>
+                    <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Territorio </Form.Label>
                         <Form.Control
                             value={territory}
@@ -109,7 +109,7 @@ export const NoTocarHTHForm = (props: any) => {
                         />
                     </Form.Group>
                     
-                    <Form.Group className={'mb-3 w-25'}>
+                    <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Manzana </Form.Label>
                         <Form.Control
                             value={block ? block : 'Todas'}
@@ -117,7 +117,7 @@ export const NoTocarHTHForm = (props: any) => {
                         />
                     </Form.Group>
 
-                    <Form.Group className={'mb-3 w-25'}>
+                    <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Cara </Form.Label>
                         <Form.Control
                             value={face}
@@ -125,7 +125,7 @@ export const NoTocarHTHForm = (props: any) => {
                         />
                     </Form.Group>
 
-                    <Form.Group className={'mb-3 w-25'}>
+                    <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Fecha </Form.Label>
                         <Form.Control
                             value={date}

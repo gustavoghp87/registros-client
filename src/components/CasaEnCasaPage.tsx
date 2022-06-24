@@ -83,10 +83,6 @@ export const CasaEnCasaPage = () => {
     useEffect(() => {
         if (user && !user.isAdmin) window.location.href = "/"                   // to change
         if (!territory || !loading) return
-        if (!imageSrc) {
-            if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
-            else setImageSrc(`/img/img-hth/${territory}h00.png`)
-        }
         if (!blocks || !face) {
             getBlocksService(territory).then((blocks: typeBlock[]|null) => {
                 if (blocks && blocks.length) setBlocks(blocks)
@@ -122,6 +118,12 @@ export const CasaEnCasaPage = () => {
             // setImageSrc(undefined)
         }
     }, [isMobile, territory, block, blocks, face, loading, user, streets, territoryHTH, imageSrc])
+
+    useEffect(() => {
+        if (!territory) return
+        if (isMobile) setImageSrc(`/img/img-hth/${territory}v00.png`)
+        else setImageSrc(`/img/img-hth/${territory}h00.png`)
+    }, [territory, isMobile])
 
 
     return (
@@ -223,7 +225,7 @@ export const CasaEnCasaPage = () => {
 
         <Container className={`${isDarkMode ? 'bg-dark text-white' : ''}`}>
 
-            <h1 className={'text-white py-3'}
+            <h1 className={'text-white py-3 mb-4'}
                 style={{
                     backgroundColor: generalBlue,
                     fontSize: isMobile ? '2.3rem' : '2.8rem',
@@ -238,21 +240,9 @@ export const CasaEnCasaPage = () => {
                 <br className={face ? '' : 'd-none'} />
                 <span> {face ? `CARA ${face}` : ''} </span>
             </h1>
-
-            {/* {territoryHTH && !block && !face &&
-                <button className={`btn ${territoryHTH.isFinished ? 'btn-danger' : 'btn-general-blue'} d-block m-auto mb-4`}>
-                    Marcar TERRITORIO {territory} como terminado
-                </button>
-            }
-
-            {block && !face &&
-                <button className={'btn btn-general-blue d-block m-auto mb-4'}>
-                    Marcar esta MANZANA {block} como terminada
-                </button>
-            } */}
             
             {block && face &&
-                <button className={`mb-4 btn ${isFinished ? 'btn-danger' : 'btn-general-blue'} d-block m-auto`}
+                <button className={`my-4 btn ${isFinished ? 'btn-danger' : 'btn-general-blue'} d-block m-auto w-75`}
                     onClick={() => setHTHIsFinishedHandler()}
                 >
                     {isFinished ?
@@ -262,9 +252,6 @@ export const CasaEnCasaPage = () => {
                     }
                 </button>
             }
-
-
-
 
             {territoryHTH && block && face &&
                 <ObservacionesHTH

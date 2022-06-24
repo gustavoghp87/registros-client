@@ -20,6 +20,7 @@ export const LogsPage = () => {
     const [showUserChanges, setShowUserChanges] = useState<boolean>(false)
     const [showStateChanges, setShowStateChanges] = useState<boolean>(false)
     const [showPreaching, setShowPreaching] = useState<boolean>(false)
+    const [showEmailErrors, setShowEmailErrors] = useState<boolean>(false)
     const [showErrors, setShowErrors] = useState<boolean>(false)
     //const [showAppChanges, setShowAppChanges] = useState<boolean>(false)
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
@@ -38,6 +39,7 @@ export const LogsPage = () => {
     const setShowUserChangesHandler = (): void => setShowUserChanges(!showUserChanges)
     const setShowStateChangesHandler = (): void => setShowStateChanges(!showStateChanges)
     const setShowPreachingHandler = (): void => setShowPreaching(!showPreaching)
+    const setShowEmailErrorsHandler = (): void => setShowEmailErrors(!showEmailErrors)
     const setShowErrorsHandler = (): void => setShowErrors(!showErrors)
 
     type typeDoubleArray = [typeLog[], boolean, React.Dispatch<React.SetStateAction<boolean>>, string] | []
@@ -49,7 +51,8 @@ export const LogsPage = () => {
         [logsPackage.userChangesLogs, showUserChanges, setShowUserChangesHandler, "Cambios en los Usuarios"],
         [logsPackage.stateOfTerritoryChangeLogs, showStateChanges, setShowStateChangesHandler, "Cambios en estados de Territorios"],
         user && user.email === "ghp.2120@gmail.com" ? [logsPackage.territoryChangeLogs?.slice(0, 100), showPreaching, setShowPreachingHandler, "Predicación"] : [],
-        [logsPackage.errorLogs, showErrors, setShowErrorsHandler, "Errores de la App"]
+        [logsPackage.emailErrorLogs, showEmailErrors, setShowEmailErrorsHandler, "Errores de email"],
+        [logsPackage.errorLogs, showErrors, setShowErrorsHandler, "Errores generales de la App"]
         // [logs.appLogs.filter((log: typeLog) => !log.logText.includes("DB")), showAppChanges, setShowAppChangesHandler, "Reinicios de la App"]
     ] : []
 

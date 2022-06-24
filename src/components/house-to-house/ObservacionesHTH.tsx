@@ -10,6 +10,7 @@ import { ObservacionesHTHForm } from './ObservacionesHTHForm'
 import { deleteHTHObservationService, editHTHObservationService } from '../../services/houseToHouseServices'
 import { MdDelete, MdEdit } from 'react-icons/md'
 import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { Col, Row } from 'react-bootstrap'
 
 export const ObservacionesHTH = (props: any) => {
 
@@ -33,7 +34,7 @@ export const ObservacionesHTH = (props: any) => {
     return (
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>
             
-            <h1 className={'pt-3 text-center text-white d-block mx-auto'}
+            <h1 className={'py-3 text-center text-white d-block mx-auto'}
                 style={{ backgroundColor: generalBlue, minHeight: '80px', width: '80%' }}
             >
                 {observations && !!observations.length ?
@@ -133,62 +134,67 @@ const ObservacionesHTHItem = (props: any) => {
             <div className={`my-4 p-3 text-center ${isDarkMode ? 'text-white' : ''}`}
                 style={{ border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}
             >
-                <div>
-                    <h2 className={'mr-2'}>
-                        {observation.text}
-                    </h2>
-                </div>
 
-                <small className={'text-muted'}> Fecha: {observation.date} </small>
+                <small> Fecha: {observation.date} </small>
+
+                <h3 className={'mt-2'}>
+                    {observation.text}
+                </h3>
 
                 {user && user.isAdmin && <>
-                    <div>
-                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => editHandler()}>
+                    <div className={'mt-4 mb-2 py-1'} style={{ border: '1px solid lightgray', borderRadius: '5px' }}
+                        onClick={() => editHandler()}
+                    >
+                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }}>
                             Editar &nbsp;
                         </h4>
-                        <MdEdit className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                            onClick={() => editHandler()}
-                        />
+                        <MdEdit className={'d-inline align-top'} size={'1.4rem'} style={{ cursor: 'pointer' }} />
                     </div>
-                    <div>
-                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => deleteHandler()}>
+                    <div className={'mt-1 mb-2 py-1'} style={{ border: '1px solid lightgray', borderRadius: '5px' }}
+                        onClick={() => deleteHandler()}
+                    >
+                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }}>
                             Eliminar &nbsp;
                         </h4>
-                        <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                            onClick={() => deleteHandler()}
-                        />
+                        <MdDelete className={'d-inline align-top'} size={'1.4rem'} style={{ cursor: 'pointer' }} />
                     </div>
                 </>}
             </div>
         :
-            <div className={`my-4 p-3 d-block mx-auto w-75 d-flex align-items-center justify-content-center ${isDarkMode ? 'text-white' : ''}`}
+            <Row className={`mx-auto my-4 p-4 w-75 ${isDarkMode ? 'text-white' : ''}`}
                 style={{ border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}
             >
-                <h2 className={'mr-2'}>
-                    {observation.text}
-                </h2>
 
-                <small className={'text-muted'}> Fecha: {observation.date} </small>
+                <Col sm={2}>
+                    <small className={'text-muted'}> Fecha: {observation.date} </small>
+                </Col>
 
-                {user && user.isAdmin && <>
-                    <div>
-                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => editHandler()}>
-                        &nbsp; | &nbsp; Editar &nbsp;
-                        </h4>
-                        <MdEdit className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                            onClick={() => editHandler()}
-                        />
-                    </div>
-                    <div>
-                        <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => deleteHandler()}>
-                            &nbsp; | &nbsp; Eliminar &nbsp;
-                        </h4>
-                        <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
-                            onClick={() => deleteHandler()}
-                        />
-                    </div>
-                </>}
-            </div>
+                <Col sm={5}>
+                    <h2 className={'mr-2'}>
+                        {observation.text}
+                    </h2>
+                </Col>
+
+                <Col sm={5}>
+                    {user && user.isAdmin && <>
+                        <div>
+                            <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => editHandler()}>
+                                &nbsp; | &nbsp; Editar &nbsp;
+                            </h4>
+                            <MdEdit className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
+                                onClick={() => editHandler()}
+                            />
+                            <h4 className={'d-inline'} style={{ cursor: 'pointer' }} onClick={() => deleteHandler()}>
+                                &nbsp; | &nbsp; Eliminar &nbsp;
+                            </h4>
+                            <MdDelete className={'d-inline align-top'} size={'1.7rem'} style={{ cursor: 'pointer' }}
+                                onClick={() => deleteHandler()}
+                            />
+                        </div>
+                    </>}
+                </Col>
+
+            </Row>
         }
 
         {showForm &&

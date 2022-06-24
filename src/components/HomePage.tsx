@@ -14,14 +14,14 @@ export const HomePage = () => {
     return (
     <>
         <H2 className={isDarkMode ? 'text-white' : ''}
-            style={{ marginTop: '50px' }}
+            style={{ marginTop: '60px' }}
         >
             BIENVENIDOS
         </H2>
 
         <a href={user && user.isAuth ? "/index" : "/login"} style={{ textDecoration: 'none' }}>
             <h3 style={{
-                margin: '30px auto',
+                margin: '40px auto',
                 color: generalBlue,
                 textAlign: 'center',
                 backgroundColor: 'lightgray',
@@ -33,10 +33,9 @@ export const HomePage = () => {
             </h3>
         </a>
 
-        <div style={{ textAlign: 'center', marginTop: isMobile ? '30px' : '40px' }}>
+        {/* <div style={{ textAlign: 'center', marginTop: isMobile ? '30px' : '40px' }}>
             
             <img src={"/img/world.png"} alt={"jw"} style={{ margin: '15px auto 0 auto', maxWidth: '100%' }} />
-        
 
             <div style={{
                 textAlign: 'center', 
@@ -50,14 +49,14 @@ export const HomePage = () => {
                     style={{ textDecoration: 'none' }}>
                     
                     <h2 style={{ color: generalBlue, fontSize: isMobile ? '1.5rem' : '2rem' }}>
-                        VISITAR JW.ORG
+                        MISERICORDIAWEB.COM
                     </h2>
                 
                     <img src={"/img/jw.png"} alt={"jw"} style={{ margin: '15px auto', maxWidth: '100%' }} />
                 
                 </a>
             </div>
-        </div>
+        </div> */}
     </>
     )
 }

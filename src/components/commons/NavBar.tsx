@@ -72,7 +72,7 @@ export const NavBar = () => {
                         </Nav.Link>
                     </Nav>
 
-                    <Nav.Link href={"/usuario"}
+                    <Nav.Link href={'/usuario'}
                         className={`d-flex align-items-center ${user && user.isAuth ? '' : 'd-none'}`}
                         style={ isMobile ? {
                             marginBottom: '15px', paddingLeft: '13px', marginTop: '10px'
@@ -99,29 +99,37 @@ export const NavBar = () => {
             </Navbar>
 
             {!scrollDown && <ReturnBtn />}
-
-            {/* <SearchBar /> */}
         
             <div className={`row`}>
 
-                <div className={`col-4 offset-6 m-auto ${(isMobile && !scrollDown) || !isMobile ? '' : 'd-none'}`}
-                    style={{
-                        position: 'relative',
-                        zIndex: 6
-                    }}
+                {window.location.pathname !== '/' &&
+                    <div className={`col-4 offset-6 m-auto ${(isMobile && !scrollDown) || !isMobile ? '' : 'd-none'}`}
+                        style={{
+                            position: 'relative',
+                            zIndex: 6
+                        }}
                     >
-                    <Button variant={danger}
-                        className={`d-block m-auto mt-2`}
-                        size={isMobile ? 'sm' : undefined}
-                        onClick={() => window.location.reload()}
+                        <Button variant={danger}
+                            className={`d-block m-auto mt-2`}
+                            size={isMobile ? 'sm' : undefined}
+                            onClick={() => window.location.reload()}
                         >
-                        Refrescar
-                    </Button>
-                </div>
+                            Refrescar
+                        </Button>
+                    </div>
+                }
 
                 {user && user.isAuth && ((isMobile && !scrollDown) || !isMobile) &&
                     <div className={`col-4 ${isDarkMode ? 'text-white' : ''}`}
-                        style={{ position: 'fixed', right: '0', marginRight: '18px', marginTop: '5px', zIndex: 1, fontSize: isMobile ? '.9rem' : '' }}>
+                        style={{
+                            position: 'fixed',
+                            right: '0',
+                            marginRight: '18px',
+                            marginTop: '5px',
+                            zIndex: 1,
+                            fontSize: isMobile ? '.9rem' : ''
+                        }}
+                    >
                         <p style={{ textAlign: 'right', marginBottom: '0' }}> {isMobile ? user.email.split('@')[0] : user.email} </p>
                         <p style={{ textAlign: 'right', marginBottom: '0' }}> Grupo {user.group} </p>
                         <p style={{ textAlign: 'right' }}> {user.role ? isMobile ? "Admin" : "Administrador" : ""} </p>

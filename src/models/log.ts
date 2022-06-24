@@ -9,6 +9,7 @@ export type typeLogsObj = {
     campaignFinishingLogs: typeLog[]
     territoryChangeLogs: typeLog[]
     stateOfTerritoryChangeLogs: typeLog[]
+    emailErrorLogs: typeLog[]
     errorLogs: typeLog[]
     userChangesLogs: typeLog[]
     appLogs: typeLog[]
