@@ -223,7 +223,7 @@ export const CasaEnCasaPage = () => {
 
 
 
-        <Container className={`${isDarkMode ? 'bg-dark text-white' : ''}`}>
+        <Container className={isDarkMode ? 'bg-dark text-white' : ''} style={{ paddingBottom: isMobile ? '1px' : '30px' }}>
 
             <h1 className={'text-white py-3 mb-4'}
                 style={{
@@ -241,8 +241,8 @@ export const CasaEnCasaPage = () => {
                 <span> {face ? `CARA ${face}` : ''} </span>
             </h1>
             
-            {block && face &&
-                <button className={`my-4 btn ${isFinished ? 'btn-danger' : 'btn-general-blue'} d-block m-auto w-75`}
+            {user && user.isAdmin && block && face &&
+                <button className={`my-4 btn ${isFinished ? 'btn-secondary' : 'btn-general-blue'} d-block m-auto w-75`}
                     onClick={() => setHTHIsFinishedHandler()}
                 >
                     {isFinished ?
@@ -274,10 +274,6 @@ export const CasaEnCasaPage = () => {
                     refreshDoNotCallHandler={refreshDoNotCallHandler}
                 />
             }
-
-
-            <br />
-            <hr style={{ border: '1px solid black' }} />
 
             {loading &&
                 <>

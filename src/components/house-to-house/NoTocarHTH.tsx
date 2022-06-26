@@ -14,6 +14,7 @@ import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 export const NoTocarHTH = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const territory: typeTerritoryNumber = props.territory
     const block: typeBlock = props.block
     const face: typeFace = props.face
@@ -21,7 +22,6 @@ export const NoTocarHTH = (props: any) => {
         props.doNotCalls
             .filter((noTocar: typeDoNotCall) => noTocar.block === block && noTocar.face === face)
             .sort((a: typeDoNotCall, b: typeDoNotCall) => a.street.localeCompare(b.street) || a.streetNumber - b.streetNumber)
-            //.sort((a: typeDoNotCall, b: typeDoNotCall) => )
         :
         ['']
     const streets: string[] = props.streets
@@ -36,10 +36,14 @@ export const NoTocarHTH = (props: any) => {
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>
 
             <h1 className={'py-3 text-center text-white d-block mx-auto'}
-                style={{ backgroundColor: generalBlue, minHeight: '80px', width: '80%', marginBottom: '40px' }}
+                style={{
+                    backgroundColor: generalBlue,
+                    width: isMobile ? '100%' : '90%',
+                    marginBottom: '40px'
+                }}
             >
                 {doNotCalls && !!doNotCalls.length ?
-                    'No Tocar:'
+                    'NO TOCAR'
                     :
                     'No hay No Tocar en esta cara'
                 }
@@ -55,14 +59,16 @@ export const NoTocarHTH = (props: any) => {
                 </div>
             ))}
 
-            <button className={'btn btn-general-blue d-block mx-auto'}
-                style={{ marginTop: '50px' }}
-                onClick={() => setShowForm(!showForm)}
-            >
-                {showForm ? 'Ocultar' : 'Agregar No Tocar'}
-            </button>
+            {user && user.isAdmin &&
+                <button className={'btn btn-general-blue d-block mx-auto'}
+                    style={{ marginTop: '50px' }}
+                    onClick={() => setShowForm(!showForm)}
+                >
+                    {showForm ? 'Ocultar' : 'Agregar No Tocar'}
+                </button>
+            }
 
-            {showForm && user && user.isAdmin &&
+            {user && user.isAdmin && showForm &&
                 <NoTocarHTHForm
                     territory={territory}
                     block={block}
@@ -118,20 +124,23 @@ const NoTocarHTHItem = (props: any) => {
 
     return (<>
         {isMobile ?
-            <div className={`mt-4 p-3 text-center ${isDarkMode ? 'text-white' : ''}`}
-                style={{ border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}
+            <div className={`mt-4 p-3 text-center bg-dark text-white`}
+                style={{
+                    border: isDarkMode ? '1px solid white' : '1px solid lightgray',
+                    borderRadius: '7px'
+                }}
             >
+                <small> Fecha: {doNotCall.date} </small>
+
                 <div>
-                    <h2 className={'mr-2'}>
+                    <h2 className={'mt-2'}>
                         {doNotCall.street} {doNotCall.streetNumber} {doNotCall.doorBell}
                     </h2>
                 </div>
 
-                <small> Fecha: {doNotCall.date} </small>
-
                 {user && user.isAdmin &&
                     <>
-                        <div className={'mt-2 py-1'}
+                        <div className={'mt-3 mb-2 py-1'}
                             style={{ border: '1px solid lightgray', borderRadius: '5px', cursor: 'pointer' }}
                             onClick={() => deleteHandler()}
                         >
@@ -150,10 +159,9 @@ const NoTocarHTHItem = (props: any) => {
 
                 <h2 className={'d-inline mr-2'}>
                     {doNotCall.street} {doNotCall.streetNumber} {doNotCall.doorBell}
-                    &nbsp;|
-                    <small className={'text-muted'}> Fecha: {doNotCall.date} </small>
-                    |
                 </h2>
+                
+                &nbsp;<small> (Fecha: {doNotCall.date})</small>
 
                 {user && user.isAdmin &&
                     <>

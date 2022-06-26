@@ -17,6 +17,10 @@ export const HomePage = () => {
             style={{ marginTop: '60px' }}
         >
             BIENVENIDOS
+            <br/>
+            A
+            <br/>
+            MISERICORDIA WEB
         </H2>
 
         <a href={user && user.isAuth ? "/index" : "/login"} style={{ textDecoration: 'none' }}>

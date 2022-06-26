@@ -54,11 +54,11 @@ export const AuthProvider = ({ children }: any) => {
         const userInLocalStorage: string|null = localStorage.getItem(userKey)
         if (userInLocalStorage) {
             try {
-                const user0: typeUser = JSON.parse(userInLocalStorage);
-                setUser(user0);
+                const user0: typeUser = JSON.parse(userInLocalStorage)
+                setUser(user0)
                 return
             } catch (error) {
-                console.log(error);
+                console.log(error)
                 localStorage.removeItem(userKey)
             }
         }

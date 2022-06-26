@@ -41,8 +41,8 @@ export const IndexPage = () => {
 
     return (
         <>
-            {user && user.isAdmin &&
-            <>
+            {user && user.isAdmin && <>
+            
                 <H2 className={isDarkMode ? 'text-white' : ''}> CASA EN CASA </H2>
 
                 <button className={`btn btn-success btn-block mt-4`}
@@ -69,9 +69,7 @@ export const IndexPage = () => {
 
                 <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
                 <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
-            </>
-            }
-
+            </>}
 
         
 

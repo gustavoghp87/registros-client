@@ -78,18 +78,21 @@ export const ObservacionesHTHForm = (props: any) => {
         setText('')
     }
 
-    const textAreaRemain = 160 - text?.length + 1 || 161
 
     return (
         <Container className={'my-4'}
-            style={{ maxWidth: '600px', border: isDarkMode ? '1px solid white' : '1px solid lightgray', borderRadius: '7px' }}
+            style={{
+                maxWidth: '600px',
+                border: isDarkMode ? '1px solid white' : '1px solid lightgray',
+                borderRadius: '7px'
+            }}
         >
 
             <Form onSubmit={(e: any) => submitHandler(e)} className={`p-3 ${isDarkMode ? 'text-white' : ''}`}>
 
                 <Form.Group className={'mb-3'} controlId={""}>
                     <Form.Label>
-                        Observación ({textAreaRemain - 1})
+                        Observación ({(160 - text?.length + 1 || 161) - 1})
                     </Form.Label>
                     <Form.Control
                         as={'textarea'} 
