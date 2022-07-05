@@ -3,7 +3,7 @@ import { headers } from './functions'
 import { getTokenService } from './tokenServices'
 import { typeResponseData } from '../models/httpResponse'
 import { typeBlock, typeTerritoryNumber } from '../models/territory'
-import { typeDoNotCall, typeFace, typeHTHTerritory, typeObservation } from '../models/houseToHouse'
+import { typeDoNotCall, typeFace, typeHTHMap, typeHTHTerritory, typeObservation } from '../models/houseToHouse'
 
 const base: string = `${SERVER}/api/house-to-house`
 
@@ -131,6 +131,41 @@ export const setHTHIsFinishedService = async (isFinish: boolean, block: typeBloc
             method: 'PATCH',
             headers,
             body: JSON.stringify({ isFinish, block, face })
+        })
+        const data: typeResponseData|null = await response.json()
+        if (!data || !data.success) return false
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export const getHTHMapService = async (territory: typeTerritoryNumber): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(`${base}/map/${territory}`, {
+            method: 'GET',
+            headers
+        })
+        const data: typeResponseData|null = await response.json()
+        if (!data || !data.success) return false
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export const editHTHMapService = async (territory: typeTerritoryNumber, hthMap: typeHTHMap): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        console.log("Sending", hthMap);
+        
+        const response = await fetch(`${base}/map/${territory}`, {
+            method: 'PATCH',
+            headers,
+            body: JSON.stringify({ hthMap })
         })
         const data: typeResponseData|null = await response.json()
         if (!data || !data.success) return false

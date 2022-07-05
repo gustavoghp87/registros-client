@@ -24,7 +24,7 @@ export const ObservacionesHTH = (props: any) => {
         .reverse()
         :
         []
-    const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
+    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
 
     const [showForm, setShowForm] = useState<boolean>(false)
     
@@ -55,7 +55,7 @@ export const ObservacionesHTH = (props: any) => {
                         face={face}
                         observation={observation}
                         closeShowFormHandler={closeShowFormHandler}
-                        refreshDoNotCallHandler={refreshDoNotCallHandler}
+                        refreshDoNotCallHandler={refreshHTHTerritoryHandler}
                     />
                 </div>
             ))}
@@ -75,7 +75,7 @@ export const ObservacionesHTH = (props: any) => {
                     block={block}
                     face={face}
                     closeShowFormHandler={closeShowFormHandler}
-                    refreshDoNotCallHandler={refreshDoNotCallHandler}
+                    refreshDoNotCallHandler={refreshHTHTerritoryHandler}
                 />
             }
 

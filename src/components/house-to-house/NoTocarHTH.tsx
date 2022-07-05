@@ -25,7 +25,7 @@ export const NoTocarHTH = (props: any) => {
         :
         ['']
     const streets: string[] = props.streets
-    const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
+    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const [showForm, setShowForm] = useState<boolean>(false)
     
     const closeShowFormHandler = (): void => {
@@ -54,7 +54,7 @@ export const NoTocarHTH = (props: any) => {
                     <NoTocarHTHItem
                         territory={territory}
                         doNotCall={doNotCall}
-                        refreshDoNotCallHandler={refreshDoNotCallHandler}
+                        refreshDoNotCallHandler={refreshHTHTerritoryHandler}
                     />
                 </div>
             ))}
@@ -75,7 +75,7 @@ export const NoTocarHTH = (props: any) => {
                     face={face}
                     streets={streets}
                     closeShowFormHandler={closeShowFormHandler}
-                    refreshDoNotCallHandler={refreshDoNotCallHandler}
+                    refreshDoNotCallHandler={refreshHTHTerritoryHandler}
                 />
             }
         </div>

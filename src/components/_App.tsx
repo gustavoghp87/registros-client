@@ -36,7 +36,13 @@ export const App = () => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     const dispatch: typeAppDispatch = useDispatch()
-    setTimeout(() => dispatch(changeMobileModeReducer({ isMobile: window.screen.width < 990 })), 300)
+    setTimeout(() => {
+        if (isMobile && window.screen.width >= 990)
+            dispatch(changeMobileModeReducer({ isMobile: window.screen.width < 990 }))
+        else if (!isMobile && window.screen.width < 990)
+            dispatch(changeMobileModeReducer({ isMobile: window.screen.width < 990 }))
+        }
+    , 300)
 
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>
