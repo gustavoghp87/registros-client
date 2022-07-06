@@ -99,8 +99,7 @@ export const CasaEnCasaPage = () => {
 
     return (
     <>
-        <H2 className={isDarkMode ? 'text-white' : ''}
-            style={{ fontSize: isMobile ? '2.7rem' : '' }}>
+        <H2 className={isDarkMode ? 'text-white' : ''} style={{ fontSize: isMobile ? '2.7rem' : '' }}>
             CASA EN CASA
         </H2>
 
@@ -110,11 +109,11 @@ export const CasaEnCasaPage = () => {
 
         {territoryHTH && territoryHTH.hthMap && <>
             <HTHMap
-                block={block}
+                blocks={blocks}
+                setBlockAndFaceHandler={setBlockAndFaceHandler}
+                setTerritoryHTH={setTerritoryHTH}
                 territory={territory}
                 territoryHTH={territoryHTH}
-                setTerritoryHTH={setTerritoryHTH}
-                setBlockAndFaceHandler={setBlockAndFaceHandler}
             />
         </>}
 

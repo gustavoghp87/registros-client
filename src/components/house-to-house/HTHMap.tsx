@@ -1,9 +1,9 @@
-import { useMemo, useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { GoogleMap, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
 import { Loading } from '../commons/Loading'
-import { typeTerritoryNumber } from '../../models/territory'
+import { danger, typeBlock, typeTerritoryNumber } from '../../models/territory'
 import { editHTHMapService } from '../../services/houseToHouseServices'
-import { typeCoords, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon } from '../../models/houseToHouse'
+import { typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon } from '../../models/houseToHouse'
 import { useAuth } from '../../context/authContext'
 import { typeUser } from '../../models/user'
 import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
@@ -12,38 +12,28 @@ import { typeAppDispatch, typeRootState } from '../../store/store'
 import HTHMapStyle from './HTHMapStyle.json'
 import { isLocalhost } from '../../services/functions'
 import { googleMapsAPIDevelopmentKey, googleMapsAPIProductionKey, mapId } from '../../config'
+import { Dropdown } from 'react-bootstrap'
 
 export const HTHMap = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-
+    const blocks: typeBlock[] = props.blocks
     const territory: typeTerritoryNumber = props.territory
     const territoryHTH: typeHTHTerritory = props.territoryHTH
     const setTerritoryHTH: React.Dispatch<React.SetStateAction<typeHTHTerritory>> = props.setTerritoryHTH
     const setBlockAndFaceHandler: Function = props.setBlockAndFaceHandler
     const dispatch: typeAppDispatch = useDispatch()
-
-    // const centerValue: typeCoords = useMemo(() => (
-    //     territoryHTH.hthMap.centerCoords
-    // ), [territoryHTH.hthMap.centerCoords])
-
     const [map, setMap] = useState<google.maps.Map>()
     const [isEditing, setIsEditing] = useState<boolean>(false)
     const [isAddingPolygon, setIsAddingPolygon] = useState<boolean>(false)
-    const [newPolygon, setNewPolygon] = useState<typePolygon>()
-    const [newGooglePolygon, setNewGooglePolygon] = useState<google.maps.Polygon>()
-    let np = useRef<typePolygon>()
-
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: isLocalhost ? googleMapsAPIDevelopmentKey : googleMapsAPIProductionKey,
         id: mapId
     })
 
     const initMapEditingHandler = (): void => {
-        if (isEditing) {
-            setIsEditing(false)
-            setIsAddingPolygon(false)
+        if (isEditing || isAddingPolygon) {
             dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'confirm',
                 title: '¿Modificar este mapa?',
@@ -56,7 +46,7 @@ export const HTHMap = (props: any) => {
 
     const editMapHandler = async (): Promise<void> => {
         const hthMapEdited: typeHTHMap = territoryHTH.hthMap
-        hthMapEdited.polygons = hthMapEdited.polygons.map((polygon: typePolygon) => {
+        if (hthMapEdited.polygons.length) hthMapEdited.polygons = hthMapEdited.polygons.map((polygon: typePolygon) => {
             if (polygon.id === 0) {
                 polygon.id = +new Date()
             }
@@ -70,102 +60,53 @@ export const HTHMap = (props: any) => {
                 title: 'Algo falló en el mapa',
                 message: `Algo falló en los datosal querer modificar el mapa del territorio ${territory}; refrescar la página e intentar de nuevo`
             }))
+            setIsEditing(false)
+            setIsAddingPolygon(false)
             return
         }
-        // const success: boolean = await editHTHMapService(territory, hthMapEdited)
-        // if (success) reloadHandler()
-        // else dispatch(setValuesAndOpenAlertModalReducer({
-        //     mode: 'alert',
-        //     title: 'Error al editar el mapa',
-        //     message: `Algo falló al querer modificar el mapa del territorio ${territory}; refrescar la página e intentar de nuevo`
-        // }))
+        setIsEditing(false)
+        setIsAddingPolygon(false)
+        const success: boolean = await editHTHMapService(territory, hthMapEdited)
+        if (success) reloadHandler()
+        else dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title: 'Error al editar el mapa',
+            message: `Algo falló al querer modificar el mapa del territorio ${territory}; refrescar la página e intentar de nuevo`
+        }))
     }
 
-    const addFaceHandler1 = (): void => {
+    const addFaceHandler = (selectedBlock: typeBlock|null = null, selectedFace: typeFace|null = null): void => {
         if (!isAddingPolygon) {
             setIsAddingPolygon(true)
-            if (!isEditing) return
-            
-            const polygon: typePolygon = {
-                id: 0,
-                block: '1',
-                face: 'A',
-                coordsPoint1: {
-                    lat: territoryHTH.hthMap.centerCoords.lat + 0.001,
-                    lng: territoryHTH.hthMap.centerCoords.lng
-                },
-                coordsPoint2: {
-                    lat: territoryHTH.hthMap.centerCoords.lat - 0.0003827,
-                    lng: territoryHTH.hthMap.centerCoords.lng + 0.0009239
-                },
-                coordsPoint3: {
-                    lat: territoryHTH.hthMap.centerCoords.lat - 0.0003827,
-                    lng: territoryHTH.hthMap.centerCoords.lng - 0.0009239
-                },
-                isFinished: false
-            }
-            np.current = polygon
-            setNewPolygon(polygon)
-            let currentTerritory: typeHTHTerritory = territoryHTH
-            currentTerritory.hthMap.polygons.push(polygon)
-            //currentTerritory.hthMap.markers = currentTerritory.hthMap.markers.filter(x => x.id > 9)
-            setTerritoryHTH(currentTerritory)
-        } else {
-            setIsAddingPolygon(false)
-            
+            return
         }
-    }
-
-    
-
-    // const addFaceHandler = (event: any): void => {
-    //     const lat: number = event.latLng.lat()
-    //     const lng: number = event.latLng.lng()
-    //     if (!isEditing || !isAddingPolygon || !lat || !lng) return
-    //     newPolygonPath = [...(newPolygonPath ?? []), lat, lng]
-    //     console.log(newPolygonPath);
+        const currentPolygon: typePolygon|undefined = territoryHTH.hthMap.polygons.find(x => x.id === 0)
+        if (!selectedBlock || !selectedFace || currentPolygon) return
+        console.log(selectedBlock, selectedFace, currentPolygon);
         
-
-    //     const newMarker: typeMarker = {
-    //         id: newPolygonPath ? newPolygonPath.length : 0,
-    //         coords: {
-    //             lat: event.latLng.lat(),
-    //             lng: event.latLng.lng()
-    //         }
-    //     }
-    //     let currentTerritory: typeHTHTerritory = territoryHTH
-    //     currentTerritory.hthMap.markers.push(newMarker)
-    //     setTerritoryHTH(currentTerritory)
-
-    //     if (newPolygonPath?.length === 6) {
-    //         console.log("6");
-            
-    //         let newPolygon0: typePolygon = {
-    //             id: +new Date(),
-    //             block: '1',
-    //             face: 'A',
-    //             coordsPoint1: {
-    //                 lat: newPolygonPath[0],
-    //                 lng: newPolygonPath[1]
-    //             },
-    //             coordsPoint2: {
-    //                 lat: newPolygonPath[2],
-    //                 lng: newPolygonPath[3]
-    //             },
-    //             coordsPoint3: {
-    //                 lat: newPolygonPath[4],
-    //                 lng: newPolygonPath[5]
-    //             },
-    //             isFinished: false
-    //         }
-
-    //         currentTerritory.hthMap.polygons.push(newPolygon0)
-    //         //currentTerritory.hthMap.markers = currentTerritory.hthMap.markers.filter(x => x.id > 9)
-    //         setTerritoryHTH(currentTerritory)
-    //         newPolygonPath = []
-    //     }
-    // }
-
+        const polygon: typePolygon = {
+            id: 0,
+            block: selectedBlock,
+            face: selectedFace,
+            coordsPoint1: {
+                lat: territoryHTH.hthMap.centerCoords.lat + 0.001,
+                lng: territoryHTH.hthMap.centerCoords.lng
+            },
+            coordsPoint2: {
+                lat: territoryHTH.hthMap.centerCoords.lat - 0.0003827,
+                lng: territoryHTH.hthMap.centerCoords.lng + 0.0009239
+            },
+            coordsPoint3: {
+                lat: territoryHTH.hthMap.centerCoords.lat - 0.0003827,
+                lng: territoryHTH.hthMap.centerCoords.lng - 0.0009239
+            },
+            isFinished: false
+        }
+        let currentTerritory: typeHTHTerritory = territoryHTH
+        currentTerritory.hthMap.polygons.push(polygon)
+        setTerritoryHTH(currentTerritory)
+    }
+    
     const selectBlockAndFaceHandler = (polygon: typePolygon): void => {
         console.log("Selected", polygon.id, polygon.block, polygon.face)
         setBlockAndFaceHandler(polygon.block, polygon.face)
@@ -203,7 +144,6 @@ export const HTHMap = (props: any) => {
                     transform: isMobile ? 'rotate(-0.25turn)' : '',
                     width: '600px'
                 }}
-                // onRightClick={addFaceHandler1}
                 onLoad={(mapInstance: google.maps.Map) => setMap(mapInstance)}
                 onCenterChanged={() => {
                     const lat: number = map?.getCenter()?.lat() ?? 0
@@ -216,23 +156,25 @@ export const HTHMap = (props: any) => {
                     setTerritoryHTH(newTerritoryHTH)
                 }}
                 options={{
-                    center: isEditing && !isAddingPolygon ? null : territoryHTH.hthMap.centerCoords,
+                    center: isEditing ? null : territoryHTH.hthMap.centerCoords,
                     disableDefaultUI: false,
-                    draggable: isEditing && !isAddingPolygon,
-                    fullscreenControl: false,
+                    draggable: isEditing,
+                    fullscreenControl: isEditing,
+                    fullscreenControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
                     isFractionalZoomEnabled: true,
                     mapTypeControl: false,
-                    mapTypeControlOptions: {
-                        mapTypeIds: []
-                    },
+                    // mapTypeControlOptions: {
+                    //     mapTypeIds: []
+                    // },
                     minZoom: 8,
                     noClear: true,
-                    // panControl: true,
-                    // rotateControl: true,
+                    panControl: true,
+                    rotateControlOptions: { position: google.maps.ControlPosition.LEFT_BOTTOM },
+                    rotateControl: true,
                     styles: HTHMapStyle,
-                    // tilt: 45,
+                    tilt: 45,
                     // zoom: zoom,
-                    zoomControl: isEditing && !isAddingPolygon,
+                    zoomControl: isEditing,
                     zoomControlOptions: {   
                         position: google.maps.ControlPosition.LEFT_BOTTOM
                     }
@@ -252,64 +194,44 @@ export const HTHMap = (props: any) => {
                     territoryHTH.hthMap.polygons.map((polygon: typePolygon) => (
                         <div key={polygon.id}>
                             <Polygon
-                                editable={isEditing}
-                                
-                                draggable={isEditing}
+                                editable={isEditing || (isAddingPolygon && polygon.id === 0)}
+                                draggable={isEditing || (isAddingPolygon && polygon.id === 0)}
                                 path={[
                                     polygon.coordsPoint1,
                                     polygon.coordsPoint2,
                                     polygon.coordsPoint3
                                 ]}
-                                onDragEnd={() => {
-                                    //console.log(np.current)
-                                }}
-                                onMouseUp={() => {
-                                    if (polygon.id !== 0 || !newPolygon || !newGooglePolygon) return
-                                    const path: any[] = newGooglePolygon.getPath().getArray()
-
-                                    const newPolygon0: typePolygon = {
-                                        block: newPolygon.block,
-                                        coordsPoint1: { lat: path[0].lat(), lng: path[0].lng() },
-                                        coordsPoint2: { lat: path[1].lat(), lng: path[1].lng() },
-                                        coordsPoint3: { lat: path[2].lat(), lng: path[2].lng() },
-                                        //face: newPolygon.face,
-                                        face: 'F',
-                                        id: newPolygon.id,
-                                        isFinished: false
-                                    }
-                                    
-                                    setNewPolygon(newPolygon0)
-
-                                    let currentTerritoryHTH: typeHTHTerritory = territoryHTH
-                                    currentTerritoryHTH.hthMap.polygons = currentTerritoryHTH.hthMap.polygons.map((polygon: typePolygon) =>
-                                        polygon.id === 0 ? newPolygon0 : polygon
-                                    )
-                                    setTerritoryHTHHandler(currentTerritoryHTH)
-
-                                    const path1: any[] = newGooglePolygon.getPath().getArray()
-
-                                    const newPolygon1: typePolygon = {
-                                        block: newPolygon.block,
-                                        coordsPoint1: { lat: path1[0].lat(), lng: path1[0].lng() },
-                                        coordsPoint2: { lat: path1[1].lat(), lng: path1[1].lng() },
-                                        coordsPoint3: { lat: path1[2].lat(), lng: path1[2].lng() },
-                                        //face: newPolygon.face,
-                                        face: 'F',
-                                        id: newPolygon.id,
-                                        isFinished: false
-                                    }
-                                    
-                                    setNewPolygon(newPolygon1)
-
-                                    let currentTerritoryHTH1: typeHTHTerritory = territoryHTH
-                                    currentTerritoryHTH1.hthMap.polygons = currentTerritoryHTH1.hthMap.polygons.map((polygon: typePolygon) =>
-                                        polygon.id === 0 ? newPolygon0 : polygon
-                                    )
-                                    setTerritoryHTHHandler(currentTerritoryHTH1)
-                                }}
                                 onClick={() => selectBlockAndFaceHandler(polygon)}
                                 onLoad={(googlePolygon0: google.maps.Polygon) => {
-                                    if (googlePolygon0) setNewGooglePolygon(googlePolygon0)
+                                    
+                                    setInterval(() => {
+                                        const path: any[] = googlePolygon0.getPath().getArray()
+                                        const p1y: number = path[0].lat()
+                                        const p1x: number = path[0].lng()
+                                        const p2y: number = path[1].lat()
+                                        const p2x: number = path[1].lng()
+                                        const p3y: number = path[2].lat()
+                                        const p3x: number = path[2].lng()
+                                        
+                                        if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
+                                            && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
+                                            && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng) return
+                                        console.log("Passed")
+                                        const modifiedPolygon: typePolygon = {
+                                            block: polygon.block,
+                                            coordsPoint1: { lat: p1y, lng: p1x },
+                                            coordsPoint2: { lat: p2y, lng: p2x },
+                                            coordsPoint3: { lat: p3y, lng: p3x },
+                                            face: polygon.face,
+                                            id: polygon.id,
+                                            isFinished: polygon.isFinished
+                                        }
+                                        let currentTerritoryHTH: typeHTHTerritory = territoryHTH
+                                        currentTerritoryHTH.hthMap.polygons = currentTerritoryHTH.hthMap.polygons.map((polygon0: typePolygon) =>
+                                            polygon0.id === polygon.id ? modifiedPolygon : polygon0
+                                        )
+                                        setTerritoryHTHHandler(currentTerritoryHTH)
+                                    }, 300)
                                 }}
                                 options={{
                                     clickable: true,
@@ -361,30 +283,37 @@ export const HTHMap = (props: any) => {
                 }
             </GoogleMap>
         </div>
+        
+        {isAddingPolygon &&
+            <AddFaceOptions
+                addFaceHandler={addFaceHandler}
+                blocks={blocks}
+            />
+        }
 
-        {user && user.isAdmin && <>
-            <button className={`mt-4 d-block m-auto btn ${isEditing ? 'btn-secondary btn-general-secondary' : 'btn-general-blue'}`}
-                onClick={() => initMapEditingHandler()}
-            >
-                {isEditing ? 'Terminar de Editar' : 'Editar Mapa'}
-            </button>
-            
-            {isEditing && <>
-                <button className={'mt-4 d-block m-auto btn btn-secondary btn-general-secondary'}
+        {user && user.isAdmin && <div className={'d-flex justify-content-center'}>
+            {!isAddingPolygon &&
+                <button className={`mt-4 mr-4 btn ${isEditing ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
+                    onClick={() => initMapEditingHandler()}
+                >
+                    {isEditing ? 'Guardar Cambios' : 'Editar Mapa'}
+                </button>
+            }
+            {!isEditing &&
+                <button className={`mt-4 btn ${isAddingPolygon ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
+                    onClick={() => isAddingPolygon ? initMapEditingHandler() : addFaceHandler()}
+                >
+                    {isAddingPolygon ? 'Guardar Cambios' : 'Agregar Cara'}
+                </button>
+            }
+            {(isEditing || isAddingPolygon) && <>
+                <button className={'mt-4 ml-4 btn btn-secondary btn-general-secondary'}
                     onClick={() => cancelChangesHandler()}
                 >
                     Cancelar Cambios
                 </button>
-
-                {!isAddingPolygon &&
-                    <button className={'mt-4 d-block m-auto btn btn-general-blue'}
-                        onClick={() => addFaceHandler1()}
-                    >
-                        Agregar Cara
-                    </button>
-                }
             </>}
-        </>}
+        </div>}
 
         {!isLoaded &&
             <Loading />
@@ -400,3 +329,98 @@ export const HTHMap = (props: any) => {
 
     </>)
 }
+
+const AddFaceOptions = (props: any) => {
+    const blocks: typeBlock[] = props.blocks
+    const faces: typeFace[] = ['A', 'B', 'C', 'D', 'E', 'F']
+    const addFaceHandler: Function = props.addFaceHandler
+    const [selectedBlock, setSelectedBlock] = useState<typeBlock>()
+    const [selectedFace, setSelectedFace] = useState<typeFace>()
+    const [showFaceMenu, setShowFaceMenu] = useState<boolean>(false)
+
+    const selectBlockHandler = (block: typeBlock): void => {
+        setSelectedBlock(block)
+        setShowFaceMenu(true)
+        addFaceHandler(block, selectedFace)
+    }
+    const selectFaceHandler = (face: typeFace): void => {
+        setSelectedFace(face)
+        addFaceHandler(selectedBlock, face)
+    }
+    
+    return (
+        <div className={'d-flex justify-content-center mt-4'}>
+            <Dropdown className={'d-inline mr-2'}>
+                <Dropdown.Toggle variant={danger}>
+                    {selectedBlock ? `Manzana ${selectedBlock}` : "Seleccionar la Manzana"} &nbsp;
+                </Dropdown.Toggle>
+                <Dropdown.Menu show>
+                    <Dropdown.Header> Seleccionar la Manzana </Dropdown.Header>
+                    {blocks && !!blocks.length && blocks.map((block: typeBlock) => (
+                        <Dropdown.Item key={block} eventKey={block} onClick={() => selectBlockHandler(block)}>
+                            {`Manzana ${block}`}
+                        </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown className={'d-inline ml-2'}>
+                <Dropdown.Toggle variant={danger}>
+                    {selectedFace ? `==> Cara ${selectedFace}` : "Seleccionar la Cara"} &nbsp;
+                </Dropdown.Toggle>
+                <Dropdown.Menu show={showFaceMenu}>
+                    <Dropdown.Header> Seleccionar la Cara </Dropdown.Header>
+                    {faces && !!faces.length && faces.map((face: typeFace) => (
+                        <Dropdown.Item key={face} eventKey={face} onClick={() => selectFaceHandler(face)}>
+                            {`Cara ${face}`}
+                        </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+            </Dropdown>
+        </div>
+    )
+}
+
+
+
+
+
+    // const addFaceHandler = (event: any): void => {
+    //     const lat: number = event.latLng.lat()
+    //     const lng: number = event.latLng.lng()
+    //     if (!isEditing || !isAddingPolygon || !lat || !lng) return
+    //     newPolygonPath = [...(newPolygonPath ?? []), lat, lng]
+    //     const newMarker: typeMarker = {
+    //         id: newPolygonPath ? newPolygonPath.length : 0,
+    //         coords: {
+    //             lat: event.latLng.lat(),
+    //             lng: event.latLng.lng()
+    //         }
+    //     }
+    //     let currentTerritory: typeHTHTerritory = territoryHTH
+    //     currentTerritory.hthMap.markers.push(newMarker)
+    //     setTerritoryHTH(currentTerritory)
+    //     if (newPolygonPath?.length === 6) {
+    //         let newPolygon0: typePolygon = {
+    //             id: +new Date(),
+    //             block: '1',
+    //             face: 'A',
+    //             coordsPoint1: {
+    //                 lat: newPolygonPath[0],
+    //                 lng: newPolygonPath[1]
+    //             },
+    //             coordsPoint2: {
+    //                 lat: newPolygonPath[2],
+    //                 lng: newPolygonPath[3]
+    //             },
+    //             coordsPoint3: {
+    //                 lat: newPolygonPath[4],
+    //                 lng: newPolygonPath[5]
+    //             },
+    //             isFinished: false
+    //         }
+    //         currentTerritory.hthMap.polygons.push(newPolygon0)
+    //         //currentTerritory.hthMap.markers = currentTerritory.hthMap.markers.filter(x => x.id > 9)
+    //         setTerritoryHTH(currentTerritory)
+    //         newPolygonPath = []
+    //     }
+    // }
