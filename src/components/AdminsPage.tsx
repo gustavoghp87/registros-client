@@ -16,6 +16,8 @@ import { H2 } from './css/css'
 export const AdminsPage = () => {
     
     const { refreshUser, user } = useAuth()
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const [users, setUsers] = useState<typeUser[]>()
     const [asignVisible, setAsignVisible] = useState<boolean>(false)
     const [groupVisible, setGroupVisible] = useState<boolean>(false)
@@ -23,8 +25,6 @@ export const AdminsPage = () => {
     const [desasig, setDesasig] = useState<string[]>([])
     const [viendo, setViendo] = useState<string>("todos")
     const [socket, setSocket] = useState<any>(null)
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })

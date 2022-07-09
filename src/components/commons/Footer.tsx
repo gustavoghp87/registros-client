@@ -5,33 +5,38 @@ import { generalBlue } from '../_App'
 export const Footer = () => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-
-    const footerStyle1 = {
-        fontSize: isMobile ? '1rem' : '1.8rem',
-        paddingTop: '20px',
-        paddingBottom: '20px',
-        backgroundColor: generalBlue,
-        height: '100px',
-        marginTop: '200px'
-    }
-
-    const footerStyle2 = {
-        display: 'flex',
-        height: '100%',
-        width: '100%',
-        margin: 'auto',
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
     
     return (
         <>
-            <div className={'main-footer'} style={footerStyle1}>
-                <div style={footerStyle2}>
-                    <a href={"https://misericordiaweb.com/"} style={{ color: 'white', fontWeight: 'bolder' }}>
+            <div className={'main-footer'}
+                style={{
+                    backgroundColor: generalBlue,
+                    height: isMobile ? '120px' : '120px',
+                    marginTop: '200px',
+                    paddingTop: isMobile ? '10px' : '20px',
+                    paddingBottom: '20px'
+                }}
+            >
+                <div style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    fontSize: isMobile ? '1.6rem' : '2.2rem',
+                    justifyContent: 'center',
+                    //height: '100%',
+                    margin: 'auto',
+                    width: '100%'
+                }}>
+                    <a href={"https://misericordiaweb.com/"} style={{ color: 'white', textDecorationLine: 'none', fontWeight: 'bolder' }}>
                         misericordiaweb.com
                     </a>
                 </div>
+
+                <div className='text-center mt-2'>
+                    <a className={`${isMobile ? '' : 'mr-2'} text-white`} href="/privacidad">Política de Privacidad</a>
+                    {isMobile && <br/>}
+                    <a className={`${isMobile ? '' : 'ml-2'} text-white`} href="/servicio">Términos de Uso</a>
+                </div>
+
             </div>
         </>
     )

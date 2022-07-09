@@ -19,6 +19,8 @@ import { AdminsPage } from './AdminsPage'
 import { RecoveryPage } from './RecoveryPage'
 import { CasaEnCasaPage } from './CasaEnCasaPage'
 import { LogsPage } from './LogsPage'
+import { PrivacyPolicyPage } from './PrivacyPolicyPage'
+import { TermsOfServicePage } from './TermsOfService'
 import { CampaignPage } from './campaigns/CampaignPage'
 import { CampaignAdminsPage } from './campaigns/CampaignAdminsPage'
 import { changeMobileModeReducer } from '../store/MobileMode.Slice'
@@ -72,6 +74,8 @@ export const App = () => {
                                 <Route element={ <CampaignPage /> } path={"/celulares/:id"} />
                                 <Route element={ <CampaignAdminsPage /> } path={"/celulares-admins"} />
                                 <Route element={ <LogsPage /> } path={"/logs"} />
+                                <Route element={ <PrivacyPolicyPage /> } path={"/privacidad"} />
+                                <Route element={ <TermsOfServicePage /> } path={"/servicio"} />
                                 <Route element={ <HomePage /> } path={"*"} />
                             </Routes>
 
