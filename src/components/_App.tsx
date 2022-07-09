@@ -31,18 +31,16 @@ export const generalBlue: string = "#4a6da7"
 
 export const App = () => {
 
-    const { showingAlertModal } = useSelector((state: typeRootState) => state.alertModal)
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-
+    const { showingAlertModal } = useSelector((state: typeRootState) => state.alertModal)
     const dispatch: typeAppDispatch = useDispatch()
     setTimeout(() => {
         if (isMobile && window.screen.width >= 990)
             dispatch(changeMobileModeReducer({ isMobile: window.screen.width < 990 }))
         else if (!isMobile && window.screen.width < 990)
             dispatch(changeMobileModeReducer({ isMobile: window.screen.width < 990 }))
-        }
-    , 300)
+    }, 300)
 
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>
@@ -59,9 +57,6 @@ export const App = () => {
                             margin: 'auto',
                             minHeight: 'calc(100vh - 80px)'
                         }}>
-
-                            {showingAlertModal && <AlertModal />}
-
                             <Routes>
                                 <Route element={ <HomePage /> } path={"/"} />
                                 <Route element={ <LoginPage /> } path={"/login"} />
@@ -82,6 +77,8 @@ export const App = () => {
                             </Routes>
 
                             <DarkModeButton />
+
+                            {showingAlertModal && <AlertModal />}
                             
                         </div>
 

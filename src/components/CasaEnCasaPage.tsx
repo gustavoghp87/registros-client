@@ -7,9 +7,9 @@ import { useAuth } from '../context/authContext'
 import { H2 } from './css/css'
 import { typeUser } from '../models/user'
 import { generalBlue } from './_App'
-import { NoTocarHTH } from './house-to-house/NoTocarHTH'
-import { ObservacionesHTH } from './house-to-house/ObservacionesHTH'
-import { HTHMap } from './house-to-house/HTHMap'
+import { HTHDoNotCall } from './house-to-house/HTHDoNotCall/HTHDoNotCall'
+import { HTHObservations } from './house-to-house/HTHObservations/HTHObservations'
+import { HTHMap } from './house-to-house/HTHMap/HTHMap'
 import { Container } from 'react-bootstrap'
 import { typeBlock, typeTerritoryNumber } from '../models/territory'
 import { getBlocksService } from '../services/territoryServices'
@@ -50,11 +50,13 @@ export const CasaEnCasaPage = () => {
     
     const refreshHTHTerritoryHandler = (): void => {
         setLoading(true)
-        if (territory) getHTHTerritoryService(territory).then((hthTerritory: typeHTHTerritory|null) => {
-            if (hthTerritory) {
-                setTerritoryHTH(hthTerritory)
-                if (hthTerritory.finished && hthTerritory.finished.length) {
-                    let isFinished: typeFinishedFace|undefined = hthTerritory.finished.find(x => x.block === block && x.face === face)
+        console.log("Refreshing");
+        
+        if (territory) getHTHTerritoryService(territory).then((hthTerritory0: typeHTHTerritory|null) => {
+            if (hthTerritory0) {
+                setTerritoryHTH(hthTerritory0)
+                if (hthTerritory0.finished && hthTerritory0.finished.length) {
+                    let isFinished: typeFinishedFace|undefined = hthTerritory0.finished.find(x => x.block === block && x.face === face)
                     setIsFinished(!isFinished ? false : true)
                 } else {
                     setIsFinished(false)
@@ -66,6 +68,9 @@ export const CasaEnCasaPage = () => {
         setLoading(false)
     }
 
+    const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
+        setTerritoryHTH(territoryHTH0)
+    }
 
     useEffect(() => {
         if (user && !user.isAdmin) window.location.href = "/"                   // to change
@@ -110,8 +115,9 @@ export const CasaEnCasaPage = () => {
         {territoryHTH && territoryHTH.hthMap && <>
             <HTHMap
                 blocks={blocks}
+                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                 setBlockAndFaceHandler={setBlockAndFaceHandler}
-                setTerritoryHTH={setTerritoryHTH}
+                setTerritoryHTHHandler={setTerritoryHTHHandler}
                 territory={territory}
                 territoryHTH={territoryHTH}
             />
@@ -149,7 +155,7 @@ export const CasaEnCasaPage = () => {
             }
 
             {territoryHTH && block && face &&
-                <ObservacionesHTH
+                <HTHObservations
                     territory={territory}
                     block={block}
                     face={face}
@@ -160,7 +166,7 @@ export const CasaEnCasaPage = () => {
             }
 
             {territoryHTH && block && face &&
-                <NoTocarHTH
+                <HTHDoNotCall
                     territory={territory}
                     block={block}
                     face={face}
