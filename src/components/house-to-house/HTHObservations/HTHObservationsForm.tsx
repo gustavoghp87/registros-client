@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useAuth } from '../../../context/authContext'
-import { typeFace, typeObservation } from '../../../models/houseToHouse'
-import { typeBlock, typeTerritoryNumber } from '../../../models/territory'
+import { typeObservation, typePolygon } from '../../../models/houseToHouse'
+import { typeTerritoryNumber } from '../../../models/territory'
 import { typeUser } from '../../../models/user'
 import { addHTHObservationService, editHTHObservationService } from '../../../services/houseToHouseServices'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
@@ -13,32 +13,28 @@ export const HTHObservationsForm = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const dispatch: typeAppDispatch = useDispatch()
-    const block: typeBlock = props.block
     const closeShowFormHandler: Function = props.closeShowFormHandler
-    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
-    const editText: string = props.editText
-    const face: typeFace = props.face
-    const idEdit: number = props.idEdit
+    const currentFace: typePolygon = props.currentFace
+    const editText: string = props.editText || ''
+    const idEdit: number = props.idEdit || 0
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
     const territory: typeTerritoryNumber = props.territory
-    const [text, setText] = useState<string>(editText ?? '')
+    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
+    const [text, setText] = useState<string>(editText)
     
     const submitHandler = (e: Event) => {
         e.preventDefault()
         if (!text || !user) return
-        const observation: typeObservation = {
-            block,
+        const newObservation: typeObservation = {
             creator: user.email,
             date,
-            face,
-            id: idEdit ?? +new Date(),
-            street: '',
+            id: idEdit ? idEdit : +new Date(),
             text
         }
-        console.log(observation);
+        console.log("New observation:", newObservation)
         
         if (!editText) {
-            addHTHObservationService(observation, territory).then((success: boolean) => {
+            addHTHObservationService(newObservation, territory, currentFace.block, currentFace.face).then((success: boolean) => {
                 if (success) {
                     closeShowFormHandler()
                     refreshDoNotCallHandler()
@@ -47,13 +43,13 @@ export const HTHObservationsForm = (props: any) => {
                     dispatch(setValuesAndOpenAlertModalReducer({
                         mode: 'alert',
                         title: 'Algo falló',
-                        message: `No se pudo agregar esta Observación de la Manzana ${observation.block} Cara ${observation.face}: "${observation.text}"`,
+                        message: `No se pudo agregar esta Observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${newObservation.text}"`,
                         execution: refreshDoNotCallHandler
                     }))
                 }
             })
         } else {
-            editHTHObservationService(observation, territory).then((success: boolean) => {
+            editHTHObservationService(newObservation, territory, currentFace.block, currentFace.face).then((success: boolean) => {
                 if (success) {
                     closeShowFormHandler()
                     refreshDoNotCallHandler()
@@ -62,7 +58,7 @@ export const HTHObservationsForm = (props: any) => {
                     dispatch(setValuesAndOpenAlertModalReducer({
                         mode: 'alert',
                         title: 'Algo falló',
-                        message: `No se pudo editar esta Observación de la Manzana ${observation.block} Cara ${observation.face}: "${observation.text}"`,
+                        message: `No se pudo editar esta Observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${newObservation.text}"`,
                         execution: refreshDoNotCallHandler
                     }))
                 }
@@ -75,13 +71,14 @@ export const HTHObservationsForm = (props: any) => {
         setText('')
     }
 
-    const setTextHandler = (text0: string): void => setTextHandler(text0)
-
+    const setTextHandler = (text0: string): void => setText(text0)
 
     return (
         <HTHForm
             cancelFormHandler={cancelFormHandler}
-            isDoNotCallForm={true}
+            currentFace={currentFace}
+            date={date}
+            isDoNotCallForm={false}
             submitHandler={submitHandler}
             territory={territory}
             // specific

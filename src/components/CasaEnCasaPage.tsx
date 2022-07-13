@@ -1,105 +1,96 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { useSelector } from 'react-redux'
+import { Container } from 'react-bootstrap'
 import { typeRootState } from '../store/store'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
 import { H2 } from './css/css'
 import { typeUser } from '../models/user'
 import { generalBlue } from './_App'
-import { HTHDoNotCall } from './house-to-house/HTHDoNotCall/HTHDoNotCall'
+import { HTHDoNotCalls } from './house-to-house/HTHDoNotCalls/HTHDoNotCalls'
 import { HTHObservations } from './house-to-house/HTHObservations/HTHObservations'
 import { HTHMap } from './house-to-house/HTHMap/HTHMap'
-import { Container } from 'react-bootstrap'
 import { typeBlock, typeTerritoryNumber } from '../models/territory'
-import { getBlocksService } from '../services/territoryServices'
 import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../services/houseToHouseServices'
-import { typeFace, typeFinishedFace, typeHTHTerritory } from '../models/houseToHouse'
+import { typeDoNotCall, typeFace, typeHTHTerritory, typePolygon } from '../models/houseToHouse'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const CasaEnCasaPage = () => {
     
-    const user: typeUser|undefined = useAuth().user
     const territory = useParams<any>().territory as typeTerritoryNumber
+    const user: typeUser|undefined = useAuth().user
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const [currentFace, setCurrentFace] = useState<typePolygon>()
     const [loading, setLoading] = useState<boolean>(true)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
-    const [block, setBlock] = useState<typeBlock>()
-    const [blocks, setBlocks] = useState<typeBlock[]>()
-    const [face, setFace] = useState<typeFace>()
-    const [street, setStreet] = useState<string>()
-    const [streets, setStreets] = useState<string[]>()
-    const [isFinished, setIsFinished] = useState<boolean>(false)
 
-    const setHTHIsFinishedHandler = (): void => {
-        if (!block || !face) return
-        setHTHIsFinishedService(!isFinished, block, face, territory).then((success: boolean) => {
-            if (success) {
-                refreshHTHTerritoryHandler()
-            } else {
-                console.log("Algo falló")
-            }
-        })
-    }
-
-    const setBlockAndFaceHandler = (selectedBlock: typeBlock, selectedFace: typeFace) => {
-        setBlock(selectedBlock)
-        setFace(selectedFace)
-    }
-    
-    const refreshHTHTerritoryHandler = (): void => {
-        setLoading(true)
-        console.log("Refreshing");
-        
-        if (territory) getHTHTerritoryService(territory).then((hthTerritory0: typeHTHTerritory|null) => {
-            if (hthTerritory0) {
-                setTerritoryHTH(hthTerritory0)
-                if (hthTerritory0.finished && hthTerritory0.finished.length) {
-                    let isFinished: typeFinishedFace|undefined = hthTerritory0.finished.find(x => x.block === block && x.face === face)
-                    setIsFinished(!isFinished ? false : true)
-                } else {
-                    setIsFinished(false)
-                }
-            } else {
-                console.log("Algo falló")
-            }
-        })
-        setLoading(false)
+    const selectBlockAndFaceHandler = (selectedBlock: typeBlock, selectedFace: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
+        if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
+        const target: typeHTHTerritory = hthTerritory0 ?? territoryHTH
+        let currentFace0: typePolygon|undefined = target.map.polygons.find((x: typePolygon) =>
+            x.block === selectedBlock && x.face === selectedFace
+        )
+        if (currentFace0) {
+            if (currentFace0.doNotCalls)
+                currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
+            if (currentFace0.observations)
+                currentFace0.observations = currentFace0.observations.reverse()
+            if (currentFace0) setCurrentFace(currentFace0)
+            console.log("Current Face:", currentFace0);
+        }
     }
 
     const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
         setTerritoryHTH(territoryHTH0)
     }
 
-    useEffect(() => {
-        if (user && !user.isAdmin) window.location.href = "/"                   // to change
-        if (!territory || !loading) return
-        getBlocksService(territory).then((blocks: typeBlock[]|null) => {
-            if (blocks && blocks.length) setBlocks(blocks)
+    const setHTHIsFinishedHandler = async (): Promise<void> => {
+        if (!currentFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
+        setHTHIsFinishedService(!currentFace.isFinished, territory, currentFace.block, currentFace.face).then((success: boolean) => {
+            if (success) refreshHTHTerritoryHandler()
         })
-        getHTHTerritoryService(territory).then((hthTerritory: typeHTHTerritory|null) => {
-            if (hthTerritory) {
-                setTerritoryHTH(hthTerritory)
-            }
-        })
+    }
+
+    const refreshHTHTerritoryHandler = (): void => {
+        //setLoading(true)
+        console.log("Refreshing");
         getHTHStreetsByTerritoryService(territory).then((streets0: string[]|null) => {
-            if (streets0 && streets0.length) {
-                setStreets(streets0)
-                setStreet(streets0[0])
-            }
+            getHTHTerritoryService(territory).then((hthTerritory0: typeHTHTerritory|null) => {
+                if (!hthTerritory0) return
+                if (streets0 && streets0.length) streets0.forEach(x => { if (hthTerritory0.streets.indexOf(x) !== -1) hthTerritory0.streets.push(x) })
+                setTerritoryHTH(hthTerritory0)
+                console.log(currentFace);
+                
+                if (currentFace) selectBlockAndFaceHandler(currentFace.block, currentFace.face, hthTerritory0)
+                //setLoading(false)
+            })
         })
-        setLoading(false)
-    }, [territory, loading, user])
+    }
 
     useEffect(() => {
-        if (block && face && territoryHTH && territoryHTH.finished && territoryHTH.finished.length) {
-            let isFinished: typeFinishedFace|undefined = territoryHTH.finished.find(x => x.block === block && x.face === face)
-            setIsFinished(!isFinished ? false : true)
-        } else {
-            setIsFinished(false)
+        if (user && !user.isAdmin) window.location.href = '/'
+        if (!territory || !loading) return
+        getHTHStreetsByTerritoryService(territory).then((streets0: string[]|null) => {
+            getHTHTerritoryService(territory).then((hthTerritory0: typeHTHTerritory|null) => {
+                if (!hthTerritory0) return
+                console.log(hthTerritory0.streets);
+                
+                if (streets0 && streets0.length)
+                    streets0.forEach(x => {
+                        if (hthTerritory0.streets.indexOf(x) !== -1) hthTerritory0.streets.push(x)
+                    })
+                setTerritoryHTH(hthTerritory0)
+                if (currentFace) selectBlockAndFaceHandler(currentFace.block, currentFace.face, hthTerritory0)
+                setLoading(false)
+            })
+        })
+        return () => {
+            setCurrentFace(undefined)
+            setTerritoryHTH(undefined)
         }
-    }, [block, face, territoryHTH])    
+    }, [territory, loading, user, currentFace])
     
 
     return (
@@ -112,17 +103,22 @@ export const CasaEnCasaPage = () => {
             SELECCIONAR CARA DE MANZANA
         </h1>
 
-        {territoryHTH && territoryHTH.hthMap && <>
+        {territoryHTH && territoryHTH.map && <>
             <HTHMap
-                blocks={blocks}
+                currentFace={currentFace}
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                setBlockAndFaceHandler={setBlockAndFaceHandler}
+                selectBlockAndFaceHandler={selectBlockAndFaceHandler}
                 setTerritoryHTHHandler={setTerritoryHTHHandler}
-                territory={territory}
                 territoryHTH={territoryHTH}
             />
         </>}
 
+        {loading &&
+            <>
+                <br/> <br/> <br/>
+                <Loading />
+            </>
+        }
 
         <Container className={isDarkMode ? 'bg-dark text-white' : ''} style={{ paddingBottom: isMobile ? '1px' : '30px' }}>
 
@@ -136,53 +132,39 @@ export const CasaEnCasaPage = () => {
                 }}
             >
                 <span> TERRITORIO {territory} </span>
-                <br className={block ? '' : 'd-none'} />
-                <span className={'mb-2'}> {block ? `MANZANA ${block}` : ''} </span>
-                <br className={face ? '' : 'd-none'} />
-                <span> {face ? `CARA ${face}` : ''} </span>
+                <br className={currentFace && currentFace.block ? '' : 'd-none'} />
+                <span className={'mb-2'}> {currentFace && currentFace.block ? `MANZANA ${currentFace.block}` : ''} </span>
+                <br className={currentFace && currentFace.face ? '' : 'd-none'} />
+                <span> {currentFace && currentFace.face ? `CARA ${currentFace.face}` : ''} </span>
             </h1>
             
-            {user && user.isAdmin && block && face &&
-                <button className={`my-4 btn ${isFinished ? 'btn-secondary btn-general-secondary' : 'btn-general-blue'} d-block m-auto w-75`}
+            {user && user.isAdmin && currentFace &&
+                <button
+                    className={`my-4 btn ${currentFace.isFinished ? 'btn-secondary btn-general-secondary' : 'btn-general-blue'} d-block m-auto w-75`}
                     onClick={() => setHTHIsFinishedHandler()}
                 >
-                    {isFinished ?
-                        `Desmarcar Cara ${face} de Manzana ${block} como terminada`
+                    {currentFace.isFinished ?
+                        `Desmarcar Cara ${currentFace.face} de Manzana ${currentFace.block} como terminada`
                         :
-                        `Marcar esta CARA ${face} de MANZANA ${block} como terminada`
+                        `Marcar esta CARA ${currentFace.face} de MANZANA ${currentFace.block} como terminada`
                     }
                 </button>
             }
 
-            {territoryHTH && block && face &&
+            {territoryHTH && currentFace && <>
                 <HTHObservations
-                    territory={territory}
-                    block={block}
-                    face={face}
-                    street={street}
-                    observations={territoryHTH.observations}
+                    currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    territory={territoryHTH.territory}
                 />
-            }
-
-            {territoryHTH && block && face &&
-                <HTHDoNotCall
-                    territory={territory}
-                    block={block}
-                    face={face}
-                    doNotCalls={territoryHTH.doNotCalls}
-                    streets={streets}
+                <HTHDoNotCalls
+                    currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    territory={territoryHTH.territory}
                 />
-            }
-
-            {loading &&
-                <>
-                    <br/>
-                    <Loading />
-                </>
-            }
+            </>}
 
         </Container>
+        
     </>)
 }

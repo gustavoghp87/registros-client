@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useAuth } from '../../../context/authContext'
-import { typeFace, typeObservation } from '../../../models/houseToHouse'
-import { typeBlock, typeTerritoryNumber } from '../../../models/territory'
-import { typeUser } from '../../../models/user'
-import { typeAppDispatch, typeRootState } from '../../../store/store'
-import { HTHObservationsForm } from './HTHObservationsForm'
-import { deleteHTHObservationService } from '../../../services/houseToHouseServices'
-import { MdDelete, MdEdit } from 'react-icons/md'
-import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
 import { Col, Row } from 'react-bootstrap'
+import { MdDelete, MdEdit } from 'react-icons/md'
+import { HTHObservationsForm } from './HTHObservationsForm'
+import { useAuth } from '../../../context/authContext'
+import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
+import { typeAppDispatch, typeRootState } from '../../../store/store'
+import { deleteHTHObservationService } from '../../../services/houseToHouseServices'
+import { typeObservation, typePolygon } from '../../../models/houseToHouse'
+import { typeUser } from '../../../models/user'
+import { typeTerritoryNumber } from '../../../models/territory'
 
 export const HTHObservationsItem = (props: any) => {
 
@@ -17,13 +17,12 @@ export const HTHObservationsItem = (props: any) => {
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const dispatch: typeAppDispatch = useDispatch()
-    const territory: typeTerritoryNumber = props.territory
-    const block: typeBlock = props.block
-    const face: typeFace = props.face
-    const observation: typeObservation = props.observation
     const closeShowAddFormHandler: Function = props.closeShowFormHandler
+    const currentFace: typePolygon = props.currentFace
+    const date: string = props.date
+    const observation: typeObservation = props.observation
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
-    
+    const territory: typeTerritoryNumber = props.territory
     const [showForm, setShowForm] = useState<boolean>(false)
 
     const editHandler = (): void => {
@@ -35,13 +34,13 @@ export const HTHObservationsItem = (props: any) => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: '¿Eliminar Observación?',
-            message: `Se va a eliminar esta observación de la Manzana ${observation.block} Cara ${observation.face}: "${observation.text}"`,
+            message: `Se va a eliminar esta observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${observation.text}"`,
             execution: deleteConfirmedHandler
         }))
     }
     
     const deleteConfirmedHandler = (): void => {
-        deleteHTHObservationService(observation.id, territory).then((success: boolean) => {
+        deleteHTHObservationService(observation.id, territory, currentFace.block, currentFace.face).then((success: boolean) => {
             if (success) {
                 refreshDoNotCallHandler()
             } else {
@@ -130,14 +129,15 @@ export const HTHObservationsItem = (props: any) => {
             </Row>
         }
 
-        {showForm &&
+        {user && user.isAdmin && showForm &&
             <HTHObservationsForm
-                territory={territory}
-                block={block}
-                face={face}
-                editText={observation.text}
                 closeShowFormHandler={closeShowFormHandler}
+                currentFace={currentFace}
+                date={date}
                 refreshDoNotCallHandler={refreshDoNotCallHandler}
+                territory={territory}
+                // specific
+                editText={observation.text}
                 idEdit={observation.id}
             />
         }

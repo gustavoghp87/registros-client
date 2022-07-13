@@ -1,4 +1,5 @@
 import { typeCampaignPack } from './campaign'
+import { typeHTHTerritory } from './houseToHouse'
 import { typeLogsObj } from './log'
 import { typeLocalStatistic, typeStatistic } from './statistic'
 import { typeHousehold, typeStateOfTerritory, typeBlock } from './territory'
@@ -30,4 +31,7 @@ export type typeResponseData = {
     statistic?: typeStatistic,
     localStatistic?: typeLocalStatistic
     localStatistics?: typeLocalStatistic[]
-    numberOfFreePhones?: number}
+    numberOfFreePhones?: number
+    hthTerritory?: typeHTHTerritory
+    streets?: string[]
+}

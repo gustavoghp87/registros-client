@@ -5,22 +5,16 @@ import { typeRootState } from '../../../store/store'
 import { generalBlue } from '../../_App'
 import { HTHObservationsForm } from './HTHObservationsForm'
 import { HTHObservationsItem } from './HTHObservationsItem'
-import { typeFace, typeObservation } from '../../../models/houseToHouse'
-import { typeBlock, typeTerritoryNumber } from '../../../models/territory'
+import { typeObservation, typePolygon } from '../../../models/houseToHouse'
+import { typeTerritoryNumber } from '../../../models/territory'
 import { typeUser } from '../../../models/user'
 
 export const HTHObservations = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const block: typeBlock = props.block
-    const face: typeFace = props.face
-    const observations: typeObservation[] = props.observations ?
-        props.observations
-            .filter((observation: typeObservation) => observation.block === block && observation.face === face)
-            .reverse()
-        :
-        []
+    const currentFace: typePolygon = props.currentFace
+    const date: string = props.date
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const territory: typeTerritoryNumber = props.territory
     const [showForm, setShowForm] = useState<boolean>(false)
@@ -38,24 +32,26 @@ export const HTHObservations = (props: any) => {
                     width: isMobile ? '100%' : '90%'
                 }}
             >
-                {observations && !!observations.length ?
+                {currentFace.observations && !!currentFace.observations.length ?
                     'OBSERVACIONES'
                     :
                     'No hay Observaciones en esta cara'}
             </h1>
 
-            {observations && !!observations.length && observations.map((observation: typeObservation, index: number) => (
-                <div key={index}>
-                    <HTHObservationsItem
-                        territory={territory}
-                        block={block}
-                        face={face}
-                        observation={observation}
-                        closeShowFormHandler={closeShowFormHandler}
-                        refreshDoNotCallHandler={refreshHTHTerritoryHandler}
-                    />
-                </div>
-            ))}
+            {currentFace.observations && !!currentFace.observations.length &&
+                currentFace.observations.map((observation: typeObservation) => (
+                    <div key={observation.id}>
+                        <HTHObservationsItem
+                            closeShowFormHandler={closeShowFormHandler}
+                            currentFace={currentFace}
+                            date={date}
+                            observation={observation}
+                            refreshDoNotCallHandler={refreshHTHTerritoryHandler}
+                            territory={territory}
+                        />
+                    </div>
+                ))
+            }
 
             {user && user.isAdmin &&
                 <button className={'btn btn-general-blue d-block mx-auto'}
@@ -66,13 +62,13 @@ export const HTHObservations = (props: any) => {
                 </button>
             }
 
-            {user && user.isAdmin && showForm && 
+            {user && user.isAdmin && showForm &&
                 <HTHObservationsForm
-                    territory={territory}
-                    block={block}
-                    face={face}
                     closeShowFormHandler={closeShowFormHandler}
+                    currentFace={currentFace}
+                    date={date}
                     refreshDoNotCallHandler={refreshHTHTerritoryHandler}
+                    territory={territory}
                 />
             }
 

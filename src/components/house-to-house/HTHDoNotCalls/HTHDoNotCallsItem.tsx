@@ -1,47 +1,46 @@
-import { typeTerritoryNumber } from '../../../models/territory'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
 import { typeAppDispatch, typeRootState } from '../../../store/store'
 import { typeUser } from '../../../models/user'
 import { useAuth } from '../../../context/authContext'
-import { typeDoNotCall } from '../../../models/houseToHouse'
+import { typeDoNotCall, typePolygon } from '../../../models/houseToHouse'
 import { deleteHTHDoNotCallService } from '../../../services/houseToHouseServices'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
+import { typeTerritoryNumber } from '../../../models/territory'
 
-export const HTHDoNotCallItem = (props: any) => {
+export const HTHDoNotCallsItem = (props: any) => {
     const user: typeUser|undefined = useAuth().user
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const dispatch: typeAppDispatch = useDispatch()
-    const territory: typeTerritoryNumber = props.territory
+    const currentFace: typePolygon = props.currentFace
     const doNotCall: typeDoNotCall = props.doNotCall
-    const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
+    const territory: typeTerritoryNumber = props.territory
+    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
 
     const deleteHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: '¿Eliminar No Tocar?',
-            message: `Se va a eliminar este No Tocar de la Manzana ${doNotCall.block} Cara ${doNotCall.face}: ${doNotCall.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
+            message: `Se va a eliminar este No Tocar de la Manzana ${currentFace.block} Cara ${currentFace.face}: ${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
             execution: deleteConfirmedHandler
         }))
     }
 
     const deleteConfirmedHandler = (): void => {
-        deleteHTHDoNotCallService(doNotCall.id, territory).then((success: boolean) => {
+        deleteHTHDoNotCallService(doNotCall.id, territory, currentFace.block, currentFace.face).then((success: boolean) => {
             console.log(success)
             if (success) {
-                refreshDoNotCallHandler()
+                refreshHTHTerritoryHandler()
             } else {
                 dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: 'Algo falló',
-                    message: `No se pudo eliminar este No Tocar de la Manzana ${doNotCall.block} Cara ${doNotCall.face}: ${doNotCall.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
-                    execution: refreshDoNotCallHandler
+                    message: `No se pudo eliminar este No Tocar de la Manzana ${currentFace.block} Cara ${currentFace.face}: ${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`
                 }))
             }
         })
     }
-
 
     return (<>
         {isMobile ?
@@ -55,7 +54,7 @@ export const HTHDoNotCallItem = (props: any) => {
 
                 <div>
                     <h2 className={'mt-2'}>
-                        {doNotCall.street} {doNotCall.streetNumber} {doNotCall.doorBell}
+                        {currentFace.street} {doNotCall.streetNumber} {doNotCall.doorBell}
                     </h2>
                 </div>
 
@@ -79,7 +78,7 @@ export const HTHDoNotCallItem = (props: any) => {
             >
 
                 <h2 className={'d-inline mr-2'}>
-                    {doNotCall.street} {doNotCall.streetNumber} {doNotCall.doorBell}
+                    {currentFace.street} {doNotCall.streetNumber} {doNotCall.doorBell}
                 </h2>
                 
                 &nbsp;<small> (Fecha: {doNotCall.date})</small>

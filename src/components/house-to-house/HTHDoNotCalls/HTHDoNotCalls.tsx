@@ -1,29 +1,21 @@
 import { useState } from 'react'
-import { typeBlock, typeTerritoryNumber } from '../../../models/territory'
 import { generalBlue } from '../../_App'
 import { useSelector } from 'react-redux'
 import { typeRootState } from '../../../store/store'
 import { typeUser } from '../../../models/user'
 import { useAuth } from '../../../context/authContext'
-import { typeDoNotCall, typeFace } from '../../../models/houseToHouse'
-import { HTHDoNotCallForm } from './HTHDoNotCallForm'
-import { HTHDoNotCallItem } from './HTHDoNotCallItem'
+import { typeDoNotCall, typePolygon } from '../../../models/houseToHouse'
+import { HTHDoNotCallsForm } from './HTHDoNotCallsForm'
+import { HTHDoNotCallsItem } from './HTHDoNotCallsItem'
+import { typeTerritoryNumber } from '../../../models/territory'
 
-export const HTHDoNotCall = (props: any) => {
+export const HTHDoNotCalls = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const territory: typeTerritoryNumber = props.territory
-    const block: typeBlock = props.block
-    const face: typeFace = props.face
-    const doNotCalls: typeDoNotCall[] = props.doNotCalls ?
-        props.doNotCalls
-            .filter((noTocar: typeDoNotCall) => noTocar.block === block && noTocar.face === face)
-            .sort((a: typeDoNotCall, b: typeDoNotCall) => a.street.localeCompare(b.street) || a.streetNumber - b.streetNumber)
-        :
-        ['']
-    const streets: string[] = props.streets
+    const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
+    const territory: typeTerritoryNumber = props.territory
     const [showForm, setShowForm] = useState<boolean>(false)
     
     const closeShowFormHandler = (): void => {
@@ -40,22 +32,25 @@ export const HTHDoNotCall = (props: any) => {
                     marginBottom: '40px'
                 }}
             >
-                {doNotCalls && !!doNotCalls.length ?
+                {currentFace.doNotCalls && !!currentFace.doNotCalls.length ?
                     'NO TOCAR'
                     :
                     'No hay No Tocar en esta cara'
                 }
             </h1>
 
-            {doNotCalls && !!doNotCalls.length && doNotCalls.map((doNotCall: typeDoNotCall, index: number) => (
-                <div key={index}>
-                    <HTHDoNotCallItem
-                        territory={territory}
-                        doNotCall={doNotCall}
-                        refreshDoNotCallHandler={refreshHTHTerritoryHandler}
-                    />
-                </div>
-            ))}
+            {currentFace.doNotCalls && !!currentFace.doNotCalls.length &&
+                currentFace.doNotCalls.map((doNotCall: typeDoNotCall, index: number) => (
+                    <div key={index}>
+                        <HTHDoNotCallsItem
+                            currentFace={currentFace}
+                            doNotCall={doNotCall}
+                            refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                            territory={territory}
+                        />
+                    </div>
+                ))
+            }
 
             {user && user.isAdmin &&
                 <button className={'btn btn-general-blue d-block mx-auto'}
@@ -67,13 +62,11 @@ export const HTHDoNotCall = (props: any) => {
             }
 
             {user && user.isAdmin && showForm &&
-                <HTHDoNotCallForm
-                    territory={territory}
-                    block={block}
-                    face={face}
-                    streets={streets}
+                <HTHDoNotCallsForm
                     closeShowFormHandler={closeShowFormHandler}
-                    refreshDoNotCallHandler={refreshHTHTerritoryHandler}
+                    currentFace={currentFace}
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    territory={territory}    
                 />
             }
         </div>
