@@ -42,13 +42,14 @@ export const CasaEnCasaPage = () => {
         }
     }
 
-    const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
+    const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory, isFromInterval: boolean = false): void => {
         setTerritoryHTH(territoryHTH0)
     }
 
     const setHTHIsFinishedHandler = async (): Promise<void> => {
         if (!currentFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
-        setHTHIsFinishedService(!currentFace.isFinished, territory, currentFace.block, currentFace.face).then((success: boolean) => {
+        setHTHIsFinishedService(!currentFace.isFinished, territory, currentFace.block, currentFace.face, currentFace.id)
+        .then((success: boolean) => {
             if (success) refreshHTHTerritoryHandler()
         })
     }
@@ -56,13 +57,25 @@ export const CasaEnCasaPage = () => {
     const refreshHTHTerritoryHandler = (): void => {
         //setLoading(true)
         console.log("Refreshing");
+        // setTerritoryHTH({
+        //     blocks: [],
+        //     faces: [],
+        //     map: {
+        //         centerCoords: { lat: 0, lng: 0 },
+        //         lastEditor: '',
+        //         markers: [],
+        //         polygons: [],
+        //         zoom: 0
+        //     },
+        //     streets: [],
+        //     territory
+        // })
         getHTHStreetsByTerritoryService(territory).then((streets0: string[]|null) => {
             getHTHTerritoryService(territory).then((hthTerritory0: typeHTHTerritory|null) => {
                 if (!hthTerritory0) return
                 if (streets0 && streets0.length) streets0.forEach(x => { if (hthTerritory0.streets.indexOf(x) !== -1) hthTerritory0.streets.push(x) })
-                setTerritoryHTH(hthTerritory0)
+                setTerritoryHTHHandler(hthTerritory0)
                 console.log(currentFace);
-                
                 if (currentFace) selectBlockAndFaceHandler(currentFace.block, currentFace.face, hthTerritory0)
                 //setLoading(false)
             })

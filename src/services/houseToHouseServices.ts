@@ -179,13 +179,13 @@ export const getHTHStreetsByTerritoryService = async (territory: typeTerritoryNu
 }
 
 export const setHTHIsFinishedService = async (isFinish: boolean,
-    territory: typeTerritoryNumber, block: typeBlock, face: typeFace): Promise<boolean> => {
+    territory: typeTerritoryNumber, block: typeBlock, face: typeFace, polygonId: number): Promise<boolean> => {
     if (!getTokenService() || !territory || !block || !face || isFinish === undefined) return false
     try {
         const response = await fetch(`${base}/state/${territory}/${block}/${face}`, {
             method: 'PATCH',
             headers,
-            body: JSON.stringify({ isFinish })
+            body: JSON.stringify({ isFinish, polygonId })
         })
         const data: typeResponseData|null = await response.json()
         if (!data || !data.success) return false

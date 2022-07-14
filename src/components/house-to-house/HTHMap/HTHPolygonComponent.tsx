@@ -9,6 +9,13 @@ export const HTHPolygonComponent = (props: any) => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const currentFace: typePolygon = props.currentFace
+
+
+    //const intervalExecution: Function = props.intervalExecution
+    //const setPolygonInterval: Function = props.setPolygonInterval
+    //const intervalExecution: Function = props.intervalExecution
+    const runIntervals: boolean = props.runIntervals
+
     const isAddingPolygon: boolean = props.isAddingPolygon
     const isEditingView: boolean = props.isEditingView
     const polygon: typePolygon = props.polygon
@@ -21,37 +28,9 @@ export const HTHPolygonComponent = (props: any) => {
 
     const onLoadPolygonHandler = (googlePolygon0: google.maps.Polygon): void => {
         ref.current = googlePolygon0
-        setInterval(() => {
-            const path: any[] = googlePolygon0.getPath().getArray()
-            const p1y: number = path[0].lat()
-            const p1x: number = path[0].lng()
-            const p2y: number = path[1].lat()
-            const p2x: number = path[1].lng()
-            const p3y: number = path[2].lat()
-            const p3x: number = path[2].lng()
-            if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
-                && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
-                && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
-                ) return
-            //console.log(polygon);
-            const modifiedPolygon: typePolygon = {
-                block: polygon.block,
-                coordsPoint1: { lat: p1y, lng: p1x },
-                coordsPoint2: { lat: p2y, lng: p2x },
-                coordsPoint3: { lat: p3y, lng: p3x },
-                doNotCalls: polygon.doNotCalls,
-                face: polygon.face,
-                id: polygon.id,
-                isFinished: polygon.isFinished,
-                observations: polygon.observations,
-                street: polygon.street
-            }
-            const currentTerritoryHTH: typeHTHTerritory = territoryHTH
-            currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
-                polygon0.id === polygon.id ? modifiedPolygon : polygon0
-            )
-            setTerritoryHTHHandler(currentTerritoryHTH)
-        }, 1000)
+        // setPolygonInterval(googlePolygon0, polygon)
+        //if (polygon.id === 0)
+        
     }
 
     useEffect(() => {
@@ -97,6 +76,46 @@ export const HTHPolygonComponent = (props: any) => {
         setPolygonColor(currentFace && currentFace.id === polygon.id ? 'red' : polygon.isFinished ? 'black' : generalBlue)
     }, [currentFace, polygon.isFinished, polygon.id])
 
+    useEffect(() => {
+        const interval0: NodeJS.Timer = setInterval(() => {
+            if (!ref.current) return
+            const path: any[] = ref.current.getPath().getArray()
+            const p1y: number = path[0].lat()
+            const p1x: number = path[0].lng()
+            const p2y: number = path[1].lat()
+            const p2x: number = path[1].lng()
+            const p3y: number = path[2].lat()
+            const p3x: number = path[2].lng()
+            console.log("testing", polygon.id);
+            
+            if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
+                && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
+                && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
+            ) return
+            const modifiedPolygon: typePolygon = {
+                block: polygon.block,
+                coordsPoint1: { lat: p1y, lng: p1x },
+                coordsPoint2: { lat: p2y, lng: p2x },
+                coordsPoint3: { lat: p3y, lng: p3x },
+                doNotCalls: polygon.doNotCalls,
+                face: polygon.face,
+                id: polygon.id,
+                isFinished: polygon.isFinished,
+                observations: polygon.observations,
+                street: polygon.street
+            }
+            const currentTerritoryHTH: typeHTHTerritory = territoryHTH
+            currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
+                polygon0.id === polygon.id ? modifiedPolygon : polygon0
+            )
+            setTerritoryHTHHandler(currentTerritoryHTH, true)
+            console.log("updated", polygon.id)
+        }, 1000)
+        if (!runIntervals) clearInterval(interval0)
+
+        return () => clearInterval(interval0)
+    }, [polygon, runIntervals, setTerritoryHTHHandler, territoryHTH])
+
     return (<>
         <Polygon
             editable={isEditingView || (isAddingPolygon && polygon.id === 0)}
@@ -107,7 +126,7 @@ export const HTHPolygonComponent = (props: any) => {
                 polygon.coordsPoint3
             ]}
             onClick={() => !isEditingView && !isAddingPolygon ? selectBlockAndFaceHandler(polygon.block, polygon.face) : null}
-            onLoad={onLoadPolygonHandler}
+            onLoad={(googlePolygon0: google.maps.Polygon) => ref.current = googlePolygon0}
             onMouseOver={() => {
                 if (isEditingView || isAddingPolygon || !ref.current || currentFace) return
                 setPolygonColor('red')
@@ -125,7 +144,7 @@ export const HTHPolygonComponent = (props: any) => {
                 strokeColor: '',
                 strokeOpacity: 0.8,
                 strokePosition: google.maps.StrokePosition.INSIDE,
-                strokeWeight: 5
+                strokeWeight: 7
             }}
         />
 

@@ -28,12 +28,16 @@ export const HTHMap = (props: any) => {
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const selectBlockAndFaceHandler: Function = props.selectBlockAndFaceHandler
-    const setTerritoryHTHHandler: React.Dispatch<React.SetStateAction<typeHTHTerritory>> = props.setTerritoryHTHHandler
+    const setTerritoryHTHHandler: Function = props.setTerritoryHTHHandler
     const territoryHTH: typeHTHTerritory = props.territoryHTH
     const [map, setMap] = useState<google.maps.Map>()
     const [isAddingPolygon, setIsAddingPolygon] = useState<boolean>(false)
     const [isEditingView, setIsEditingView] = useState<boolean>(false)
     const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
+
+    const [runIntervals, setRunIntervals] = useState<boolean>(false)
+
+    // const [polygonInterval, setPolygonInterval] = useState()
 
     const onCenterChangedHandler = (): void => {
         const lat: number = map?.getCenter()?.lat() ?? 0
@@ -142,6 +146,48 @@ export const HTHMap = (props: any) => {
             }))
         })
     }
+
+    const intervalExecution = (googlePolygon0: google.maps.Polygon, polygon: typePolygon) => {
+        const path: any[] = googlePolygon0.getPath().getArray()
+        const p1y: number = path[0].lat()
+        const p1x: number = path[0].lng()
+        const p2y: number = path[1].lat()
+        const p2x: number = path[1].lng()
+        const p3y: number = path[2].lat()
+        const p3x: number = path[2].lng()
+        if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
+            && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
+            && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
+        ) return
+        //console.log(polygon);
+        const modifiedPolygon: typePolygon = {
+            block: polygon.block,
+            coordsPoint1: { lat: p1y, lng: p1x },
+            coordsPoint2: { lat: p2y, lng: p2x },
+            coordsPoint3: { lat: p3y, lng: p3x },
+            doNotCalls: polygon.doNotCalls,
+            face: polygon.face,
+            id: polygon.id,
+            isFinished: polygon.isFinished,
+            observations: polygon.observations,
+            street: polygon.street
+        }
+        const currentTerritoryHTH: typeHTHTerritory = territoryHTH
+        currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
+            polygon0.id === polygon.id ? modifiedPolygon : polygon0
+        )
+        setTerritoryHTHHandler(currentTerritoryHTH, true)
+    }
+
+    let interval: NodeJS.Timer
+
+    const setPolygonInterval = (googlePolygon0: google.maps.Polygon, polygon: typePolygon): void => {
+        interval = setInterval(() => intervalExecution(googlePolygon0, polygon), 1000)
+    }
+    
+    const stopPolygonInterval = (): void => {
+        clearInterval(interval)
+    }
     
     const cancelChangesHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -153,6 +199,8 @@ export const HTHMap = (props: any) => {
     }
 
     const reloadHandler = (): void => {
+        // cancelar intervalo del nuevo
+        setRunIntervals(false)
         setIsEditingView(false)
         setIsAddingPolygon(false)
         refreshHTHTerritoryHandler()
@@ -207,10 +255,15 @@ export const HTHMap = (props: any) => {
                         <div key={polygon.id}>
                             <HTHPolygonComponent
                                 currentFace={currentFace}
+                                intervalExecution={intervalExecution}
                                 isAddingPolygon={isAddingPolygon}
                                 isEditingView={isEditingView}
                                 polygon={polygon}
+                                
+                                runIntervals={runIntervals}
+                                
                                 selectBlockAndFaceHandler={selectBlockAndFaceHandler}
+                                setPolygonInterval={setPolygonInterval}
                                 setTerritoryHTHHandler={setTerritoryHTHHandler}
                                 territoryHTH={territoryHTH}
                             />
@@ -241,7 +294,10 @@ export const HTHMap = (props: any) => {
             <div className={'d-flex justify-content-center'}>
                 {!isAddingPolygon &&
                     <button className={`mt-4 mr-4 btn ${isEditingView ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
-                        onClick={() => isEditingView ? initMapViewEditingHandler() : setIsEditingView(true)}
+                        onClick={() => {
+                            if (isEditingView) { initMapViewEditingHandler() }
+                            else { setIsEditingView(true); setRunIntervals(true) }
+                        }}
                     >
                         {isEditingView ? 'Guardar Cambios' : 'Editar Mapa'}
                     </button>
@@ -250,7 +306,7 @@ export const HTHMap = (props: any) => {
                     <button className={`mt-4 btn ${isAddingPolygon ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
                         onClick={() => {
                             if (isAddingPolygon) { addFaceHandler() }
-                            else { setIsAddingPolygon(true); setShowNewFaceOptions(true)}
+                            else { setIsAddingPolygon(true); setShowNewFaceOptions(true); setRunIntervals(true)}
                         }}
                     >
                         {isAddingPolygon ? 'Guardar Cambios' : 'Agregar Cara'}
