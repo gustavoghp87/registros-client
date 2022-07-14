@@ -75,8 +75,6 @@ export const CasaEnCasaPage = () => {
         getHTHStreetsByTerritoryService(territory).then((streets0: string[]|null) => {
             getHTHTerritoryService(territory).then((hthTerritory0: typeHTHTerritory|null) => {
                 if (!hthTerritory0) return
-                console.log(hthTerritory0.streets);
-                
                 if (streets0 && streets0.length)
                     streets0.forEach(x => {
                         if (hthTerritory0.streets.indexOf(x) !== -1) hthTerritory0.streets.push(x)

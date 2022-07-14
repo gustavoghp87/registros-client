@@ -155,7 +155,6 @@ export const getHTHTerritoryService = async (territory: string): Promise<typeHTH
         })
         const data: typeResponseData|null = await response.json()
         if (!data || !data.success || !data.hthTerritory) return null
-        console.log(data.hthTerritory)
         return data.hthTerritory
     } catch (error) {
         console.log(error)

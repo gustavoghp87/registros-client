@@ -11,8 +11,6 @@ export const HTHNewFaceOptions = (props: any) => {
 
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const dispatch: typeAppDispatch = useDispatch()
-    //const blocks: typeBlock[] = ['1', '2', '3', '4', '5', '6']
-    // const faces: typeFace[] = ['A', 'B', 'C', 'D', 'E', 'F']
     const addFaceHandler: Function = props.addFaceHandler
     const territoryHTH: typeHTHTerritory = props.territoryHTH
     const [blocks, setBlocks] = useState<typeBlock[]>(['1', '2', '3', '4', '5', '6'])
@@ -80,19 +78,20 @@ export const HTHNewFaceOptions = (props: any) => {
     useEffect(() => {
         if (!selectedBlock || !selectedFace || !selectedStreet || selectedStreet === "other") return
         dispatch(setValuesAndOpenAlertModalReducer({
-            mode: 'confirm',
+            mode: 'alert',
             title: 'Agregando Cara',
-            message: `Se va a agregar la Cara ${selectedFace} en la calle ${selectedStreet} de la Manzana ${selectedBlock} del territorio ${territoryHTH.territory}. Si hay un error, cancelar.`,
-            execution: acceptHandler
+            message: `Se va a agregar la Cara ${selectedFace} en la calle ${selectedStreet} de la Manzana ${selectedBlock} del territorio ${territoryHTH.territory}. Si hay un error, cancelar abajo.`
         }))
+        acceptHandler()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedBlock, selectedFace, selectedStreet, territoryHTH.territory, dispatch])
     
     
     return (<>
-        <div className={'d-flex justify-content-center mt-4'}>
-            {!selectedBlock &&
-                <Dropdown className={'d-inline mr-2'}>
+    <br/>
+        <div className={'d-flex justify-content-center my-4'}>
+            {!selectedBlock && showBlockMenu &&
+                <Dropdown className={'d-inline'}>
                     <Dropdown.Toggle variant={danger}>
                         {selectedBlock ? `Manzana ${selectedBlock}` : "Seleccionar la Manzana"} &nbsp;
                     </Dropdown.Toggle>
@@ -106,8 +105,8 @@ export const HTHNewFaceOptions = (props: any) => {
                     </Dropdown.Menu>
                 </Dropdown>
             }
-            {!selectedFace &&
-                <Dropdown className={'d-inline ml-2'}>
+            {!selectedFace && showFaceMenu &&
+                <Dropdown className={'d-inline'}>
                     <Dropdown.Toggle variant={danger}>
                         {selectedFace ? `==> Cara ${selectedFace}` : "Seleccionar la Cara"} &nbsp;
                     </Dropdown.Toggle>
@@ -115,14 +114,14 @@ export const HTHNewFaceOptions = (props: any) => {
                         <Dropdown.Header> Seleccionar la Cara </Dropdown.Header>
                         {faces && !!faces.length && faces.map((face: typeFace) => (
                             <Dropdown.Item key={face} eventKey={face} onClick={() => selectFaceHandler(face)}>
-                                {`Cara ${face}`}
+                                Cara {face}
                             </Dropdown.Item>
                         ))}
                     </Dropdown.Menu>
                 </Dropdown>
             }
-            {!selectedStreet &&
-                <Dropdown className={'d-inline ml-2'}>
+            {!selectedStreet && showStreetMenu &&
+                <Dropdown className={'d-inline'}>
                     <Dropdown.Toggle variant={danger}>
                         {selectedStreet ? `==> Calle ${selectedStreet}` : "Seleccionar la Calle"} &nbsp;
                     </Dropdown.Toggle>
@@ -130,16 +129,19 @@ export const HTHNewFaceOptions = (props: any) => {
                         <Dropdown.Header> Seleccionar la calle </Dropdown.Header>
                         {streets && !!streets.length && streets.map((street: string) => (
                             <Dropdown.Item key={street} eventKey={street} onClick={() => selectStreetHandler(street)}>
-                                {`Calle ${street}`}
+                                Calle {street}
                             </Dropdown.Item>
                         ))}
                         <Dropdown.Divider />
                         <Dropdown.Item key={'other'} eventKey={'other'} onClick={() => selectStreetHandler('other')}>
-                            {'Otra...'}
+                            Otra...
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             }
+            <button className={'btn btn-secondary btn-general-secondary d-inline ml-4'} onClick={() => cancelHandler(true)}>
+                &nbsp;&nbsp; Limpiar &nbsp; &nbsp;
+            </button>
         </div>
         
         {selectedStreet?.trim() === 'other' &&
@@ -164,10 +166,6 @@ export const HTHNewFaceOptions = (props: any) => {
                 Agregando Manzana {selectedBlock} Cara {selectedFace} Calle {selectedStreet}
             </h2>
         }
-        
-        <Button variant={dark} className={'d-block mx-auto mt-4'} size={'lg'} onClick={() => cancelHandler(true)}>
-            &nbsp;&nbsp; Limpiar &nbsp; &nbsp;
-        </Button>
 
     </>)
 }

@@ -1,17 +1,26 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
+import { generalBlue } from '../../_App'
+import { typeRootState } from '../../../store/store'
 import { typeHTHTerritory, typePolygon } from '../../../models/houseToHouse'
 
 export const HTHPolygonComponent = (props: any) => {
 
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const currentFace: typePolygon = props.currentFace
     const isAddingPolygon: boolean = props.isAddingPolygon
     const isEditingView: boolean = props.isEditingView
     const polygon: typePolygon = props.polygon
     const selectBlockAndFaceHandler: Function = props.selectBlockAndFaceHandler
     const setTerritoryHTHHandler: Function = props.setTerritoryHTHHandler
     const territoryHTH: typeHTHTerritory = props.territoryHTH
+    const ref = useRef<google.maps.Polygon>()
+    const [polygonColor, setPolygonColor] = useState<string>(generalBlue)
+    const [showInfoWindow, setShowInfoWindow] = useState<boolean>(false)
 
     const onLoadPolygonHandler = (googlePolygon0: google.maps.Polygon): void => {
+        ref.current = googlePolygon0
         setInterval(() => {
             const path: any[] = googlePolygon0.getPath().getArray()
             const p1y: number = path[0].lat()
@@ -35,7 +44,7 @@ export const HTHPolygonComponent = (props: any) => {
                 id: polygon.id,
                 isFinished: polygon.isFinished,
                 observations: polygon.observations,
-                street: polygon.street                                ////////////////////////////////////////////////////////////////////////
+                street: polygon.street
             }
             const currentTerritoryHTH: typeHTHTerritory = territoryHTH
             currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
@@ -48,36 +57,45 @@ export const HTHPolygonComponent = (props: any) => {
     useEffect(() => {
         setTimeout(() => {
             const elements = document.getElementsByClassName('gm-ui-hover-effect') as HTMLCollectionOf<HTMLElement>
+            const w = document.getElementsByClassName('gm-style-iw-a') as HTMLCollectionOf<HTMLElement>
             const x = document.getElementsByClassName('gm-style-iw gm-style-iw-c') as HTMLCollectionOf<HTMLElement>
             const y = document.getElementsByClassName('gm-style-iw-d') as HTMLCollectionOf<HTMLElement>
             const z = document.getElementsByClassName('gm-style-iw-t') as HTMLCollectionOf<HTMLElement>
             for (let i = 0; i < elements.length; i++) {
-                try {
-                    elements[i].classList.add('d-none')
-                    y[i].style.backgroundColor = 'transparent'
-                    y[i].style.overflow = 'hidden'
-                    const a = y[i] as HTMLElement
-                    let b
-                    let c
-                    if (a) b = a.firstChild as HTMLElement
-                    if (b) c = b.firstChild as HTMLElement
-                    if (c) c.style.background = 'none'
-                    if (x[i] && x[i].classList.contains('gm-style-iw-c')) {
-                        x[i].classList.add('pr-2')
-                        x[i].classList.add('pb-2')
-                        x[i].style.backgroundColor = 'transparent'
-                        x[i].classList.remove('gm-style-iw-c')
-                    }
-                    if (z[i] && z[i].classList.contains('gm-style-iw-t')) {
-                        z[i].classList.remove('gm-style-iw-t')
-                    }
-                } catch (error) {
-                    console.log(i, error)
+                elements[i].classList.add('d-none')
+            }
+            for (let i = 0; i < x.length; i++) {
+                x[i].style.backgroundColor = 'transparent'
+                if (x[i] && x[i].classList.contains('gm-style-iw-c')) {
+                    x[i].classList.remove('gm-style-iw-c')
                 }
+            }
+            for (let i = 0; i < y.length; i++) {
+                y[i].style.backgroundColor = 'transparent'
+                y[i].style.overflow = 'hidden'
+                const a = y[i] as HTMLElement
+                let b
+                let c
+                if (a) b = a.firstChild as HTMLElement
+                if (b) c = b.firstChild as HTMLElement
+                if (c) {
+                    c.style.background = 'none'
+                    c.style.cursor = 'pointer'
+                }
+            }
+            for (let i = 0; i < w.length; i++) {
+                w[i].classList.remove('gm-style-iw-a')
+            }
+            for (let i = 0; i < z.length; i++) {
+                z[i].classList.remove('gm-style-iw-t')
             }
         }, 500)
         return () => { }
     }, [polygon])
+
+    useEffect(() => {
+        setPolygonColor(currentFace && currentFace.id === polygon.id ? 'red' : polygon.isFinished ? 'black' : generalBlue)
+    }, [currentFace, polygon.isFinished, polygon.id])
 
     return (<>
         <Polygon
@@ -88,44 +106,56 @@ export const HTHPolygonComponent = (props: any) => {
                 polygon.coordsPoint2,
                 polygon.coordsPoint3
             ]}
-            onClick={() => !isEditingView ? selectBlockAndFaceHandler(polygon.block, polygon.face) : null}
+            onClick={() => !isEditingView && !isAddingPolygon ? selectBlockAndFaceHandler(polygon.block, polygon.face) : null}
             onLoad={onLoadPolygonHandler}
+            onMouseOver={() => {
+                if (isEditingView || isAddingPolygon || !ref.current || currentFace) return
+                setPolygonColor('red')
+                setShowInfoWindow(true)
+            }}
+            onMouseOut={() => {
+                if (isEditingView || isAddingPolygon || !ref.current) return
+                setPolygonColor(currentFace && currentFace.id === polygon.id ? 'red' : polygon.isFinished ? 'black' : generalBlue)
+                setShowInfoWindow(false)
+            }}
             options={{
                 clickable: true,
-                fillColor: polygon.isFinished ? 'red' : 'blue',
-                fillOpacity: 0.25,
+                fillColor: polygonColor,
+                fillOpacity: 0.9,
                 strokeColor: '',
-                strokeOpacity: 1,
+                strokeOpacity: 0.8,
                 strokePosition: google.maps.StrokePosition.INSIDE,
-                strokeWeight: 2
+                strokeWeight: 5
             }}
         />
 
         {polygon.id !== 0 &&
-            <InfoWindow
-                // onLoad={(infoWindow: google.maps.InfoWindow) => {
-                //     console.log(infoWindow.getPosition())
-                // }}
-                position={{
-                    lat: (polygon.coordsPoint1.lat + polygon.coordsPoint2.lat + polygon.coordsPoint3.lat) / 3,
-                    lng: (polygon.coordsPoint1.lng + polygon.coordsPoint2.lng + polygon.coordsPoint3.lng) / 3
-                }}
-            >
-                <div className={''} style={{
-                    background: '#fff',
-                    border: '2px solid #000000',
-                    borderRadius: '50%',
-                    color: '#000000',
-                    font: '20px',
-                    fontWeight: 'bold',
-                    height: '33px',
-                    padding: '3px',
-                    textAlign: 'center',
-                    width: '33px'
-                }}>
-                    {polygon.block}{polygon.face}
-                </div>
-            </InfoWindow>
+            <div onClick={() => !isEditingView && !isAddingPolygon ? selectBlockAndFaceHandler(polygon.block, polygon.face) : null}>
+                <InfoWindow
+                    // onLoad={(infoWindow: google.maps.InfoWindow) => {
+                    //     console.log(infoWindow.getPosition())
+                    // }}
+                    position={{
+                        lat: (polygon.coordsPoint1.lat + polygon.coordsPoint2.lat + polygon.coordsPoint3.lat) / 3 + 0.00005,
+                        lng: (polygon.coordsPoint1.lng + polygon.coordsPoint2.lng + polygon.coordsPoint3.lng) / 3 - 0.0001
+                    }}
+                >
+                    <div className={showInfoWindow || (currentFace && currentFace.id === polygon.id) ? '' : 'd-none'} style={{
+                        //background: '#fff',
+                        border: '3px solid #ffffff',
+                        borderRadius: '5px',
+                        color: '#ffffff',
+                        font: '15px Sans-serif',
+                        fontWeight: 'bold',
+                        height: '36px',
+                        padding: '6px',
+                        textAlign: 'center',
+                        width: '56px'
+                    }}>
+                        {polygon.block}-{polygon.face}
+                    </div>
+                </InfoWindow>
+            </div>
         }
     </>)
 }

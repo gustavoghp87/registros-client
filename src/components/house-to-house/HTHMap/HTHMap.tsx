@@ -25,6 +25,7 @@ export const HTHMap = (props: any) => {
     })
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const dispatch: typeAppDispatch = useDispatch()
+    const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const selectBlockAndFaceHandler: Function = props.selectBlockAndFaceHandler
     const setTerritoryHTHHandler: React.Dispatch<React.SetStateAction<typeHTHTerritory>> = props.setTerritoryHTHHandler
@@ -32,6 +33,7 @@ export const HTHMap = (props: any) => {
     const [map, setMap] = useState<google.maps.Map>()
     const [isAddingPolygon, setIsAddingPolygon] = useState<boolean>(false)
     const [isEditingView, setIsEditingView] = useState<boolean>(false)
+    const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
 
     const onCenterChangedHandler = (): void => {
         const lat: number = map?.getCenter()?.lat() ?? 0
@@ -74,8 +76,6 @@ export const HTHMap = (props: any) => {
                 x.coordsPoint3.lat !== unP.coordsPoint3.lat || x.coordsPoint3.lng !== unP.coordsPoint3.lng
             ) editedHTHPolygons.push(x)
         })
-        console.log("Sending polygons:", editedHTHPolygons);
-        
         if (!editedHTHMap.centerCoords.lat || !editedHTHMap.centerCoords.lng || !editedHTHMap.markers || !editedHTHMap.polygons
             || !editedHTHMap.zoom) {
             dispatch(setValuesAndOpenAlertModalReducer({
@@ -98,6 +98,7 @@ export const HTHMap = (props: any) => {
 
     const initFaceAddingHandler = (selectedBlock: typeBlock|null = null, selectedFace: typeFace|null = null, selectedStreet: string|null = null): void => {
         setIsAddingPolygon(true)
+        setShowNewFaceOptions(false)
         const currentPolygon: typePolygon|undefined = territoryHTH.map.polygons.find(x => x.id === 0)
         if (!selectedBlock || !selectedFace || !selectedStreet || currentPolygon) return
         const polygon: typePolygon = {
@@ -161,7 +162,6 @@ export const HTHMap = (props: any) => {
     return (<>
         <div className={'position-relative'}
             style={{
-                marginTop: isMobile ? '160px' : '',
                 marginBottom: isMobile ? '660px' : ''
             }}
         >
@@ -169,31 +169,31 @@ export const HTHMap = (props: any) => {
                 center={territoryHTH.map.centerCoords}
                 id={mapId}
                 mapContainerClassName={isMobile ? 'position-absolute' : 'd-block m-auto'}
+                // mapContainerStyle={{
+                //     height: '350px',
+                //     marginRight: '-117px',
+                //     right: isMobile ? 0 : '',
+                //     transform: isMobile ? 'rotate(-0.25turn)' : '',
+                //     width: '600px'
+                // }}
                 mapContainerStyle={{
-                    height: '350px',
-                    marginRight: '-117px',
-                    right: isMobile ? 0 : '',
-                    transform: isMobile ? 'rotate(-0.25turn)' : '',
-                    width: '600px'
+                    height: isMobile ? '600px' : '500px',
+                    width: isMobile ? '100%' : '90%'
                 }}
                 onLoad={(mapInstance: google.maps.Map) => setMap(mapInstance)}
                 onCenterChanged={() => onCenterChangedHandler()}
                 options={{
                     center: isEditingView ? null : territoryHTH.map.centerCoords,
                     disableDefaultUI: false,
-                    draggable: isEditingView,
+                    draggable: isMobile || isEditingView,
                     fullscreenControl: isEditingView,
                     fullscreenControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
                     isFractionalZoomEnabled: true,
                     mapTypeControl: false,
                     minZoom: 8,
-                    noClear: true,
                     panControl: true,
-                    rotateControlOptions: { position: google.maps.ControlPosition.LEFT_BOTTOM },
-                    rotateControl: true,
                     streetViewControl: !isEditingView,
                     styles: HTHMapStyle,
-                    tilt: 45,
                     zoom: isEditingView ? undefined : territoryHTH.map.zoom,
                     zoomControl: isEditingView,
                     zoomControlOptions: { position: google.maps.ControlPosition.LEFT_BOTTOM }
@@ -206,6 +206,7 @@ export const HTHMap = (props: any) => {
                     territoryHTH.map.polygons.map((polygon: typePolygon) => (
                         <div key={polygon.id}>
                             <HTHPolygonComponent
+                                currentFace={currentFace}
                                 isAddingPolygon={isAddingPolygon}
                                 isEditingView={isEditingView}
                                 polygon={polygon}
@@ -229,15 +230,15 @@ export const HTHMap = (props: any) => {
             </GoogleMap>
         </div>
         
-        {isAddingPolygon &&
+        {isAddingPolygon && showNewFaceOptions &&
             <HTHNewFaceOptions
                 addFaceHandler={initFaceAddingHandler}
                 territoryHTH={territoryHTH}
             />
         }
 
-        {user && user.isAdmin &&
-            <div className={'d-flex justify-content-center'} style={{ marginTop: isAddingPolygon ? '100px' : '' }}>
+        {user && user.isAdmin && !isMobile &&
+            <div className={'d-flex justify-content-center'}>
                 {!isAddingPolygon &&
                     <button className={`mt-4 mr-4 btn ${isEditingView ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
                         onClick={() => isEditingView ? initMapViewEditingHandler() : setIsEditingView(true)}
@@ -245,9 +246,12 @@ export const HTHMap = (props: any) => {
                         {isEditingView ? 'Guardar Cambios' : 'Editar Mapa'}
                     </button>
                 }
-                {!isEditingView &&
+                {!isEditingView && !showNewFaceOptions &&
                     <button className={`mt-4 btn ${isAddingPolygon ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
-                        onClick={() => isAddingPolygon ? addFaceHandler() : setIsAddingPolygon(true)}
+                        onClick={() => {
+                            if (isAddingPolygon) { addFaceHandler() }
+                            else { setIsAddingPolygon(true); setShowNewFaceOptions(true)}
+                        }}
                     >
                         {isAddingPolygon ? 'Guardar Cambios' : 'Agregar Cara'}
                     </button>

@@ -43,7 +43,7 @@ export const IndexPage = () => {
             
                 <H2 className={isDarkMode ? 'text-white' : ''}> CASA EN CASA </H2>
 
-                <button className={`btn btn-success btn-block mt-4`}
+                <button className={`btn btn-general-blue btn-block mt-4`}
                     type={'button'}
                     onClick={() => setShowedMode1(!showedMode1)}
                 >
