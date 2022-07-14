@@ -11,16 +11,14 @@ import { typeUser } from '../models/user'
 export const IndexPage = () => {
     //const user: typeUser|undefined = useAuth().user
     const refreshUser: (() => void) | undefined = useAuth().refreshUser
-    const [user, setUser] = useState<typeUser>()
+    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
     const [showedMode1, setShowedMode1] = useState<boolean>(false)
     const [showedMode2, setShowedMode2] = useState<boolean>(true)
     const [showedMode3, setShowedMode3] = useState<boolean>(true)
     const [territories, setTerritories] = useState<number[]>()
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-
-    //const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
-    const territoriesAll: number[] = [2]
-
+    const [user, setUser] = useState<typeUser>()
+    
     useEffect(() => {
         if (!user || !user.isAuth) {
             if (refreshUser) refreshUser()
@@ -45,7 +43,7 @@ export const IndexPage = () => {
             
                 <H2 className={isDarkMode ? 'text-white' : ''}> CASA EN CASA </H2>
 
-                <button className={`btn btn-success btn-block mt-4`}
+                <button className={`btn btn-general-blue btn-block mt-4`}
                     type={'button'}
                     onClick={() => setShowedMode1(!showedMode1)}
                 >

@@ -1,101 +1,28 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useAuth } from '../../context/authContext'
-import { typeFace, typeObservation } from '../../models/houseToHouse'
-import { typeBlock, typeTerritoryNumber } from '../../models/territory'
-import { typeUser } from '../../models/user'
-import { typeAppDispatch, typeRootState } from '../../store/store'
-import { generalBlue } from '../_App'
-import { ObservacionesHTHForm } from './ObservacionesHTHForm'
-import { deleteHTHObservationService } from '../../services/houseToHouseServices'
-import { MdDelete, MdEdit } from 'react-icons/md'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 import { Col, Row } from 'react-bootstrap'
+import { MdDelete, MdEdit } from 'react-icons/md'
+import { HTHObservationsForm } from './HTHObservationsForm'
+import { useAuth } from '../../../context/authContext'
+import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
+import { typeAppDispatch, typeRootState } from '../../../store/store'
+import { deleteHTHObservationService } from '../../../services/houseToHouseServices'
+import { typeObservation, typePolygon } from '../../../models/houseToHouse'
+import { typeUser } from '../../../models/user'
+import { typeTerritoryNumber } from '../../../models/territory'
 
-export const ObservacionesHTH = (props: any) => {
-
-    const user: typeUser|undefined = useAuth().user
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const territory: typeTerritoryNumber = props.territory
-    const block: typeBlock = props.block
-    const face: typeFace = props.face
-    const observations: typeObservation[] = props.observations ? props.observations
-        .filter((observation: typeObservation) => observation.block === block && observation.face === face)
-        .reverse()
-        :
-        []
-    const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
-
-    const [showForm, setShowForm] = useState<boolean>(false)
-    
-    const closeShowFormHandler = (): void => {
-        setShowForm(false)
-    }
-
-    return (
-        <div style={{ marginTop: '100px', marginBottom: '50px' }}>
-            
-            <h1 className={'py-3 text-center text-white d-block mx-auto'}
-                style={{
-                    backgroundColor: generalBlue,
-                    width: isMobile ? '100%' : '90%'
-                }}
-            >
-                {observations && !!observations.length ?
-                    'OBSERVACIONES'
-                    :
-                    'No hay Observaciones en esta cara'}
-            </h1>
-
-            {observations && !!observations.length && observations.map((observation: typeObservation, index: number) => (
-                <div key={index}>
-                    <ObservacionesHTHItem
-                        territory={territory}
-                        block={block}
-                        face={face}
-                        observation={observation}
-                        closeShowFormHandler={closeShowFormHandler}
-                        refreshDoNotCallHandler={refreshDoNotCallHandler}
-                    />
-                </div>
-            ))}
-
-            {user && user.isAdmin &&
-                <button className={'btn btn-general-blue d-block mx-auto'}
-                    style={{ marginTop: '50px' }}
-                    onClick={() => setShowForm(!showForm)}
-                >
-                    {showForm ? 'Ocultar' : 'Agregar Observación'}
-                </button>
-            }
-
-            {user && user.isAdmin && showForm && 
-                <ObservacionesHTHForm
-                    territory={territory}
-                    block={block}
-                    face={face}
-                    closeShowFormHandler={closeShowFormHandler}
-                    refreshDoNotCallHandler={refreshDoNotCallHandler}
-                />
-            }
-
-        </div>
-    )
-}
-
-const ObservacionesHTHItem = (props: any) => {
+export const HTHObservationsItem = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const dispatch: typeAppDispatch = useDispatch()
-    const territory: typeTerritoryNumber = props.territory
-    const block: typeBlock = props.block
-    const face: typeFace = props.face
-    const observation: typeObservation = props.observation
     const closeShowAddFormHandler: Function = props.closeShowFormHandler
+    const currentFace: typePolygon = props.currentFace
+    const date: string = props.date
+    const observation: typeObservation = props.observation
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
-    
+    const territory: typeTerritoryNumber = props.territory
     const [showForm, setShowForm] = useState<boolean>(false)
 
     const editHandler = (): void => {
@@ -107,13 +34,13 @@ const ObservacionesHTHItem = (props: any) => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: '¿Eliminar Observación?',
-            message: `Se va a eliminar esta observación de la Manzana ${observation.block} Cara ${observation.face}: "${observation.text}"`,
+            message: `Se va a eliminar esta observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${observation.text}"`,
             execution: deleteConfirmedHandler
         }))
     }
     
     const deleteConfirmedHandler = (): void => {
-        deleteHTHObservationService(observation.id, territory).then((success: boolean) => {
+        deleteHTHObservationService(observation.id, territory, currentFace.block, currentFace.face).then((success: boolean) => {
             if (success) {
                 refreshDoNotCallHandler()
             } else {
@@ -202,14 +129,15 @@ const ObservacionesHTHItem = (props: any) => {
             </Row>
         }
 
-        {showForm &&
-            <ObservacionesHTHForm
-                territory={territory}
-                block={block}
-                face={face}
-                editText={observation.text}
+        {user && user.isAdmin && showForm &&
+            <HTHObservationsForm
                 closeShowFormHandler={closeShowFormHandler}
+                currentFace={currentFace}
+                date={date}
                 refreshDoNotCallHandler={refreshDoNotCallHandler}
+                territory={territory}
+                // specific
+                editText={observation.text}
                 idEdit={observation.id}
             />
         }

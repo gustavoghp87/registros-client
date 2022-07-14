@@ -38,6 +38,7 @@ export const alertModalSlice = createSlice({
                 title: "",
                 message: ""
             }
+            return state
         }
     }
 })

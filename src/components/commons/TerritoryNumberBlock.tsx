@@ -14,36 +14,39 @@ export const TerritoryNumberBlock = (props: any) => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     return (
-        <div className={'container'} style={{ paddingTop: '0', marginBottom: '0px' }}>
+        <div className={'container pt-0 mb-0'}>
 
-            <Row style={{ padding: isMobile ? '40px' : '40px 40px 40px 40px', justifyContent: 'space-evenly' }}>
+            <Row style={{
+                padding: mode === 1 && isMobile ? '10px' : '40px',
+                justifyContent: 'space-evenly'
+            }}>
 
                 {user && user.isAuth && territories && !!territories.length &&
                     territories.map((territory: number, index: number) => {
                         if (territory) return (
-                            <Link type={'button'} key={index}
-                                className={`animate__animated animate__bounce btn ${mode === 1 ? 'btn-success' : 'btn-danger'}`}
+                            <button key={index}
+                                onClick={() => mode === 1 ? window.location.href = `/casa-en-casa/${territory?.toString()}` : `/territorios/${territory?.toString()}/1`}
+                                className={`'btn ${mode === 1 ? 'btn-general-blue' : 'btn-danger'} animate__animated animate__bounce`}
                                 style={{
-                                    width: '120px',
-                                    height: '100px',
                                     borderRadius: '15px',
-                                    margin: '0 1% 40px 1%'
+                                    height: mode === 1 && isMobile ? '60px' : '100px',
+                                    margin: '0 1% 40px 1%',
+                                    width: mode === 1 && isMobile ? '90px' : '120px'
                                 }}
-                                to={mode === 1 ? `/casa-en-casa/${territory?.toString()}` : `/territorios/${territory?.toString()}/1`}
                             >
 
-                                <h2 className={'h-100'}
+                                <h2 className={'h-100 mt-1'}
                                     style={{
-                                        padding: '22%',
+                                        padding: mode === 1 && isMobile ? '10%' : '22%',
                                         margin: 'auto',
                                         fontFamily: '"Arial Black", Gadget, sans-serif',
-                                        fontSize: isMobile ? '2.3rem' : ''
+                                        fontSize: isMobile ? (mode === 1 && isMobile) ? '1.8rem' : '2.3rem' : ''
                                     }}
                                 >
                                     {territory}
                                 </h2>
 
-                            </Link>
+                            </button>
                         )
                         else return (<></>)
                     })
