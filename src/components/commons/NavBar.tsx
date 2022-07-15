@@ -36,7 +36,7 @@ export const NavBar = () => {
             message: "",
             execution: () => {
                 logoutService()
-                window.location.href = "/login"
+                window.location.href = '/acceso'
             }
         }))
     }
@@ -48,7 +48,7 @@ export const NavBar = () => {
         <div style={{ position: 'fixed', width: '100%', zIndex: 4 }}>
             <Navbar style={{ backgroundColor: generalBlue }} collapseOnSelect expand={'lg'}>
 
-                <Navbar.Brand href={"/"} style={{ color }}>
+                <Navbar.Brand href={'/'} style={{ color }}>
                     &nbsp; INICIO
                 </Navbar.Brand>
 
@@ -56,18 +56,18 @@ export const NavBar = () => {
                 
                 <Navbar.Collapse id={"responsive-navbar-nav"}>
                     <Nav className={'mr-auto'}>
-                        <Nav.Link className={user && user.isAuth ? '' : 'd-none'} href={"/index"} style={{ color }}>
+                        <Nav.Link className={user && user.isAuth ? '' : 'd-none'} href={'/index'} style={{ color }}>
                             &nbsp; &nbsp;Territorios&nbsp; &nbsp;
                         </Nav.Link>
 
-                        <Nav.Link className={((user && !user.isAuth) || !user) ? '' : 'd-none'} href={"/login"} style={{ color }}>
+                        <Nav.Link className={((user && !user.isAuth) || !user) ? '' : 'd-none'} href={'/acceso'} style={{ color }}>
                             &nbsp; &nbsp;Entrar&nbsp; &nbsp;
                         </Nav.Link>
 
-                        <Nav.Link className={user && user.role === 1 ? '' : 'd-none'} href={"/estadisticas"} style={{ color, margin: isMobile ? '8px 0' : '0' }}>
+                        <Nav.Link className={user && user.role === 1 ? '' : 'd-none'} href={'/estadisticas'} style={{ color, margin: isMobile ? '8px 0' : '0' }}>
                             &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
                         </Nav.Link>
-                        <Nav.Link className={user && user.role === 1 ? '' : 'd-none'} href={"/admins"} style={{ color }}>
+                        <Nav.Link className={user && user.role === 1 ? '' : 'd-none'} href={'/admins'} style={{ color }}>
                             &nbsp; &nbsp;Administradores&nbsp; &nbsp;
                         </Nav.Link>
                     </Nav>

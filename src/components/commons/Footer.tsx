@@ -26,15 +26,15 @@ export const Footer = () => {
                     margin: 'auto',
                     width: '100%'
                 }}>
-                    <a href={"https://misericordiaweb.com/"} style={{ color: 'white', textDecorationLine: 'none', fontWeight: 'bolder' }}>
+                    <a href={'https://misericordiaweb.com/'} style={{ color: 'white', textDecorationLine: 'none', fontWeight: 'bolder' }}>
                         misericordiaweb.com
                     </a>
                 </div>
 
                 <div className='text-center mt-2'>
-                    <a className={`${isMobile ? '' : 'mr-2'} text-white`} href="/privacidad">Política de Privacidad</a>
+                    <a className={`${isMobile ? '' : 'mr-2'} text-white`} href={'/privacidad'}> Política de Privacidad </a>
                     {isMobile && <br/>}
-                    <a className={`${isMobile ? '' : 'ml-2'} text-white`} href="/servicio">Términos de Uso</a>
+                    <a className={`${isMobile ? '' : 'ml-2'} text-white`} href={'/servicio'}> Términos de Uso </a>
                 </div>
 
             </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { Container } from 'react-bootstrap'
 import { typeAppDispatch, typeRootState } from '../store/store'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import { getEmailByEmailLink as getEmailByEmailToken } from '../services/userServices'
@@ -48,39 +49,39 @@ export const RecoveryPage = () => {
         if (response && response.success) {
             openAlertModalHandler("Clave cambiada con éxito", "", () => window.location.href = "/")
         } else if (response && response.expired) {
-            openAlertModalHandler("Este link ya expiró; pedir otro", "", () => window.location.href = "/login")
+            openAlertModalHandler("Este link ya expiró; pedir otro", "", () => window.location.href = "/acceso")
         } else if (response && response.used) {
-            openAlertModalHandler("Este link de recuperación ya se usó antes", "", () => window.location.href = "/login")
+            openAlertModalHandler("Este link de recuperación ya se usó antes", "", () => window.location.href = "/acceso")
         } else openAlertModalHandler("Algo salió mal", "")
     }
     
     return (
-        <div className={'container'}
+        <Container
             style={{ maxWidth: '95%', marginTop: '50px', padding: '0' }}>
 
-            <div className={`container ${isDarkMode ? 'bg-dark text-white' : ''}`}
+            <Container className={isDarkMode ? 'bg-dark text-white' : ''}
                 style={{
-                    paddingTop: '40px',
-                    marginBottom: '40px',
                     border: 'gray 1px solid',
                     borderRadius: '12px',
+                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                    marginBottom: '40px',
                     maxWidth: '600px',
-                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+                    paddingTop: '40px'
                 }}
             >
 
                 <h2
                     style={{
-                        textAlign: 'center',
-                        textShadow: '0 0 1px gray',
                         fontSize: isMobile ? '1.6rem' : '2rem',
-                        marginInline: '10px'
+                        marginInline: '10px',
+                        textAlign: 'center',
+                        textShadow: '0 0 1px gray'
                     }}
                 >
                     CAMBIAR LA CLAVE PARA RECUPERAR LA CUENTA
                 </h2>
 
-                <div className={'container'} style={{ paddingTop: '35px', display: 'block', margin: 'auto', maxWidth: '500px' }}>
+                <Container style={{ paddingTop: '35px', maxWidth: '500px' }}>
 
                     <input className={'form-control'}
                         type={'email'}
@@ -112,15 +113,14 @@ export const RecoveryPage = () => {
                         CAMBIAR CLAVE
                     </button>
 
-                    <Link to={"/login"}>
+                    <Link to={'/acceso'}>
                         <p style={{ fontSize: '1.1rem', margin: '15px 0 20px 0', textAlign: 'end' }}>
                             Cancelar
                         </p>
                     </Link>
 
-                </div>
-            </div>
-
-        </div>
+                </Container>
+            </Container>
+        </Container>
     )
 }

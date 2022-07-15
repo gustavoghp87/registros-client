@@ -8,7 +8,6 @@ import { Footer } from './commons/Footer'
 import { AlertModal } from './commons/AlertModal'
 import { DarkModeButton } from './commons/DarkModeButton'
 import { LoginPage } from './LoginPage'
-import { RegisterPage } from './RegisterPage'
 import { HomePage } from './HomePage'
 import { IndexPage } from './IndexPage'
 import { TerritoriosPage } from './TerritoriosPage'
@@ -61,25 +60,24 @@ export const App = () => {
                             minHeight: 'calc(100vh - 80px)'
                         }}>
                             <Routes>
-                                <Route element={ <HomePage /> } path={"/"} />
-                                <Route element={ <LoginPage /> } path={"/login"} />
-                                <Route element={ <RegisterPage /> } path={"/registro"} />
-                                <Route element={ <IndexPage /> } path={"/index"} />
-                                <Route element={ <CasaEnCasaPage /> } path={"/casa-en-casa/:territory"} />
-                                <Route element={ <TerritoriosPage /> } path={"/territorios/:territorio/:manzana"} />
-                                <Route element={ <TerritoriosPage /> } path={"/territorios/:territorio/:manzana/:todo"} />
-                                <Route element={ <EstadisticasPage /> } path={"/estadisticas"} />
-                                <Route element={ <EstadisticasLocalPage /> } path={"/estadisticas/:territorio"} />
-                                <Route element={ <UserPage /> } path={"/usuario"} />
-                                <Route element={ <AdminsPage /> } path={"/admins"} />
-                                <Route element={ <RecoveryPage /> } path={"/recovery/:id"} />
-                                <Route element={ <CampaignPage /> } path={"/celulares/:id"} />
-                                <Route element={ <CampaignAdminsPage /> } path={"/celulares-admins"} />
-                                <Route element={ <LogsPage /> } path={"/logs"} />
-                                <Route element={ <PrivacyPolicyPage /> } path={"/privacidad"} />
-                                <Route element={ <TermsOfServicePage /> } path={"/servicio"} />
-                                <Route element={ <GmailTokensPage /> } path={"/gmail"} />
-                                <Route element={ <HomePage /> } path={"*"} />
+                                <Route element={ <HomePage /> } path={'/'} />
+                                <Route element={ <LoginPage /> } path={'/acceso'} />
+                                <Route element={ <IndexPage /> } path={'/index'} />
+                                <Route element={ <CasaEnCasaPage /> } path={'/casa-en-casa/:territory'} />
+                                <Route element={ <TerritoriosPage /> } path={'/territorios/:territorio/:manzana'} />
+                                <Route element={ <TerritoriosPage /> } path={'/territorios/:territorio/:manzana/:todo'} />
+                                <Route element={ <EstadisticasPage /> } path={'/estadisticas'} />
+                                <Route element={ <EstadisticasLocalPage /> } path={'/estadisticas/:territorio'} />
+                                <Route element={ <UserPage /> } path={'/usuario'} />
+                                <Route element={ <AdminsPage /> } path={'/admins'} />
+                                <Route element={ <RecoveryPage /> } path={'/recovery/:id'} />
+                                <Route element={ <CampaignPage /> } path={'/celulares/:id'} />
+                                <Route element={ <CampaignAdminsPage /> } path={'/celulares-admins'} />
+                                <Route element={ <LogsPage /> } path={'/logs'} />
+                                <Route element={ <PrivacyPolicyPage /> } path={'/privacidad'} />
+                                <Route element={ <TermsOfServicePage /> } path={'/servicio'} />
+                                <Route element={ <GmailTokensPage /> } path={'/gmail'} />
+                                <Route element={ <HomePage /> } path={'*'} />
                             </Routes>
 
                             <DarkModeButton />

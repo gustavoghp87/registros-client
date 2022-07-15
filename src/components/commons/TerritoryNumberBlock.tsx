@@ -25,8 +25,12 @@ export const TerritoryNumberBlock = (props: any) => {
                     territories.map((territory: number, index: number) => {
                         if (territory) return (
                             <button key={index}
-                                onClick={() => mode === 1 ? window.location.href = `/casa-en-casa/${territory?.toString()}` : `/territorios/${territory?.toString()}/1`}
-                                className={`'btn ${mode === 1 ? 'btn-general-blue' : 'btn-danger'} animate__animated animate__bounce`}
+                                onClick={() => window.location.href = mode === 1 ?
+                                    `/casa-en-casa/${territory?.toString()}`
+                                    :
+                                    `/territorios/${territory?.toString()}/1`
+                                }
+                                className={`btn ${mode === 1 ? 'btn-general-blue' : 'btn-danger'} animate__animated animate__bounce`}
                                 style={{
                                     borderRadius: '15px',
                                     height: mode === 1 && isMobile ? '60px' : '100px',
