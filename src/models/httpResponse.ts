@@ -1,3 +1,4 @@
+import { Credentials } from 'google-auth-library'
 import { typeCampaignPack } from './campaign'
 import { typeHTHTerritory } from './houseToHouse'
 import { typeLogsObj } from './log'
@@ -34,4 +35,6 @@ export type typeResponseData = {
     numberOfFreePhones?: number
     hthTerritory?: typeHTHTerritory
     streets?: string[]
+    url?: string
+    gmailKeys?: Credentials
 }

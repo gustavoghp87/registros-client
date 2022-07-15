@@ -23,6 +23,7 @@ import { PrivacyPolicyPage } from './PrivacyPolicyPage'
 import { TermsOfServicePage } from './TermsOfService'
 import { CampaignPage } from './campaigns/CampaignPage'
 import { CampaignAdminsPage } from './campaigns/CampaignAdminsPage'
+import { GmailTokensPage } from './GmailTokensPage'
 import { changeMobileModeReducer } from '../store/MobileMode.Slice'
 import { AuthProvider } from '../context/authContext'
 import { recaptchaPublicKey } from '../config'
@@ -77,6 +78,7 @@ export const App = () => {
                                 <Route element={ <LogsPage /> } path={"/logs"} />
                                 <Route element={ <PrivacyPolicyPage /> } path={"/privacidad"} />
                                 <Route element={ <TermsOfServicePage /> } path={"/servicio"} />
+                                <Route element={ <GmailTokensPage /> } path={"/gmail"} />
                                 <Route element={ <HomePage /> } path={"*"} />
                             </Routes>
 
