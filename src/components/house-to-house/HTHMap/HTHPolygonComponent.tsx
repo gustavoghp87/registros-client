@@ -1,37 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
 import { generalBlue } from '../../_App'
-import { typeRootState } from '../../../store/store'
 import { typeHTHTerritory, typePolygon } from '../../../models/houseToHouse'
 
 export const HTHPolygonComponent = (props: any) => {
 
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const currentFace: typePolygon = props.currentFace
-
-
-    //const intervalExecution: Function = props.intervalExecution
-    //const setPolygonInterval: Function = props.setPolygonInterval
-    //const intervalExecution: Function = props.intervalExecution
-    const runIntervals: boolean = props.runIntervals
-
     const isAddingPolygon: boolean = props.isAddingPolygon
     const isEditingView: boolean = props.isEditingView
     const polygon: typePolygon = props.polygon
+    const runIntervals: boolean = props.runIntervals
     const selectBlockAndFaceHandler: Function = props.selectBlockAndFaceHandler
     const setTerritoryHTHHandler: Function = props.setTerritoryHTHHandler
     const territoryHTH: typeHTHTerritory = props.territoryHTH
     const ref = useRef<google.maps.Polygon>()
     const [polygonColor, setPolygonColor] = useState<string>(generalBlue)
     const [showInfoWindow, setShowInfoWindow] = useState<boolean>(false)
-
-    const onLoadPolygonHandler = (googlePolygon0: google.maps.Polygon): void => {
-        ref.current = googlePolygon0
-        // setPolygonInterval(googlePolygon0, polygon)
-        //if (polygon.id === 0)
-        
-    }
 
     useEffect(() => {
         setTimeout(() => {
@@ -86,8 +70,6 @@ export const HTHPolygonComponent = (props: any) => {
             const p2x: number = path[1].lng()
             const p3y: number = path[2].lat()
             const p3x: number = path[2].lng()
-            console.log("testing", polygon.id);
-            
             if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
                 && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
                 && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
@@ -109,10 +91,8 @@ export const HTHPolygonComponent = (props: any) => {
                 polygon0.id === polygon.id ? modifiedPolygon : polygon0
             )
             setTerritoryHTHHandler(currentTerritoryHTH, true)
-            console.log("updated", polygon.id)
         }, 1000)
         if (!runIntervals) clearInterval(interval0)
-
         return () => clearInterval(interval0)
     }, [polygon, runIntervals, setTerritoryHTHHandler, territoryHTH])
 
@@ -120,11 +100,6 @@ export const HTHPolygonComponent = (props: any) => {
         <Polygon
             editable={isEditingView || (isAddingPolygon && polygon.id === 0)}
             draggable={isEditingView || (isAddingPolygon && polygon.id === 0)}
-            path={[
-                polygon.coordsPoint1,
-                polygon.coordsPoint2,
-                polygon.coordsPoint3
-            ]}
             onClick={() => !isEditingView && !isAddingPolygon ? selectBlockAndFaceHandler(polygon.block, polygon.face) : null}
             onLoad={(googlePolygon0: google.maps.Polygon) => ref.current = googlePolygon0}
             onMouseOver={() => {
@@ -146,31 +121,34 @@ export const HTHPolygonComponent = (props: any) => {
                 strokePosition: google.maps.StrokePosition.INSIDE,
                 strokeWeight: 7
             }}
+            path={[
+                polygon.coordsPoint1,
+                polygon.coordsPoint2,
+                polygon.coordsPoint3
+            ]}
         />
 
         {polygon.id !== 0 &&
             <div onClick={() => !isEditingView && !isAddingPolygon ? selectBlockAndFaceHandler(polygon.block, polygon.face) : null}>
                 <InfoWindow
-                    // onLoad={(infoWindow: google.maps.InfoWindow) => {
-                    //     console.log(infoWindow.getPosition())
-                    // }}
                     position={{
                         lat: (polygon.coordsPoint1.lat + polygon.coordsPoint2.lat + polygon.coordsPoint3.lat) / 3 + 0.00005,
                         lng: (polygon.coordsPoint1.lng + polygon.coordsPoint2.lng + polygon.coordsPoint3.lng) / 3 - 0.0001
                     }}
                 >
-                    <div className={showInfoWindow || (currentFace && currentFace.id === polygon.id) ? '' : 'd-none'} style={{
-                        //background: '#fff',
-                        border: '3px solid #ffffff',
-                        borderRadius: '5px',
-                        color: '#ffffff',
-                        font: '15px Sans-serif',
-                        fontWeight: 'bold',
-                        height: '36px',
-                        padding: '6px',
-                        textAlign: 'center',
-                        width: '56px'
-                    }}>
+                    <div className={showInfoWindow || (currentFace && currentFace.id === polygon.id) ? '' : 'd-none'}
+                        style={{
+                            border: '3px solid #ffffff',
+                            borderRadius: '5px',
+                            color: '#ffffff',
+                            font: '15px Sans-serif',
+                            fontWeight: 'bold',
+                            height: '36px',
+                            padding: '6px',
+                            textAlign: 'center',
+                            width: '56px'
+                        }}
+                    >
                         {polygon.block}-{polygon.face}
                     </div>
                 </InfoWindow>

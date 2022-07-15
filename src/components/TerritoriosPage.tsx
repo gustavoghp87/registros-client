@@ -16,6 +16,7 @@ import { Col2 } from './territory-components/Col2'
 import { Col3 } from './territory-components/Col3'
 import { Col4 } from './territory-components/Col4'
 import { TerritoryWarningToaster } from './territory-components/TerritoryWarningToaster'
+import { MapModal } from './territory-components/MapModal'
 import { useAuth } from '../context/authContext'
 import { markTerritoryAsFinishedService as closeTerritoryService, getStateOfTerritoryService } from '../services/stateOfTerritoryServices'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService } from '../services/territoryServices'
@@ -25,23 +26,25 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const TerritoriosPage = () => {
 
-    const navigate = useNavigate()
     const user: typeUser|undefined = useAuth().user
-    const { territorio, manzana, todo } = useParams<any>()
-    const showingAll: boolean = todo === 'todo'
-    const [households, setHouseholds] = useState<types.typeHousehold[]>()
-    const [isFinished, setIsFinished] = useState<boolean>(false)
-    const [showMap, setShowMap] = useState<boolean>(false)
-    const [brought, setBrought] = useState<number>(10)
-    const [loaded, setLoaded] = useState<boolean>(false)
-    const [blocks, setBlocks] = useState<types.typeBlock[]>()
-    const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
-    const [socket, setSocket] = useState<any>(null)
-    const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
-    const [showBottomBtns, setShowBottomBtns] = useState<boolean>(true)
-    const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null);
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { territorio, manzana, todo } = useParams<any>()
+    const navigate = useNavigate()
+    const showingAll: boolean = todo === 'todo'
+    const [blocks, setBlocks] = useState<types.typeBlock[]>()
+    const [brought, setBrought] = useState<number>(10)
+    const [households, setHouseholds] = useState<types.typeHousehold[]>()
+    const [loaded, setLoaded] = useState<boolean>(false)
+    const [isFinished, setIsFinished] = useState<boolean>(false)
+    const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
+    const [showBottomBtns, setShowBottomBtns] = useState<boolean>(true)
+    const [showMap, setShowMap] = useState<boolean>(false)
+    const [showGoogleMapAddress, setShowGoogleMapAddress] = useState<string>("")
+    const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
+    const [socket, setSocket] = useState<any>(null)
+    const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null);
+
     
     useEffect(() => {
         // window.scrollTo(0, 0)
@@ -146,32 +149,26 @@ export const TerritoriosPage = () => {
     }
 
     const toggleshowWarningToaster = (): void => setShowWarningToaster(false)
-    
-    // const highligthCard = (id: string): void => {
-    //     const element: HTMLElement|null = document.getElementById(id)
-    //     if (element) {
-    //         element.classList.remove('bg-dark')
-    //         element.classList.remove('bg-light')
-    //         element.classList.remove('bg-secondary')
-    //         element.classList.add('bg-info')
-    //     }
-    // }
 
-    // const stopHighligthCard = (id: string, backgroundColorClasses: string): void => {
-    //     const element: HTMLElement|null = document.getElementById(id)
-    //     if (element) {
-    //         element.classList.remove('bg-info')
-    //         const bgColorClasses: string[] = backgroundColorClasses.split(' ')
-    //         for (let bgColorClass of bgColorClasses) {
-    //             element.classList.add(bgColorClass)
-    //         }
-    //     }
-    // }
+    const showGoogleMapHandler = (address: string): void => {
+        setShowGoogleMapAddress(address)
+    }
+
+    const hideGoogleMapHandler = (): void => {
+        setShowGoogleMapAddress("")
+    }
 
 
     return (
         <>
             <TerritoryWarningToaster />
+
+            {showGoogleMapAddress &&
+                <MapModal
+                    address={showGoogleMapAddress}
+                    hideGoogleMapHandler={hideGoogleMapHandler}
+                />
+            }
 
             <WarningToaster
                 showWarningToaster={showWarningToaster}
@@ -199,18 +196,19 @@ export const TerritoriosPage = () => {
                 {showMap ? 'Ocultar Mapa' : 'Ver Mapa'}
             </Button>
 
-
-            <img src={`/img/${territorio}.jpg`} alt={"mapa"}
-                style={{
-                    border: '1px solid black',
-                    borderRadius: '8px',
-                    width: isMobile ? '99%' : '40%',
-                    height: 'auto',
-                    display: showMap ? 'block' : 'none',
-                    margin: '30px auto',
-                    padding: isMobile ? '10px' : '20px'
-                }}
-            />
+            {showMap &&
+                <img src={`/img/${territorio}.jpg`} alt={`Mapa del territorio ${territorio}`}
+                    className={'d-block mx-auto'}
+                    style={{
+                        border: '1px solid black',
+                        borderRadius: '8px',
+                        height: 'auto',
+                        marginBlock: '30px',
+                        padding: isMobile ? '10px' : '20px',
+                        width: isMobile ? '99%' : '40%'
+                    }}
+                />
+            }
     
 
             <Col0a
@@ -290,6 +288,7 @@ export const TerritoriosPage = () => {
 
                                 <Col1
                                     household={household}
+                                    showGoogleMapHandler={showGoogleMapHandler}
                                 />
 
                                 <Col2

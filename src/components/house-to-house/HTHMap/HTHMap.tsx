@@ -37,8 +37,6 @@ export const HTHMap = (props: any) => {
 
     const [runIntervals, setRunIntervals] = useState<boolean>(false)
 
-    // const [polygonInterval, setPolygonInterval] = useState()
-
     const onCenterChangedHandler = (): void => {
         const lat: number = map?.getCenter()?.lat() ?? 0
         const lng: number = map?.getCenter()?.lng() ?? 0
@@ -159,7 +157,6 @@ export const HTHMap = (props: any) => {
             && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
             && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
         ) return
-        //console.log(polygon);
         const modifiedPolygon: typePolygon = {
             block: polygon.block,
             coordsPoint1: { lat: p1y, lng: p1x },
@@ -185,10 +182,6 @@ export const HTHMap = (props: any) => {
         interval = setInterval(() => intervalExecution(googlePolygon0, polygon), 1000)
     }
     
-    const stopPolygonInterval = (): void => {
-        clearInterval(interval)
-    }
-    
     const cancelChangesHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
@@ -199,7 +192,6 @@ export const HTHMap = (props: any) => {
     }
 
     const reloadHandler = (): void => {
-        // cancelar intervalo del nuevo
         setRunIntervals(false)
         setIsEditingView(false)
         setIsAddingPolygon(false)

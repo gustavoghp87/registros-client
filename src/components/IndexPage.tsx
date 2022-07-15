@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import { typeRootState } from '../store/store'
 import { H2 } from './css/css'
 import { TerritoryNumberBlock } from './commons/TerritoryNumberBlock'
-import { TerritoryCampaigneNumberBlock } from './campaigns/TerritoryCampaignNumberBlock'
+import { GeoLocationModal } from './commons/GeoLocationModal'
 import { useAuth } from '../context/authContext'
+import { TerritoryCampaigneNumberBlock } from './campaigns/TerritoryCampaignNumberBlock'
 import { authUserService } from '../services/userServices'
 import { typeUser } from '../models/user'
 
@@ -16,8 +17,11 @@ export const IndexPage = () => {
     const [showedMode1, setShowedMode1] = useState<boolean>(false)
     const [showedMode2, setShowedMode2] = useState<boolean>(true)
     const [showedMode3, setShowedMode3] = useState<boolean>(true)
+    const [showGeolocationModal, setShowGeolocationModal] = useState<boolean>(false)
     const [territories, setTerritories] = useState<number[]>()
     const [user, setUser] = useState<typeUser>()
+
+    const setShowGeolocationModalHandler = (): void => setShowGeolocationModal(false)
     
     useEffect(() => {
         if (!user || !user.isAuth) {
@@ -25,7 +29,7 @@ export const IndexPage = () => {
             authUserService().then((user0: typeUser|null) => {
                 if (user0 && (!user0.asign || !user0.asign.length)) setShowedMode2(false)
                 if (user0) setUser(user0)
-                else { window.location.href = "/"; return }
+                else { window.location.href = '/'; return }
             })
         }
         if (user && (!territories || !territories.length)) {
@@ -40,8 +44,16 @@ export const IndexPage = () => {
     return (
         <>
             {user && user.isAdmin && <>
+
+                {showGeolocationModal &&
+                    <GeoLocationModal setShowGeolocationModalHandler={setShowGeolocationModalHandler} />
+                }
             
                 <H2 className={isDarkMode ? 'text-white' : ''}> CASA EN CASA </H2>
+
+                <button className={'btn btn-general-blue d-block mx-auto w-25 mt-4'} onClick={() => setShowGeolocationModal(true)}>
+                    Dónde Estoy
+                </button>
 
                 <button className={`btn btn-general-blue btn-block mt-4`}
                     type={'button'}
