@@ -55,21 +55,6 @@ export const CasaEnCasaPage = () => {
     }
 
     const refreshHTHTerritoryHandler = (): void => {
-        //setLoading(true)
-        console.log("Refreshing");
-        // setTerritoryHTH({
-        //     blocks: [],
-        //     faces: [],
-        //     map: {
-        //         centerCoords: { lat: 0, lng: 0 },
-        //         lastEditor: '',
-        //         markers: [],
-        //         polygons: [],
-        //         zoom: 0
-        //     },
-        //     streets: [],
-        //     territory
-        // })
         getHTHStreetsByTerritoryService(territory).then((streets0: string[]|null) => {
             getHTHTerritoryService(territory).then((hthTerritory0: typeHTHTerritory|null) => {
                 if (!hthTerritory0) return

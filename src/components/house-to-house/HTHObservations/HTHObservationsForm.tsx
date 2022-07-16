@@ -7,7 +7,7 @@ import { typeUser } from '../../../models/user'
 import { addHTHObservationService, editHTHObservationService } from '../../../services/houseToHouseServices'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
 import { typeAppDispatch } from '../../../store/store'
-import { HTHForm } from '../HTHForm'
+import { HTHForm } from '../HTHCommon/HTHForm'
 
 export const HTHObservationsForm = (props: any) => {
 
@@ -34,7 +34,7 @@ export const HTHObservationsForm = (props: any) => {
         console.log("New observation:", newObservation)
         
         if (!editText) {
-            addHTHObservationService(newObservation, territory, currentFace.block, currentFace.face).then((success: boolean) => {
+            addHTHObservationService(newObservation, territory, currentFace.block, currentFace.face, currentFace.id).then((success: boolean) => {
                 if (success) {
                     closeShowFormHandler()
                     refreshDoNotCallHandler()

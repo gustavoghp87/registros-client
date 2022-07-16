@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { HTHForm } from '../HTHForm'
+import { HTHForm } from '../HTHCommon/HTHForm'
 import { useAuth } from '../../../context/authContext'
 import { addHTHDoNotCallService } from '../../../services/houseToHouseServices'
 import { typeTerritoryNumber } from '../../../models/territory'
@@ -31,7 +31,7 @@ export const HTHDoNotCallsForm = (props: any) => {
             id: +new Date(),
             streetNumber
         }
-        addHTHDoNotCallService(newDoNotCall, territory, currentFace.block, currentFace.face).then((success: boolean) => {
+        addHTHDoNotCallService(newDoNotCall, territory, currentFace.block, currentFace.face, currentFace.id).then((success: boolean) => {
             if (success) {
                 closeShowFormHandler()
                 refreshHTHTerritoryHandler()

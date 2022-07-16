@@ -28,8 +28,8 @@ export const HTHDoNotCalls = (props: any) => {
             <h1 className={'py-3 text-center text-white d-block mx-auto'}
                 style={{
                     backgroundColor: generalBlue,
-                    width: isMobile ? '100%' : '90%',
-                    marginBottom: '40px'
+                    marginBottom: '50px',
+                    width: isMobile ? '100%' : '90%'
                 }}
             >
                 {currentFace.doNotCalls && !!currentFace.doNotCalls.length ?

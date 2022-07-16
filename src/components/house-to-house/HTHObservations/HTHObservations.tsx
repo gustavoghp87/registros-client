@@ -29,6 +29,7 @@ export const HTHObservations = (props: any) => {
             <h1 className={'py-3 text-center text-white d-block mx-auto'}
                 style={{
                     backgroundColor: generalBlue,
+                    marginBottom: '50px',
                     width: isMobile ? '100%' : '90%'
                 }}
             >

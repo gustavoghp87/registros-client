@@ -1,8 +1,8 @@
 import { Button, Container, Form, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typePolygon } from '../../models/houseToHouse'
-import { dark, typeTerritoryNumber } from '../../models/territory'
-import { typeRootState } from '../../store/store'
+import { typePolygon } from '../../../models/houseToHouse'
+import { dark, typeTerritoryNumber } from '../../../models/territory'
+import { typeRootState } from '../../../store/store'
 
 export const HTHForm = (props: any) => {
 

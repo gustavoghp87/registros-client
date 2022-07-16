@@ -8,13 +8,13 @@ import { typeDoNotCall, typeFace, typeHTHMap, typeHTHTerritory, typeObservation,
 const base: string = `${SERVER}/api/house-to-house`
 
 export const addHTHDoNotCallService = async (doNotCall: typeDoNotCall,
-    territory: typeTerritoryNumber, block: typeBlock, face: typeFace): Promise<boolean> => {
+    territory: typeTerritoryNumber, block: typeBlock, face: typeFace, polygonId: number): Promise<boolean> => {
     if (!getTokenService() || !territory || !doNotCall) return false
     try {
         const response = await fetch(`${base}/do-not-call/${territory}/${block}/${face}`, {
             method: 'POST',
             headers,
-            body: JSON.stringify({ doNotCall })
+            body: JSON.stringify({ doNotCall, polygonId })
         })
         const data: typeResponseData|null = await response.json()
         if (!data || !data.success) return false
@@ -26,13 +26,13 @@ export const addHTHDoNotCallService = async (doNotCall: typeDoNotCall,
 }
 
 export const addHTHObservationService = async (observation: typeObservation,
-    territory: typeTerritoryNumber, block: typeBlock, face:typeFace): Promise<boolean> => {
+    territory: typeTerritoryNumber, block: typeBlock, face:typeFace, polygonId: number): Promise<boolean> => {
     if (!getTokenService() || !territory || !observation) return false
     try {
         const response = await fetch(`${base}/observation/${territory}/${block}/${face}`, {
             method: 'POST',
             headers,
-            body: JSON.stringify({ observation })
+            body: JSON.stringify({ observation, polygonId })
         })
         const data: typeResponseData|null = await response.json()
         if (!data || !data.success) return false
