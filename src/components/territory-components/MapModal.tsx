@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Modal } from 'react-bootstrap'
 import { Loading } from '../commons/Loading'
 import { typeRootState } from '../../store/store'
-import { googleMapsAPIDevelopmentKey, googleMapsAPIProductionKey, mapId } from '../../config'
+import { googleGeocodingAPIProductionKey, googleMapsAPIDevelopmentKey, googleMapsAPIProductionKey, mapId } from '../../config'
 import { isLocalhost } from '../../services/functions'
 import { typeCoords } from '../../models/houseToHouse'
 
@@ -34,7 +34,7 @@ export const MapModal = (props: any) => {
         } catch (error) {
             console.log(error)
         }
-        Geocode.setApiKey(isLocalhost ? googleMapsAPIDevelopmentKey : googleMapsAPIProductionKey)
+        Geocode.setApiKey(isLocalhost ? googleMapsAPIDevelopmentKey : googleGeocodingAPIProductionKey)
         Geocode.setLanguage('es')
         Geocode.setRegion('arg')
         Geocode.setLocationType('ROOFTOP')    // ROOFTOP, RANGE_INTERPOLATED, GEOMETRIC_CENTER, APPROXIMATE
@@ -44,7 +44,7 @@ export const MapModal = (props: any) => {
                 const { lat, lng } = response.results[0].geometry.location;
                 setCenterCoords({ lat, lng })
             },
-            (error) => { console.error(error) }
+            (error) => { console.log(error) }
         )
         return () => { }
     }, [address])

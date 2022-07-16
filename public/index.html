@@ -40,21 +40,13 @@
         window.location.hostname === '[::1]' ||
         window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
       )
-      var srcDevelopment = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594&map_ids=ad09b84d2db0b86d"
+      var srcDevelopment = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594&map_ids=ad09b84d2db0b86d";
       var srcProduction = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE&map_ids=ad09b84d2db0b86d";
       var script = document.createElement("script");
       script.setAttribute("src", isLocalhost ? srcDevelopment : srcProduction);
       document.getElementsByTagName("head")[0].appendChild(script);
     </script>
-    <script>
-      if (window.localStorage.getItem("version4FirstLogin") === "true") {
-        window.localStorage.setItem("version4FirstLogin", "false")
-      } else if (window.localStorage.getItem("version4FirstLogin") !== "false") {
-        window.localStorage.setItem("version4FirstLogin", "true")
-        window.location.reload(true)
-      }
-    </script>
-    <noscript> No se puede ver la aplicación porque tienes desactivado JavaScript. </noscript>
+    <noscript> No se puede ver la aplicación porque está desactivado JavaScript. </noscript>
     <div id="root"></div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"

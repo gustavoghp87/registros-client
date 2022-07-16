@@ -6,7 +6,7 @@ import { Modal } from 'react-bootstrap'
 import { generalBlue } from '../_App'
 import { Loading } from '../commons/Loading'
 import { typeRootState } from '../../store/store'
-import { googleMapsAPIDevelopmentKey, googleMapsAPIProductionKey, mapId } from '../../config'
+import { googleGeocodingAPIProductionKey, googleMapsAPIDevelopmentKey, googleMapsAPIProductionKey, mapId } from '../../config'
 import { isLocalhost } from '../../services/functions'
 import { typeCoords, typeHTHTerritory, typePolygon } from '../../models/houseToHouse'
 import { getHTHTerritoryService } from '../../services/houseToHouseServices'
@@ -39,7 +39,7 @@ export const GeoLocationModal = (props: any) => {
             // infoWindow0.setContent("Location found.");
             setInfoWindow(infoWindow0)
             setCenterCoords(position)
-            Geocode.setApiKey(isLocalhost ? googleMapsAPIDevelopmentKey : googleMapsAPIProductionKey)
+            Geocode.setApiKey(isLocalhost ? googleMapsAPIDevelopmentKey : googleGeocodingAPIProductionKey)
             Geocode.setLanguage('es')
             Geocode.setRegion('arg')
             Geocode.setLocationType('ROOFTOP')    // ROOFTOP, RANGE_INTERPOLATED, GEOMETRIC_CENTER, APPROXIMATE
@@ -142,8 +142,11 @@ export const GeoLocationModal = (props: any) => {
                         ))}
                         {centerCoords &&
                             <Marker
-                                title={"Tu posición"}
+                                options={{
+                                    anchorPoint: new google.maps.Point(centerCoords.lat, centerCoords.lng)
+                                }}
                                 position={centerCoords}
+                                title={"Tu posición"}
                             />
                         }
                     </GoogleMap>

@@ -13,6 +13,7 @@ export const IndexPage = () => {
     //const user: typeUser|undefined = useAuth().user
     const refreshUser: (() => void) | undefined = useAuth().refreshUser
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
     const [showedMode1, setShowedMode1] = useState<boolean>(false)
     const [showedMode2, setShowedMode2] = useState<boolean>(true)
@@ -51,10 +52,6 @@ export const IndexPage = () => {
             
                 <H2 className={isDarkMode ? 'text-white' : ''}> CASA EN CASA </H2>
 
-                <button className={'btn btn-general-blue d-block mx-auto w-25 mt-4'} onClick={() => setShowGeolocationModal(true)}>
-                    Dónde Estoy
-                </button>
-
                 <button className={`btn btn-general-blue btn-block mt-4`}
                     type={'button'}
                     onClick={() => setShowedMode1(!showedMode1)}
@@ -62,16 +59,21 @@ export const IndexPage = () => {
                     {showedMode1 === true ? 'Ocultar' : 'Ver territorios'}
                 </button>
 
-                <div className={`${showedMode1 === true ? '' : 'd-none'}`}>
+                {showedMode1 && <>
+                    <button className={`btn btn-general-blue d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}
+                        onClick={() => setShowGeolocationModal(true)}
+                    >
+                        Dónde Estoy
+                    </button>
                     <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
                         <TerritoryNumberBlock
-                            user={user}
-                            territories={territoriesAll}
                             mode={1}
                             style={{ cursor: 'pointer' }}
+                            territories={territoriesAll}
+                            user={user}
                         />
                     </div>
-                </div>
+                </>}
                 
                 {!showedMode1 && <><br/><br/><br/></>}
 
