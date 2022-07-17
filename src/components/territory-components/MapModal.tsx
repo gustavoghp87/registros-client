@@ -1,19 +1,18 @@
-import Geocode from 'react-geocode'
 import { useEffect, useState } from 'react'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { useSelector } from 'react-redux'
 import { Modal } from 'react-bootstrap'
 import { Loading } from '../commons/Loading'
 import { typeRootState } from '../../store/store'
-import { googleGeocodingAPIProductionKey, googleMapsAPIDevelopmentKey, googleMapsAPIProductionKey, mapId } from '../../config'
-import { isLocalhost } from '../../services/functions'
+import { googleMapsAPIKey, mapId } from '../../config'
 import { typeCoords } from '../../models/houseToHouse'
+import { getGeocodingFromAddressService } from '../../services/geocodingServices'
 
 export const MapModal = (props: any) => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: isLocalhost ? googleMapsAPIDevelopmentKey : googleMapsAPIProductionKey,
+        googleMapsApiKey: googleMapsAPIKey,
         id: mapId
     })
     const address: string = props.address
@@ -31,21 +30,30 @@ export const MapModal = (props: any) => {
                 target = target.split(' ')[0] + " " + address.split(' ')[1] + " " + address.split(' ')[2] + " " + address.split(' ')[3] + " CABA"
             else if (!isNaN(parseInt(address.split(' ')[4])))
                 target = target.split(' ')[0] + " " + address.split(' ')[1] + " " + address.split(' ')[2] + " " + address.split(' ')[3] + " " + address.split(' ')[4] + " CABA"
+            else if (!isNaN(parseInt(address.split(' ')[5])))
+                target = target.split(' ')[0] + " " + address.split(' ')[1] + " " + address.split(' ')[2] + " " + address.split(' ')[3] + " " + address.split(' ')[4] + " " + address.split(' ')[5] + " CABA"
         } catch (error) {
             console.log(error)
         }
-        Geocode.setApiKey(isLocalhost ? googleMapsAPIDevelopmentKey : googleGeocodingAPIProductionKey)
-        Geocode.setLanguage('es')
-        Geocode.setRegion('arg')
-        Geocode.setLocationType('ROOFTOP')    // ROOFTOP, RANGE_INTERPOLATED, GEOMETRIC_CENTER, APPROXIMATE
-        if (isLocalhost) Geocode.enableDebug()
-        Geocode.fromAddress(target).then(
-            (response) => {
-                const { lat, lng } = response.results[0].geometry.location;
-                setCenterCoords({ lat, lng })
-            },
-            (error) => { console.log(error) }
-        )
+
+        getGeocodingFromAddressService(target).then((coordinates: typeCoords|null) => {
+            console.log(coordinates)
+            if (coordinates && coordinates.lat && coordinates.lng) setCenterCoords({ lat: coordinates.lat, lng: coordinates.lng })
+        })
+
+        // Geocode.setApiKey("")
+        // Geocode.setLanguage('es')
+        // Geocode.setRegion('arg')
+        // Geocode.setLocationType('ROOFTOP')    // ROOFTOP, RANGE_INTERPOLATED, GEOMETRIC_CENTER, APPROXIMATE
+        // if (isLocalhost) Geocode.enableDebug()
+        // Geocode.fromAddress(target).then(
+        //     (response) => {
+        //         const { lat, lng } = response.results[0].geometry.location
+        //         setCenterCoords({ lat, lng })
+        //     },
+        //     (error) => { console.log(error) }
+        // )
+
         return () => { }
     }, [address])
 

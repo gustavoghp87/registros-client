@@ -1,6 +1,6 @@
 import { Credentials } from 'google-auth-library'
 import { typeCampaignPack } from './campaign'
-import { typeHTHTerritory } from './houseToHouse'
+import { typeCoords, typeHTHTerritory } from './houseToHouse'
 import { typeLogsObj } from './log'
 import { typeLocalStatistic, typeStatistic } from './statistic'
 import { typeHousehold, typeStateOfTerritory, typeBlock } from './territory'
@@ -8,8 +8,8 @@ import { typeUser } from './user'
 
 export type typeResponseData = {
     success: boolean
-    pack: typeCampaignPack
-    packs: typeCampaignPack[]
+    pack?: typeCampaignPack
+    packs?: typeCampaignPack[]
     logsObject?: typeLogsObj
     stateOfTerritory?: typeStateOfTerritory
     stateOfTerritories?: typeStateOfTerritory[]
@@ -37,4 +37,6 @@ export type typeResponseData = {
     streets?: string[]
     url?: string
     gmailKeys?: Credentials
+    coordinates?: typeCoords
+    address?: string
 }

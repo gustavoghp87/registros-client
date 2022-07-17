@@ -3,7 +3,6 @@ import { Button, Container, FloatingLabel, Form } from 'react-bootstrap'
 import { Credentials } from 'google-auth-library'
 import { getGmailRequestService, getGmailUrlService, saveNewGmailAPITokenToDBService } from '../services/emailServices'
 
-
 export const GmailTokensPage = () => {
 
     const [url, setUrl] = useState<string>('')
@@ -27,7 +26,6 @@ export const GmailTokensPage = () => {
         const success0: boolean = await saveNewGmailAPITokenToDBService(credentials.access_token, credentials.refresh_token)
         if (success0) setSuccess(true)
     }
-
 
     return (
         <Container style={{ maxWidth: '500px', marginTop: '150px'}}>

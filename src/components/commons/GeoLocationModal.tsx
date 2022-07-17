@@ -1,21 +1,18 @@
-import Geocode from 'react-geocode'
 import { useEffect, useRef, useState } from 'react'
-import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { useSelector } from 'react-redux'
 import { Modal } from 'react-bootstrap'
-import { generalBlue } from '../_App'
 import { Loading } from '../commons/Loading'
 import { typeRootState } from '../../store/store'
-import { googleGeocodingAPIProductionKey, googleMapsAPIDevelopmentKey, googleMapsAPIProductionKey, mapId } from '../../config'
-import { isLocalhost } from '../../services/functions'
-import { typeCoords, typeHTHTerritory, typePolygon } from '../../models/houseToHouse'
-import { getHTHTerritoryService } from '../../services/houseToHouseServices'
+import { googleMapsAPIKey, mapId } from '../../config'
+import { getGeocodingFromCoordinatesService } from '../../services/geocodingServices'
+import { typeCoords } from '../../models/houseToHouse'
 
 export const GeoLocationModal = (props: any) => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: isLocalhost ? googleMapsAPIDevelopmentKey : googleMapsAPIProductionKey,
+        googleMapsApiKey: googleMapsAPIKey,
         id: mapId
     })
     const setShowGeolocationModalHandler: Function = props.setShowGeolocationModalHandler
@@ -23,7 +20,7 @@ export const GeoLocationModal = (props: any) => {
     const [address, setAddress] = useState<string>('')
     const [centerCoords, setCenterCoords] = useState<typeCoords>()
     const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>()
-    const [polygons, setPolygons] = useState<typePolygon[]>()
+    //const [polygons, setPolygons] = useState<typePolygon[]>()
 
     useEffect(() => {
         if (!navigator.geolocation) {
@@ -39,25 +36,32 @@ export const GeoLocationModal = (props: any) => {
             // infoWindow0.setContent("Location found.");
             setInfoWindow(infoWindow0)
             setCenterCoords(position)
-            Geocode.setApiKey(isLocalhost ? googleMapsAPIDevelopmentKey : googleGeocodingAPIProductionKey)
-            Geocode.setLanguage('es')
-            Geocode.setRegion('arg')
-            Geocode.setLocationType('ROOFTOP')    // ROOFTOP, RANGE_INTERPOLATED, GEOMETRIC_CENTER, APPROXIMATE
-            if (isLocalhost) Geocode.enableDebug()
-            Geocode.fromLatLng(lat.toString(), lng.toString()).then((response) => {
-                const address0 = response.results[0].formatted_address
+
+            getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
                 console.log(address0)
-                setAddress(address0)
-            }, (error) => {
-                console.log(error)
+                if (address0) setAddress(address0)
             })
+
+            // Geocode.setApiKey("")
+            // Geocode.setLanguage('es')
+            // Geocode.setRegion('arg')
+            // Geocode.setLocationType('ROOFTOP')    // ROOFTOP, RANGE_INTERPOLATED, GEOMETRIC_CENTER, APPROXIMATE
+            // if (isLocalhost) Geocode.enableDebug()
+            // Geocode.fromLatLng(lat.toString(), lng.toString()).then((response) => {
+            //     const address0 = response.results[0].formatted_address
+            //     console.log(address0)
+            //     setAddress(address0)
+            // }, (error) => {
+            //     console.log(error)
+            // })
+
         })
-        for (let i = 1; i < 57; i++) {
-            getHTHTerritoryService(i.toString()).then((hthTerritory0: typeHTHTerritory|null) => {
-                if (hthTerritory0 && hthTerritory0.map.polygons && hthTerritory0.map.polygons.length)
-                    hthTerritory0.map.polygons.forEach(x => setPolygons(y => y ? [...y, x] : [x]))
-            })
-        }
+        // for (let i = 1; i < 57; i++) {
+        //     getHTHTerritoryService(i.toString()).then((hthTerritory0: typeHTHTerritory|null) => {
+        //         if (hthTerritory0 && hthTerritory0.map.polygons && hthTerritory0.map.polygons.length)
+        //             hthTerritory0.map.polygons.forEach(x => setPolygons(y => y ? [...y, x] : [x]))
+        //     })
+        // }
     }, [])
 
     useEffect(() => {
@@ -70,8 +74,8 @@ export const GeoLocationModal = (props: any) => {
         locationButton.addEventListener('click', () => {
             if (centerCoords) map.current?.setCenter(centerCoords)
         })
-        const interval = setInterval(() => locationButton.click(), 500)
-        setTimeout(() => { clearInterval(interval) }, 2200)
+        const interval = setInterval(() => locationButton.click(), 400)
+        setTimeout(() => { clearInterval(interval) }, 4200)
     }, [map.current])
 
     return (<>
@@ -102,7 +106,16 @@ export const GeoLocationModal = (props: any) => {
                         options={{ center: centerCoords }}
                         zoom={17.8}
                     >
-                        {polygons && !!polygons.length && polygons.map(x => (
+                        {centerCoords &&
+                            <Marker
+                                options={{
+                                    anchorPoint: new google.maps.Point(centerCoords.lat, centerCoords.lng)
+                                }}
+                                position={centerCoords}
+                                title={"Tu posición"}
+                            />
+                        }
+                        {/* {polygons && !!polygons.length && polygons.map(x => (
                             <div key={x.id}>
                                 <Polygon
                                     editable={false}
@@ -135,20 +148,11 @@ export const GeoLocationModal = (props: any) => {
                                         textAlign: 'center',
                                         width: '56px'
                                     }}>
-                                        {x.block}-{x.face}
+                                        {x.territory}-{x.block}-{x.face}
                                     </div>
                                 </InfoWindow>
                             </div>
-                        ))}
-                        {centerCoords &&
-                            <Marker
-                                options={{
-                                    anchorPoint: new google.maps.Point(centerCoords.lat, centerCoords.lng)
-                                }}
-                                position={centerCoords}
-                                title={"Tu posición"}
-                            />
-                        }
+                        ))} */}
                     </GoogleMap>
                 </Modal.Body>
             </Modal>

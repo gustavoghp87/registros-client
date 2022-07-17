@@ -9,8 +9,7 @@ import HTHMapStyle from './HTHMapStyle.json'
 import { HTHPolygonComponent } from './HTHPolygonComponent'
 import { HTHMarkerComponent } from './HTHMarkerComponent'
 import { HTHNewFaceOptions } from './HTHNewFaceOptions'
-import { isLocalhost } from '../../../services/functions'
-import { googleMapsAPIDevelopmentKey, googleMapsAPIProductionKey, mapId } from '../../../config'
+import { googleMapsAPIKey, mapId } from '../../../config'
 import { typeBlock } from '../../../models/territory'
 import { typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon } from '../../../models/houseToHouse'
 import { typeUser } from '../../../models/user'
@@ -20,7 +19,7 @@ export const HTHMap = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: isLocalhost ? googleMapsAPIDevelopmentKey : googleMapsAPIProductionKey,
+        googleMapsApiKey: googleMapsAPIKey,
         id: mapId
     })
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
@@ -30,12 +29,11 @@ export const HTHMap = (props: any) => {
     const selectBlockAndFaceHandler: Function = props.selectBlockAndFaceHandler
     const setTerritoryHTHHandler: Function = props.setTerritoryHTHHandler
     const territoryHTH: typeHTHTerritory = props.territoryHTH
-    const [map, setMap] = useState<google.maps.Map>()
     const [isAddingPolygon, setIsAddingPolygon] = useState<boolean>(false)
     const [isEditingView, setIsEditingView] = useState<boolean>(false)
-    const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
-
+    const [map, setMap] = useState<google.maps.Map>()
     const [runIntervals, setRunIntervals] = useState<boolean>(false)
+    const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
 
     const onCenterChangedHandler = (): void => {
         const lat: number = map?.getCenter()?.lat() ?? 0
