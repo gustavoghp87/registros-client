@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap'
 import { BsBackspace } from 'react-icons/bs'
 import { useSelector } from 'react-redux'
 import { typeRootState } from '../../store/store'
-import { generalBlue } from '../_App'
+import { generalBlue } from '../../config'
 
 export const ReturnBtn = () => {
 

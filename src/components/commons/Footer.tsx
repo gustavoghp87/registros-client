@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
+import { generalBlue } from '../../config'
 import { typeRootState } from '../../store/store'
-import { generalBlue } from '../_App'
 
 export const Footer = () => {
 
@@ -11,10 +11,10 @@ export const Footer = () => {
             <div className={'main-footer'}
                 style={{
                     backgroundColor: generalBlue,
-                    height: isMobile ? '120px' : '120px',
+                    height: '120px',
                     marginTop: '200px',
-                    paddingTop: isMobile ? '10px' : '20px',
-                    paddingBottom: '20px'
+                    paddingBottom: '20px',
+                    paddingTop: isMobile ? '10px' : '20px'
                 }}
             >
                 <div style={{
@@ -26,7 +26,7 @@ export const Footer = () => {
                     margin: 'auto',
                     width: '100%'
                 }}>
-                    <a href={'https://misericordiaweb.com/'} style={{ color: 'white', textDecorationLine: 'none', fontWeight: 'bolder' }}>
+                    <a href={'https://misericordiaweb.com/'} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
                         misericordiaweb.com
                     </a>
                 </div>

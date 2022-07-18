@@ -47,6 +47,11 @@
   font-size: 1.2rem;
 }
 
+.btn-general-red {
+  background-color: #b02a37;
+  color: white !important;
+}
+
 
 /* statistics animation */
 

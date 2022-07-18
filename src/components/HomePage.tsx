@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { typeRootState } from '../store/store'
-import { generalBlue } from './_App'
+import { generalBlue } from '../config'
 import { H2 } from './css/css'
 import { useAuth } from '../context/authContext'
 import { typeUser } from '../models/user'

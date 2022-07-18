@@ -7,6 +7,7 @@ import { NavBar } from './commons/NavBar'
 import { Footer } from './commons/Footer'
 import { AlertModal } from './commons/AlertModal'
 import { DarkModeButton } from './commons/DarkModeButton'
+import { FloatingWidgets } from './commons/FloatingWidgets'
 import { LoginPage } from './LoginPage'
 import { HomePage } from './HomePage'
 import { IndexPage } from './IndexPage'
@@ -29,8 +30,6 @@ import { recaptchaPublicKey } from '../config'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-export const generalBlue: string = "#4a6da7"
-
 export const App = () => {
 
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
@@ -51,7 +50,11 @@ export const App = () => {
                     
                     <div style={{ backgroundColor: isDarkMode ? 'black' : 'white' }}>
 
-                        <NavBar />
+                        <div style={{ position: 'fixed', width: '100%', zIndex: 4 }}>
+                            <NavBar />
+                            <FloatingWidgets />
+                        </div>
+
 
                         <div style={{
                             maxWidth: isMobile ? '95%' : '90%',

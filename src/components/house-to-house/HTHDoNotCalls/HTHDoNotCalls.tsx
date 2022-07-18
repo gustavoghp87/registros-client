@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { generalBlue } from '../../_App'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../../../store/store'
-import { typeUser } from '../../../models/user'
-import { useAuth } from '../../../context/authContext'
-import { typeDoNotCall, typePolygon } from '../../../models/houseToHouse'
 import { HTHDoNotCallsForm } from './HTHDoNotCallsForm'
 import { HTHDoNotCallsItem } from './HTHDoNotCallsItem'
+import { generalBlue } from '../../../config'
+import { typeRootState } from '../../../store/store'
+import { useAuth } from '../../../context/authContext'
+import { typeUser } from '../../../models/user'
+import { typeDoNotCall, typePolygon } from '../../../models/houseToHouse'
 import { typeTerritoryNumber } from '../../../models/territory'
 
 export const HTHDoNotCalls = (props: any) => {

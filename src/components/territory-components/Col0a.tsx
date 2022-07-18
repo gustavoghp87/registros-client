@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import { generalRed } from '../../config'
+import { danger, dark } from '../../models/territory'
 import { typeRootState } from '../../store/store'
+
+type radioObj = {
+    name: string
+    value: string
+}
 
 export const Col0a = (props: any) => {
 
@@ -10,28 +17,26 @@ export const Col0a = (props: any) => {
     const manzana: string = props.manzana
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
-    let radiosManzana: any[] = []
+    let radiosManzana: radioObj[] = []
     manzanas?.forEach((manzana: string) => {
         radiosManzana.push({ name: `Manzana ${manzana}`, value: manzana })
     })
 
     return (
-        <Col style={{ textAlign: 'center', marginBottom: '0', padding: '0', maxWidth: '100%' }}>
+        <Col className={'text-center mb-0 p-0'} style={{ maxWidth: '100%' }}>
             {manzanas && !!manzanas.length &&
                 <div style={{ marginBottom: '10px' }}>
                     <ButtonGroup
                         vertical={isMobile && manzanas.length > 3 ? true : false}
                         style={{ maxWidth: '100%' }}
                     >
-                        {radiosManzana?.map((radio: any, index: number) =>
-                        
+                        {radiosManzana?.map((radio: radioObj, index: number) =>
                             <BlockToggleButton
                                 key={index}
                                 radio={radio}
                                 territory={territory}
                                 manzana={manzana}
                             />
-                        
                         )}
                     </ButtonGroup>
                 </div>
@@ -40,15 +45,10 @@ export const Col0a = (props: any) => {
     )
 }
 
-type radioObj = {
-    name: string
-    value: string
-}
-
 const BlockToggleButton = (props: any) => {
+    const manzana: string = props.manzana
     const radio: radioObj = props.radio
     const territory: string = props.territory
-    const manzana: string = props.manzana
     const [isChecked, setIsChecked] = useState<boolean>(false)
 
     useEffect(() => {
@@ -61,13 +61,13 @@ const BlockToggleButton = (props: any) => {
 
             <ToggleButton
                 type={'radio'}
-                variant={isChecked ? 'danger' : 'dark'}
+                variant={isChecked ? danger : dark}
                 name={"radio"}
                 value={radio?.value}
                 //checked={isChecked}
                 style={{
                     padding: '0',
-                    backgroundColor: `${isChecked ? '#b02a37' : undefined}`,
+                    backgroundColor: `${isChecked ? generalRed : undefined}`,
                     borderTopLeftRadius: `${radio?.value === "1" ? '3px' : ''}`,
                     borderBottomLeftRadius: `${radio?.value === "1" ? '3px' : ''}`
                 }}

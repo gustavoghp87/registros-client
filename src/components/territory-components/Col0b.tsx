@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 import { typeRootState } from '../../store/store'
 import { useAuth } from '../../context/authContext'
 import { typeUser } from '../../models/user'
-import { typeBlock } from '../../models/territory'
+import { danger, dark, typeBlock } from '../../models/territory'
+import { generalRed } from '../../config'
 
 export const Col0b = (props: any) => {
 
@@ -52,11 +53,11 @@ export const Col0b = (props: any) => {
                 <ToggleButton
                     key={'1'}
                     type={'radio'}
-                    variant={isTodo ? 'dark' : (isStatistics ? 'dark' : 'danger')}
+                    variant={isTodo ? 'dark' : (isStatistics ? dark : danger)}
                     name={"radio"}
                     value={radios[0]?.value}
                     style={{
-                        backgroundColor: `${isTodo || isStatistics ? undefined : '#b02a37'}`,
+                        backgroundColor: `${isTodo || isStatistics ? undefined : generalRed}`,
                         padding: '0'
                     }}
                     //checked={isTodo ? false : (isStatistics ? false : true )}
