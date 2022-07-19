@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Toast } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { AiOutlineWarning } from 'react-icons/ai'
-import { getNumberOfFreePhonesService } from '../../services/statisticsServices'
+import { getNumberOfFreePhonesService } from '../../services'
 
 export const TerritoryWarningToaster = () => {
 
@@ -10,13 +10,13 @@ export const TerritoryWarningToaster = () => {
     const [showA, setShowA] = useState<boolean>(true)
     const [numberOfFreePhones, setNumberOfFreePhones] = useState<number>()
     
+    const toggleShowA = () => setShowA(!showA)
+    
     useEffect(() => {
         if (territorio) getNumberOfFreePhonesService(territorio)
             .then((data: number|null) => { if (data !== null) setNumberOfFreePhones(data) })
         return () => setNumberOfFreePhones(undefined)
     }, [territorio])
-
-    const toggleShowA = () => setShowA(!showA)
 
     return (
         <>

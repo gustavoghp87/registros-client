@@ -1,19 +1,16 @@
 import { useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
-import { useAuth } from '../../../context/authContext'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
-import { typeAppDispatch, typeRootState } from '../../../store/store'
 import { Loading } from '../../commons/Loading'
-import HTHMapStyle from './HTHMapStyle.json'
 import { HTHPolygonComponent } from './HTHPolygonComponent'
 import { HTHMarkerComponent } from './HTHMarkerComponent'
 import { HTHNewFaceOptions } from './HTHNewFaceOptions'
+import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
+import { useAuth } from '../../../context/authContext'
 import { googleMapsAPIKey, mapId } from '../../../config'
-import { typeBlock } from '../../../models/territory'
-import { typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon } from '../../../models/houseToHouse'
-import { typeUser } from '../../../models/user'
-import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services/houseToHouseServices'
+import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services'
+import { typeAppDispatch, typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState, typeUser } from '../../../models'
+import HTHMapStyle from './HTHMapStyle.json'
 
 export const HTHMap = (props: any) => {
 
@@ -23,7 +20,7 @@ export const HTHMap = (props: any) => {
         id: mapId
     })
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const dispatch: typeAppDispatch = useDispatch()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const selectBlockAndFaceHandler: Function = props.selectBlockAndFaceHandler

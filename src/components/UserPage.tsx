@@ -1,21 +1,20 @@
 import { useState } from 'react'
 import { Card, Button, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeRootState } from '../store/store'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
-import { H2 } from './css/css'
 import { useAuth } from '../context/authContext'
-import { changePswService, logoutAllService } from '../services/tokenServices'
-import { typeUser } from '../models/user'
+import { changePswService, logoutAllService } from '../services'
+import { typeAppDispatch, typeRootState, typeUser } from '../models'
+import { H2 } from './css/css'
 
 export const UserPage = () => {
     
     const user: typeUser|undefined = useAuth().user
-    const [show, setShow] = useState(false)
-    const [psw, setPsw] = useState('')
-    const [newPsw, setNewPsw] = useState('')
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const dispatch = useDispatch()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const [newPsw, setNewPsw] = useState('')
+    const [psw, setPsw] = useState('')
+    const [show, setShow] = useState(false)
 
     const openAlertModalHandler = (title: string, message: string): void => {
         dispatch(setValuesAndOpenAlertModalReducer({

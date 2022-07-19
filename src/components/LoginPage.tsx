@@ -2,21 +2,22 @@ import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState } from '../store/store'
+import { Loading } from './commons/Loading'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import { useAuth } from '../context/authContext'
-import { registerUserService, sendLinkToRecoverAccount } from '../services/userServices'
-import { typeResponseData } from '../models/httpResponse'
-import { Loading } from './commons/Loading'
+import { registerUserService, sendLinkToRecoverAccount } from '../services'
+import { typeAppDispatch, typeResponseData, typeRootState } from '../models'
 
 export const LoginPage = () => {
 
     //const user: typeUser|undefined = useAuth().user
     const { executeRecaptcha } = useGoogleReCaptcha()
     const { login, user } = useAuth()
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const dispatch: typeAppDispatch = useDispatch()
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [confPassword, setConfPassword] = useState<string>('')
     const [email, setEmail] = useState<string>("")
     const [group, setGroup] = useState<number>(0)
@@ -79,7 +80,7 @@ export const LoginPage = () => {
         if (!login) return openAlertModalHandler("Problemas", "Refrescar la página")
         const response = await login(email, password, recaptchaToken)
         if (response && response.success && response.newToken) {
-            window.location.href = "/index"
+            window.location.href = '/index'
         } else if (!response || response.recaptchaFails) {
             setFailingEmail()
             openAlertModalHandler("Problemas", "Refrescar la página")
@@ -109,9 +110,9 @@ export const LoginPage = () => {
                 if (data.recaptchaFails) {
                     openAlertModalHandler("Problemas", "Se refrescará la página por un problema", () => window.location.reload())
                 } else if (data.userExists) {
-                    openAlertModalHandler("Problemas", "Ya existe un usuario con ese correo", () => window.location.href = "/acceso")
+                    openAlertModalHandler("Problemas", "Ya existe un usuario con ese correo", () => window.location.href = '/acceso')
                 } else if (data.success) {
-                    openAlertModalHandler("Registro exitoso", `Resta ser habilitado por el grupo de predicación. ${email}`, () => window.location.href = "/")
+                    openAlertModalHandler("Registro exitoso", `Resta ser habilitado por el grupo de predicación. ${email}`, () => window.location.href = '/')
                 }
             } else {
                 openAlertModalHandler("Problemas", "Algo salió mal", () => window.location.reload())

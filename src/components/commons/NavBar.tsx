@@ -1,19 +1,18 @@
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { FaUserAlt } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState } from '../../store/store'
 import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 // import { SearchBar } from './SearchBar'
 import { useAuth } from '../../context/authContext'
 import { generalBlue } from '../../config'
-import { logoutService } from '../../services/tokenServices'
-import { typeUser } from '../../models/user'
+import { logoutService } from '../../services'
+import { typeAppDispatch, typeRootState, typeUser } from '../../models'
 
 export const NavBar = () => {
 
     const user: typeUser|undefined = useAuth().user
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const dispatch: typeAppDispatch = useDispatch()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const color = '#fbfbfb'
     
     const logoutHandler = async (): Promise<void> => {

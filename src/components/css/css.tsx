@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 //import { Link } from 'react-router-dom'
-import { isMobile } from '../../services/functions'
+
+const isMobile: boolean = window.screen.width < 990 ? true : false
 
 export const H2 = styled.h1`
     text-align: center;

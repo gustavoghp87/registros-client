@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { generalRed } from '../../config'
-import { danger, dark } from '../../models/territory'
-import { typeRootState } from '../../store/store'
+import { danger, dark, typeRootState } from '../../models'
 
 type radioObj = {
     name: string

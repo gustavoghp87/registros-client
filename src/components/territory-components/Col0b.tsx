@@ -1,21 +1,19 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../../store/store'
 import { useAuth } from '../../context/authContext'
-import { typeUser } from '../../models/user'
-import { danger, dark, typeBlock } from '../../models/territory'
 import { generalRed } from '../../config'
+import { danger, dark, typeBlock, typeRootState, typeUser } from '../../models'
 
 export const Col0b = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
-    const isTodo: boolean = props?.isTodo
-    const isStatistics: boolean = props?.isStatistics
-    const territorio: string = props?.territorio
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const isStatistics: boolean = props.isStatistics
+    const isTodo: boolean = props.isTodo
+    const territorio: string = props.territorio
 
     let radios: any[] = []
-    let manzana: typeBlock = props?.manzana ? props?.manzana : '1'
+    let manzana: typeBlock = props.manzana ? props.manzana : '1'
 
     if (isMobile)
         radios = user && user.isAdmin ? 

@@ -3,10 +3,9 @@ import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { useSelector } from 'react-redux'
 import { Modal } from 'react-bootstrap'
 import { Loading } from '../commons/Loading'
-import { typeRootState } from '../../store/store'
 import { googleMapsAPIKey, mapId } from '../../config'
-import { typeCoords } from '../../models/houseToHouse'
-import { getGeocodingFromAddressService } from '../../services/geocodingServices'
+import { getGeocodingFromAddressService } from '../../services'
+import { typeCoords, typeRootState } from '../../models'
 
 export const MapModal = (props: any) => {
 

@@ -1,18 +1,16 @@
 import { useDispatch } from 'react-redux'
 import { HTHItemCard } from '../HTHCommon/HTHItemCard'
-import { typeAppDispatch } from '../../../store/store'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
-import { deleteHTHDoNotCallService } from '../../../services/houseToHouseServices'
-import { typeDoNotCall, typePolygon } from '../../../models/houseToHouse'
-import { typeTerritoryNumber } from '../../../models/territory'
+import { deleteHTHDoNotCallService } from '../../../services'
+import { typeAppDispatch, typeDoNotCall, typePolygon, typeTerritoryNumber } from '../../../models'
 
 export const HTHDoNotCallsItem = (props: any) => {
 
-    const dispatch: typeAppDispatch = useDispatch()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const currentFace: typePolygon = props.currentFace
     const doNotCall: typeDoNotCall = props.doNotCall
-    const territory: typeTerritoryNumber = props.territory
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
+    const territory: typeTerritoryNumber = props.territory
 
     const deleteHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({

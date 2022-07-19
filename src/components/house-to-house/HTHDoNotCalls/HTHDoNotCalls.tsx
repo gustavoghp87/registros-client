@@ -3,11 +3,8 @@ import { useSelector } from 'react-redux'
 import { HTHDoNotCallsForm } from './HTHDoNotCallsForm'
 import { HTHDoNotCallsItem } from './HTHDoNotCallsItem'
 import { generalBlue } from '../../../config'
-import { typeRootState } from '../../../store/store'
 import { useAuth } from '../../../context/authContext'
-import { typeUser } from '../../../models/user'
-import { typeDoNotCall, typePolygon } from '../../../models/houseToHouse'
-import { typeTerritoryNumber } from '../../../models/territory'
+import { typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../../../models'
 
 export const HTHDoNotCalls = (props: any) => {
 
@@ -18,9 +15,7 @@ export const HTHDoNotCalls = (props: any) => {
     const territory: typeTerritoryNumber = props.territory
     const [showForm, setShowForm] = useState<boolean>(false)
     
-    const closeShowFormHandler = (): void => {
-        setShowForm(false)
-    }
+    const closeShowFormHandler = (): void => setShowForm(false)
 
     return (
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>

@@ -26,8 +26,6 @@ export const putHyphens = (phoneNumber: number): string => {
     return phoneNumberStr.slice(0,3) + "-" + phoneNumberStr.slice(3,6) + "-" + phoneNumberStr.slice(-4)    // house
 }
 
-export const isMobile: boolean = window.screen.width < 990 ? true : false
-
 export const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

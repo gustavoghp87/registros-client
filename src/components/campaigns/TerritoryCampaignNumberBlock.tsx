@@ -2,38 +2,21 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState } from '../../store/store'
 import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 import { useAuth } from '../../context/authContext'
-import { askForANewCampaignPackService, getCampaignPacksServiceByUser } from '../../services/campaignServices'
-import { typeUser } from '../../models/user'
-import { typeCampaignPack } from '../../models/campaign'
+import { askForANewCampaignPackService, getCampaignPacksServiceByUser } from '../../services'
+import { typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
 
 export const TerritoryCampaigneNumberBlock = () => {
 
     const user: typeUser|undefined = useAuth().user
-    const [showForm, setShowForm] = useState<boolean>(false)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    
-    useEffect(() => {
-        if (user && user.isAuth)
-            getCampaignPacksServiceByUser().then((campaignPacks0: typeCampaignPack[]|null) => {
-                if (campaignPacks0) {
-                    setCampaignPacks(campaignPacks0);
-                    if (campaignPacks0 === undefined || !campaignPacks0 || campaignPacks0?.length === 0) setShowForm(true)
-                    let someNotFinished: boolean = false
-                    for (let pack of campaignPacks0) {
-                        if (!pack.terminado) someNotFinished = true
-                    }
-                    if (!someNotFinished) setShowForm(true)
-                }
-            })
-        return () => setCampaignPacks(undefined)
-    }, [user])
-
-    const dispatch: typeAppDispatch = useDispatch()
+    const [showForm, setShowForm] = useState<boolean>(false)
 
     const openAlertModalHandler = (title: string, message: string, execution: Function|undefined = undefined): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -60,6 +43,20 @@ export const TerritoryCampaigneNumberBlock = () => {
         })
     }
 
+    useEffect(() => {
+        if (user && user.isAuth)
+            getCampaignPacksServiceByUser().then((campaignPacks0: typeCampaignPack[]|null) => {
+                if (!campaignPacks0) return
+                setCampaignPacks(campaignPacks0);
+                if (campaignPacks0 === undefined || !campaignPacks0 || campaignPacks0?.length === 0) setShowForm(true)
+                let someNotFinished: boolean = false
+                for (let pack of campaignPacks0) {
+                    if (!pack.terminado) someNotFinished = true
+                }
+                if (!someNotFinished) setShowForm(true)
+            })
+        return () => setCampaignPacks(undefined)
+    }, [user])
 
     return (
     <>

@@ -1,14 +1,15 @@
 import { MdDelete, MdEdit } from 'react-icons/md'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../../../context/authContext'
-import { typeUser } from '../../../models/user'
-import { typeRootState } from '../../../store/store'
+import { typeRootState, typeUser } from '../../../models'
 
 export const HTHItemCard = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const date: string = props.date
     const deleteHandler: Function = props.deleteHandler
     const editHandler: Function = props.editHandler

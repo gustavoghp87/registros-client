@@ -1,14 +1,16 @@
 import { Col, Row, Dropdown } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../../store/store'
-import { isMobile, timeConverter } from '../../services/functions'
-import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeHousehold } from '../../models/territory'
+import { timeConverter } from '../../services'
+import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeHousehold, typeRootState } from '../../models'
 
 export const Col3 = (props: any) => {
 
-    const household: typeHousehold = props?.household
-    const modifyHouseholdHandler = props?.modifyHouseholdHandler
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
+    const household: typeHousehold = props.household
+    const modifyHouseholdHandler: Function = props.modifyHouseholdHandler
 
     return (
     

@@ -2,47 +2,24 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router'
 import { Button, Col, Row, Toast } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState } from '../../store/store'
 import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { editCampaignPackService, getCampaignPackService, closeCampaignPackService, putHyphens } from '../../services'
+import { success, typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
 import { H2 } from '../css/css'
-import { editCampaignPackService, getCampaignPackService, closeCampaignPackService } from '../../services/campaignServices'
-import { putHyphens, isMobile } from '../../services/functions'
-import { typeCampaignPack } from '../../models/campaign'
-import { success } from '../../models/territory'
 
 export const CampaignPage = () => {
 
     const idString: string|undefined = useParams<string>()?.id
-    const id: number = idString ? parseInt(idString) : 0
-    const [showToast, setShowToast] = useState(true)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [campaignPack, setCampaignPack] = useState<typeCampaignPack>()
     const [phoneNumbers, setPhoneNumbers] = useState<number[]>()
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const [showToast, setShowToast] = useState(true)
+    const id: number = idString ? parseInt(idString) : 0
     
-    const refreshHandler = useCallback((): void => {
-        if (id) getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
-            if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
-                return window.location.href = "/index"
-            }
-            setCampaignPack(campaignPack)
-            let phones: number[] = []
-            let i: number = 0
-            while (i < 50) {
-                phones.push(campaignPack?.desde + i)
-                i++
-            }
-            setPhoneNumbers(phones)
-        })
-    }, [id])
-
-    useEffect(() => {
-        window.scrollTo(0, 0)
-        refreshHandler()
-        return () => setCampaignPack(undefined)
-    }, [refreshHandler])
-
-    const dispatch: typeAppDispatch = useDispatch()
-
     const openAlertModalHandler = (title: string, message: string, execution: Function|undefined = undefined): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'alert',
@@ -77,7 +54,7 @@ export const CampaignPage = () => {
     const closeCampaignPackHandler = (): void => {
         closeCampaignPackService(id).then(() => {
             if (!success) return openAlertModalHandler("Algo falló", "")
-            window.location.href = "/index"
+            window.location.href = '/index'
         })
     }
 
@@ -99,6 +76,27 @@ export const CampaignPage = () => {
         )
     }
 
+    const refreshHandler = useCallback((): void => {
+        if (id) getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
+            if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
+                return window.location.href = '/index'
+            }
+            setCampaignPack(campaignPack)
+            let phones: number[] = []
+            let i: number = 0
+            while (i < 50) {
+                phones.push(campaignPack?.desde + i)
+                i++
+            }
+            setPhoneNumbers(phones)
+        })
+    }, [id])
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+        refreshHandler()
+        return () => setCampaignPack(undefined)
+    }, [refreshHandler])
 
     return (
     <>

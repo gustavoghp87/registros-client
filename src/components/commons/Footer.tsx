@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { generalBlue } from '../../config'
-import { typeRootState } from '../../store/store'
+import { typeRootState } from '../../models'
 
 export const Footer = () => {
 

@@ -1,26 +1,23 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useAuth } from '../../../context/authContext'
-import { typeObservation, typePolygon } from '../../../models/houseToHouse'
-import { typeTerritoryNumber } from '../../../models/territory'
-import { typeUser } from '../../../models/user'
-import { addHTHObservationService, editHTHObservationService } from '../../../services/houseToHouseServices'
-import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
-import { typeAppDispatch } from '../../../store/store'
 import { HTHForm } from '../HTHCommon/HTHForm'
+import { useAuth } from '../../../context/authContext'
+import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
+import { addHTHObservationService, editHTHObservationService } from '../../../services'
+import { typeAppDispatch, typeObservation, typePolygon, typeTerritoryNumber, typeUser } from '../../../models'
 
 export const HTHObservationsForm = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
-    const dispatch: typeAppDispatch = useDispatch()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const closeShowFormHandler: Function = props.closeShowFormHandler
     const currentFace: typePolygon = props.currentFace
     const editText: string = props.editText || ''
     const idEdit: number = props.idEdit || 0
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
     const territory: typeTerritoryNumber = props.territory
-    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
     const [text, setText] = useState<string>(editText)
+    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
     
     const submitHandler = (e: Event) => {
         e.preventDefault()

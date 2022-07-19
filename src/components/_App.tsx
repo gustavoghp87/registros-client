@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState } from '../store/store'
 import { NavBar } from './commons/NavBar'
 import { Footer } from './commons/Footer'
 import { AlertModal } from './commons/AlertModal'
@@ -27,15 +26,19 @@ import { GmailTokensPage } from './GmailTokensPage'
 import { changeMobileModeReducer } from '../store/MobileMode.Slice'
 import { AuthProvider } from '../context/authContext'
 import { recaptchaPublicKey } from '../config'
+import { typeAppDispatch, typeRootState } from '../models'
 import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 export const App = () => {
 
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const { showingAlertModal } = useSelector((state: typeRootState) => state.alertModal)
-    const dispatch: typeAppDispatch = useDispatch()
+    const { isDarkMode, isMobile, showingAlertModal } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile,
+        showingAlertModal: state.alertModal.showingAlertModal
+    }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+
     setTimeout(() => {
         if (isMobile && window.screen.width >= 990)
             dispatch(changeMobileModeReducer({ isMobile: window.screen.width < 990 }))

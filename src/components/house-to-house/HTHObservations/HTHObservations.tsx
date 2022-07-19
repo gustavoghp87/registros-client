@@ -3,11 +3,8 @@ import { useSelector } from 'react-redux'
 import { HTHObservationsForm } from './HTHObservationsForm'
 import { HTHObservationsItem } from './HTHObservationsItem'
 import { useAuth } from '../../../context/authContext'
-import { typeRootState } from '../../../store/store'
 import { generalBlue } from '../../../config'
-import { typeObservation, typePolygon } from '../../../models/houseToHouse'
-import { typeTerritoryNumber } from '../../../models/territory'
-import { typeUser } from '../../../models/user'
+import { typeObservation, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../../../models'
 
 export const HTHObservations = (props: any) => {
 
@@ -19,9 +16,7 @@ export const HTHObservations = (props: any) => {
     const territory: typeTerritoryNumber = props.territory
     const [showForm, setShowForm] = useState<boolean>(false)
 
-    const closeShowFormHandler = (): void => {
-        setShowForm(false)
-    }
+    const closeShowFormHandler = (): void => setShowForm(false)
 
     return (
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>

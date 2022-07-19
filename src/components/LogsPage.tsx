@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, ListGroup } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../store/store'
 import { useAuth } from '../context/authContext'
 import { Loading } from './commons/Loading'
 import { generalBlue } from '../config'
+import { getAllLogsService } from '../services'
+import { typeLog, typeLogsObj, typeRootState, typeUser } from '../models'
 import { H2 } from './css/css'
-import { getAllLogsService } from '../services/logServices'
-import { typeLog, typeLogsObj } from '../models/log'
-import { typeUser } from '../models/user'
 
 export const LogsPage = () => {
     
     const user: typeUser|undefined = useAuth().user
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const [logsPackage, setLogsPackage] = useState<typeLogsObj>()
     const [showCampaignAssignments, setShowCampaignAssignments] = useState<boolean>(false)
     const [showCampaignFinishing, setShowCampaignFinishing] = useState<boolean>(false)
@@ -22,12 +24,9 @@ export const LogsPage = () => {
     const [showPreaching, setShowPreaching] = useState<boolean>(false)
     const [showEmailErrors, setShowEmailErrors] = useState<boolean>(false)
     const [showErrors, setShowErrors] = useState<boolean>(false)
-    //const [showAppChanges, setShowAppChanges] = useState<boolean>(false)
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
-        //if (user && !user.isAuth) { window.location.href = "/"; return }
+        //if (user && !user.isAuth) { window.location.href = '/'; return }
         if (!logsPackage) getAllLogsService().then((logsObject: typeLogsObj|null) => {
             if (logsObject) setLogsPackage(logsObject)
         })

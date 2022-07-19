@@ -1,42 +1,29 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
-import { typeAppDispatch, typeRootState } from '../../store/store'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 import { Loading } from '../commons/Loading'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService, getUsersService, putHyphens } from '../../services'
+import { danger, noAsignado, primary, secondary, typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
 import { H2 } from '../css/css'
-import { putHyphens, isMobile } from '../../services/functions'
-import { getUsersService } from '../../services/userServices'
-import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService } from '../../services/campaignServices'
-import { typeCampaignPack } from '../../models/campaign'
-import { typeUser } from '../../models/user'
-import { danger, noAsignado, primary, secondary } from '../../models/territory'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const CampaignAdminsPage = () => {
-    const [users, setUsers] = useState<typeUser[]>()
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
     const [showFiltered, setShowFiltered] = useState(false)
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-
-    
-    useEffect(() => {
-        getUsersService().then((users: typeUser[]|null) => {
-            if (users) {
-                users.sort((a: typeUser, b: typeUser) => a.email.localeCompare(b.email))
-                setUsers(users)
-            }
-        })
-        refreshHandler()
-    }, [])
+    const [users, setUsers] = useState<typeUser[]>()
+    let id: number = 0
 
     const refreshHandler = (): void => {
         getCampaignPacksService().then((campaignPacks: typeCampaignPack[]|null) => {
             if (campaignPacks) setCampaignPacks(campaignPacks)
         })
     }
-
-    const dispatch: typeAppDispatch = useDispatch()
 
     const openAlertModalHandler = (title: string, message: string): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -45,8 +32,6 @@ export const CampaignAdminsPage = () => {
             message
         }))
     }
-
-    let id: number = 0
 
     const openConfirmModalHandler = (selecterId: number): void => {
         id = selecterId
@@ -80,6 +65,15 @@ export const CampaignAdminsPage = () => {
         })
     }
     
+    useEffect(() => {
+        getUsersService().then((users: typeUser[]|null) => {
+            if (users) {
+                users.sort((a: typeUser, b: typeUser) => a.email.localeCompare(b.email))
+                setUsers(users)
+            }
+        })
+        refreshHandler()
+    }, [])
 
     return (
     <>

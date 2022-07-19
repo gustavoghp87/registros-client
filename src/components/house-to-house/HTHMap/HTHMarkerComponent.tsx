@@ -1,5 +1,5 @@
 import { Marker } from '@react-google-maps/api'
-import { typeMarker } from '../../../models/houseToHouse'
+import { typeMarker } from '../../../models'
 
 export const HTHMarkerComponent = (props: any) => {
 

@@ -1,10 +1,9 @@
+import io from 'socket.io-client'
 import { useState, useEffect } from 'react'
 import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
-import { useNavigate, useParams } from 'react-router'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState } from '../store/store'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
-import io from 'socket.io-client'
 import { SERVER } from '../config'
 import { Loading } from './commons/Loading'
 import { generalBlue } from '../config'
@@ -18,23 +17,24 @@ import { Col4 } from './territory-components/Col4'
 import { TerritoryWarningToaster } from './territory-components/TerritoryWarningToaster'
 import { MapModal } from './territory-components/MapModal'
 import { useAuth } from '../context/authContext'
-import { markTerritoryAsFinishedService as closeTerritoryService, getStateOfTerritoryService } from '../services/stateOfTerritoryServices'
-import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService } from '../services/territoryServices'
-import * as types from '../models/territory'
-import { typeUser } from '../models/user'
+import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService, getStateOfTerritoryService, markTerritoryAsFinishedService } from '../services'
+import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeUser } from '../models'
+import { danger, dark, primary, success, warning } from '../models'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const TerritoriosPage = () => {
 
     const user: typeUser|undefined = useAuth().user
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const { territorio, manzana, todo } = useParams<any>()
-    const navigate = useNavigate()
-    const showingAll: boolean = todo === 'todo'
-    const [blocks, setBlocks] = useState<types.typeBlock[]>()
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
+    const navigate: NavigateFunction = useNavigate()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const [blocks, setBlocks] = useState<typeBlock[]>()
     const [brought, setBrought] = useState<number>(10)
-    const [households, setHouseholds] = useState<types.typeHousehold[]>()
+    const [households, setHouseholds] = useState<typeHousehold[]>()
     const [loaded, setLoaded] = useState<boolean>(false)
     const [isFinished, setIsFinished] = useState<boolean>(false)
     const [textBtn, setTextBtn] = useState<string>('Traer 10 más')
@@ -44,45 +44,7 @@ export const TerritoriosPage = () => {
     const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
     const [socket, setSocket] = useState<any>(null)
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null);
-
-    
-    useEffect(() => {
-        // window.scrollTo(0, 0)
-        if (territorio) getBlocksService(territorio).then((blocks: types.typeBlock[]|null) => { if (blocks) setBlocks(blocks) })
-        if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, brought, showingAll)
-            .then((response: [types.typeHousehold[], boolean]|null) => {
-                if (response && response[0]) {
-                    new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
-                    const households: types.typeHousehold[] = response[0]
-                    setHouseholds(households)
-                    if (response[1]) setShowBottomBtns(false)
-                    setTextBtn(`Traer 10 más (${brought + 10})`)
-                    getStateOfTerritoryService(territorio).then((stateOfTerritory: types.typeStateOfTerritory|null) => {
-                        if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory.isFinished) }
-                    })
-                }
-            })
-        ;
-        if (!socket && user && user.email) {    // socket
-            const newSocket = io(SERVER, { withCredentials: true })
-            newSocket.on('household: change', (updatedHouseholds: types.typeHousehold[], userEmail: string) => {
-                if (updatedHouseholds && updatedHouseholds[0].territorio === territorio) {
-                    if (updatedHouseholds[0].manzana === manzana) {
-                        setHouseholds(updatedHouseholds)
-                    }
-                    if (user && userEmail && userEmail !== user.email) {
-                        setShowWarningToaster(true)
-                        setUserEmailWarningToaster(userEmail)
-                    }
-                }
-            })
-            if (newSocket) setSocket(newSocket)
-        }
-        if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
-        return () => setHouseholds(undefined)
-    }, [showingAll, manzana, territorio, brought, socket, socket?.connected, user, user?.email])
-
-    const dispatch: typeAppDispatch = useDispatch()
+    const showingAll: boolean = todo === 'todo'
 
     const openAlertModalHandler = (title: string, message: string): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -103,14 +65,14 @@ export const TerritoriosPage = () => {
     
     const closeTerritoryHandler = async (): Promise<void> => {
         if (!territorio) return
-        const success = await closeTerritoryService(territorio, true)
+        const success = await markTerritoryAsFinishedService(territorio, true)
         if (!success) return openAlertModalHandler("Algo falló", "")
         navigate("/index")
     }
 
     const openTerritoryHandler = async (): Promise<void> => {
         if (!territorio) return
-        const success: boolean = await closeTerritoryService(territorio, false)
+        const success: boolean = await markTerritoryAsFinishedService(territorio, false)
         if (!success) openAlertModalHandler("Algo falló", "")
         window.location.reload()
     }
@@ -118,14 +80,14 @@ export const TerritoriosPage = () => {
     const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
         noAbonado = !noAbonado ? false : true
         asignado = !asignado ? false : true
-        const household: types.typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
+        const household: typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
         if (!household) return openAlertModalHandler("Algo falló al modificar", "")
         sendUpdatedHousehold(household)
     }
     
-    const sendUpdatedHousehold = (updatedHousehold: types.typeHousehold): void => {
+    const sendUpdatedHousehold = (updatedHousehold: typeHousehold): void => {
         let indexOfHousehold: number = 0
-        households?.forEach((household: types.typeHousehold, index: number) => {
+        households?.forEach((household: typeHousehold, index: number) => {
             if (household.inner_id === updatedHousehold.inner_id) indexOfHousehold = index
         })
         const objPackage: any = {
@@ -148,7 +110,7 @@ export const TerritoriosPage = () => {
         setBrought(10000)
     }
 
-    const toggleshowWarningToaster = (): void => setShowWarningToaster(false)
+    const toggleShowWarningToaster = (): void => setShowWarningToaster(false)
 
     const showGoogleMapHandler = (address: string): void => {
         setShowGoogleMapAddress(address)
@@ -158,6 +120,41 @@ export const TerritoriosPage = () => {
         setShowGoogleMapAddress("")
     }
 
+    useEffect(() => {
+        // window.scrollTo(0, 0)
+        if (territorio) getBlocksService(territorio).then((blocks: typeBlock[]|null) => { if (blocks) setBlocks(blocks) })
+        if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, brought, showingAll)
+            .then((response: [typeHousehold[], boolean]|null) => {
+                if (response && response[0]) {
+                    new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
+                    const households: typeHousehold[] = response[0]
+                    setHouseholds(households)
+                    if (response[1]) setShowBottomBtns(false)
+                    setTextBtn(`Traer 10 más (${brought + 10})`)
+                    getStateOfTerritoryService(territorio).then((stateOfTerritory: typeStateOfTerritory|null) => {
+                        if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory.isFinished) }
+                    })
+                }
+            })
+        ;
+        if (!socket && user && user.email) {    // socket
+            const newSocket = io(SERVER, { withCredentials: true })
+            newSocket.on('household: change', (updatedHouseholds: typeHousehold[], userEmail: string) => {
+                if (updatedHouseholds && updatedHouseholds[0].territorio === territorio) {
+                    if (updatedHouseholds[0].manzana === manzana) {
+                        setHouseholds(updatedHouseholds)
+                    }
+                    if (user && userEmail && userEmail !== user.email) {
+                        setShowWarningToaster(true)
+                        setUserEmailWarningToaster(userEmail)
+                    }
+                }
+            })
+            if (newSocket) setSocket(newSocket)
+        }
+        if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
+        return () => setHouseholds(undefined)
+    }, [showingAll, manzana, territorio, brought, socket, socket?.connected, user, user?.email])
 
     return (
         <>
@@ -170,12 +167,14 @@ export const TerritoriosPage = () => {
                 />
             }
 
-            <WarningToaster
-                showWarningToaster={showWarningToaster}
-                toggleshowWarningToaster={toggleshowWarningToaster}
-                userEmailWarningToaster={userEmailWarningToaster}
-                currentUserEmail={user?.email}
-            />
+            {user &&
+                <WarningToaster
+                    currentUserEmail={user.email}
+                    showWarningToaster={showWarningToaster}
+                    toggleShowWarningToaster={toggleShowWarningToaster}
+                    userEmailWarningToaster={userEmailWarningToaster}
+                />
+            }
 
             <h1 className={isDarkMode ? 'text-white' : ''}
                 style={{
@@ -189,7 +188,7 @@ export const TerritoriosPage = () => {
             </h1>
 
 
-            <Button variant="dark"
+            <Button variant={dark}
                 onClick={() => setShowMap(!showMap)}
                 style={{ display: 'block', margin: '22px auto' }}
             >
@@ -255,13 +254,13 @@ export const TerritoriosPage = () => {
             </Button>
 
 
-            {households && !!households.length && households.map((household: types.typeHousehold) => {
+            {households && !!households.length && households.map((household: typeHousehold) => {
 
-                if (household.estado === types.noPredicado) household = { ...household, variante: types.success }
-                if (household.estado === types.contesto) household = { ...household, variante: types.primary }
-                if (household.estado === types.noContesto) household = { ...household, variante: types.warning }
-                if (household.estado === types.aDejarCarta) household = { ...household, variante: types.danger }
-                if (household.estado === types.noLlamar) household = { ...household, variante: types.dark }
+                if (household.estado === noPredicado) household = { ...household, variante: success }
+                if (household.estado === contesto) household = { ...household, variante: primary }
+                if (household.estado === noContesto) household = { ...household, variante: warning }
+                if (household.estado === aDejarCarta) household = { ...household, variante: danger }
+                if (household.estado === noLlamar) household = { ...household, variante: dark }
 
                 const secColorClass: string = isDarkMode && household?.asignado ? 'assigned-household' : (
                     isDarkMode ? 'bg-dark text-white' : (

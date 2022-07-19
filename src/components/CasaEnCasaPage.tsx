@@ -2,26 +2,25 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
-import { typeRootState } from '../store/store'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
-import { H2 } from './css/css'
-import { typeUser } from '../models/user'
 import { generalBlue } from '../config'
 import { HTHDoNotCalls } from './house-to-house/HTHDoNotCalls/HTHDoNotCalls'
 import { HTHObservations } from './house-to-house/HTHObservations/HTHObservations'
 import { HTHMap } from './house-to-house/HTHMap/HTHMap'
-import { typeBlock, typeTerritoryNumber } from '../models/territory'
-import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../services/houseToHouseServices'
-import { typeDoNotCall, typeFace, typeHTHTerritory, typePolygon } from '../models/houseToHouse'
+import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../services'
+import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../models'
+import { H2 } from './css/css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const CasaEnCasaPage = () => {
     
     const territory = useParams<any>().territory as typeTerritoryNumber
     const user: typeUser|undefined = useAuth().user
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const [currentFace, setCurrentFace] = useState<typePolygon>()
     const [loading, setLoading] = useState<boolean>(true)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
@@ -42,7 +41,7 @@ export const CasaEnCasaPage = () => {
         }
     }
 
-    const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory, isFromInterval: boolean = false): void => {
+    const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
         setTerritoryHTH(territoryHTH0)
     }
 

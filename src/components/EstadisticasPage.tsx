@@ -1,24 +1,23 @@
 import { useEffect, useState } from 'react'
 import { Card, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../store/store'
-import { H2 } from './css/css'
-import { generalBlue } from '../config'
 import { Loading } from './commons/Loading'
-import { getStateOfTerritoriesService } from '../services/stateOfTerritoryServices'
-import { getAllLocalStatisticsService, getGlobalStatisticsService } from '../services/statisticsServices'
-import { typeLocalStatistic, typeStatistic } from '../models/statistic'
-import { typeStateOfTerritory } from '../models/territory'
+import { generalBlue } from '../config'
+import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../services'
+import { typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../models'
+import { H2 } from './css/css'
 
 export const EstadisticasPage = () => {
 
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const [globalStatistics, setGlobalStatistics] = useState<typeStatistic|null>()
     const [localStatisticsArray, setLocalStatisticsArray] = useState<typeLocalStatistic[]|null>()
     const [loading, setLoading] = useState<boolean>(false)
     const [showBtn, setShowBtn] = useState<boolean>(true)
     const [states, setStates] = useState<typeStateOfTerritory[]>()
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
         getGlobalStatisticsService().then((data: typeStatistic|null) => {
@@ -42,8 +41,7 @@ export const EstadisticasPage = () => {
     <>
         <H2 className={isDarkMode ? 'text-white' : ''}> ESTADÍSTICAS GLOBALES </H2>
 
-        {globalStatistics
-        ?
+        {globalStatistics ?
             <div style={{ margin: isMobile ? '0' : '0 10%' }}>
                 <br/>
                 <br/>
@@ -94,17 +92,19 @@ export const EstadisticasPage = () => {
         <br/>
 
         
-        <Button //variant={"primary"}
-            className={`${showBtn ? 'd-block m-auto' : 'd-none'}`}
-            style={{
-                backgroundColor: generalBlue,
-                border: '1px solid ' + generalBlue,
-                borderRadius:' 5px'
-            }}
-            onClick={() => retrieveLocalStats()}
-        >
-            Traer Estadísticas por Territorio
-        </Button>
+        {showBtn &&
+            <Button
+                className={'d-block mx-auto'}
+                style={{
+                    backgroundColor: generalBlue,
+                    border: '1px solid ' + generalBlue,
+                    borderRadius: '5px'
+                }}
+                onClick={() => retrieveLocalStats()}
+            >
+                Traer Estadísticas por Territorio
+            </Button>
+        }
 
         {localStatisticsArray && !!localStatisticsArray.length &&
             localStatisticsArray.map((territory: typeLocalStatistic, index: number) => {

@@ -3,24 +3,22 @@ import { Card, Button } from 'react-bootstrap'
 import { Loading } from './commons/Loading'
 import { useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState } from '../store/store'
-import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import { Col0b } from './territory-components/Col0b'
-import { isMobile, timeConverter } from '../services/functions'
+import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
+import { getLocalStatisticsService, getStateOfTerritoryService, resetTerritoryService, timeConverter } from '../services'
+import { typeAppDispatch, typeLocalStatistic, typeResetDate, typeRootState, typeStateOfTerritory } from '../models'
 import { H2 } from './css/css'
-import { resetTerritoryService } from '../services/territoryServices'
-import { getLocalStatisticsService } from '../services/statisticsServices'
-import { getStateOfTerritoryService } from '../services/stateOfTerritoryServices'
-import { typeLocalStatistic } from '../models/statistic'
-import { typeResetDate, typeStateOfTerritory } from '../models/territory'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const EstadisticasLocalPage = () => {
 
     const { territorio } = useParams<string>()
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const [datos, setDatos] = useState<typeLocalStatistic>()
     const [stateOfTerritory, setStateOfTerritory] = useState<typeStateOfTerritory>()
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
 
     useEffect(() => {
         if (territorio) {

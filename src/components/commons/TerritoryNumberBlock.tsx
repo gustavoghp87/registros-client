@@ -1,17 +1,17 @@
-import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../../store/store'
 import { Row } from 'react-bootstrap'
 import { useAuth } from '../../context/authContext'
-import { typeUser } from '../../models/user'
+import { typeRootState, typeUser } from '../../models'
 
 export const TerritoryNumberBlock = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
-    const territories: number[] = props.territories
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const mode: number = props.mode
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const territories: number[] = props.territories
 
     return (
         <div className={'container pt-0 mb-0'}>

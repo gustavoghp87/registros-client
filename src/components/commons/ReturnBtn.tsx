@@ -3,14 +3,14 @@ import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { Button } from 'react-bootstrap'
 import { BsBackspace } from 'react-icons/bs'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../../store/store'
 import { generalBlue } from '../../config'
+import { typeRootState } from '../../models'
 
 export const ReturnBtn = () => {
 
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const navigate: NavigateFunction = useNavigate()
     const [show, setShow] = useState<boolean>(false)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
 
     useEffect(() => {
         if (window.location.pathname === '/index') setShow(true)
@@ -24,29 +24,30 @@ export const ReturnBtn = () => {
         else if (window.location.pathname.split('/')[1] === 'casa-en-casa') setShow(true)
     }, [])
     
-    return (
-        <div className={`mt-2 ${show ? '' : 'd-none'}`}
-            style={{
-                position: 'fixed',
-                left: '0',
-                marginLeft: isMobile ? '10px' : '10px',
-                marginTop: isMobile ? '0' : '0px',
-                zIndex: 3
-            }}
-        >
-            <Button size={isMobile ? 'sm' : undefined}
-                onClick={() => navigate(-1)}
+    return (<>
+        {show &&
+            <div className={'mt-2'}
                 style={{
-                    backgroundColor: generalBlue,
-                    border: '1px solid ' + generalBlue,
-                    borderRadius:' 5px',
-                    //height: isMobile ? '35px' :'47px'
+                    position: 'fixed',
+                    left: '0',
+                    marginLeft: isMobile ? '10px' : '10px',
+                    marginTop: isMobile ? '0' : '0px',
+                    zIndex: 3
                 }}
             >
+                <Button size={isMobile ? 'sm' : undefined}
+                    onClick={() => navigate(-1)}
+                    style={{
+                        backgroundColor: generalBlue,
+                        border: '1px solid ' + generalBlue,
+                        borderRadius:' 5px'
+                    }}
+                >
 
-                <BsBackspace style={{ paddingBottom: '3px' }} /> VOLVER &nbsp;
+                    <BsBackspace style={{ paddingBottom: '3px' }} /> VOLVER &nbsp;
 
-            </Button>
-        </div>
-    )
+                </Button>
+            </div>
+        }
+    </>)
 }

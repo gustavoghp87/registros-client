@@ -2,35 +2,21 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
-import { typeAppDispatch, typeRootState } from '../store/store'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
-import { getEmailByEmailLink as getEmailByEmailToken } from '../services/userServices'
-import { changePswService } from '../services/tokenServices'
+import { changePswService, getEmailByEmailLink } from '../services'
+import { typeAppDispatch, typeRootState } from '../models'
 
 export const RecoveryPage = () => {
 
     const { id } = useParams<string>()
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const [confPassword, setConfPassword] = useState<string>('')
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-    const [confPassword, setConfPassword] = useState<string>('')
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-
-    const dispatch: typeAppDispatch = useDispatch()
-
-    useEffect(() => {
-        if (id && !email) getEmailByEmailToken(id).then((email: string|null) => {
-            if (email) setEmail(email)
-            else {
-                dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "El link no es válido",
-                    message: "",
-                    execution: () => window.location.href = "/"
-                }))
-            }
-        })
-    }, [id, email, dispatch])
 
     const openAlertModalHandler = (title: string, message: string, execution: Function|undefined = undefined): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -47,14 +33,28 @@ export const RecoveryPage = () => {
         if (password !== confPassword) return openAlertModalHandler("La contraseña no coincide con su confirmación", "")
         const response = await changePswService(null, password, id)
         if (response && response.success) {
-            openAlertModalHandler("Clave cambiada con éxito", "", () => window.location.href = "/")
+            openAlertModalHandler("Clave cambiada con éxito", "", () => window.location.href = '/')
         } else if (response && response.expired) {
-            openAlertModalHandler("Este link ya expiró; pedir otro", "", () => window.location.href = "/acceso")
+            openAlertModalHandler("Este link ya expiró; pedir otro", "", () => window.location.href = '/acceso')
         } else if (response && response.used) {
-            openAlertModalHandler("Este link de recuperación ya se usó antes", "", () => window.location.href = "/acceso")
+            openAlertModalHandler("Este link de recuperación ya se usó antes", "", () => window.location.href = '/acceso')
         } else openAlertModalHandler("Algo salió mal", "")
     }
     
+    useEffect(() => {
+        if (id && !email) getEmailByEmailLink(id).then((email: string|null) => {
+            if (email) setEmail(email)
+            else {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "El link no es válido",
+                    message: "",
+                    execution: () => window.location.href = '/'
+                }))
+            }
+        })
+    }, [id, email, dispatch])
+
     return (
         <Container
             style={{ maxWidth: '95%', marginTop: '50px', padding: '0' }}>

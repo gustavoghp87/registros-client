@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { changeDarkModeReducer } from '../../store/DarkModeSlice'
-import { typeAppDispatch, typeRootState } from '../../store/store'
+import { typeAppDispatch, typeRootState } from '../../models'
 
 export const DarkModeButton = () => {
 
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     
     return (

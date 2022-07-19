@@ -1,25 +1,22 @@
 import { useState } from 'react'
-import { HTHForm } from '../HTHCommon/HTHForm'
-import { useAuth } from '../../../context/authContext'
-import { addHTHDoNotCallService } from '../../../services/houseToHouseServices'
-import { typeTerritoryNumber } from '../../../models/territory'
-import { typeDoNotCall, typePolygon } from '../../../models/houseToHouse'
-import { typeUser } from '../../../models/user'
-import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
-import { typeAppDispatch } from '../../../store/store'
 import { useDispatch } from 'react-redux'
+import { HTHForm } from '../HTHCommon/HTHForm'
+import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
+import { useAuth } from '../../../context/authContext'
+import { addHTHDoNotCallService } from '../../../services'
+import { typeAppDispatch, typeDoNotCall, typePolygon, typeTerritoryNumber, typeUser } from '../../../models'
 
 export const HTHDoNotCallsForm = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
-    const dispatch: typeAppDispatch = useDispatch()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const closeShowFormHandler: Function = props.closeShowFormHandler
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const territory: typeTerritoryNumber = props.territory
-    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
     const [streetNumber, setStreetNumber] = useState<number>(0)
     const [doorBell, setDoorBell] = useState<string>('')
+    const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
 
     const submitHandler = (e: Event): void => {
         e.preventDefault()

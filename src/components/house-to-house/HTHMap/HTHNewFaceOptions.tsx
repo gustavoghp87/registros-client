@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Button, Container, Dropdown, FloatingLabel, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeFace, typeHTHTerritory } from '../../../models/houseToHouse'
-import { danger, dark, typeBlock } from '../../../models/territory'
-import { getHTHStreetsByTerritoryService } from '../../../services/houseToHouseServices'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
-import { typeAppDispatch, typeRootState } from '../../../store/store'
+import { getHTHStreetsByTerritoryService } from '../../../services'
+import { danger, typeAppDispatch, typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
 
 export const HTHNewFaceOptions = (props: any) => {
 
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const dispatch: typeAppDispatch = useDispatch()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const addFaceHandler: Function = props.addFaceHandler
     const territoryHTH: typeHTHTerritory = props.territoryHTH
     const [blocks, setBlocks] = useState<typeBlock[]>(['1', '2', '3', '4', '5', '6'])

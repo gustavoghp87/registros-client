@@ -1,13 +1,13 @@
 import { Button, Container, Form, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typePolygon } from '../../../models/houseToHouse'
-import { dark, typeTerritoryNumber } from '../../../models/territory'
-import { typeRootState } from '../../../store/store'
+import { dark, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 
 export const HTHForm = (props: any) => {
 
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const cancelFormHandler: Function = props.cancelFormHandler
     const currentFace: typePolygon = props.currentFace
     const date: string = props.date

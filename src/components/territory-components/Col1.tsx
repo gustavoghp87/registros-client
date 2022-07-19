@@ -1,7 +1,6 @@
 import { Col } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../../store/store'
-import { typeHousehold } from '../../models/territory'
+import { typeHousehold, typeRootState } from '../../models'
 
 export const Col1 = (props: any) => {
 

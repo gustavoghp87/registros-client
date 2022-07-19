@@ -1,23 +1,22 @@
+import io from 'socket.io-client'
 import { useState, useEffect } from 'react'
 import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState } from '../store/store'
 import { setValuesAndOpenAlertModalReducer, typeMode } from '../store/AlertModalSlice'
 import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
-import io from 'socket.io-client'
 import { SERVER } from '../config'
-import { assignTerritoryService, modifyUserService, getUsersService } from '../services/userServices'
-import { changePswOtherUserService } from '../services/tokenServices'
-import { typeUser } from '../models/user'
-import { danger, primary, dark } from '../models/territory'
+import { assignTerritoryService, changePswOtherUserService, modifyUserService, getUsersService } from '../services'
+import { danger, primary, dark, typeUser, typeAppDispatch, typeRootState } from '../models'
 import { H2 } from './css/css'
 
 export const AdminsPage = () => {
     
     const { refreshUser, user } = useAuth()
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const [users, setUsers] = useState<typeUser[]>()
     const [asignVisible, setAsignVisible] = useState<boolean>(false)
     const [groupVisible, setGroupVisible] = useState<boolean>(false)
@@ -121,12 +120,12 @@ export const AdminsPage = () => {
         </H2>
 
         <Button variant={danger} style={{ display: 'block', margin: '50px auto 0 auto', width: '227px' }}
-            onClick={() => window.location.href = "/logs"}>
+            onClick={() => window.location.href = '/logs'}>
             Ir a Logs de la Aplicación
         </Button>
 
         <Button variant={danger} style={{ display: 'block', margin: '30px auto 60px auto' }}
-            onClick={() => window.location.href = "/celulares-admins"}>
+            onClick={() => window.location.href = '/celulares-admins'}>
             Ir a Campaña Celulares 2022
         </Button>
 
@@ -308,9 +307,7 @@ export const AdminsPage = () => {
                             <Button className={'col-12 m-2'} variant={primary}
                                 onClick = {() => openConfirmModalHandler(user?.email)}
                             >
-
                                 RESETEAR CONTRASEÑA
-
                             </Button>
 
                         </Card.Body>

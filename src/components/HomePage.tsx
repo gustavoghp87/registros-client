@@ -1,15 +1,16 @@
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../store/store'
 import { generalBlue } from '../config'
-import { H2 } from './css/css'
 import { useAuth } from '../context/authContext'
-import { typeUser } from '../models/user'
+import { typeRootState, typeUser } from '../models'
+import { H2 } from './css/css'
 
 export const HomePage = () => {
 
     const user: typeUser|undefined = useAuth().user
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     
     return (
     <>

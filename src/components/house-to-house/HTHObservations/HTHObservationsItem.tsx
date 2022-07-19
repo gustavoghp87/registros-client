@@ -4,16 +4,13 @@ import { HTHObservationsForm } from './HTHObservationsForm'
 import { HTHItemCard } from '../HTHCommon/HTHItemCard'
 import { useAuth } from '../../../context/authContext'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
-import { typeAppDispatch } from '../../../store/store'
-import { deleteHTHObservationService } from '../../../services/houseToHouseServices'
-import { typeObservation, typePolygon } from '../../../models/houseToHouse'
-import { typeUser } from '../../../models/user'
-import { typeTerritoryNumber } from '../../../models/territory'
+import { deleteHTHObservationService } from '../../../services'
+import { typeAppDispatch, typeObservation, typePolygon, typeTerritoryNumber, typeUser } from '../../../models'
 
 export const HTHObservationsItem = (props: any) => {
 
     const user: typeUser|undefined = useAuth().user
-    const dispatch: typeAppDispatch = useDispatch()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const closeShowAddFormHandler: Function = props.closeShowFormHandler
     const currentFace: typePolygon = props.currentFace
     const date: string = props.date
