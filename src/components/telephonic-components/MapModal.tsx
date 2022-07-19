@@ -34,26 +34,10 @@ export const MapModal = (props: any) => {
         } catch (error) {
             console.log(error)
         }
-
         getGeocodingFromAddressService(target).then((coordinates: typeCoords|null) => {
-            console.log(coordinates)
             if (coordinates && coordinates.lat && coordinates.lng) setCenterCoords({ lat: coordinates.lat, lng: coordinates.lng })
         })
-
-        // Geocode.setApiKey("")
-        // Geocode.setLanguage('es')
-        // Geocode.setRegion('arg')
-        // Geocode.setLocationType('ROOFTOP')    // ROOFTOP, RANGE_INTERPOLATED, GEOMETRIC_CENTER, APPROXIMATE
-        // if (isLocalhost) Geocode.enableDebug()
-        // Geocode.fromAddress(target).then(
-        //     (response) => {
-        //         const { lat, lng } = response.results[0].geometry.location
-        //         setCenterCoords({ lat, lng })
-        //     },
-        //     (error) => { console.log(error) }
-        // )
-
-        return () => { }
+        return () => setCenterCoords(undefined)
     }, [address])
 
     return (<>

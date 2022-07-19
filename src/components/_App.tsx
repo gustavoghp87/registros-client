@@ -10,13 +10,13 @@ import { FloatingWidgets } from './commons/FloatingWidgets'
 import { LoginPage } from './LoginPage'
 import { HomePage } from './HomePage'
 import { IndexPage } from './IndexPage'
-import { TerritoriosPage } from './TerritoriosPage'
-import { EstadisticasPage } from './EstadisticasPage'
-import { EstadisticasLocalPage } from './EstadisticasLocalPage'
+import { TelephonicPage } from './TelephonicPage'
+import { EstadisticasPage } from './StatisticsPage'
+import { LocalStatisticsPage } from './LocalStatisticsPage'
 import { UserPage } from './UserPage'
 import { AdminsPage } from './AdminsPage'
 import { RecoveryPage } from './RecoveryPage'
-import { CasaEnCasaPage } from './CasaEnCasaPage'
+import { CasaEnCasaPage } from './HouseToHousePage'
 import { LogsPage } from './LogsPage'
 import { PrivacyPolicyPage } from './PrivacyPolicyPage'
 import { TermsOfServicePage } from './TermsOfService'
@@ -70,10 +70,10 @@ export const App = () => {
                                 <Route element={ <LoginPage /> } path={'/acceso'} />
                                 <Route element={ <IndexPage /> } path={'/index'} />
                                 <Route element={ <CasaEnCasaPage /> } path={'/casa-en-casa/:territory'} />
-                                <Route element={ <TerritoriosPage /> } path={'/territorios/:territorio/:manzana'} />
-                                <Route element={ <TerritoriosPage /> } path={'/territorios/:territorio/:manzana/:todo'} />
+                                <Route element={ <TelephonicPage /> } path={'/territorios/:territorio/:manzana'} />
+                                <Route element={ <TelephonicPage /> } path={'/territorios/:territorio/:manzana/:todo'} />
                                 <Route element={ <EstadisticasPage /> } path={'/estadisticas'} />
-                                <Route element={ <EstadisticasLocalPage /> } path={'/estadisticas/:territorio'} />
+                                <Route element={ <LocalStatisticsPage /> } path={'/estadisticas/:territorio'} />
                                 <Route element={ <UserPage /> } path={'/usuario'} />
                                 <Route element={ <AdminsPage /> } path={'/admins'} />
                                 <Route element={ <RecoveryPage /> } path={'/recovery/:id'} />

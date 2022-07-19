@@ -3,14 +3,14 @@ import { Card, Button } from 'react-bootstrap'
 import { Loading } from './commons/Loading'
 import { useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { Col0b } from './territory-components/Col0b'
+import { Col0b } from './telephonic-components/Col0b'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import { getLocalStatisticsService, getStateOfTerritoryService, resetTerritoryService, timeConverter } from '../services'
 import { typeAppDispatch, typeLocalStatistic, typeResetDate, typeRootState, typeStateOfTerritory } from '../models'
 import { H2 } from './css/css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const EstadisticasLocalPage = () => {
+export const LocalStatisticsPage = () => {
 
     const { territorio } = useParams<string>()
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({

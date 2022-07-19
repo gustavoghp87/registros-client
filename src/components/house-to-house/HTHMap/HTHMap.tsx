@@ -148,7 +148,8 @@ export const HTHMap = (props: any) => {
         const p2x: number = path[1].lng()
         const p3y: number = path[2].lat()
         const p3x: number = path[2].lng()
-        if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
+        if (polygon
+            && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
             && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
             && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
         ) return
@@ -170,12 +171,6 @@ export const HTHMap = (props: any) => {
         )
         setTerritoryHTHHandler(currentTerritoryHTH, true)
     }
-
-    let interval: NodeJS.Timer
-
-    const setPolygonInterval = (googlePolygon0: google.maps.Polygon, polygon: typePolygon): void => {
-        interval = setInterval(() => intervalExecution(googlePolygon0, polygon), 1000)
-    }
     
     const cancelChangesHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -187,30 +182,20 @@ export const HTHMap = (props: any) => {
     }
 
     const reloadHandler = (): void => {
-        setRunIntervals(false)
-        setIsEditingView(false)
-        setIsAddingPolygon(false)
         refreshHTHTerritoryHandler()
+        setIsAddingPolygon(false)
+        setIsEditingView(false)
+        setRunIntervals(false)
+        setShowNewFaceOptions(false)
     }
 
 
     return (<>
-        <div className={'position-relative'}
-            style={{
-                marginBottom: isMobile ? '660px' : ''
-            }}
-        >
+        <div className={'position-relative'} style={{ marginBottom: isMobile ? '660px' : '' }}>
             <GoogleMap
                 center={territoryHTH.map.centerCoords}
                 id={mapId}
                 mapContainerClassName={isMobile ? 'position-absolute' : 'd-block m-auto'}
-                // mapContainerStyle={{
-                //     height: '350px',
-                //     marginRight: '-117px',
-                //     right: isMobile ? 0 : '',
-                //     transform: isMobile ? 'rotate(-0.25turn)' : '',
-                //     width: '600px'
-                // }}
                 mapContainerStyle={{
                     height: isMobile ? '600px' : '500px',
                     width: isMobile ? '100%' : '90%'
@@ -246,11 +231,8 @@ export const HTHMap = (props: any) => {
                                 isAddingPolygon={isAddingPolygon}
                                 isEditingView={isEditingView}
                                 polygon={polygon}
-                                
                                 runIntervals={runIntervals}
-                                
                                 selectBlockAndFaceHandler={selectBlockAndFaceHandler}
-                                setPolygonInterval={setPolygonInterval}
                                 setTerritoryHTHHandler={setTerritoryHTHHandler}
                                 territoryHTH={territoryHTH}
                             />
@@ -282,8 +264,13 @@ export const HTHMap = (props: any) => {
                 {!isAddingPolygon &&
                     <button className={`mt-4 mr-4 btn ${isEditingView ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
                         onClick={() => {
-                            if (isEditingView) { initMapViewEditingHandler() }
-                            else { setIsEditingView(true); setRunIntervals(true) }
+                            if (isEditingView) {
+                                initMapViewEditingHandler()
+                            } else {
+                                selectBlockAndFaceHandler()
+                                setIsEditingView(true)
+                                setRunIntervals(true)
+                            }
                         }}
                     >
                         {isEditingView ? 'Guardar Cambios' : 'Editar Mapa'}
@@ -292,15 +279,21 @@ export const HTHMap = (props: any) => {
                 {!isEditingView && !showNewFaceOptions &&
                     <button className={`mt-4 btn ${isAddingPolygon ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
                         onClick={() => {
-                            if (isAddingPolygon) { addFaceHandler() }
-                            else { setIsAddingPolygon(true); setShowNewFaceOptions(true); setRunIntervals(true)}
+                            if (isAddingPolygon) {
+                                addFaceHandler()
+                            } else {
+                                selectBlockAndFaceHandler()
+                                setIsAddingPolygon(true)
+                                setRunIntervals(true)
+                                setShowNewFaceOptions(true)
+                            }
                         }}
                     >
                         {isAddingPolygon ? 'Guardar Cambios' : 'Agregar Cara'}
                     </button>
                 }
                 {(isEditingView || isAddingPolygon) && <>
-                    <button className={'mt-4 ml-4 btn btn-secondary btn-general-secondary'}
+                    <button className={`btn btn-secondary btn-general-secondary mt-4 ${showNewFaceOptions ? '' : 'ml-4'}`}
                         onClick={() => cancelChangesHandler()}
                     >
                         Cancelar Cambios

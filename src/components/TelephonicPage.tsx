@@ -8,21 +8,21 @@ import { SERVER } from '../config'
 import { Loading } from './commons/Loading'
 import { generalBlue } from '../config'
 import { WarningToaster } from './commons/WarningToaster'
-import { Col0a } from './territory-components/Col0a'
-import { Col0b } from './territory-components/Col0b'
-import { Col1 } from './territory-components/Col1'
-import { Col2 } from './territory-components/Col2'
-import { Col3 } from './territory-components/Col3'
-import { Col4 } from './territory-components/Col4'
-import { TerritoryWarningToaster } from './territory-components/TerritoryWarningToaster'
-import { MapModal } from './territory-components/MapModal'
+import { Col0a } from './telephonic-components/Col0a'
+import { Col0b } from './telephonic-components/Col0b'
+import { Col1 } from './telephonic-components/Col1'
+import { Col2 } from './telephonic-components/Col2'
+import { Col3 } from './telephonic-components/Col3'
+import { Col4 } from './telephonic-components/Col4'
+import { TerritoryWarningToaster } from './telephonic-components/TerritoryWarningToaster'
+import { MapModal } from './telephonic-components/MapModal'
 import { useAuth } from '../context/authContext'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService, getStateOfTerritoryService, markTerritoryAsFinishedService } from '../services'
 import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeUser } from '../models'
 import { danger, dark, primary, success, warning } from '../models'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const TerritoriosPage = () => {
+export const TelephonicPage = () => {
 
     const user: typeUser|undefined = useAuth().user
     const { territorio, manzana, todo } = useParams<any>()
@@ -134,41 +134,43 @@ export const TerritoriosPage = () => {
     useEffect(() => {
         if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, brought, showingAll)
             .then((response: [typeHousehold[], boolean]|null) => {
-                if (response && response[0]) {
-                    new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
-                    const households: typeHousehold[] = response[0]
-                    setHouseholds(households)
-                    if (response[1]) setShowBottomBtns(false)
-                    setTextBtn(`Traer 10 más (${brought + 10})`)
-                    getStateOfTerritoryService(territorio).then((stateOfTerritory: typeStateOfTerritory|null) => {
-                        if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory.isFinished) }
-                    })
-                }
+                if (!response || !response[0]) return
+                new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoaded(true))
+                const households: typeHousehold[] = response[0]
+                setHouseholds(households)
+                if (response[1]) setShowBottomBtns(false)
+                setTextBtn(`Traer 10 más (${brought + 10})`)
+                getStateOfTerritoryService(territorio).then((stateOfTerritory: typeStateOfTerritory|null) => {
+                    if (stateOfTerritory !== null) { setIsFinished(stateOfTerritory.isFinished) }
+                })
             })
         return () => setHouseholds(undefined)
     }, [showingAll, manzana, territorio, brought])
 
     useEffect(() => {
-        if (socket || !user || !user.email) return
+        if (!user || !user.email) return
         const newSocket: Socket = io(SERVER, { withCredentials: true })
         newSocket.on('household: change', (updatedHouseholds: typeHousehold[], userEmail: string) => {
             if (!updatedHouseholds || updatedHouseholds.length || updatedHouseholds[0].territorio !== territorio) return
             if (updatedHouseholds[0].manzana === manzana) {
                 setHouseholds(updatedHouseholds)
             }
-            if (user && userEmail && userEmail !== user.email) {
+            if (userEmail !== user.email) {
                 setShowWarningToaster(true)
                 setUserEmailWarningToaster(userEmail)
             }
         })
         if (newSocket) setSocket(newSocket)
         return () => setSocket(undefined)
-    }, [manzana, socket, socket?.connected, territorio, user])
-
+    }, [manzana, territorio, user])
+    
     useEffect(() => {
-        if (socket && !socket.connected) { console.log("Sin conectar") }
-        else { console.log("Conectado") }
-    }, [socket])
+        if (!socket) return
+        setTimeout(() => {
+            if (!socket.connected) { console.log("Sin conectar") }
+            else { console.log("Conectado") }
+        }, 1500)
+    }, [socket, socket?.connected])
 
     return (
         <>

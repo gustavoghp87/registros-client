@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
-import { generalBlue } from '../../../config'
+import { generalBlue, generalRed } from '../../../config'
 import { typeHTHTerritory, typePolygon } from '../../../models'
 import { editInfoWindowsStyles } from '../../../services'
 
@@ -24,7 +24,7 @@ export const HTHPolygonComponent = (props: any) => {
     }, [polygon])
 
     useEffect(() => {
-        setPolygonColor(currentFace && currentFace.id === polygon.id ? 'red' : polygon.isFinished ? 'black' : generalBlue)
+        setPolygonColor(currentFace && currentFace.id === polygon.id ? generalRed : polygon.isFinished ? 'black' : generalBlue)
     }, [currentFace, polygon.isFinished, polygon.id])
 
     useEffect(() => {
@@ -71,12 +71,12 @@ export const HTHPolygonComponent = (props: any) => {
             onLoad={(googlePolygon0: google.maps.Polygon) => ref.current = googlePolygon0}
             onMouseOver={() => {
                 if (isEditingView || isAddingPolygon || !ref.current || currentFace) return
-                setPolygonColor('red')
+                setPolygonColor(generalRed)
                 setShowInfoWindow(true)
             }}
             onMouseOut={() => {
                 if (isEditingView || isAddingPolygon || !ref.current) return
-                setPolygonColor(currentFace && currentFace.id === polygon.id ? 'red' : polygon.isFinished ? 'black' : generalBlue)
+                setPolygonColor(currentFace && currentFace.id === polygon.id ? generalRed : polygon.isFinished ? 'black' : generalBlue)
                 setShowInfoWindow(false)
             }}
             options={{

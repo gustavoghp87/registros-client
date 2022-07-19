@@ -26,6 +26,7 @@ export const CasaEnCasaPage = () => {
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
 
     const selectBlockAndFaceHandler = (selectedBlock: typeBlock, selectedFace: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
+        if (selectedBlock === undefined && selectedFace === undefined) setCurrentFace(undefined)
         if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
         const target: typeHTHTerritory = hthTerritory0 ?? territoryHTH
         let currentFace0: typePolygon|undefined = target.map.polygons.find((x: typePolygon) =>
@@ -37,7 +38,6 @@ export const CasaEnCasaPage = () => {
             if (currentFace0.observations)
                 currentFace0.observations = currentFace0.observations.reverse()
             if (currentFace0) setCurrentFace(currentFace0)
-            console.log("Current Face:", currentFace0);
         }
     }
 
