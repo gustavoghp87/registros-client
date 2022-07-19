@@ -1,4 +1,4 @@
-import io from 'socket.io-client'
+import io, { Socket } from 'socket.io-client'
 import { useState, useEffect } from 'react'
 import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
@@ -42,7 +42,7 @@ export const TerritoriosPage = () => {
     const [showMap, setShowMap] = useState<boolean>(false)
     const [showGoogleMapAddress, setShowGoogleMapAddress] = useState<string>("")
     const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
-    const [socket, setSocket] = useState<any>(null)
+    const [socket, setSocket] = useState<Socket>()
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null);
     const showingAll: boolean = todo === 'todo'
 
@@ -67,7 +67,7 @@ export const TerritoriosPage = () => {
         if (!territorio) return
         const success = await markTerritoryAsFinishedService(territorio, true)
         if (!success) return openAlertModalHandler("Algo falló", "")
-        navigate("/index")
+        navigate('/index')
     }
 
     const openTerritoryHandler = async (): Promise<void> => {
@@ -121,8 +121,17 @@ export const TerritoriosPage = () => {
     }
 
     useEffect(() => {
-        // window.scrollTo(0, 0)
-        if (territorio) getBlocksService(territorio).then((blocks: typeBlock[]|null) => { if (blocks) setBlocks(blocks) })
+        if (user && !user.isAuth) window.location.href = '/acceso'
+    }, [user])
+
+    useEffect(() => {
+        if (territorio) getBlocksService(territorio).then((blocks: typeBlock[]|null) => {
+            if (blocks && blocks.length) setBlocks(blocks)
+        })
+        return () => setBlocks(undefined)
+    }, [territorio])
+
+    useEffect(() => {
         if (territorio && manzana) getHouseholdsByTerritoryService(territorio, manzana, brought, showingAll)
             .then((response: [typeHousehold[], boolean]|null) => {
                 if (response && response[0]) {
@@ -136,25 +145,30 @@ export const TerritoriosPage = () => {
                     })
                 }
             })
-        ;
-        if (!socket && user && user.email) {    // socket
-            const newSocket = io(SERVER, { withCredentials: true })
-            newSocket.on('household: change', (updatedHouseholds: typeHousehold[], userEmail: string) => {
-                if (updatedHouseholds && updatedHouseholds[0].territorio === territorio) {
-                    if (updatedHouseholds[0].manzana === manzana) {
-                        setHouseholds(updatedHouseholds)
-                    }
-                    if (user && userEmail && userEmail !== user.email) {
-                        setShowWarningToaster(true)
-                        setUserEmailWarningToaster(userEmail)
-                    }
-                }
-            })
-            if (newSocket) setSocket(newSocket)
-        }
-        if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
         return () => setHouseholds(undefined)
-    }, [showingAll, manzana, territorio, brought, socket, socket?.connected, user, user?.email])
+    }, [showingAll, manzana, territorio, brought])
+
+    useEffect(() => {
+        if (socket || !user || !user.email) return
+        const newSocket: Socket = io(SERVER, { withCredentials: true })
+        newSocket.on('household: change', (updatedHouseholds: typeHousehold[], userEmail: string) => {
+            if (!updatedHouseholds || updatedHouseholds.length || updatedHouseholds[0].territorio !== territorio) return
+            if (updatedHouseholds[0].manzana === manzana) {
+                setHouseholds(updatedHouseholds)
+            }
+            if (user && userEmail && userEmail !== user.email) {
+                setShowWarningToaster(true)
+                setUserEmailWarningToaster(userEmail)
+            }
+        })
+        if (newSocket) setSocket(newSocket)
+        return () => setSocket(undefined)
+    }, [manzana, socket, socket?.connected, territorio, user])
+
+    useEffect(() => {
+        if (socket && !socket.connected) { console.log("Sin conectar") }
+        else { console.log("Conectado") }
+    }, [socket])
 
     return (
         <>

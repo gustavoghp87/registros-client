@@ -1,4 +1,4 @@
-// export const getTokenFromLSService = (): string|null => localStorage.getItem('token')
+export const getTokenFromLSService = (): string|null => localStorage.getItem('token')
 export const setTokenFromLSService = (newToken: string) => localStorage.setItem('token', newToken)
 export const clearTokenFromLSService = (): void => localStorage.removeItem('token')
 export const clearUserFromLSService = (): void => localStorage.removeItem('user')

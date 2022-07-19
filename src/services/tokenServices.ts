@@ -4,7 +4,7 @@ import { typeResponseData } from '../models'
 
 const base: string = `${SERVER}/api/token`
 
-export const getTokenService = (): string|null => getTokenFromLSService ? getTokenFromLSService() : null
+export const getTokenService = (): string|null => getTokenFromLSService()
 export const setTokenService = (newToken: string): void => setTokenFromLSService(newToken)
 export const clearTokenService = (): void => clearTokenFromLSService()
 const clearUserService = (): void => clearUserFromLSService()

@@ -59,7 +59,6 @@ export const CasaEnCasaPage = () => {
                 if (!hthTerritory0) return
                 if (streets0 && streets0.length) streets0.forEach(x => { if (hthTerritory0.streets.indexOf(x) !== -1) hthTerritory0.streets.push(x) })
                 setTerritoryHTHHandler(hthTerritory0)
-                console.log(currentFace);
                 if (currentFace) selectBlockAndFaceHandler(currentFace.block, currentFace.face, hthTerritory0)
                 //setLoading(false)
             })

@@ -1,5 +1,3 @@
-import { getTokenFromLSService } from './'
-
 export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {
     try {
         let a: Date;
