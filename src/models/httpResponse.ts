@@ -1,10 +1,5 @@
 import { Credentials } from 'google-auth-library'
-import { typeCampaignPack } from './campaign'
-import { typeCoords, typeHTHTerritory } from './houseToHouse'
-import { typeLogsObj } from './log'
-import { typeLocalStatistic, typeStatistic } from './statistic'
-import { typeHousehold, typeStateOfTerritory, typeBlock } from './territory'
-import { typeUser } from './user'
+import { typeBlock, typeCampaignPack, typeCoords, typeHousehold, typeHTHTerritory, typeLocalStatistic, typeLogsObj, typeStateOfTerritory, typeStatistic, typeUser } from './'
 
 export type typeResponseData = {
     success: boolean

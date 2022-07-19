@@ -1,8 +1,6 @@
 import { SERVER } from '../config'
-import { headers } from './functions'
-import { getTokenService } from './tokenServices'
-import { typeLogsObj } from '../models/log'
-import { typeResponseData } from '../models/httpResponse'
+import { getTokenService, headers } from './'
+import { typeLogsObj, typeResponseData } from '../models'
 
 const base: string = `${SERVER}/api/log`
 

@@ -1,8 +1,6 @@
 import { SERVER } from '../config'
-import { headers } from './functions'
-import { getTokenService } from './tokenServices'
-import { typeResponseData } from '../models/httpResponse'
-import { typeCoords } from '../models/houseToHouse'
+import { getTokenService, headers } from './'
+import { typeCoords, typeResponseData } from '../models'
 
 const base: string = `${SERVER}/api/geocoding`
 

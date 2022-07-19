@@ -1,9 +1,6 @@
 import { SERVER } from '../config'
-import { headers } from './functions'
-import { clearTokenService, getTokenService } from './tokenServices'
-import { getDarkModeLocalStorageFromLSService, setDarkModeLocalStorageFromLSService } from './localStorageServices'
-import { typeUser } from '../models/user'
-import { typeResponseData } from '../models/httpResponse'
+import { clearTokenService, getDarkModeLocalStorageFromLSService, getTokenService, headers, setDarkModeLocalStorageFromLSService } from './'
+import { typeResponseData, typeUser } from '../models'
 
 const base: string = `${SERVER}/api/user`
 

@@ -1,4 +1,4 @@
-import { getTokenFromLSService } from './localStorageServices'
+import { getTokenFromLSService } from './'
 
 export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {
     try {
@@ -29,7 +29,7 @@ export const putHyphens = (phoneNumber: number): string => {
 export const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'authorization': getTokenFromLSService() || ""
+    'authorization': localStorage.getItem('token') || ""
 }
 
 export const adjustModalStyles = (): NodeJS.Timeout => setTimeout((): void => {
@@ -43,3 +43,39 @@ export const adjustModalStyles = (): NodeJS.Timeout => setTimeout((): void => {
     buttonGroupElements[0]?.classList?.add('mt-4')
     buttonGroupElements[0]?.firstElementChild?.classList?.add('bg-danger')
 }, 200)
+
+export const editInfoWindowsStyles = (): NodeJS.Timeout => setTimeout((): void => {
+    const elements = document.getElementsByClassName('gm-ui-hover-effect') as HTMLCollectionOf<HTMLElement>
+    const w = document.getElementsByClassName('gm-style-iw-a') as HTMLCollectionOf<HTMLElement>
+    const x = document.getElementsByClassName('gm-style-iw gm-style-iw-c') as HTMLCollectionOf<HTMLElement>
+    const y = document.getElementsByClassName('gm-style-iw-d') as HTMLCollectionOf<HTMLElement>
+    const z = document.getElementsByClassName('gm-style-iw-t') as HTMLCollectionOf<HTMLElement>
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.add('d-none')
+    }
+    for (let i = 0; i < x.length; i++) {
+        x[i].style.backgroundColor = 'transparent'
+        if (x[i] && x[i].classList.contains('gm-style-iw-c')) {
+            x[i].classList.remove('gm-style-iw-c')
+        }
+    }
+    for (let i = 0; i < y.length; i++) {
+        y[i].style.backgroundColor = 'transparent'
+        y[i].style.overflow = 'hidden'
+        const a = y[i] as HTMLElement
+        let b
+        let c
+        if (a) b = a.firstChild as HTMLElement
+        if (b) c = b.firstChild as HTMLElement
+        if (c) {
+            c.style.background = 'none'
+            c.style.cursor = 'pointer'
+        }
+    }
+    for (let i = 0; i < w.length; i++) {
+        w[i].classList.remove('gm-style-iw-a')
+    }
+    for (let i = 0; i < z.length; i++) {
+        z[i].classList.remove('gm-style-iw-t')
+    }
+}, 500)

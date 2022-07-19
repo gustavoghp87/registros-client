@@ -1,4 +1,3 @@
-
 export type typeUser = {
     _id: Object
     role: number

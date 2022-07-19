@@ -1,4 +1,4 @@
-import { typeBlock, typeTerritoryNumber } from './territory'
+import { typeBlock, typeTerritoryNumber } from './'
 
 export type typeFace = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 

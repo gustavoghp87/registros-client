@@ -1,8 +1,6 @@
 import { SERVER } from '../config'
-import { headers } from './functions'
-import { getTokenService } from './tokenServices'
-import { typeCampaignPack } from '../models/campaign'
-import { typeResponseData } from '../models/httpResponse'
+import { getTokenService, headers } from './'
+import { typeCampaignPack, typeResponseData } from '../models'
 
 const base: string = `${SERVER}/api/campaign`
 

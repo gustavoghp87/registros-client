@@ -1,6 +1,6 @@
 export * from './campaignServices'
 export * from './emailServices'
-export * from './functions'
+export * from './helpers'
 export * from './geocodingServices'
 export * from './houseToHouseServices'
 export * from './localStorageServices'

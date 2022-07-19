@@ -1,8 +1,6 @@
 import { SERVER } from '../config'
-import { headers } from './functions'
-import { getTokenService } from './tokenServices'
-import { typeStateOfTerritory } from '../models/territory'
-import { typeResponseData } from '../models/httpResponse'
+import { getTokenService, headers } from './'
+import { typeResponseData, typeStateOfTerritory } from '../models'
 
 const base: string = `${SERVER}/api/state-territory`
 
