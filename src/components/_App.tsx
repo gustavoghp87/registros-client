@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,7 +27,6 @@ import { changeMobileModeReducer } from '../store/MobileModeSlice'
 import { AuthProvider } from '../context/authContext'
 import { recaptchaPublicKey } from '../config'
 import { typeAppDispatch, typeRootState } from '../models'
-import './css/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 export const App = () => {
@@ -39,12 +38,14 @@ export const App = () => {
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
 
-    setTimeout(() => {
-        if (isMobile && window.screen.width >= 990)
-            dispatch(changeMobileModeReducer({ isMobile: window.screen.width < 990 }))
-        else if (!isMobile && window.screen.width < 990)
-            dispatch(changeMobileModeReducer({ isMobile: window.screen.width < 990 }))
-    }, 300)
+    useEffect(() => {
+        window.addEventListener('resize', (event: any) => {
+            const width: number = event.target.screen.width
+            if ((isMobile && width >= 990) || (!isMobile && width < 990)) {
+                dispatch(changeMobileModeReducer({ isMobile: width < 990 }))
+            }
+        })
+    }, [isMobile, dispatch])
 
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>

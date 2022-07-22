@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Card, Button, Form } from 'react-bootstrap'
+import { Card, Button, Form, FloatingLabel } from 'react-bootstrap'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import { useAuth } from '../context/authContext'
 import { changePswService, logoutAllService } from '../services'
-import { typeAppDispatch, typeRootState, typeUser } from '../models'
+import { primary, typeAppDispatch, typeRootState, typeUser } from '../models'
 import { H2 } from './css/css'
 
 export const UserPage = () => {
@@ -12,6 +13,7 @@ export const UserPage = () => {
     const user: typeUser|undefined = useAuth().user
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const navigate: NavigateFunction = useNavigate()
     const [newPsw, setNewPsw] = useState('')
     const [psw, setPsw] = useState('')
     const [show, setShow] = useState(false)
@@ -59,7 +61,6 @@ export const UserPage = () => {
         return sorted
     }
 
-
     return (
     <>
         <H2 className={`text-center ${isDarkMode ? 'text-white' : ''}`}> Usuario </H2>
@@ -71,70 +72,93 @@ export const UserPage = () => {
                 style={{ padding: '25px', margin: '30px auto' }}
             >
                 
-                <p className={'h1 mt-2'}> {user.email} </p>
+                <h1 className={'mt-2'}> {user.email} </h1>
                 
-                <div className={'mt-4 d-inline-block'}>
-                    <h3 className={'d-inline-block'}> Territorios asignados: &nbsp; &nbsp; </h3>
-                    <br />
-                    {user.asign && getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
-                        <Button key={index} className={'d-inline-block text-center active mt-3 px-3 mx-1'} style={{ width: '55px' }}>
-                            {territorio}
-                        </Button>
-                    ))}
-                    {(!user.asign || !user.asign.length) && <h4>Ninguno</h4>}
+                <div className={'mt-4'}>
 
+                    <h3> Territorios asignados: </h3>
+
+                    {user.asign && !!user.asign.length ?
+                        getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
+                            <button key={index}
+                                className={'btn btn-general-blue d-inline-block text-center active mt-3 mx-1 px-0'}
+                                onClick={() => navigate(`/territorios/${territorio}/1`)}
+                                style={{ fontWeight: 'bolder', width: '65px' }}
+                            >
+                                {territorio}
+                            </button>
+                        ))
+                    :
+                        <h4>Ninguno</h4>
+                    }
                 </div>
 
-                <Button
-                    variant={'danger'}
-                    style={{ display: show ? 'none' : 'block', maxWidth: '400px', margin: '50px auto 0 auto' }}
-                    onClick={() => setShow(true)}>
-                    Cambiar contraseña
-                </Button>
+                {!show && <>
+                    <button
+                        className={'btn btn-general-red'}
+                        onClick={() => setShow(true)}
+                        style={{ maxWidth: '400px', margin: '50px auto 0 auto' }}
+                    >
+                        Cambiar contraseña
+                    </button>
 
-                <Button
-                    variant={'danger'}
-                    style={{ display: show ? 'none' : 'block', maxWidth: '400px', margin: '30px auto 30px auto' }}
-                    onClick={() => openConfirmModalHandler(1)}>
-                    Cerrar sesión en todos los dispositivos
-                </Button>
+                    <button
+                        className={'btn btn-general-red'}
+                        onClick={() => openConfirmModalHandler(1)}
+                        style={{ maxWidth: '400px', margin: '30px auto 30px auto' }}
+                    >
+                        Cerrar sesión en todos los dispositivos
+                    </button>
+                </>}
+
 
             </Card>
 
             {show &&
                 <Card className={isDarkMode ? 'bg-dark text-white' : ''}
                     style={{ padding: '25px', margin: '60px auto', maxWidth: '600px' }}>
-                    <Card.Title className={'mb-4'}> CAMBIAR CONTRASEÑA </Card.Title>
+
+                    <Card.Title className={'text-center mb-4'}> CAMBIAR CONTRASEÑA </Card.Title>
+
                     <Form.Group>
-                        <Form.Label> Contraseña actual </Form.Label>
-                        <Form.Control type={'text'}
-                            placeholder={"Contraseña actual"}
-                            value={psw}
-                            onChange={(event: any) => setPsw(event.target.value)}
-                        />
+                        <FloatingLabel
+                            label={"Contraseña actual"}
+                            className={'mb-3 text-secondary'}
+                        >
+                            <Form.Control type={'text'}
+                                autoFocus
+                                onChange={(event: any) => setPsw(event.target.value)}
+                                placeholder={"Contraseña actual"}
+                                value={psw}
+                            />
+                        </FloatingLabel>
                     </Form.Group>
 
                     <Form.Group>
-                        <Form.Label> Nueva contraseña </Form.Label>
-                        <Form.Control type={'text'}
-                            placeholder={"Nueva contraseña"}
-                            value={newPsw}
-                            onChange={(event: any) => setNewPsw(event.target.value)}
-                        />
+                        <FloatingLabel
+                            label={"Nueva contraseña"}
+                            className={'mb-3 text-secondary'}
+                        >
+                            <Form.Control type={'text'}
+                                onChange={(event: any) => setNewPsw(event.target.value)}
+                                placeholder={"Nueva contraseña"}
+                                value={newPsw}
+                            />
+                        </FloatingLabel>
                     </Form.Group>
 
                     <Button
-                        variant={'primary'}
-                        type={'submit'}
-                        className={'mt-4 mb-2'}
+                        className={'my-2'}
                         onClick={() => openConfirmModalHandler(2)}
+                        type={'submit'}
+                        variant={primary}
                     >
                         Aceptar
                     </Button>
 
-                    <Button variant={'danger'} onClick={() => setShow(false)}>
+                    <button className={'btn btn-general-red'} onClick={() => setShow(false)}>
                         Cancelar
-                    </Button>
+                    </button>
                 </Card>
             }
         </>

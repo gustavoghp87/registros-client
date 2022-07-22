@@ -25,19 +25,6 @@ export const AdminsPage = () => {
     const [viendo, setViendo] = useState<string>("todos")
     const [socket, setSocket] = useState<any>(null)
 
-    useEffect(() => {
-        getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
-        if (!socket) {
-            const newSocket = io(SERVER, { withCredentials: true })
-            newSocket.on("user: change", (updatedUser: typeUser) => {
-                if (updatedUser) getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
-            })
-            if (newSocket) setSocket(newSocket)
-        }
-        if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
-        return
-    }, [socket, socket?.connected])
-
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
         const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
         if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al modificar usuario")
@@ -110,6 +97,19 @@ export const AdminsPage = () => {
             openAlertModalHandler('alert', "Error", `Algo falló al resetear la contraseña de ${email}`)
     }
 
+    useEffect(() => {
+        getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
+        if (!socket) {
+            const newSocket = io(SERVER, { withCredentials: true })
+            newSocket.on("user: change", (updatedUser: typeUser) => {
+                if (updatedUser) getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
+            })
+            if (newSocket) setSocket(newSocket)
+        }
+        if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
+        return
+    }, [socket, socket?.connected])
+
     return (
     <>
         <H2
@@ -119,21 +119,21 @@ export const AdminsPage = () => {
             ADMINISTRADORES
         </H2>
 
-        <Button variant={danger} style={{ display: 'block', margin: '50px auto 0 auto', width: '227px' }}
+        <button className={'btn btn-general-red d-block mx-auto mt-5 mb-0'} style={{ width: '227px' }}
             onClick={() => window.location.href = '/logs'}>
             Ir a Logs de la Aplicación
-        </Button>
+        </button>
 
-        <Button variant={danger} style={{ display: 'block', margin: '30px auto 60px auto' }}
+        <button className={'btn btn-general-red d-block mx-auto mt-4 mb-5'}
             onClick={() => window.location.href = '/celulares-admins'}>
             Ir a Campaña Celulares 2022
-        </Button>
+        </button>
 
         <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
 
-        <div style={{ display: 'block', margin: isMobile ? '40px auto' : '40px auto' }}>
+        <div className={'d-block mx-auto mt-5'}>
 
-            {(!users || !users.length) && <Loading />}
+            {!users && <Loading />}
 
             {users && !!users.length &&
             <>

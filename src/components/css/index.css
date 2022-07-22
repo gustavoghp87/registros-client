@@ -21,6 +21,66 @@ input[type="checkbox"].checkboxdos {
 
 /* Or transform:"scale(1.5)" */
 
+
+
+.App {
+  text-align: center;
+}
+
+.btn-general-blue {
+  background-color: #4a6da7;
+  border: 1px solid #4a6da7;
+  color: white !important;
+  font-size: 1.2rem;
+}
+
+.btn-general-secondary {
+  font-size: 1.2rem;
+}
+
+.btn-general-red {
+  background-color: #b02a37;
+  border: 1px solid #b02a37;
+  color: white !important;
+}
+
+.btn-general-red:hover {
+  background-color: #921b27;
+  border: 1px solid #921b27;
+}
+
+.btn-general-blue:hover {
+  background-color: #25457d;
+  border: 1px solid #25457d;
+}
+
 .assigned-household {
   background-color: #B0B0B0;
+}
+
+
+
+/* statistics animation */
+
+.animate-me {
+  -webkit-animation: bgcolorchange 1s infinite; /* Chrome, Safari, Opera */ 
+  animation: 1s infinite bgcolorchange;
+}
+
+@keyframes bgcolorchange {
+  0% {
+    background-color: red;
+  }
+  50% {
+    background-color: black;
+  }
+  100% {
+    background-color: red;
+  }
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes bgcolorchange {
+  0%   {background: red;}
+  50%  {background: black;}
+  100% {background: red;}
 }

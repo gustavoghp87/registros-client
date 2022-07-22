@@ -1,19 +1,13 @@
 import { Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { typeHousehold, typeRootState } from '../../models'
+import { getReducedPhoneNumber } from '../../services'
 
 export const Col2 = (props: any) => {
 
-    const household: typeHousehold = props?.household
-    const id: string = props?.id
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-
-    const getReducedPhoneNumber = (phoneNumber: string): string => {
-        if (!phoneNumber || phoneNumber.length < 7) return phoneNumber
-        if (phoneNumber.substring(0, 6) === "54-11-") return phoneNumber.substring(6)
-        if (phoneNumber.substring(0, 3) === "54-") return phoneNumber.substring(3)
-        return phoneNumber
-    }
+    const cardId: string = props.cardId
+    const household: typeHousehold = props.household
 
     return (
 
@@ -23,41 +17,31 @@ export const Col2 = (props: any) => {
                 <h4 style={{ textAlign: 'center', display: 'block', margin: 'auto', fontSize: '1.9rem' }}>
                     Dirección:
                     <br/>
-                    {household?.direccion}
+                    {household.direccion}
                 </h4>
             </Row>
 
-            <Row style={{ padding: '20px 0 1% 0' }}>
-                
-                <h4 className={'text-center m-auto'}
-                    style={{
-                        display: household?.noAbonado ? 'none' : 'block',
-                        fontSize: isMobile ? '2.5rem' : '3rem'
-                    }}
-                    onMouseOver={() => {
-                        //document.getElementById(id)!.style.marginTop = '140px'
-                        document.getElementById(id)!.style.marginBottom = '160px'
-                    }}
-                    // onMouseOut={() => {
-                    //     document.getElementById(id)!.style.marginTop = '0'
-                    //     document.getElementById(id)!.style.marginBottom = '50px'
-                    // }}
-                >
-
-                    Teléfono:
-                    
-                    <div
-                        className={'pb-2'}
-                        style={{ marginTop: '7px' }}
+            {!household.noAbonado &&
+                <Row style={{ padding: '20px 0 1% 0' }}>
+                    <h4 className={'text-center m-auto'}
+                        onMouseOver={() => {
+                            const card = document.getElementById(cardId)
+                            if (card) card.style.marginBottom = '160px'
+                        }}
+                        style={{ fontSize: isMobile ? '2.5rem' : '3rem' }}
                     >
-                        <a href={`tel:${household?.telefono}`}>
-                            {getReducedPhoneNumber(household?.telefono)}
-                        </a>
-                    </div>
 
-                </h4>
+                        Teléfono:
+                        
+                        <div className={'pb-2'}>
+                            <a href={`tel:${household.telefono}`}>
+                                {getReducedPhoneNumber(household.telefono)}
+                            </a>
+                        </div>
+                    </h4>
+                </Row>
+            }
 
-            </Row>
         </Col>
     )
 }

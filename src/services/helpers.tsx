@@ -1,3 +1,9 @@
+export const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'authorization': localStorage.getItem('token') || ""
+}
+
 export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {
     try {
         let a: Date;
@@ -24,10 +30,11 @@ export const putHyphens = (phoneNumber: number): string => {
     return phoneNumberStr.slice(0,3) + "-" + phoneNumberStr.slice(3,6) + "-" + phoneNumberStr.slice(-4)    // house
 }
 
-export const headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'authorization': localStorage.getItem('token') || ""
+export const getReducedPhoneNumber = (phoneNumber: string): string => {
+    if (!phoneNumber || phoneNumber.length < 7) return phoneNumber
+    if (phoneNumber.substring(0, 6) === "54-11-") return phoneNumber.substring(6)
+    if (phoneNumber.substring(0, 3) === "54-") return phoneNumber.substring(3)
+    return phoneNumber
 }
 
 export const adjustModalStyles = (): NodeJS.Timeout => setTimeout((): void => {

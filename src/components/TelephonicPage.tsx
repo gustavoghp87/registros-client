@@ -151,7 +151,6 @@ export const TelephonicPage = () => {
         if (!user || !user.email) return
         const newSocket: Socket = io(SERVER, { withCredentials: true })
         newSocket.on('household: change', (updatedHouseholds: typeHousehold[], userEmail: string) => {
-            console.log(updatedHouseholds, userEmail, updatedHouseholds[0].territorio, territorio);
             if (!updatedHouseholds || !updatedHouseholds.length || updatedHouseholds[0].territorio !== territorio) return
             if (updatedHouseholds[0].manzana === manzana) {
                 setHouseholds(updatedHouseholds)
@@ -216,7 +215,7 @@ export const TelephonicPage = () => {
                 <img src={`/img/${territorio}.jpg`} alt={`Mapa del territorio ${territorio}`}
                     className={'d-block mx-auto'}
                     style={{
-                        border: '1px solid black',
+                        border: isDarkMode ? '1px solid white' : '1px solid black',
                         borderRadius: '8px',
                         height: 'auto',
                         marginBlock: '30px',
@@ -240,35 +239,23 @@ export const TelephonicPage = () => {
                 isTodo={showingAll}
             />
 
-            <Button size={isMobile ? 'sm' : 'lg'}
-                onClick={() => openConfirmModalHandler(2)}
-                style={{
-                    backgroundColor: generalBlue,
-                    border: '1px solid ' + generalBlue,
-                    borderRadius: '5px',
-                    display: isFinished ? 'none' : 'block',
-                    margin: 'auto',
-                    marginBottom: '50px',
-                    fontSize: 15
-                }}
-            >
-                Marcar este territorio como terminado
-            </Button>
-
-            <Button size={isMobile ? 'sm' : 'lg'}
-                onClick={() => openConfirmModalHandler(1)}
-                style={{
-                    backgroundColor: generalRed,
-                    border: '1px solid ' + generalRed,
-                    borderRadius: '5px',
-                    display: isFinished ? 'block' : 'none',
-                    margin: 'auto',
-                    marginBottom: '50px',
-                    fontSize: 15
-                }}
-            >
-                Desmarcar este territorio como terminado
-            </Button>
+            {isFinished ?
+                <button
+                    className={'d-block mx-auto mt-3 mb-5 btn btn-general-red'}
+                    onClick={() => openConfirmModalHandler(1)}
+                    style={{ fontSize: '1.2rem' }}
+                >
+                    Desmarcar este territorio como terminado
+                </button>
+                :
+                <button
+                    className={'d-block mx-auto mt-3 mb-5 btn btn-general-blue'}
+                    onClick={() => openConfirmModalHandler(2)}
+                    style={{ fontSize: '1.2rem' }}
+                >
+                    Marcar este territorio como terminado
+                </button>
+            }
 
 
             {households && !!households.length && households.map((household: typeHousehold) => {
@@ -279,24 +266,22 @@ export const TelephonicPage = () => {
                 if (household.estado === aDejarCarta) household = { ...household, variante: danger }
                 if (household.estado === noLlamar) household = { ...household, variante: dark }
 
-                const secColorClass: string = isDarkMode && household?.asignado ? 'assigned-household' : (
+                const secColorClass: string = isDarkMode && household.asignado ? 'assigned-household' : (
                     isDarkMode ? 'bg-dark text-white' : (
-                        household?.asignado ? 'assigned-household' : 'bg-white'
+                        household.asignado ? 'assigned-household' : 'bg-white'
                     )
                 )
 
                 return (
                 
-                    <Card key={household?.inner_id}
-                        id={`card_${household?.inner_id}`}
+                    <Card key={household.inner_id}
+                        id={`card_${household.inner_id}`}
                         className={secColorClass}
                         style={{
-                            marginBottom: '50px',
                             border: '1px solid gray',
-                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                            marginBottom: '50px'
                         }}
-                        // onMouseOver={() => household?.asignado ? null : highligthCard(`card_${household?.inner_id}`)}
-                        // onMouseOut={() => stopHighligthCard(`card_${household?.inner_id}`, secColorClass)}
                     >   
                         <Container fluid={'lg'}>
 
@@ -309,7 +294,7 @@ export const TelephonicPage = () => {
 
                                 <Col2
                                     household={household}
-                                    id={`card_${household?.inner_id}`}
+                                    cardId={`card_${household.inner_id}`}
                                 />
 
                                 <Col3
