@@ -1,11 +1,11 @@
 import { SERVER } from '../config'
-import { clearTokenService, getDarkModeLocalStorageFromLSService, getTokenService, headers, setDarkModeLocalStorageFromLSService } from './'
+import { clearTokenService, getDarkModeFromLSService, getTokenService, headers, setDarkModeFromLSService } from './'
 import { typeResponseData, typeUser } from '../models'
 
 const base: string = `${SERVER}/api/user`
 
-export const getDarkModeService = (): boolean => getDarkModeLocalStorageFromLSService()
-export const setDarkModeService = (darkMode: boolean): void => setDarkModeLocalStorageFromLSService(darkMode)
+export const getDarkModeService = (): boolean => getDarkModeFromLSService()
+export const setDarkModeService = (darkMode: boolean): void => setDarkModeFromLSService(darkMode)
 
 export const authUserService = async (): Promise<typeUser|null> => {
     if (!getTokenService()) return null

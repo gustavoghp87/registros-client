@@ -1,13 +1,13 @@
 import { SERVER } from '../config'
-import { clearTokenFromLSService, clearUserFromLSService, headers, getTokenFromLSService, setTokenFromLSService } from './'
+import { removeTokenFromLSService, removeUserFromLSService, headers, getTokenFromLSService, setTokenFromLSService } from './'
 import { typeResponseData } from '../models'
 
 const base: string = `${SERVER}/api/token`
 
 export const getTokenService = (): string|null => getTokenFromLSService()
 export const setTokenService = (newToken: string): void => setTokenFromLSService(newToken)
-export const clearTokenService = (): void => clearTokenFromLSService()
-const clearUserService = (): void => clearUserFromLSService()
+export const clearTokenService = (): void => removeTokenFromLSService()
+const clearUserService = (): void => removeUserFromLSService()
 
 export const loginService = async (email: string, password: string, recaptchaToken: string): Promise<typeResponseData|null> => {
     try {

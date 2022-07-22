@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { alertModalSlice } from './AlertModalSlice'
 import { darkModeSlice } from './DarkModeSlice'
-import { mobileModeSlice } from './MobileMode.Slice'
+import { mobileModeSlice } from './MobileModeSlice'
 
 export const store = configureStore({
     reducer: {

@@ -1,36 +1,30 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { authUserService, getTokenService, loginService, logoutService } from '../services'
-import { typeUser } from '../models'
+import { authUserService, getTokenService, getUserFromLSService, loginService, logoutService, removeUserFromLSService, setUserFromLSService } from '../services'
+import { typeResponseData, typeUser } from '../models'
 
-type defaultValueType = {
-    loading: boolean,
-    login: ((email: string, password: string, recaptchaToken: string) => Promise<any>) | undefined,
+type contextType = {
+    login: ((email: string, password: string, recaptchaToken: string) => Promise<typeResponseData | null>) | undefined,
     logout: (() => void) | undefined,
     refreshUser: (() => void) | undefined,
     user: typeUser | undefined
 }
 
-const userKey: string = "user"
-
-const defaultValue: defaultValueType = {
-    loading: true,
+const defaultValue: contextType = {
     login: undefined,
     logout: undefined,
     refreshUser: undefined,
     user: undefined
 }
 
-const AuthContext = createContext(defaultValue)
-
-export const useAuth = () => useContext(AuthContext)
+const AuthContext: React.Context<contextType> = createContext(defaultValue)
+export const useAuth = (): contextType => useContext<contextType>(AuthContext)
 
 export const AuthProvider = ({ children }: any) => {
 
     const [user, setUser] = useState<typeUser>()
-    const [loading, setLoading] = useState(true)
 
-    const login = async (email: string, password: string, recaptchaToken: string): Promise<any> => {
-        const serviceResponse = await loginService(email, password, recaptchaToken)
+    const login = async (email: string, password: string, recaptchaToken: string): Promise<typeResponseData|null> => {
+        const serviceResponse: typeResponseData|null = await loginService(email, password, recaptchaToken)
         return serviceResponse
     }
 
@@ -40,15 +34,14 @@ export const AuthProvider = ({ children }: any) => {
     }
 
     const refreshUser = (): void => {
-        localStorage.removeItem(userKey)
+        removeUserFromLSService()
         setUser(undefined)
     }
 
-    
     useEffect(() => {
         if (user) return
 
-        const userInLocalStorage: string|null = localStorage.getItem(userKey)
+        const userInLocalStorage: string|null = getUserFromLSService()
         if (userInLocalStorage) {
             try {
                 const user0: typeUser = JSON.parse(userInLocalStorage)
@@ -56,33 +49,25 @@ export const AuthProvider = ({ children }: any) => {
                 return
             } catch (error) {
                 console.log(error)
-                localStorage.removeItem(userKey)
+                removeUserFromLSService()
             }
         }
 
         if (getTokenService()) {
             authUserService().then((user0: typeUser|null) => {
-                if (user0) {
-                    setUser(user0)
-                    setLoading(false)
-                    localStorage.setItem(userKey, JSON.stringify(user0))
-                }
+                if (!user0) return
+                setUser(user0)
+                setUserFromLSService(JSON.stringify(user0))
             })
         }
 
-        const unsubscribe = () => {
-            setUser(undefined)
-            setLoading(true)
-        }
-
-        return () => unsubscribe()
+        return () => setUser(undefined)
     }, [user, user?.isAuth])
 
 
     return (
         <AuthContext.Provider
             value={{
-                loading,
                 login,
                 logout,
                 refreshUser,

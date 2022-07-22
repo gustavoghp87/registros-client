@@ -4,7 +4,7 @@ import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
-import { SERVER } from '../config'
+import { generalRed, SERVER } from '../config'
 import { Loading } from './commons/Loading'
 import { generalBlue } from '../config'
 import { WarningToaster } from './commons/WarningToaster'
@@ -80,9 +80,9 @@ export const TelephonicPage = () => {
     const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
         noAbonado = !noAbonado ? false : true
         asignado = !asignado ? false : true
-        const household: typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
-        if (!household) return openAlertModalHandler("Algo falló al modificar", "")
-        sendUpdatedHousehold(household)
+        const updatedHousehold: typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
+        if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "")
+        sendUpdatedHousehold(updatedHousehold)
     }
     
     const sendUpdatedHousehold = (updatedHousehold: typeHousehold): void => {
@@ -151,7 +151,8 @@ export const TelephonicPage = () => {
         if (!user || !user.email) return
         const newSocket: Socket = io(SERVER, { withCredentials: true })
         newSocket.on('household: change', (updatedHouseholds: typeHousehold[], userEmail: string) => {
-            if (!updatedHouseholds || updatedHouseholds.length || updatedHouseholds[0].territorio !== territorio) return
+            console.log(updatedHouseholds, userEmail, updatedHouseholds[0].territorio, territorio);
+            if (!updatedHouseholds || !updatedHouseholds.length || updatedHouseholds[0].territorio !== territorio) return
             if (updatedHouseholds[0].manzana === manzana) {
                 setHouseholds(updatedHouseholds)
             }
@@ -257,8 +258,8 @@ export const TelephonicPage = () => {
             <Button size={isMobile ? 'sm' : 'lg'}
                 onClick={() => openConfirmModalHandler(1)}
                 style={{
-                    backgroundColor: 'red',
-                    border: '1px solid red',
+                    backgroundColor: generalRed,
+                    border: '1px solid ' + generalRed,
                     borderRadius: '5px',
                     display: isFinished ? 'block' : 'none',
                     margin: 'auto',

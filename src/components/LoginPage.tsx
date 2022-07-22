@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Loading } from './commons/Loading'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
 import { useAuth } from '../context/authContext'
-import { registerUserService, sendLinkToRecoverAccount } from '../services'
+import { getFailingEmailFromLSService, registerUserService, sendLinkToRecoverAccount, setFailingEmailFromLSService } from '../services'
 import { typeAppDispatch, typeResponseData, typeRootState } from '../models'
 
 export const LoginPage = () => {
@@ -25,22 +25,14 @@ export const LoginPage = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const [password, setPassword] = useState<string>("")
 
-    useEffect(() => {
-        if (user && user.isAuth) window.location.href = '/index'
-        const failingEmail = getFailingEmail()
-        if (failingEmail) setEmail(failingEmail)
-    }, [user])
-
-    const getFailingEmail = (): string|null => localStorage.getItem('failingEmail')
-
-    const setFailingEmail = (): void => localStorage.setItem('failingEmail', email)
-
     const clearInputs = (): void => {
-        if (isRegister) setEmail(getFailingEmail() ?? "")
+        if (isRegister) setEmail(getFailingEmailFromLSService() ?? "")
         else setEmail('')
         setPassword('')
         setConfPassword('')
         setGroup(0)
+        if (email && isRegister) document.getElementById('passwordInput')?.focus()
+        else document.getElementById('emailInput')?.focus()
     }
 
     const openAlertModalHandler = (title: string, message: string, execution: Function|undefined = undefined): void => {
@@ -78,16 +70,16 @@ export const LoginPage = () => {
         if (!executeRecaptcha) return setLoading(false)
         const recaptchaToken = await executeRecaptcha("")
         if (!login) return openAlertModalHandler("Problemas", "Refrescar la página")
-        const response = await login(email, password, recaptchaToken)
+        const response: typeResponseData|null = await login(email, password, recaptchaToken)
         if (response && response.success && response.newToken) {
             window.location.href = '/index'
         } else if (!response || response.recaptchaFails) {
-            setFailingEmail()
+            setFailingEmailFromLSService(email)
             openAlertModalHandler("Problemas", "Refrescar la página")
         } else if (response && response.isDisabled) {
             openAlertModalHandler("No habilitado", "Usuario aun no habilitado por el grupo de territorios... avisarles")
         } else {
-            setFailingEmail()
+            setFailingEmailFromLSService(email)
             openAlertModalHandler("Datos incorrectos", "", () => window.location.reload())
         }
     }
@@ -120,8 +112,22 @@ export const LoginPage = () => {
         })
     }
     
+    useEffect(() => {
+        if (user && user.isAuth) window.location.href = '/index'
+    }, [user])
+
+    useEffect(() => {
+        const failingEmail: string|null = getFailingEmailFromLSService()
+        if (failingEmail) {
+            setEmail(failingEmail)
+            document.getElementById('passwordInput')?.focus()
+        } else {
+            document.getElementById('emailInput')?.focus()
+        }
+    }, [])
+
     return (<>
-        <Container className={isDarkMode ? 'bg-white' : 'bg-white'}
+        <Container className={isDarkMode ? 'bg-dark' : 'bg-white'}
             style={{
                 border: '1px solid black',
                 borderRadius: '12px',
@@ -133,7 +139,7 @@ export const LoginPage = () => {
             }}
         >
             
-            <h2 className={'text-center'}
+            <h2 className={`text-center ${isDarkMode ? 'text-white' : ''}`}
                 style={{
                     fontSize: isMobile ? '1.7rem' : '2rem',
                     textShadow: '0 0 1px gray'
@@ -147,14 +153,15 @@ export const LoginPage = () => {
                 <FloatingLabel
                     label={"Correo electrónico"}
                     className={'mb-3 text-dark'}
-                >
+                    >
                     <Form.Control
+                        autoComplete={'email'}
                         className={'form-control'}
+                        id={"emailInput"}
+                        onChange={(e: any) => setEmail((e.target as HTMLInputElement).value)}
+                        placeholder={"Correo electrónico"}
                         type={'email'}
                         value={email}
-                        placeholder={"Correo electrónico"}
-                        autoFocus={email ? true : false}
-                        onChange={(e: any) => setEmail((e.target as HTMLInputElement).value)}
                     />
                 </FloatingLabel>
 
@@ -164,12 +171,12 @@ export const LoginPage = () => {
                 >
                     <Form.Control
                         className={'form-control'}
-                        type={'password'}
-                        value={password}
-                        placeholder={"Contraseña"}
-                        autoFocus={!email ? true : false}
+                        id={"passwordInput"}
                         onChange={(e: any) => setPassword((e.target as HTMLInputElement).value)}
                         onKeyDown={(e: any) => e.key === 'Enter' && !isRegister ? loginHandler() : null }
+                        placeholder={"Contraseña"}
+                        type={'password'}
+                        value={password}
                     />
                 </FloatingLabel>
 
@@ -206,8 +213,8 @@ export const LoginPage = () => {
                 </>}
 
                 <button
-                    className={`btn ${isRegister ? 'btn-danger' : 'btn-general-blue'} btn-block mt-3`}
-                    style={{ height: '50px' }}
+                    className={`btn ${isRegister ? 'btn-general-red' : 'btn-general-blue'} btn-block mt-3`}
+                    style={{ fontWeight: 'bolder', height: '50px' }}
                     onClick={() => isRegister ? registerHandler() : loginHandler()}
                 >
                     {isRegister ? "REGISTRARSE" : "ENTRAR"}
