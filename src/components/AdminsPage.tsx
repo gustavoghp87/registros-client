@@ -7,7 +7,7 @@ import { Loading } from './commons/Loading'
 import { useAuth } from '../context/authContext'
 import { SERVER } from '../config'
 import { assignTerritoryService, changePswOtherUserService, modifyUserService, getUsersService } from '../services'
-import { danger, primary, dark, typeUser, typeAppDispatch, typeRootState } from '../models'
+import { danger, primary, dark, typeUser, typeAppDispatch, typeRootState, userChangeString } from '../models'
 import { H2 } from './css/css'
 
 export const AdminsPage = () => {
@@ -17,13 +17,13 @@ export const AdminsPage = () => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const [users, setUsers] = useState<typeUser[]>()
-    const [asignVisible, setAsignVisible] = useState<boolean>(false)
-    const [groupVisible, setGroupVisible] = useState<boolean>(false)
     const [asig, setAsig] = useState<string[]>([])
+    const [asignVisible, setAsignVisible] = useState<boolean>(false)
     const [desasig, setDesasig] = useState<string[]>([])
-    const [viendo, setViendo] = useState<string>("todos")
+    const [groupVisible, setGroupVisible] = useState<boolean>(false)
     const [socket, setSocket] = useState<any>(null)
+    const [users, setUsers] = useState<typeUser[]>()
+    const [viendo, setViendo] = useState<string>("todos")
 
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
         const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
@@ -55,7 +55,7 @@ export const AdminsPage = () => {
     }
 
     const sendUpdatedUser = (updatedUser: typeUser): void => {
-        if (socket) socket.emit('user: change', updatedUser)
+        if (socket) socket.emit(userChangeString, updatedUser)
     }
 
     const refreshUserHandler = (user_id: string): void => {
@@ -101,7 +101,7 @@ export const AdminsPage = () => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
         if (!socket) {
             const newSocket = io(SERVER, { withCredentials: true })
-            newSocket.on("user: change", (updatedUser: typeUser) => {
+            newSocket.on(userChangeString, (updatedUser: typeUser) => {
                 if (updatedUser) getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
             })
             if (newSocket) setSocket(newSocket)

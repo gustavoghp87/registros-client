@@ -13,7 +13,7 @@ import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, type
 import { H2 } from './css/css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-export const CasaEnCasaPage = () => {
+export const HouseToHousePage = () => {
     
     const territory = useParams<any>().territory as typeTerritoryNumber
     const user: typeUser|undefined = useAuth().user

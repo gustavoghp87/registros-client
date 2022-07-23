@@ -11,12 +11,12 @@ import { LoginPage } from './LoginPage'
 import { HomePage } from './HomePage'
 import { IndexPage } from './IndexPage'
 import { TelephonicPage } from './TelephonicPage'
-import { EstadisticasPage } from './StatisticsPage'
+import { StatisticsPage } from './StatisticsPage'
 import { LocalStatisticsPage } from './LocalStatisticsPage'
 import { UserPage } from './UserPage'
 import { AdminsPage } from './AdminsPage'
 import { RecoveryPage } from './RecoveryPage'
-import { CasaEnCasaPage } from './HouseToHousePage'
+import { HouseToHousePage } from './HouseToHousePage'
 import { LogsPage } from './LogsPage'
 import { PrivacyPolicyPage } from './PrivacyPolicyPage'
 import { TermsOfServicePage } from './TermsOfService'
@@ -67,24 +67,29 @@ export const App = () => {
                             minHeight: 'calc(100vh - 80px)'
                         }}>
                             <Routes>
-                                <Route element={ <HomePage /> } path={'/'} />
-                                <Route element={ <LoginPage /> } path={'/acceso'} />
-                                <Route element={ <IndexPage /> } path={'/index'} />
-                                <Route element={ <CasaEnCasaPage /> } path={'/casa-en-casa/:territory'} />
-                                <Route element={ <TelephonicPage /> } path={'/territorios/:territorio/:manzana'} />
-                                <Route element={ <TelephonicPage /> } path={'/territorios/:territorio/:manzana/:todo'} />
-                                <Route element={ <EstadisticasPage /> } path={'/estadisticas'} />
-                                <Route element={ <LocalStatisticsPage /> } path={'/estadisticas/:territorio'} />
-                                <Route element={ <UserPage /> } path={'/usuario'} />
-                                <Route element={ <AdminsPage /> } path={'/admins'} />
-                                <Route element={ <RecoveryPage /> } path={'/recovery/:id'} />
-                                <Route element={ <CampaignPage /> } path={'/celulares/:id'} />
-                                <Route element={ <CampaignAdminsPage /> } path={'/celulares-admins'} />
-                                <Route element={ <LogsPage /> } path={'/logs'} />
-                                <Route element={ <PrivacyPolicyPage /> } path={'/privacidad'} />
-                                <Route element={ <TermsOfServicePage /> } path={'/servicio'} />
-                                <Route element={ <GmailTokensPage /> } path={'/gmail'} />
-                                <Route element={ <HomePage /> } path={'*'} />
+                                {/* Public */}
+                                <Route path={'/'} element={ <HomePage /> } />
+                                <Route path={'/celulares/:id'} element={ <CampaignPage /> } />
+                                <Route path={'/privacidad'} element={ <PrivacyPolicyPage /> } />
+                                <Route path={'/recovery/:id'} element={ <RecoveryPage /> } />
+                                <Route path={'/servicio'} element={ <TermsOfServicePage /> } />
+                                {/* Strict Public */}
+                                <Route path={'/acceso'} element={ <LoginPage /> } />
+                                {/* Private */}
+                                <Route path={'/index'} element={ <IndexPage /> } />
+                                <Route path={'/territorios/:territorio/:manzana'} element={ <TelephonicPage /> } />
+                                <Route path={'/territorios/:territorio/:manzana/:todo'} element={ <TelephonicPage /> } />
+                                <Route path={'/usuario'} element={ <UserPage /> } />
+                                {/* Private Admins */}
+                                <Route path={'/admins'} element={ <AdminsPage /> } />
+                                <Route path={'/celulares-admins'} element={ <CampaignAdminsPage /> } />
+                                <Route path={'/gmail'} element={ <GmailTokensPage /> } />
+                                <Route path={'/casa-en-casa/:territory'} element={ <HouseToHousePage /> } />
+                                <Route path={'/estadisticas/:territorio'} element={ <LocalStatisticsPage /> } />
+                                <Route path={'/logs'} element={ <LogsPage /> } />
+                                <Route path={'/estadisticas'} element={ <StatisticsPage /> } />
+                                {/* * */}
+                                <Route path={'*'} element={ <HomePage /> } />
                             </Routes>
 
                             <DarkModeButton />

@@ -7,7 +7,7 @@ import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTer
 import { typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../models'
 import { H2 } from './css/css'
 
-export const EstadisticasPage = () => {
+export const StatisticsPage = () => {
 
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,

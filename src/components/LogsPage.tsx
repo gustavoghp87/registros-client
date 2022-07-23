@@ -24,14 +24,6 @@ export const LogsPage = () => {
     const [showPreaching, setShowPreaching] = useState<boolean>(false)
     const [showEmailErrors, setShowEmailErrors] = useState<boolean>(false)
     const [showErrors, setShowErrors] = useState<boolean>(false)
-
-    useEffect(() => {
-        //if (user && !user.isAuth) { window.location.href = '/'; return }
-        if (!logsPackage) getAllLogsService().then((logsObject: typeLogsObj|null) => {
-            if (logsObject) setLogsPackage(logsObject)
-        })
-    }, [user, logsPackage])
-
     const setShowCampaignAssignmentsHandler = (): void => setShowCampaignAssignments(!showCampaignAssignments)
     const setShowCampaignFinishingHandler = (): void => setShowCampaignFinishing(!showCampaignFinishing)
     const setShowLoginsHandler = (): void => setShowLogins(!showLogins)
@@ -54,6 +46,13 @@ export const LogsPage = () => {
         [logsPackage.errorLogs, showErrors, setShowErrorsHandler, "Errores generales de la App"]
         // [logs.appLogs.filter((log: typeLog) => !log.logText.includes("DB")), showAppChanges, setShowAppChangesHandler, "Reinicios de la App"]
     ] : []
+
+    useEffect(() => {
+        //if (user && !user.isAuth) { window.location.href = '/'; return }
+        if (!logsPackage) getAllLogsService().then((logsObject: typeLogsObj|null) => {
+            if (logsObject) setLogsPackage(logsObject)
+        })
+    }, [user, logsPackage])
 
     return (
     <>

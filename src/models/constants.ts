@@ -1,10 +1,10 @@
 import { typeCallingState, typeVariant } from './'
 
-export const noPredicado: typeCallingState = "No predicado"
-export const contesto: typeCallingState = "Contestó"
-export const noContesto: typeCallingState = "No contestó"
-export const aDejarCarta: typeCallingState = "A dejar carta"
-export const noLlamar: typeCallingState = "No llamar"
+export const noPredicado: typeCallingState = 'No predicado'
+export const contesto: typeCallingState = 'Contestó'
+export const noContesto: typeCallingState = 'No contestó'
+export const aDejarCarta: typeCallingState = 'A dejar carta'
+export const noLlamar: typeCallingState = 'No llamar'
 
 export const noAsignado: string = "No asignado"
 
@@ -15,3 +15,6 @@ export const danger: typeVariant = 'danger'
 export const warning: typeVariant = 'warning'
 export const secondary: typeVariant = 'secondary'
 export const info: typeVariant = 'info'
+
+export const householdChangeString: string = "household: change"
+export const userChangeString: string = "user: change"

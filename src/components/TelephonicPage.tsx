@@ -4,9 +4,8 @@ import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
-import { generalRed, SERVER } from '../config'
+import { SERVER } from '../config'
 import { Loading } from './commons/Loading'
-import { generalBlue } from '../config'
 import { WarningToaster } from './commons/WarningToaster'
 import { Col0a } from './telephonic-components/Col0a'
 import { Col0b } from './telephonic-components/Col0b'
@@ -18,7 +17,7 @@ import { TerritoryWarningToaster } from './telephonic-components/TerritoryWarnin
 import { MapModal } from './telephonic-components/MapModal'
 import { useAuth } from '../context/authContext'
 import { getHouseholdsByTerritoryService, getBlocksService, modifyHouseholdService, getStateOfTerritoryService, markTerritoryAsFinishedService } from '../services'
-import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeUser } from '../models'
+import { aDejarCarta, contesto, householdChangeString, noContesto, noLlamar, noPredicado, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeUser } from '../models'
 import { danger, dark, primary, success, warning } from '../models'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
@@ -96,7 +95,7 @@ export const TelephonicPage = () => {
             indexOfHousehold,
             userEmail: user?.email
         }
-        if (socket && socket.connected && objPackage) socket.emit('household: change', objPackage)
+        if (socket && socket.connected && objPackage) socket.emit(householdChangeString, objPackage)
         else openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet")
     }
     
@@ -150,7 +149,7 @@ export const TelephonicPage = () => {
     useEffect(() => {
         if (!user || !user.email) return
         const newSocket: Socket = io(SERVER, { withCredentials: true })
-        newSocket.on('household: change', (updatedHouseholds: typeHousehold[], userEmail: string) => {
+        newSocket.on(householdChangeString, (updatedHouseholds: typeHousehold[], userEmail: string) => {
             if (!updatedHouseholds || !updatedHouseholds.length || updatedHouseholds[0].territorio !== territorio) return
             if (updatedHouseholds[0].manzana === manzana) {
                 setHouseholds(updatedHouseholds)

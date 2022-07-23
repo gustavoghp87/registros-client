@@ -92,27 +92,28 @@ export const IndexPage = () => {
                 <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
             </>}
 
-        
+            {user && user.isAuth && <>
+                <H2 className={isDarkMode ? 'text-white' : ''}> TELEFÓNICA </H2>
 
-            <H2 className={isDarkMode ? 'text-white' : ''}> TELEFÓNICA </H2>
+                <button className={`btn btn-danger btn-block mt-4`} style={{ cursor: 'pointer' }}
+                    type={'button'}
+                    onClick={() => setShowedMode2(!showedMode2)}
+                >
+                    {showedMode2 === true ? 'Ocultar' : 'Ver territorios'}
+                </button>
 
-            <button className={`btn btn-danger btn-block mt-4`} style={{ cursor: 'pointer' }}
-                type={'button'}
-                onClick={() => setShowedMode2(!showedMode2)}
-            >
-                {showedMode2 === true ? 'Ocultar' : 'Ver territorios'}
-            </button>
-
-            <div className={`${showedMode2 === true ? '' : 'd-none'}`}>
-                <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
-                    <TerritoryNumberBlock
-                        user={user}
-                        territories={territories}
-                        mode={2}
-                        style={{ cursor: 'pointer' }}
-                    />
+                <div className={`${showedMode2 === true ? '' : 'd-none'}`}>
+                    <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
+                        <TerritoryNumberBlock
+                            user={user}
+                            territories={territories}
+                            mode={2}
+                            style={{ cursor: 'pointer' }}
+                        />
+                    </div>
                 </div>
-            </div>
+            </>}
+
 
             {!showedMode2 && <><br/><br/><br/></>}
 
