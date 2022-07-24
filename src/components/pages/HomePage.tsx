@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux'
-import { generalBlue } from '../config'
-import { useAuth } from '../context/authContext'
-import { typeRootState, typeUser } from '../models'
-import { H2 } from './css/css'
+import { generalBlue } from '../../config'
+import { H2 } from '../commons'
+import { useAuth } from '../../context/authContext'
+import { typeRootState, typeUser } from '../../models'
 
 export const HomePage = () => {
 
@@ -14,15 +14,16 @@ export const HomePage = () => {
     
     return (
     <>
-        <H2 className={isDarkMode ? 'text-white' : ''}
-            style={{ marginTop: '60px' }}
+        <H2 title={"BIENVENIDOS"} />
+
+        <h1 className={`text-center ${isDarkMode ? 'text-white' : ''}`}
+            style={{
+                fontSize: isMobile ? '2.2rem' : '3.5rem',
+                fontWeight: 'bolder'
+            }}
         >
-            BIENVENIDOS
-            <br/>
-            A
-            <br/>
-            MISERICORDIA WEB
-        </H2>
+            A<br/>MISERICORDIA WEB
+        </h1>
 
         <a href={user && user.isAuth ? '/index' : '/acceso'} style={{ textDecoration: 'none' }}>
             <h3 style={{

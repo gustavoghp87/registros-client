@@ -1,37 +1,31 @@
 import { SERVER } from '../config'
 import { getTokenService, headers } from './'
-import { typeBlock, typeHousehold, typeResponseData } from '../models'
+import { typeBlock, typeHousehold, typeResponseData, typeStateOfTerritory } from '../models'
 
 const base: string = `${SERVER}/api/territory`
 
-export const getBlocksService = async (territory: string): Promise<typeBlock[]|null> => {
-    if (!getTokenService()) return null
-    try {
-        const response = await fetch(`${base}/blocks/${territory}`, {
-            method: 'GET',
-            headers
-        })
-        const data: typeResponseData = await response?.json()
-        if (!data || !data.success || !data.blocks) return null
-        return data.blocks
-    } catch (error) {
-        console.log(error)
-        return null
+const getBlocksByTerritory = (households: typeHousehold[]): typeBlock[] => {
+    let blocks: typeBlock[] = []
+    for (let i = 1; i < 10; i++) {
+        let household: typeHousehold|undefined = households.find(x => x.manzana === i.toString())
+        if (household) blocks.push(i.toString() as typeBlock)
     }
+    return blocks
 }
 
-export const getHouseholdsByTerritoryService = async (territory: string, manzana: string, aTraer: number, traerTodos: boolean): Promise<[typeHousehold[], boolean]|null> => {
-   if (!getTokenService()) return null
-   try {
-    const response = await fetch(base, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ territory, manzana, aTraer, traerTodos })
+export const getHouseholdsByTerritoryService = async (
+    territory: string): Promise<[typeHousehold[], typeBlock[], typeStateOfTerritory]|null> => {
+    if (!getTokenService()) return null
+    try {
+    const response = await fetch(`${base}/${territory}`, {
+        method: 'GET',
+        headers
     })
     const data: typeResponseData = await response.json()
-    if (!data || !data.success || !data.households) return null
-    data.isAll = !data.isAll ? false : true
-    return [data.households, data.isAll]
+    if (!data || !data.success || !data.households || !data.stateOfTerritory) return null
+    const blocks: typeBlock[] = getBlocksByTerritory(data.households)
+    if (!blocks.length) return null
+    return [data.households, blocks, data.stateOfTerritory]
     } catch (error) {
         console.log(error)
         return null

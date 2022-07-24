@@ -3,9 +3,9 @@ import { useParams } from 'react-router'
 import { Button, Col, Row, Toast } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { H2 } from '../commons'
 import { editCampaignPackService, getCampaignPackService, closeCampaignPackService, putHyphens } from '../../services'
 import { success, typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
-import { H2 } from '../css/css'
 
 export const CampaignPage = () => {
 
@@ -100,11 +100,7 @@ export const CampaignPage = () => {
 
     return (
     <>
-        <H2 className={isDarkMode ? 'text-white' : ''}
-            style={{ fontSize: isMobile ? '2.3rem' : '', marginBottom: isMobile ? '20px' : '', marginTop: isMobile ? '90px' : '' }}
-        >
-            CAMPAÑA CELULARES 2022
-        </H2>
+        <H2 title={"CAMPAÑA CELULARES 2022"} />
 
         <h1 className={isDarkMode ? 'text-white' : ''}
             style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '40px' }}>

@@ -1,5 +1,5 @@
-import { MdDelete, MdEdit } from 'react-icons/md'
 import { useSelector } from 'react-redux'
+import { MdDelete, MdEdit } from 'react-icons/md'
 import { useAuth } from '../../../context/authContext'
 import { typeRootState, typeUser } from '../../../models'
 

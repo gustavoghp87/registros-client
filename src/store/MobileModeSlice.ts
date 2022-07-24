@@ -6,7 +6,7 @@ type typeMobileModeState = {
 
 export const mobileModeSlice = createSlice({
     name: 'mobileMode',
-    initialState: { isMobile: false },
+    initialState: { isMobile: window.screen.width < 990 },
     reducers: {
         changeMobileModeReducer: (state, action: PayloadAction<typeMobileModeState>) => {
             state = { isMobile: action.payload.isMobile }

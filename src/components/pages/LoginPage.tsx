@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { Loading } from './commons/Loading'
-import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
-import { useAuth } from '../context/authContext'
-import { getFailingEmailFromLSService, registerUserService, sendLinkToRecoverAccount, setFailingEmailFromLSService } from '../services'
-import { typeAppDispatch, typeResponseData, typeRootState } from '../models'
+import { Loading } from '../commons'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { useAuth } from '../../context/authContext'
+import { getFailingEmailFromLSService, registerUserService, sendLinkToRecoverAccount, setFailingEmailFromLSService } from '../../services'
+import { typeAppDispatch, typeResponseData, typeRootState } from '../../models'
 
 export const LoginPage = () => {
 

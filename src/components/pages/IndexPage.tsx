@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { TerritoryCampaigneNumberBlock } from './campaigns/TerritoryCampaignNumberBlock'
-import { TerritoryNumberBlock } from './commons/TerritoryNumberBlock'
-import { GeoLocationModal } from './commons/GeoLocationModal'
-import { Loading } from './commons/Loading'
-import { useAuth } from '../context/authContext'
-import { authUserService } from '../services'
-import { typeRootState, typeUser } from '../models'
-import { H2 } from './css/css'
+import { GeoLocationModal, H2, Loading } from '../commons'
+import { TerritoryCampaigneNumberBlock } from '../index/TerritoryCampaignNumberBlock'
+import { TerritoryNumberBlock } from '../index/TerritoryNumberBlock'
+import { useAuth } from '../../context/authContext'
+import { authUserService } from '../../services'
+import { typeRootState, typeUser } from '../../models'
 
 export const IndexPage = () => {
     //const user: typeUser|undefined = useAuth().user
@@ -16,13 +14,13 @@ export const IndexPage = () => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
     const [showedMode1, setShowedMode1] = useState<boolean>(false)
     const [showedMode2, setShowedMode2] = useState<boolean>(true)
     const [showedMode3, setShowedMode3] = useState<boolean>(true)
     const [showGeolocationModal, setShowGeolocationModal] = useState<boolean>(false)
     const [territories, setTerritories] = useState<number[]>()
     const [user, setUser] = useState<typeUser>()
+    const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
 
     const setShowGeolocationModalHandler = (): void => setShowGeolocationModal(false)
     
@@ -55,15 +53,11 @@ export const IndexPage = () => {
 
             {user && user.isAdmin && <>
 
-                {showGeolocationModal &&
-                    <GeoLocationModal setShowGeolocationModalHandler={setShowGeolocationModalHandler} />
-                }
-            
-                <H2 className={isDarkMode ? 'text-white' : ''}> CASA EN CASA </H2>
+                <H2 title={"CASA EN CASA"} />
 
                 <button className={`btn btn-general-blue btn-block mt-4`}
-                    type={'button'}
                     onClick={() => setShowedMode1(!showedMode1)}
+                    type={'button'}
                 >
                     {showedMode1 === true ? 'Ocultar' : 'Ver territorios'}
                 </button>
@@ -90,14 +84,22 @@ export const IndexPage = () => {
 
                 <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
                 <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
+
+                {showGeolocationModal &&
+                    <GeoLocationModal 
+                        setShowGeolocationModalHandler={setShowGeolocationModalHandler}
+                    />
+                }
+
             </>}
 
             {user && user.isAuth && <>
-                <H2 className={isDarkMode ? 'text-white' : ''}> TELEFÓNICA </H2>
+                <H2 title={"TELEFÓNICA"} />
 
-                <button className={`btn btn-danger btn-block mt-4`} style={{ cursor: 'pointer' }}
-                    type={'button'}
+                <button className={`btn btn-danger btn-block mt-4`}
                     onClick={() => setShowedMode2(!showedMode2)}
+                    style={{ cursor: 'pointer' }}
+                    type={'button'}
                 >
                     {showedMode2 === true ? 'Ocultar' : 'Ver territorios'}
                 </button>
@@ -129,7 +131,7 @@ export const IndexPage = () => {
             
             {user && user.isAuth &&
                 <>
-                    <H2 className={isDarkMode ? 'text-white' : ''}> CAMPAÑA CELULARES 2022 </H2>
+                    <H2 title={"CAMPAÑA CELULARES 2022"} />
                     
                     <button className={'btn btn-success btn-block mt-4'}
                         type={'button'}
@@ -145,6 +147,7 @@ export const IndexPage = () => {
                     </div>
                 </>
             }
+            
         </>
     )
 }

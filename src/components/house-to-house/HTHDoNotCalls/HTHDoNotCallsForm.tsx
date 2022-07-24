@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { HTHForm } from '../HTHCommon/HTHForm'
+import { HTHForm } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
 import { useAuth } from '../../../context/authContext'
 import { addHTHDoNotCallService } from '../../../services'

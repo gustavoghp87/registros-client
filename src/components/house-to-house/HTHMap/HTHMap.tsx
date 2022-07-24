@@ -1,16 +1,13 @@
 import { useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { useDispatch, useSelector } from 'react-redux'
-import { Loading } from '../../commons/Loading'
-import { HTHPolygonComponent } from './HTHPolygonComponent'
-import { HTHMarkerComponent } from './HTHMarkerComponent'
-import { HTHNewFaceOptions } from './HTHNewFaceOptions'
+import { Loading } from '../../commons'
+import { hthMapStyle, HTHMarkerComponent, HTHNewFaceOptions, HTHPolygonComponent } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
 import { useAuth } from '../../../context/authContext'
 import { googleMapsAPIKey, mapId } from '../../../config'
 import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services'
 import { typeAppDispatch, typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState, typeUser } from '../../../models'
-import HTHMapStyle from './HTHMapStyle.json'
 
 export const HTHMap = (props: any) => {
 
@@ -189,7 +186,6 @@ export const HTHMap = (props: any) => {
         setShowNewFaceOptions(false)
     }
 
-
     return (<>
         <div className={'position-relative'} style={{ marginBottom: isMobile ? '660px' : '' }}>
             <GoogleMap
@@ -213,7 +209,7 @@ export const HTHMap = (props: any) => {
                     minZoom: 8,
                     panControl: true,
                     streetViewControl: !isEditingView,
-                    styles: HTHMapStyle,
+                    styles: hthMapStyle,
                     zoom: isEditingView ? undefined : territoryHTH.map.zoom,
                     zoomControl: isEditingView,
                     zoomControlOptions: { position: google.maps.ControlPosition.LEFT_BOTTOM }

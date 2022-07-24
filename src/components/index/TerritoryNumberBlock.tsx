@@ -27,7 +27,7 @@ export const TerritoryNumberBlock = (props: any) => {
                             onClick={() => window.location.href = mode === 1 ?
                                 `/casa-en-casa/${territory?.toString()}`
                                 :
-                                `/territorios/${territory?.toString()}/1`
+                                `/territorios/${territory?.toString()}`
                             }
                             className={`btn ${mode === 1 ? 'btn-general-blue' : 'btn-danger'} animate__animated animate__bounce`}
                             style={{

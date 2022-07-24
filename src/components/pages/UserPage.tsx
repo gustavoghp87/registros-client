@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { Card, Button, Form, FloatingLabel } from 'react-bootstrap'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../store/AlertModalSlice'
-import { useAuth } from '../context/authContext'
-import { changePswService, logoutAllService } from '../services'
-import { primary, typeAppDispatch, typeRootState, typeUser } from '../models'
-import { H2 } from './css/css'
+import { H2 } from '../commons'
+import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { useAuth } from '../../context/authContext'
+import { changePswService, logoutAllService } from '../../services'
+import { primary, typeAppDispatch, typeRootState, typeUser } from '../../models'
 
 export const UserPage = () => {
     
@@ -63,7 +63,7 @@ export const UserPage = () => {
 
     return (
     <>
-        <H2 className={`text-center ${isDarkMode ? 'text-white' : ''}`}> Usuario </H2>
+        <H2 title={"Usuario"} />
 
         {user &&
         <>
@@ -82,7 +82,7 @@ export const UserPage = () => {
                         getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
                             <button key={index}
                                 className={'btn btn-general-blue d-inline-block text-center active mt-3 mx-1 px-0'}
-                                onClick={() => navigate(`/territorios/${territorio}/1`)}
+                                onClick={() => navigate(`/territorios/${territorio}`)}
                                 style={{ fontWeight: 'bolder', width: '65px' }}
                             >
                                 {territorio}

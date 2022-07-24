@@ -20,7 +20,7 @@ export const Footer = () => {
                 <div style={{
                     alignItems: 'center',
                     display: 'flex',
-                    fontSize: isMobile ? '1.6rem' : '2.2rem',
+                    fontSize: isMobile ? '1.2rem' : '2.2rem',
                     justifyContent: 'center',
                     //height: '100%',
                     margin: 'auto',

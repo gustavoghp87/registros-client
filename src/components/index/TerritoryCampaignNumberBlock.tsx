@@ -60,7 +60,7 @@ export const TerritoryCampaigneNumberBlock = () => {
 
     return (
     <>
-        <div className={'container'} style={{ paddingTop: '0', marginBottom: '0px' }}>
+        <div className={'container pt-0 mb-0'}>
 
             <Row style={{ padding: isMobile ? '40px' : '40px', justifyContent: 'space-evenly' }}>
 

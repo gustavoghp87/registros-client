@@ -2,13 +2,12 @@ import io from 'socket.io-client'
 import { useState, useEffect } from 'react'
 import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer, typeMode } from '../store/AlertModalSlice'
-import { Loading } from './commons/Loading'
-import { useAuth } from '../context/authContext'
-import { SERVER } from '../config'
-import { assignTerritoryService, changePswOtherUserService, modifyUserService, getUsersService } from '../services'
-import { danger, primary, dark, typeUser, typeAppDispatch, typeRootState, userChangeString } from '../models'
-import { H2 } from './css/css'
+import { setValuesAndOpenAlertModalReducer, typeMode } from '../../store/AlertModalSlice'
+import { H2, Loading } from '../commons'
+import { useAuth } from '../../context/authContext'
+import { SERVER } from '../../config'
+import { assignTerritoryService, changePswOtherUserService, modifyUserService, getUsersService } from '../../services'
+import { danger, primary, dark, typeUser, typeAppDispatch, typeRootState, userChangeString } from '../../models'
 
 export const AdminsPage = () => {
     
@@ -112,12 +111,7 @@ export const AdminsPage = () => {
 
     return (
     <>
-        <H2
-            className={isDarkMode ? 'text-white' : ''}
-            style={{ fontSize: isMobile ? '2.2rem' : '' }}
-        >
-            ADMINISTRADORES
-        </H2>
+        <H2 title={"ADMINISTRADORES"} />
 
         <button className={'btn btn-general-red d-block mx-auto mt-5 mb-0'} style={{ width: '227px' }}
             onClick={() => window.location.href = '/logs'}>

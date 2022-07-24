@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Card, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { Loading } from './commons/Loading'
-import { generalBlue } from '../config'
-import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../services'
-import { typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../models'
-import { H2 } from './css/css'
+import { generalBlue } from '../../config'
+import { H2, Loading } from '../commons'
+import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../../services'
+import { typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../../models'
 
 export const StatisticsPage = () => {
 
@@ -39,7 +38,7 @@ export const StatisticsPage = () => {
 
     return (
     <>
-        <H2 className={isDarkMode ? 'text-white' : ''}> ESTADÍSTICAS GLOBALES </H2>
+        <H2 title={"ESTADÍSTICAS GLOBALES"} />
 
         {globalStatistics ?
             <div style={{ margin: isMobile ? '0' : '0 10%' }}>

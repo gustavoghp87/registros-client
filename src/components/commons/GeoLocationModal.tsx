@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { useSelector } from 'react-redux'
 import { Modal } from 'react-bootstrap'
-import { Loading } from '../commons/Loading'
+import { Loading } from '../commons'
 import { googleMapsAPIKey, mapId } from '../../config'
 import { getGeocodingFromCoordinatesService } from '../../services'
 import { typeCoords, typeRootState } from '../../models'
@@ -22,10 +22,7 @@ export const GeoLocationModal = (props: any) => {
     //const [polygons, setPolygons] = useState<typePolygon[]>()
 
     useEffect(() => {
-        if (!navigator.geolocation) {
-            console.log("No geo")
-            return
-        }
+        if (!navigator.geolocation) return
         let infoWindow0: google.maps.InfoWindow = new google.maps.InfoWindow()
         navigator.geolocation.getCurrentPosition((geoPosition: GeolocationPosition) => {
             const lat: number = geoPosition.coords.latitude

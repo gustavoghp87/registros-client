@@ -2,16 +2,12 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
-import { Loading } from './commons/Loading'
-import { useAuth } from '../context/authContext'
-import { generalBlue } from '../config'
-import { HTHDoNotCalls } from './house-to-house/HTHDoNotCalls/HTHDoNotCalls'
-import { HTHObservations } from './house-to-house/HTHObservations/HTHObservations'
-import { HTHMap } from './house-to-house/HTHMap/HTHMap'
-import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../services'
-import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../models'
-import { H2 } from './css/css'
-import 'react-confirm-alert/src/react-confirm-alert.css'
+import { H2, Loading } from '../commons'
+import { HTHDoNotCalls, HTHMap, HTHObservations } from '../house-to-house'
+import { useAuth } from '../../context/authContext'
+import { generalBlue } from '../../config'
+import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../../services'
+import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../../models'
 
 export const HouseToHousePage = () => {
     
@@ -89,9 +85,7 @@ export const HouseToHousePage = () => {
 
     return (
     <>
-        <H2 className={isDarkMode ? 'text-white' : ''} style={{ fontSize: isMobile ? '2.7rem' : '' }}>
-            CASA EN CASA
-        </H2>
+        <H2 title={"CASA EN CASA"} />
 
         <h1 className={`text-center mt-4 ${isDarkMode ? 'text-white' : ''}`} style={{ fontWeight: 'bolder' }}>
             SELECCIONAR CARA DE MANZANA

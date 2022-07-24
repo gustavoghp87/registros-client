@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
-import { Loading } from '../commons/Loading'
+import { H2, Loading } from '../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
 import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService, getUsersService, putHyphens } from '../../services'
 import { danger, noAsignado, primary, secondary, typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
-import { H2 } from '../css/css'
-import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const CampaignAdminsPage = () => {
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
@@ -77,11 +75,7 @@ export const CampaignAdminsPage = () => {
 
     return (
     <>
-        <H2 className={isDarkMode ? 'text-white' : ''}
-            style={{ fontSize: isMobile ? '2.2rem' : '', marginBottom: isMobile ? '20px' : '' }}
-        >
-            CAMPAÑA CELULARES 2022
-        </H2>
+        <H2 title={"CAMPAÑA CELULARES 2022"} />
 
         <Button variant={showFiltered ? primary : danger} style={{ display: 'block', margin: '30px auto 0 auto' }}
             onClick={() => setShowFiltered(!showFiltered)}>

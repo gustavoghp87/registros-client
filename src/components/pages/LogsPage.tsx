@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, ListGroup } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { useAuth } from '../context/authContext'
-import { Loading } from './commons/Loading'
-import { generalBlue } from '../config'
-import { getAllLogsService } from '../services'
-import { typeLog, typeLogsObj, typeRootState, typeUser } from '../models'
-import { H2 } from './css/css'
+import { useAuth } from '../../context/authContext'
+import { H2, Loading } from '../commons'
+import { generalBlue } from '../../config'
+import { getAllLogsService } from '../../services'
+import { typeLog, typeLogsObj, typeRootState, typeUser } from '../../models'
+
+type typeDoubleArray = [typeLog[], boolean, React.Dispatch<React.SetStateAction<boolean>>, string] | []
 
 export const LogsPage = () => {
     
     const user: typeUser|undefined = useAuth().user
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
@@ -32,8 +33,6 @@ export const LogsPage = () => {
     const setShowPreachingHandler = (): void => setShowPreaching(!showPreaching)
     const setShowEmailErrorsHandler = (): void => setShowEmailErrors(!showEmailErrors)
     const setShowErrorsHandler = (): void => setShowErrors(!showErrors)
-
-    type typeDoubleArray = [typeLog[], boolean, React.Dispatch<React.SetStateAction<boolean>>, string] | []
 
     const showedLogs: typeDoubleArray[]|[] = logsPackage ? [
         [logsPackage.campaignAssignmentLogs, showCampaignAssignments, setShowCampaignAssignmentsHandler, "Asignaciones de la Campaña 2022"],
@@ -56,11 +55,7 @@ export const LogsPage = () => {
 
     return (
     <>
-        <H2 className={isDarkMode ? 'text-white' : ''}
-            style={{ fontSize: isMobile ? '2.2rem' : '' }}
-        >
-            LOGS DE LA APLICACIÓN
-        </H2>
+        <H2 title={"LOGS DE LA APLICACIÓN"} />
 
         <br /> <br /> <br />
 

@@ -1,4 +1,4 @@
-[
+export const hthMapStyle = [
     {
         "featureType": "administrative",
         "stylers": [

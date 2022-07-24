@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { HTHItemCard } from '../HTHCommon/HTHItemCard'
+import { HTHItemCard } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
 import { deleteHTHDoNotCallService } from '../../../services'
 import { typeAppDispatch, typeDoNotCall, typePolygon, typeTerritoryNumber } from '../../../models'

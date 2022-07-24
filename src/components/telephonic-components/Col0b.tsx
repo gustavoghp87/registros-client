@@ -2,117 +2,103 @@ import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../../context/authContext'
 import { generalRed } from '../../config'
-import { danger, dark, typeBlock, typeRootState, typeUser } from '../../models'
+import { danger, dark, typeRootState, typeUser } from '../../models'
 
 export const Col0b = (props: any) => {
-
+ 
     const user: typeUser|undefined = useAuth().user
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const isStatistics: boolean = props.isStatistics
-    const isTodo: boolean = props.isTodo
-    const territorio: string = props.territorio
-
+    const isShowingAll: boolean = props.isShowingAll
+    const isShowingStatistics: boolean = props.isShowingStatistics
+    const setIsShowingAllStatesHandler = props.setIsShowingAllStatesHandler
+    const setIsShowingStatisticsHandler = props.setIsShowingStatisticsHandler
     let radios: any[] = []
-    let manzana: typeBlock = props.manzana ? props.manzana : '1'
 
     if (isMobile)
         radios = user && user.isAdmin ? 
             [
-                { name: isTodo ? 'Ver no pred' : 'Viendo no pred', value: '1' },
-                { name: isTodo ? 'Viendo todos' : 'Ver todos', value: '2' },
-                { name: isStatistics ? 'Viendo estad' : 'Ver estad', value: '3' }
+                { name: isShowingAll ? 'Ver no pred' : 'Viendo no pred', value: '1' },
+                { name: isShowingAll ? 'Viendo todos' : 'Ver todos', value: '2' },
+                { name: isShowingStatistics ? 'Viendo estad' : 'Ver estad', value: '3' }
             ]
             :
             [
-                { name: isTodo ? 'Viendo no pred' : 'Ver no pred', value: '1' },
-                { name: isTodo ? 'Viendo todos' : 'Ver todos', value: '2' }
+                { name: isShowingAll ? 'Viendo no pred' : 'Ver no pred', value: '1' },
+                { name: isShowingAll ? 'Viendo todos' : 'Ver todos', value: '2' }
             ]
     else
         radios = user && user.isAdmin ?
             [
-                { name: (isTodo || isStatistics) ? 'Ver no predicados' : 'Viendo no predicados', value: '1' },
-                { name: isTodo ? 'Viendo todos' : 'Ver todos', value: '2' },
-                { name: isStatistics ? 'Viendo estadísticas' : 'Ver estadísticas', value: '3' }
+                { name: (isShowingAll || isShowingStatistics) ? 'Ver no predicados' : 'Viendo no predicados', value: '1' },
+                { name: isShowingAll ? 'Viendo todos' : 'Ver todos', value: '2' },
+                { name: isShowingStatistics ? 'Viendo estadísticas' : 'Ver estadísticas', value: '3' }
             ]
             :
             [
-                { name: (isTodo || isStatistics) ? 'Ver no predicados' : 'Viendo no predicados', value: '1' },
-                { name: isTodo ? 'Viendo todos' : 'Ver todos', value: '2' }
+                { name: (isShowingAll || isShowingStatistics) ? 'Ver no predicados' : 'Viendo no predicados', value: '1' },
+                { name: isShowingAll ? 'Viendo todos' : 'Ver todos', value: '2' }
             ]
-
-
+    ;
 
     return (
-
-        <Col style={{ textAlign: 'center', marginBottom: '7px', padding: isMobile ? '0' : '5px' }}>
+        <Col className={`text-center mb-2 ${isMobile ? '' : 'p-2'}`}>
 
             <ButtonGroup>
 
                 <ToggleButton
                     key={'1'}
-                    type={'radio'}
-                    variant={isTodo ? 'dark' : (isStatistics ? dark : danger)}
                     name={"radio"}
-                    value={radios[0]?.value}
                     style={{
-                        backgroundColor: `${isTodo || isStatistics ? undefined : generalRed}`,
+                        backgroundColor: `${isShowingAll || isShowingStatistics ? '' : generalRed}`,
                         padding: '0'
                     }}
-                    //checked={isTodo ? false : (isStatistics ? false : true )}
+                    type={'radio'}
+                    value={radios[0]?.value}
+                    variant={isShowingAll ? dark : (isShowingStatistics ? dark : danger)}
                 >
-
-                    <a href={`/territorios/${territorio}/${manzana}`}
-                        style={{ color: 'white', textDecoration: 'none' }}>
-                        
-                        <div style={{ lineHeight: '40px', padding: '0 15px' }}>
-                            {radios[0]?.name}
-                        </div>
-
-                    </a>
-
+                    <div
+                        onClick={() => setIsShowingAllStatesHandler(false)}
+                        style={{ color: 'white', lineHeight: '40px', padding: '0 15px', textDecoration: 'none' }}
+                    >
+                        {radios[0]?.name}
+                    </div>
                 </ToggleButton>
 
 
                 <ToggleButton
+                    checked={!!isShowingAll}
+                    className={'p-0'}
                     key={'2'}
-                    type={'radio'}
-                    variant={isTodo ? 'danger' : 'dark'}
                     name={"radio"}
+                    type={'radio'}
                     value={radios[1]?.value}
-                    style={{ padding: '0' }}
-                    checked={isTodo ? true : false}
+                    variant={isShowingAll ? 'danger' : 'dark'}
                 >
-
-                    <a href={`/territorios/${territorio}/${manzana}/todo`} style={{ color: 'white', textDecoration: 'none' }}>
-                        
-                        <div style={{ lineHeight: '40px', padding: '0 15px' }}>
-                            {radios[1]?.name}
-                        </div>
-
-                    </a>
-
+                    <div
+                        onClick={() => setIsShowingAllStatesHandler(true)}
+                        style={{ color: 'white', lineHeight: '40px', padding: '0 15px' }}
+                    >
+                        {radios[1]?.name}
+                    </div>
                 </ToggleButton>
 
-                
+
                 {radios && radios[2] &&
                     <ToggleButton
+                        checked={!!isShowingStatistics}
                         key={'3'}
-                        type={'radio'}
-                        variant={isStatistics ? 'danger' : 'dark'}
                         name={"radio"}
-                        value={radios[2]?.value}
                         style={{ padding: '0' }}
-                        checked={isStatistics ? true : false }
+                        type={'radio'}
+                        value={radios[2]?.value}
+                        variant={isShowingStatistics ? 'danger' : 'dark'}
                     >
-
-                        <a href={`/estadisticas/${territorio}`} style={{ color: 'white', textDecoration: 'none' }}>
-                            
-                            <div style={{ lineHeight: '40px', padding: '0 15px' }}>
-                                {radios[2]?.name}
-                            </div>
-
-                        </a>
-
+                        <div
+                            onClick={() => setIsShowingStatisticsHandler(true)}
+                            style={{ color: 'white', lineHeight: '40px', padding: '0 15px', textDecoration: 'none' }}
+                        >
+                            {radios[2]?.name}
+                        </div>
                     </ToggleButton>
                 }
 

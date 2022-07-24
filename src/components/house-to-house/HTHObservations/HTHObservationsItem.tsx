@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { HTHObservationsForm } from './HTHObservationsForm'
-import { HTHItemCard } from '../HTHCommon/HTHItemCard'
+import { HTHItemCard, HTHObservationsForm } from '../'
 import { useAuth } from '../../../context/authContext'
 import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
 import { deleteHTHObservationService } from '../../../services'

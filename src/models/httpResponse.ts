@@ -10,7 +10,6 @@ export type typeResponseData = {
     stateOfTerritories?: typeStateOfTerritory[]
     household?: typeHousehold
     households?: typeHousehold[]
-    isAll?: boolean
     blocks?: typeBlock[]
     newPassword?: string
     emailFailed?: string

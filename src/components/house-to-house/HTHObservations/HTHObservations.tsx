@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { HTHObservationsForm } from './HTHObservationsForm'
-import { HTHObservationsItem } from './HTHObservationsItem'
+import { HTHObservationsForm, HTHObservationsItem } from '../'
 import { useAuth } from '../../../context/authContext'
 import { generalBlue } from '../../../config'
 import { typeObservation, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../../../models'

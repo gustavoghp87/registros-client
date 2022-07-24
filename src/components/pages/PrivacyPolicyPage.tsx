@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../models'
+import { typeRootState } from '../../models'
 
 export const PrivacyPolicyPage = () => {
     

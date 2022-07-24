@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { closeAlertModalReducer } from '../../store/AlertModalSlice'
 import { adjustModalStyles } from '../../services'
 import { typeAppDispatch, typeRootState } from '../../models'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const AlertModal = () => {
 

@@ -2,16 +2,17 @@ import { typeFace } from './houseToHouse'
 
 export type typeHousehold = {
     _id?: Object
-    inner_id: string
-    territorio: string
-    manzana: typeBlock
-    direccion: string
-    telefono: string
-    estado: typeCallingState
-    noAbonado: boolean
-    fechaUlt?: string
-    variante: typeVariant
     asignado?: boolean
+    direccion: string
+    doNotMove?: boolean
+    estado: typeCallingState
+    fechaUlt?: string
+    inner_id: string
+    manzana: typeBlock
+    noAbonado: boolean
+    telefono: string
+    territorio: string
+    variante: typeVariant
 }
 
 export type typeBlock = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
@@ -24,15 +25,17 @@ export type typeVariant = 'success' | 'dark' | 'primary' | 'danger' | 'warning' 
 
 export type typeStateOfTerritory = {
     _id?: object
-    territorio: string
     isFinished: boolean
     resetDate?: typeResetDate[]
+    territorio: string
 }
 
 export type typeResetDate = {
     date: number
-    option: number
+    option: typeOption
 }
+
+type typeOption = 1 | 2 | 3 | 4
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

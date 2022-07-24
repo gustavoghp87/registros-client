@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { HTHDoNotCallsForm } from './HTHDoNotCallsForm'
-import { HTHDoNotCallsItem } from './HTHDoNotCallsItem'
+import { HTHDoNotCallsForm, HTHDoNotCallsItem } from '../'
 import { generalBlue } from '../../../config'
 import { useAuth } from '../../../context/authContext'
 import { typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../../../models'

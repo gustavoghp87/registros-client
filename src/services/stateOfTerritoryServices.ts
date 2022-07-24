@@ -4,22 +4,22 @@ import { typeResponseData, typeStateOfTerritory } from '../models'
 
 const base: string = `${SERVER}/api/state-territory`
 
-export const getStateOfTerritoryService = async (territorio: string): Promise<any> => {
-    if (!getTokenService()) return null
-    try {
-        const response = await fetch(`${base}/${territorio}`, {
-            method: 'GET',
-            headers
-        })
-        const data: typeResponseData = await response.json()
-        if (!data || !data.success || !data.stateOfTerritory || data.stateOfTerritory.isFinished === null
-            || typeof data.stateOfTerritory.isFinished !== "boolean") return null
-        return data.stateOfTerritory
-    } catch (error) {
-        console.log(error)
-        return null
-    }
-}
+// export const getStateOfTerritoryService = async (territory: string): Promise<any> => {
+//     if (!getTokenService()) return null
+//     try {
+//         const response = await fetch(`${base}/${territory}`, {
+//             method: 'GET',
+//             headers
+//         })
+//         const data: typeResponseData = await response.json()
+//         if (!data || !data.success || !data.stateOfTerritory || data.stateOfTerritory.isFinished === null
+//             || typeof data.stateOfTerritory.isFinished !== "boolean") return null
+//         return data.stateOfTerritory
+//     } catch (error) {
+//         console.log(error)
+//         return null
+//     }
+// }
 
 export const getStateOfTerritoriesService = async (): Promise<typeStateOfTerritory[]|null> => {
     if (!getTokenService()) return null
