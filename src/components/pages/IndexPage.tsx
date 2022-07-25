@@ -4,11 +4,11 @@ import { GeoLocationModal, H2, Loading } from '../commons'
 import { TerritoryCampaigneNumberBlock } from '../index/TerritoryCampaignNumberBlock'
 import { TerritoryNumberBlock } from '../index/TerritoryNumberBlock'
 import { useAuth } from '../../context/authContext'
-import { authUserService } from '../../services'
+//import { authUserService } from '../../services'
 import { typeRootState, typeUser } from '../../models'
 
 export const IndexPage = () => {
-    //const user: typeUser|undefined = useAuth().user
+    const user: typeUser|undefined = useAuth().user
     const refreshUser: (() => void) | undefined = useAuth().refreshUser
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
@@ -19,19 +19,19 @@ export const IndexPage = () => {
     const [showedMode3, setShowedMode3] = useState<boolean>(true)
     const [showGeolocationModal, setShowGeolocationModal] = useState<boolean>(false)
     const [territories, setTerritories] = useState<number[]>()
-    const [user, setUser] = useState<typeUser>()
+    //const [user, setUser] = useState<typeUser>()
     const territoriesAll: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]
 
     const setShowGeolocationModalHandler = (): void => setShowGeolocationModal(false)
     
     useEffect(() => {
         if (!user || !user.isAuth) {
-            if (refreshUser) refreshUser()
-            authUserService().then((user0: typeUser|null) => {
-                if (user0 && (!user0.asign || !user0.asign.length)) setShowedMode2(false)
-                if (user0) setUser(user0)
-                else { window.location.href = '/'; return }
-            })
+            // if (refreshUser) refreshUser()
+            // authUserService().then((user0: typeUser|null) => {
+            //     if (user0 && (!user0.asign || !user0.asign.length)) setShowedMode2(false)
+            //     if (user0) setUser(user0)
+            //     else { window.location.href = '/'; return }
+            // })
         }
         if (user && (!territories || !territories.length)) {
             let asignados: number[] = user.asign || []
@@ -114,16 +114,14 @@ export const IndexPage = () => {
                         />
                     </div>
                 </div>
+
+                {!showedMode2 && <><br/><br/><br/></>}
+
+                <br/><br/><br/>
+
+                <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
+                <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
             </>}
-
-
-            {!showedMode2 && <><br/><br/><br/></>}
-
-            <br/><br/><br/>
-
-            <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
-            <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
-
 
 
 

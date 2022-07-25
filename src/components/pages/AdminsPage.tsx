@@ -1,4 +1,4 @@
-import io from 'socket.io-client'
+import io, { Socket } from 'socket.io-client'
 import { useState, useEffect } from 'react'
 import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,13 +16,15 @@ export const AdminsPage = () => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [asig, setAsig] = useState<string[]>([])
     const [asignVisible, setAsignVisible] = useState<boolean>(false)
     const [desasig, setDesasig] = useState<string[]>([])
     const [groupVisible, setGroupVisible] = useState<boolean>(false)
-    const [socket, setSocket] = useState<any>(null)
+    const [socket, setSocket] = useState<Socket>()
     const [users, setUsers] = useState<typeUser[]>()
     const [viendo, setViendo] = useState<string>("todos")
+    let email: string = ""
 
     const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
         const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
@@ -60,8 +62,6 @@ export const AdminsPage = () => {
     const refreshUserHandler = (user_id: string): void => {
         if (user_id === user?._id && refreshUser) refreshUser()
     }
-
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     
     const openAlertModalHandler = (mode: typeMode, title: string, message: string, execution: Function|undefined = undefined): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -72,7 +72,6 @@ export const AdminsPage = () => {
         }))
     }
     
-    let email: string = ""
     const openConfirmModalHandler = (selectedEmail: string): void => {
         if (selectedEmail) email = selectedEmail
         else return
@@ -98,15 +97,19 @@ export const AdminsPage = () => {
 
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
-        if (!socket) {
-            const newSocket = io(SERVER, { withCredentials: true })
-            newSocket.on(userChangeString, (updatedUser: typeUser) => {
-                if (updatedUser) getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
-            })
-            if (newSocket) setSocket(newSocket)
-        }
+    }, [])
+
+    useEffect(() => {
+        const newSocket = io(SERVER, { withCredentials: true })
+        newSocket.on(userChangeString, (updatedUser: typeUser) => {
+            if (updatedUser) getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
+        })
+        if (newSocket) setSocket(newSocket)
+        return () => setSocket(undefined)
+    }, [])
+
+    useEffect(() => {
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
-        return
     }, [socket, socket?.connected])
 
     return (

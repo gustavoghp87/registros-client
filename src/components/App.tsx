@@ -1,13 +1,13 @@
 import { Suspense, useEffect } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Pages from './pages'
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, NavBar } from './commons'
 import { recaptchaPublicKey } from '../config'
 import { changeMobileModeReducer } from '../store/MobileModeSlice'
-import { typeAppDispatch, typeRootState, typeUser } from '../models'
 import { useAuth } from '../context/authContext'
+import { typeAppDispatch, typeRootState, typeUser } from '../models'
 
 export const App = () => {
     
@@ -39,7 +39,6 @@ export const App = () => {
                         <FloatingWidgets />
                     </div>
 
-
                     <div style={{
                         maxWidth: isMobile ? '95%' : '90%',
                         paddingTop: '75px',
@@ -53,21 +52,25 @@ export const App = () => {
                             <Route path={'/privacidad'} element={ <Pages.PrivacyPolicyPage /> } />
                             <Route path={'/recovery/:id'} element={ <Pages.RecoveryPage /> } />
                             <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
+
                             {/* Strict Public */}
-                            <Route path={'/acceso'} element={ <Pages.LoginPage /> } />
+                            <Route path={'/acceso'} element={(!user || !user.isAuth) ? <Pages.LoginPage /> : <Pages.HomePage />} />
+
                             {/* Private */}
-                            <Route path={'/index'} element={ <Pages.IndexPage /> } />
-                            <Route path={'/territorios/:territory'} element={ <Pages.TelephonicPage /> } />
-                            <Route path={'/usuario'} element={ <Pages.UserPage /> } />
+                            <Route path={'/index'} element={user && user.isAuth ? <Pages.IndexPage /> : <Pages.HomePage />} />
+                            <Route path={'/territorios/:territory'} element={user && user.isAuth ? <Pages.TelephonicPage /> : <Pages.HomePage />} />
+                            <Route path={'/usuario'} element={user && user.isAuth ? <Pages.UserPage /> : <Pages.HomePage />} />
+
                             {/* Private Admins */}
-                            <Route path={'/admins'} element={ <Pages.AdminsPage /> } />
-                            <Route path={'/celulares-admins'} element={ <Pages.CampaignAdminsPage /> } />
-                            <Route path={'/gmail'} element={ <Pages.GmailTokensPage /> } />
-                            <Route path={'/casa-en-casa/:territory'} element={ <Pages.HouseToHousePage /> } />
-                            <Route path={'/logs'} element={ <Pages.LogsPage /> } />
-                            <Route path={'/estadisticas'} element={ <Pages.StatisticsPage /> } />
-                            {/* * */}
-                            <Route path={'*'} element={ <Pages.HomePage /> } />
+                            <Route path={'/admins'} element={user && user.isAdmin ? <Pages.AdminsPage /> : <Pages.HomePage />} />
+                            <Route path={'/celulares-admins'} element={user && user.isAdmin ? <Pages.CampaignAdminsPage /> : <Pages.HomePage />} />
+                            <Route path={'/casa-en-casa/:territory'} element={user && user.isAdmin ? <Pages.HouseToHousePage /> : <Pages.HomePage />} />
+                            <Route path={'/gmail'} element={user && user.isAdmin ? <Pages.GmailTokensPage /> : <Pages.HomePage />} />
+                            <Route path={'/logs'} element={user && user.isAdmin ? <Pages.LogsPage /> : <Pages.HomePage />} />
+                            <Route path={'/estadisticas'} element={user && user.isAdmin ? <Pages.StatisticsPage /> : <Pages.HomePage />} />
+
+                            <Route path={'/*'} element={ <Navigate to={'/'} replace /> } />
+
                         </Routes>
 
                         <DarkModeButton />

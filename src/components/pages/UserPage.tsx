@@ -111,12 +111,12 @@ export const UserPage = () => {
                     </button>
                 </>}
 
-
             </Card>
+
 
             {show &&
                 <Card className={isDarkMode ? 'bg-dark text-white' : ''}
-                    style={{ padding: '25px', margin: '60px auto', maxWidth: '600px' }}>
+                    style={{ padding: '25px', margin: '60px auto', maxWidth: '450px' }}>
 
                     <Card.Title className={'text-center mb-4'}> CAMBIAR CONTRASEÑA </Card.Title>
 
