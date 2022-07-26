@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { generalBlue } from '../../config'
 import { typeRootState } from '../../models'
 
@@ -22,7 +23,6 @@ export const Footer = () => {
                     display: 'flex',
                     fontSize: isMobile ? '1.2rem' : '2.2rem',
                     justifyContent: 'center',
-                    //height: '100%',
                     margin: 'auto',
                     width: '100%'
                 }}>
@@ -31,10 +31,13 @@ export const Footer = () => {
                     </a>
                 </div>
 
-                <div className='text-center mt-2'>
-                    <a className={`${isMobile ? '' : 'mr-2'} text-white`} href={'/privacidad'}> Política de Privacidad </a>
+                <div className={'text-center mt-2'}>
+
+                    <Link to={'/privacidad'} className={`${isMobile ? '' : 'mr-2'} text-white`}> Política de Privacidad </Link>
+
                     {isMobile && <br/>}
-                    <a className={`${isMobile ? '' : 'ml-2'} text-white`} href={'/servicio'}> Términos de Uso </a>
+                    
+                    <Link to={'/servicio'} className={`${isMobile ? '' : 'ml-2'} text-white`}> Términos de Uso </Link>
                 </div>
 
             </div>

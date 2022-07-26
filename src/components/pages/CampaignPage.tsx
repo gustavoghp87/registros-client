@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useParams } from 'react-router'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { Button, Col, Row, Toast } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { H2 } from '../commons'
 import { editCampaignPackService, getCampaignPackService, closeCampaignPackService, putHyphens } from '../../services'
 import { success, typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
@@ -15,6 +15,7 @@ export const CampaignPage = () => {
         isMobile: state.mobileMode.isMobile
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const navigate: NavigateFunction = useNavigate()
     const [campaignPack, setCampaignPack] = useState<typeCampaignPack>()
     const [phoneNumbers, setPhoneNumbers] = useState<number[]>()
     const [showToast, setShowToast] = useState(true)
@@ -54,7 +55,7 @@ export const CampaignPage = () => {
     const closeCampaignPackHandler = (): void => {
         closeCampaignPackService(id).then(() => {
             if (!success) return openAlertModalHandler("Algo falló", "")
-            window.location.href = '/index'
+            navigate('/index')
         })
     }
 
@@ -64,13 +65,13 @@ export const CampaignPage = () => {
         return (
             <div className={`${display ? '' : 'd-none'} p-3 my-3 border border-primary rounded text-center`}>
                 <h5 style={{ display: 'inline', fontSize: '2rem' }}>
-                    <a href={`tel:${phoneNumber}`}> {putHyphens(phoneNumber)}</a>
+                    <a href={`tel:${phoneNumber}`}> {putHyphens(phoneNumber)} </a>
                     &nbsp;&nbsp;
                 </h5>
                 <input className={'checkboxdos'} type={'checkbox'}
-                    style={{ display: 'inline' }}
                     checked={(campaignPack && campaignPack.llamados && campaignPack.llamados.includes(phoneNumber)) ? true : false}
                     onChange={() => editCampaignPackHandler(phoneNumber, campaignPack && campaignPack.llamados && campaignPack.llamados.includes(phoneNumber) ? true : false)}
+                    style={{ display: 'inline' }}
                 />
             </div>
         )
@@ -79,7 +80,7 @@ export const CampaignPage = () => {
     const refreshHandler = useCallback((): void => {
         if (id) getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
             if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
-                return window.location.href = '/index'
+                return navigate('/index')
             }
             setCampaignPack(campaignPack)
             let phones: number[] = []
@@ -90,7 +91,7 @@ export const CampaignPage = () => {
             }
             setPhoneNumbers(phones)
         })
-    }, [id])
+    }, [id, navigate])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -102,15 +103,17 @@ export const CampaignPage = () => {
     <>
         <H2 title={"CAMPAÑA CELULARES 2022"} />
 
-        <h1 className={isDarkMode ? 'text-white' : ''}
-            style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '40px' }}>
+        <h1 className={`text-center ${isDarkMode ? 'text-white' : ''}`}
+            style={{ marginBottom: isMobile ? '30px' : '40px' }}
+        >
             Paquete de teléfonos {id}
         </h1>
 
         <Toast show={showToast}
             className={'d-block m-auto'}
             style={{ border: '1px solid lightgray', marginBottom: '50px' }}
-            onClose={() => setShowToast(false)}>
+            onClose={() => setShowToast(false)}
+        >
             <Toast.Header style={{ border: '1px solid lightgray' }}>
                 <strong className={'mr-auto'}> Campaña Celulares 2022 </strong>
                 <small> </small>

@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { HTHForm } from '../'
-import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
-import { useAuth } from '../../../context/authContext'
+import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { addHTHDoNotCallService } from '../../../services'
-import { typeAppDispatch, typeDoNotCall, typePolygon, typeTerritoryNumber, typeUser } from '../../../models'
+import { typeAppDispatch, typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 
 export const HTHDoNotCallsForm = (props: any) => {
 
-    const user: typeUser|undefined = useAuth().user
+    const { user } = useSelector((state: typeRootState) => ({
+        user: state.user
+    }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const closeShowFormHandler: Function = props.closeShowFormHandler
     const currentFace: typePolygon = props.currentFace

@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react'
-import { Card, Button, ListGroup } from 'react-bootstrap'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
-import { useAuth } from '../../context/authContext'
+import { Card, Button, ListGroup } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
 import { generalBlue } from '../../config'
 import { getAllLogsService } from '../../services'
-import { typeLog, typeLogsObj, typeRootState, typeUser } from '../../models'
+import { typeLog, typeLogsObj, typeRootState } from '../../models'
 
 type typeDoubleArray = [typeLog[], boolean, React.Dispatch<React.SetStateAction<boolean>>, string] | []
 
 export const LogsPage = () => {
     
-    const user: typeUser|undefined = useAuth().user
-    const { isDarkMode } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        user: state.user
     }))
+    const navigate: NavigateFunction = useNavigate()
     const [logsPackage, setLogsPackage] = useState<typeLogsObj>()
     const [showCampaignAssignments, setShowCampaignAssignments] = useState<boolean>(false)
     const [showCampaignFinishing, setShowCampaignFinishing] = useState<boolean>(false)
@@ -52,6 +52,8 @@ export const LogsPage = () => {
             if (logsObject) setLogsPackage(logsObject)
         })
     }, [user, logsPackage])
+
+    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
 
     return (
     <>

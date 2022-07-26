@@ -1,5 +1,6 @@
 import { SERVER } from '../config'
-import { getTokenService, headers } from './'
+import { headers } from './'
+import { getTokenService } from './userServices'
 import { typeCoords, typeResponseData } from '../models'
 
 const base: string = `${SERVER}/api/geocoding`

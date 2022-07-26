@@ -2,17 +2,16 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
-import { useAuth } from '../../context/authContext'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { askForANewCampaignPackService, getCampaignPacksServiceByUser } from '../../services'
-import { typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
+import { typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
 
 export const TerritoryCampaigneNumberBlock = () => {
 
-    const user: typeUser|undefined = useAuth().user
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
@@ -64,15 +63,16 @@ export const TerritoryCampaigneNumberBlock = () => {
 
             <Row style={{ padding: isMobile ? '40px' : '40px', justifyContent: 'space-evenly' }}>
 
-                {user && user.isAuth && campaignPacks && !!campaignPacks.length && campaignPacks.map((campaignPack: typeCampaignPack, index: number) =>
-                    <Link type={'button'} key={index}
+                {user && user.isAuth && campaignPacks && !!campaignPacks.length && campaignPacks.map((campaignPack: typeCampaignPack) =>
+                    <Link key={campaignPack.id}
                         className={`btn btn-success h-100 p-4 ${campaignPack.terminado ? 'd-none' : ''}`}
                         style={{
                             width: '140px',
                             borderRadius: '15px',
                             margin: '0 1% 0px 1%'
                         }}
-                        to={`/celulares/${campaignPack?.id?.toString()}`}
+                        to={`celulares/${campaignPack?.id?.toString()}`}
+                        type={'button'}
                     >
                         <h2 className={'m-auto'}
                             style={{

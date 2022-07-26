@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { confirmAlert } from 'react-confirm-alert'
 import { useDispatch, useSelector } from 'react-redux'
-import { closeAlertModalReducer } from '../../store/AlertModalSlice'
+import { closeAlertModalReducer } from '../../store'
 import { adjustModalStyles } from '../../services'
 import { typeAppDispatch, typeRootState } from '../../models'
 import 'react-confirm-alert/src/react-confirm-alert.css'

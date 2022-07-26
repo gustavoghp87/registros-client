@@ -1,17 +1,18 @@
 import { useSelector } from 'react-redux'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { generalBlue } from '../../config'
 import { H2 } from '../commons'
-import { useAuth } from '../../context/authContext'
-import { typeRootState, typeUser } from '../../models'
+import { typeRootState } from '../../models'
 
 export const HomePage = () => {
 
-    const user: typeUser|undefined = useAuth().user
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
-    
+    const navigate: NavigateFunction = useNavigate()
+
     return (
     <>
         <H2 title={"BIENVENIDOS"} />
@@ -25,7 +26,7 @@ export const HomePage = () => {
             A<br/>MISERICORDIA WEB
         </h1>
 
-        <a href={user && user.isAuth ? '/index' : '/acceso'} style={{ textDecoration: 'none' }}>
+        <div onClick={() => navigate(user && user.isAuth ? 'index' : 'acceso')} style={{ cursor: 'pointer', textDecoration: 'none' }}>
             <h3 style={{
                 backgroundColor: 'lightgray',
                 color: generalBlue,
@@ -37,7 +38,7 @@ export const HomePage = () => {
             }}>
                 ENTRAR
             </h3>
-        </a>
+        </div>
 
         {/* <div style={{ textAlign: 'center', marginTop: isMobile ? '30px' : '40px' }}>
             

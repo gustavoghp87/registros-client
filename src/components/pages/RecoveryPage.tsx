@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
-import { changePswService, getEmailByEmailLink } from '../../services'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { changePswService, getEmailByEmailLink } from '../../services/userServices'
 import { typeAppDispatch, typeRootState } from '../../models'
 
 export const RecoveryPage = () => {

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { changeDarkModeReducer } from '../../store/DarkModeSlice'
+import { changeDarkModeReducer } from '../../store'
 import { typeAppDispatch, typeRootState } from '../../models'
 
 export const DarkModeButton = () => {

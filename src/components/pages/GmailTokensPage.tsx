@@ -1,10 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { NavigateFunction, useNavigate } from 'react-router'
+import { useSelector } from 'react-redux'
 import { Button, Container, FloatingLabel, Form } from 'react-bootstrap'
 import { Credentials } from 'google-auth-library'
 import { getGmailRequestService, getGmailUrlService, saveNewGmailAPITokenToDBService } from '../../services'
+import { typeRootState } from '../../models'
 
 export const GmailTokensPage = () => {
 
+    const { user } = useSelector((state: typeRootState) => ({
+        user: state.user
+    }))
+    const navigate: NavigateFunction = useNavigate()
     const [url, setUrl] = useState<string>('')
     const [code, setCode] = useState<string>('')
     const [credentials, setCredentials] = useState<Credentials>()
@@ -26,6 +33,8 @@ export const GmailTokensPage = () => {
         const success0: boolean = await saveNewGmailAPITokenToDBService(credentials.access_token, credentials.refresh_token)
         if (success0) setSuccess(true)
     }
+
+    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
 
     return (
         <Container style={{ maxWidth: '500px', marginTop: '150px'}}>

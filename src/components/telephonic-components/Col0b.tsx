@@ -1,13 +1,14 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { useAuth } from '../../context/authContext'
 import { generalRed } from '../../config'
-import { danger, dark, typeRootState, typeUser } from '../../models'
+import { danger, dark, typeRootState } from '../../models'
 
 export const Col0b = (props: any) => {
  
-    const user: typeUser|undefined = useAuth().user
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isMobile, user } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
+    }))
     const isShowingAll: boolean = props.isShowingAll
     const isShowingStatistics: boolean = props.isShowingStatistics
     const setIsShowingAllStatesHandler = props.setIsShowingAllStatesHandler

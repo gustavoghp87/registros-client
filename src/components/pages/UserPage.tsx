@@ -1,17 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, Button, Form, FloatingLabel } from 'react-bootstrap'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { H2 } from '../commons'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
-import { useAuth } from '../../context/authContext'
-import { changePswService, logoutAllService } from '../../services'
+import { refreshUser, setValuesAndOpenAlertModalReducer } from '../../store'
+import { changePswService, getUserByTokenService, logoutAllService } from '../../services/userServices'
 import { primary, typeAppDispatch, typeRootState, typeUser } from '../../models'
 
 export const UserPage = () => {
     
-    const user: typeUser|undefined = useAuth().user
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const { isDarkMode, user } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        user: state.user
+    }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const navigate: NavigateFunction = useNavigate()
     const [newPsw, setNewPsw] = useState('')
@@ -56,10 +57,22 @@ export const UserPage = () => {
     }
 
     const getAssignedTerritoriesSorted = (): number[] => {
-        let sorted: number[] = []
-        if (user && user.asign && user.asign.length) sorted = user.asign.sort((a: number, b: number) => a - b)
-        return sorted
+        if (user && user.asign && user.asign.length) {
+            let sorted: number[] = [...user.asign]
+            sorted = sorted.sort((a: number, b: number) => a - b)
+            return sorted
+        } else {
+            return []
+        }
     }
+
+    useEffect(() => {
+        getUserByTokenService().then((user: typeUser|null) => {
+            if (user) dispatch(refreshUser(user))
+        })
+    }, [dispatch])
+
+    useEffect(() => { if (!user || !user.isAuth) navigate('/acceso')}, [navigate, user])
 
     return (
     <>

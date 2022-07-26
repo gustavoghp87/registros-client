@@ -1,13 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { alertModalSlice } from './AlertModalSlice'
-import { darkModeSlice } from './DarkModeSlice'
-import { mobileModeSlice } from './MobileModeSlice'
+import { alertModalSlice, darkModeSlice, mobileModeSlice, userSlice } from './'
 
 export const store = configureStore({
     reducer: {
         alertModal: alertModalSlice.reducer,
         darkMode: darkModeSlice.reducer,
-        mobileMode: mobileModeSlice.reducer
+        mobileMode: mobileModeSlice.reducer,
+        user: userSlice.reducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
 })

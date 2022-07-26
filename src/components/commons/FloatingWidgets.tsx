@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
-import { ReturnBtn } from './ReturnBtn'
 import { useSelector } from 'react-redux'
-import { useAuth } from '../../context/authContext'
-import { typeRootState, typeUser } from '../../models'
+import { ReturnBtn } from './ReturnBtn'
+import { typeRootState } from '../../models'
 
 export const FloatingWidgets = () => {
 
-    const user: typeUser|undefined = useAuth().user
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
     const [scrollDown, setScrollDown] = useState<boolean>(false)
 

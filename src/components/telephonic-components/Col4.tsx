@@ -5,8 +5,8 @@ import { typeHousehold, typeRootState } from '../../models'
 export const Col4 = (props: any) => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const household: typeHousehold = props?.household
-    const modifyHouseholdHandler = props?.modifyHouseholdHandler
+    const household: typeHousehold = props.household
+    const modifyHouseholdHandler = props.modifyHouseholdHandler
 
     return (
         <Col xs={12} md={2}>

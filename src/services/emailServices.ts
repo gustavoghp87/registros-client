@@ -1,6 +1,7 @@
 import { Credentials } from 'google-auth-library'
 import { SERVER } from '../config'
-import { getTokenService, headers } from './'
+import { headers } from './'
+import { getTokenService } from './userServices'
 import { typeResponseData } from '../models'
 
 const base: string = `${SERVER}/api/email`

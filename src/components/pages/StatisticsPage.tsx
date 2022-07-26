@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Card, Button } from 'react-bootstrap'
+import { Link, NavigateFunction, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { Card, Button } from 'react-bootstrap'
 import { generalBlue } from '../../config'
 import { H2, Loading } from '../commons'
 import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../../services'
@@ -8,23 +9,19 @@ import { typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic 
 
 export const StatisticsPage = () => {
 
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
+    const navigate: NavigateFunction = useNavigate()
     const [globalStatistics, setGlobalStatistics] = useState<typeStatistic|null>()
-    const [localStatisticsArray, setLocalStatisticsArray] = useState<typeLocalStatistic[]|null>()
     const [loading, setLoading] = useState<boolean>(false)
+    const [localStatisticsArray, setLocalStatisticsArray] = useState<typeLocalStatistic[]|null>()
     const [showBtn, setShowBtn] = useState<boolean>(true)
     const [states, setStates] = useState<typeStateOfTerritory[]>()
-
-    useEffect(() => {
-        getGlobalStatisticsService().then((data: typeStatistic|null) => {
-            if (data) setGlobalStatistics(data)
-        })
-    }, [])
-
-    const retrieveLocalStats = async () => {
+    
+    const retrieveLocalStats = async (): Promise<void> => {
         setLoading(true);
         setShowBtn(false);
         const allLocalStatistics: typeLocalStatistic[]|null = await getAllLocalStatisticsService()
@@ -35,6 +32,18 @@ export const StatisticsPage = () => {
             if (states1) setStates(states1)
         }
     }
+
+    useEffect(() => {
+        getGlobalStatisticsService().then((data: typeStatistic|null) => {
+            if (data) setGlobalStatistics(data)
+        })
+        return () => {
+            setLocalStatisticsArray(undefined)
+            setStates(undefined)
+        }
+    }, [])
+
+    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
 
     return (
     <>
@@ -79,70 +88,63 @@ export const StatisticsPage = () => {
 
             </div>
         :
-            <>
-                <br/>
-                <br/>
-                <br/>
-                <Loading />
-            </>
+            <Loading mt={15} mb={2} />
         }
 
         <br/>
         <br/>
 
         
-        {showBtn &&
+        {showBtn && globalStatistics &&
             <Button
                 className={'d-block mx-auto'}
+                onClick={() => retrieveLocalStats()}
                 style={{
                     backgroundColor: generalBlue,
                     border: '1px solid ' + generalBlue,
                     borderRadius: '5px'
                 }}
-                onClick={() => retrieveLocalStats()}
             >
                 Traer Estadísticas por Territorio
             </Button>
         }
 
-        {localStatisticsArray && !!localStatisticsArray.length &&
-            localStatisticsArray.map((territory: typeLocalStatistic, index: number) => {
-                let isFinished = false
-                if (states) states.forEach((state: typeStateOfTerritory) => {
-                    if (state && territory && state.territorio === territory.territorio) isFinished = state.isFinished
-                })
-                return (
-                    <a key={index} href={`/estadisticas/${territory.territorio}`}>
-                        <Card
-                            style = {{
-                                padding: '35px', textAlign: isMobile ? 'center' : 'left',
-                                display: 'block', margin: 'auto', color: 'black',
-                                maxWidth: isMobile ? '80%' : '55%', marginBottom: '20px',
-                                backgroundColor: territory.libres < 50 ? 'red' : (territory.libres < 100 ? 'yellow': 'green')
-                            }}
-                            className={isFinished ? 'animate-me' : ''}
-                        >
-                            <h3> Territorio {territory.territorio} {isFinished ? '- TERMINADO' : ''} </h3>
-                            <h4> Quedan {territory.libres} para predicar </h4>
-                        </Card>
-                    </a>
-                )
-            })
-        }
-        
-        {loading ?
-            <>
-                <br/>
-                <br/>
-                <br/>
-                <Loading />
-                <br/>
-                <h4 style={{ textAlign: 'center' }}> Esto demora 10 segundos </h4>
-            </>
-            :
-            <></>
-        }
 
+        {localStatisticsArray && !!localStatisticsArray.length && localStatisticsArray.map((territory: typeLocalStatistic) => {
+                
+            let isFinished = false
+            if (states) states.forEach((state: typeStateOfTerritory) => {
+                if (state && territory && state.territorio === territory.territorio) isFinished = state.isFinished
+            })
+
+            return (
+                <Link key={territory.territorio} to={`/territorios/${territory.territorio}`}>
+                    <Card
+                        className={`d-block mx-auto mt-3 ${territory.libres < 50 ? 'bg-danger' : (territory.libres < 100 ? 'bg-warning': 'bg-success')} ${isFinished ? 'animate__animated animate__flash animate__infinite animate__slower' : ''}`}
+                        style = {{
+                            color: 'black',
+                            marginBottom: '20px',
+                            maxWidth: isMobile ? '80%' : '55%',
+                            padding: '35px', textAlign: isMobile ? 'center' : 'left'
+                        }}
+                    >
+                        <h3> Territorio {territory.territorio} {isFinished ? '- TERMINADO' : ''} </h3>
+                        <h4> Quedan {territory.libres} para predicar </h4>
+                    </Card>
+                </Link>
+            )
+        })}
+        
+        
+        {loading &&
+            <>
+                <Loading mt={8} mb={4} />
+
+                <h4 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
+                    Esto demora 10 segundos
+                </h4>
+            </>
+        }
     </>
     )
 }

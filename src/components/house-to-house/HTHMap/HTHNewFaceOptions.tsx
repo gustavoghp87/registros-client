@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Container, Dropdown, FloatingLabel, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
+import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { getHTHStreetsByTerritoryService } from '../../../services'
 import { danger, typeAppDispatch, typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
 

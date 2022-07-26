@@ -1,7 +1,15 @@
-export const headers = {
-    'Content-Type': 'application/json',
+import { aDejarCarta, contesto, danger, dark, noContesto, noLlamar, noPredicado, primary, success, typeHousehold, warning } from '../models'
+
+type typeHeaders = {
+    'Accept': string
+    'Authorization': string
+    'Content-Type': string
+}
+
+export const headers: typeHeaders = {
     'Accept': 'application/json',
-    'authorization': localStorage.getItem('token') || ""
+    'Authorization': localStorage.getItem('token') || "",
+    'Content-Type': 'application/json'
 }
 
 export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {
@@ -9,15 +17,18 @@ export const timeConverter = (UNIX_timestamp: string, parse: boolean): string =>
         let a: Date;
         if (parse) a = new Date(parseInt(UNIX_timestamp))
         else a = new Date(UNIX_timestamp)
-        let months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+        let months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
         let year = a.getFullYear()
         let month = months[a.getMonth()]
         let date = a.getDate()
         let hour = a.getHours()
         let min = a.getMinutes() < 10 ? "0" + a.getMinutes() : a.getMinutes()
-        let time = date + ' ' + month + ' ' + year + ' - ' + hour + ':' + min + ' hs'
+        let time = date + " " + month + " " + year + " - " + hour + ":" + min + " hs"
         return time
-    } catch { return "No se pudo recuperar la fecha..." }
+    } catch (error) {
+        console.log(error)
+        return "No se pudo recuperar la fecha..."
+    }
 }
 
 export const putHyphens = (phoneNumber: number): string => {
@@ -84,3 +95,15 @@ export const editInfoWindowsStyles = (): NodeJS.Timeout => setTimeout((): void =
         z[i].classList.remove('gm-style-iw-t')
     }
 }, 500)
+
+export const getHouseholdVariant = (households: typeHousehold[]): typeHousehold[] => {
+    if (!households || !households.length) return households
+    return households.map(x => {
+        if (x.estado === noPredicado) x = { ...x, variante: success }
+        if (x.estado === contesto) x = { ...x, variante: primary }
+        if (x.estado === noContesto) x = { ...x, variante: warning }
+        if (x.estado === aDejarCarta) x = { ...x, variante: danger }
+        if (x.estado === noLlamar) x = { ...x, variante: dark }
+        return x
+    })
+}

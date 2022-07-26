@@ -1,5 +1,6 @@
 import { SERVER } from '../config'
-import { getTokenService, headers } from './'
+import { headers } from './'
+import { getTokenService } from './userServices'
 import { typeLocalStatistic, typeResponseData, typeStatistic } from '../models'
 
 const base: string = `${SERVER}/api/statistic`

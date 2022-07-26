@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { H2, Loading } from '../commons'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { resetTerritoryService, timeConverter } from '../../services'
 import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeAppDispatch, typeHousehold, typeLocalStatistic, typeResetDate, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
 
@@ -68,7 +68,6 @@ export const LocalStatistics = (props: any) => {
                 libres: households.filter(x => x.estado === noPredicado && !x.noAbonado).length,
                 territorio: territory
             }
-            console.log(statistics0)
             setLocalStatistics(statistics0)
 
             const llamadas: number = statistics0.countContesto + statistics0.countNoContesto + statistics0.countNoLlamar + statistics0.countDejarCarta

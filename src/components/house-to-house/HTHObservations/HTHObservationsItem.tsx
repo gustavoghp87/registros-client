@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { HTHItemCard, HTHObservationsForm } from '../'
-import { useAuth } from '../../../context/authContext'
-import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
+import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { deleteHTHObservationService } from '../../../services'
-import { typeAppDispatch, typeObservation, typePolygon, typeTerritoryNumber, typeUser } from '../../../models'
+import { typeAppDispatch, typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 
 export const HTHObservationsItem = (props: any) => {
 
-    const user: typeUser|undefined = useAuth().user
+    const { user } = useSelector((state: typeRootState) => ({
+        user: state.user
+    }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const closeShowAddFormHandler: Function = props.closeShowFormHandler
     const currentFace: typePolygon = props.currentFace

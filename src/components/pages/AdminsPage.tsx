@@ -1,22 +1,23 @@
 import io, { Socket } from 'socket.io-client'
 import { useState, useEffect } from 'react'
-import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer, typeMode } from '../../store/AlertModalSlice'
+import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
-import { useAuth } from '../../context/authContext'
 import { SERVER } from '../../config'
-import { assignTerritoryService, changePswOtherUserService, modifyUserService, getUsersService } from '../../services'
-import { danger, primary, dark, typeUser, typeAppDispatch, typeRootState, userChangeString } from '../../models'
+import { refreshUser, setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
+import { assignTerritoryService, changePswOtherUserService, editUserService, getUserByTokenService, getUsersService } from '../../services/userServices'
+import { danger, dark, primary, typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
 
 export const AdminsPage = () => {
     
-    const { refreshUser, user } = useAuth()
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const navigate: NavigateFunction = useNavigate()
     const [asig, setAsig] = useState<string[]>([])
     const [asignVisible, setAsignVisible] = useState<boolean>(false)
     const [desasig, setDesasig] = useState<string[]>([])
@@ -25,12 +26,13 @@ export const AdminsPage = () => {
     const [users, setUsers] = useState<typeUser[]>()
     const [viendo, setViendo] = useState<string>("todos")
     let email: string = ""
+    const groups: number[] = [1,2,3,4,5,6]
 
-    const modifyUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
-        const updatedUser: typeUser|null = await modifyUserService(user_id, estado, role, group)
+    const editUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
+        const updatedUser: typeUser|null = await editUserService(user_id, estado, role, group)
         if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al modificar usuario")
         sendUpdatedUser(updatedUser)
-        refreshUserHandler(user_id)
+        refreshMyUserHandler(user_id)
     }
 
     const assignTerritoryHandler = (user_id: string, all: boolean, inputId: string | null): void => {
@@ -38,7 +40,7 @@ export const AdminsPage = () => {
             const updatedUser: typeUser|null = await assignTerritoryService(user_id, asignar, desasignar, all)
             if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al cambiar las asignaciones")
             sendUpdatedUser(updatedUser)
-            refreshUserHandler(user_id)
+            refreshMyUserHandler(user_id)
         }
         const resetInputHandler = (id: string): void => {
             const input = document.getElementById(id) as HTMLInputElement
@@ -59,8 +61,10 @@ export const AdminsPage = () => {
         if (socket) socket.emit(userChangeString, updatedUser)
     }
 
-    const refreshUserHandler = (user_id: string): void => {
-        if (user_id === user?._id && refreshUser) refreshUser()
+    const refreshMyUserHandler = (user_id: string): void => {
+        if (user && user._id === user_id) {
+            getUserByTokenService().then((user0: typeUser|null) => user0 ? dispatch(refreshUser(user)) : null)
+        }
     }
     
     const openAlertModalHandler = (mode: typeMode, title: string, message: string, execution: Function|undefined = undefined): void => {
@@ -112,17 +116,21 @@ export const AdminsPage = () => {
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
     }, [socket, socket?.connected])
 
-    return (
-    <>
+    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
+
+    return (<>
         <H2 title={"ADMINISTRADORES"} />
 
-        <button className={'btn btn-general-red d-block mx-auto mt-5 mb-0'} style={{ width: '227px' }}
-            onClick={() => window.location.href = '/logs'}>
+        <button className={'btn btn-general-red d-block mx-auto mt-5 mb-0'}
+            onClick={() => navigate('/logs')}
+            style={{ width: '227px' }}
+        >
             Ir a Logs de la Aplicación
         </button>
 
         <button className={'btn btn-general-red d-block mx-auto mt-4 mb-5'}
-            onClick={() => window.location.href = '/celulares-admins'}>
+            onClick={() => navigate('/celulares-admins')}
+        >
             Ir a Campaña Celulares 2022
         </button>
 
@@ -138,10 +146,9 @@ export const AdminsPage = () => {
                 
                 <DropdownButton
                     as={ButtonGroup}
-                    key={'dropb'}
+                    className={'d-block mx-auto text-center'}
                     variant={'primary'}
                     title={`Viendo ${viendo}`}
-                    style={{ display: 'block', margin: 'auto', textAlign: 'center' }}
                 >
                     <Dropdown.Item eventKey={"0"} onClick={() => setViendo("todos")} active={viendo === "todos"}> Ver todos </Dropdown.Item>
                     <Dropdown.Divider />
@@ -155,163 +162,152 @@ export const AdminsPage = () => {
             </>
             }
 
-            {users && !!users.length && users.map((user: typeUser, index: number) => {
+            {users && !!users.length && users.map((user: typeUser, index: number) => (
+                <Card key={index} 
+                    className={isDarkMode ? 'bg-dark text-white' : ''}
+                    style={{
+                        width: isMobile ? '95%': '500px',
+                        margin: '30px auto 60px auto',
+                        backgroundColor: '#f6f6f8',
+                        display: viendo === 'todos' || (user && user?.group && user?.group.toString()) === viendo.slice(-1) ? '' : 'none'
+                    }}>
                     
-                let active: number = user?.group
-                let items: JSX.Element[] = []
-                for (let number: number = 1; number <= 6; number++) {
-                    items.push(
-                        <Pagination.Item key={number}
-                            active={number === active}
-                            onClick={() => {
-                                modifyUserHandler(user?._id?.toString(), user?.estado, user?.role, number)
-                            }}
-                        >
-                            {number}
-                        </Pagination.Item>
-                    )
-                }  
-                    
-                return (
+                    <Card.Body style={{ padding: '30px' }}>
 
-                    <Card key={index} 
-                        className={isDarkMode ? 'bg-dark text-white' : ''}
-                        style={{
-                            width: isMobile ? '95%': '500px',
-                            margin: '30px auto 60px auto',
-                            backgroundColor: '#f6f6f8',
-                            display: viendo === 'todos' || (user && user?.group && user?.group.toString()) === viendo.slice(-1) ? '' : 'none'
+                        <Card.Title style={{
+                            textAlign: 'center',
+                            padding: '20px',
+                            fontSize: isMobile ? '1.3rem' : '1.8rem'
                         }}>
-                        
-                        <Card.Body style={{ padding: '30px' }}>
-
-                            <Card.Title style={{
-                                textAlign: 'center',
-                                padding: '20px',
-                                fontSize: isMobile ? '1.3rem' : '1.8rem'
-                            }}>
-                                Usuario: <br/> {user?.email}
-                            </Card.Title>
+                            Usuario: <br/> {user?.email}
+                        </Card.Title>
 
 
-                            <hr/>
+                        <hr/>
 
 
-                            <Card.Text style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
-                                Territorios asignados: &nbsp;
-                                {user?.asign && !!user?.asign.length &&
-                                    user?.asign.map((asign: number) => (
-                                        <span key={asign} className={'d-inline-block'}>
-                                            {asign} &nbsp;
-                                        </span>
-                                    ))
-                                }
-                                {(!user?.asign || !user?.asign.length) &&
-                                    <span> ninguno </span>
-                                }
-                            </Card.Text>
+                        <Card.Text style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
+                            Territorios asignados: &nbsp;
+                            {user?.asign && !!user?.asign.length &&
+                                user?.asign.map((asign: number) => (
+                                    <span key={asign} className={'d-inline-block'}>
+                                        {asign} &nbsp;
+                                    </span>
+                                ))
+                            }
+                            {(!user?.asign || !user?.asign.length) &&
+                                <span> ninguno </span>
+                            }
+                        </Card.Text>
 
 
-                            <Button className={'col-12 m-2'}
-                                variant={primary}
-                                style={{ marginTop: '10px' }}
-                                onClick={() => setAsignVisible(!asignVisible)}
-                            >
-                                CAMBIAR ASIGNACIONES
-                            </Button>
+                        <Button className={'col-12 m-2'}
+                            variant={primary}
+                            style={{ marginTop: '10px' }}
+                            onClick={() => setAsignVisible(!asignVisible)}
+                        >
+                            CAMBIAR ASIGNACIONES
+                        </Button>
 
-                            <div style={{
-                                display: asignVisible ? 'block' : 'none',
-                                padding: '20px',
-                                textAlign: 'center'
-                            }}>
-                                <div style={{ marginTop: '12px' }}>
-                                    <input type={'number'}
-                                        id={index.toString()}
-                                        style={{ width: '60px' }}
-                                        min={1}
-                                        onChange={(event: any) => setAsig([user?._id?.toString(), event.target.value])}
-                                    />
-                                    
-                                    &nbsp;
-                                    
-                                    <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), false, index.toString())}>
-                                        &nbsp; Asignar &nbsp;
-                                    </Button>
-
-                                </div>
-
-                                <div style={{ marginTop: '12px' }}>
-                                    <input type={'number'}
-                                        id={index.toString() + "-b"}
-                                        style={{ width: '60px' }}
-                                        min={1}
-                                        onChange={(event: any) => setDesasig([user?._id?.toString(), event.target.value])}
-                                    />
-                                    &nbsp;
-                                    <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), false, index.toString() + "-b")}>
-                                        Desasignar
-                                    </Button>
-                                </div>
-
-                                <div style={{ marginTop: '12px' }}>
-                                    <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), true, null)}>
-                                        Desasignar todos
-                                    </Button>
-                                </div>
-                            </div>
-
-                            <hr/>
-
-                            <Card.Text style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 600 }}>
-                                Grupo: {user?.group} &nbsp;&nbsp;
-                                <Button variant={isDarkMode ? danger : dark} onClick={() => setGroupVisible(!groupVisible)}>
-                                    CAMBIAR GRUPO
-                                </Button>
-                            </Card.Text>
-
-                            <div style={{ width: '350px', margin: 'auto' }}>
-                                <div style={{ display: groupVisible ? 'block' : 'none' }}>
-                                    <Pagination size={'lg'} style={{ textAlign: 'center' }}>
-                                        {items}
-                                    </Pagination>
-                                </div>
-                            </div>
-                        
-
-                            <hr/>
-                        
-
-                            <Button className={'col-12 m-2'} variant={ user?.estado ? danger : primary }
-                                onClick={() => modifyUserHandler(user?._id?.toString(), !user?.estado, user?.role, user?.group)}>
+                        <div style={{
+                            display: asignVisible ? 'block' : 'none',
+                            padding: '20px',
+                            textAlign: 'center'
+                        }}>
+                            <div style={{ marginTop: '12px' }}>
+                                <input type={'number'}
+                                    id={index.toString()}
+                                    style={{ width: '60px' }}
+                                    min={1}
+                                    onChange={(event: any) => setAsig([user?._id?.toString(), event.target.value])}
+                                />
                                 
-                                {user?.estado ? "DESACTIVAR" : "ACTIVAR"}
+                                &nbsp;
+                                
+                                <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), false, index.toString())}>
+                                    &nbsp; Asignar &nbsp;
+                                </Button>
+
+                            </div>
+
+                            <div style={{ marginTop: '12px' }}>
+                                <input type={'number'}
+                                    id={index.toString() + "-b"}
+                                    style={{ width: '60px' }}
+                                    min={1}
+                                    onChange={(event: any) => setDesasig([user?._id?.toString(), event.target.value])}
+                                />
+                                &nbsp;
+                                <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), false, index.toString() + "-b")}>
+                                    Desasignar
+                                </Button>
+                            </div>
+
+                            <div style={{ marginTop: '12px' }}>
+                                <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), true, null)}>
+                                    Desasignar todos
+                                </Button>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <Card.Text style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 600 }}>
+                            Grupo: {user?.group} &nbsp;&nbsp;
+                            <Button variant={isDarkMode ? danger : dark} onClick={() => setGroupVisible(!groupVisible)}>
+                                CAMBIAR GRUPO
+                            </Button>
+                        </Card.Text>
+
+                        <div style={{ width: '350px', margin: 'auto' }}>
+                            <div style={{ display: groupVisible ? 'block' : 'none' }}>
+                                <Pagination size={'lg'} style={{ textAlign: 'center' }}>
+                                    {groups.map((groupNumber: number) =>
+                                        <Pagination.Item key={groupNumber}
+                                            active={groupNumber === user.group}
+                                            onClick={() => {
+                                                editUserHandler(user._id.toString(), user.estado, user.role, groupNumber)
+                                            }}
+                                        >
+                                            {groupNumber}
+                                        </Pagination.Item>
+                                    )}
+                                </Pagination>
+                            </div>
+                        </div>
+                    
+
+                        <hr/>
+                    
+
+                        <Button className={'col-12 m-2'} variant={ user?.estado ? danger : primary }
+                            onClick={() => editUserHandler(user?._id?.toString(), !user?.estado, user?.role, user?.group)}>
                             
-                            </Button>
+                            {user?.estado ? "DESACTIVAR" : "ACTIVAR"}
+                        
+                        </Button>
 
-                            <br/>
+                        <br/>
 
-                            <Button className={'col-12 m-2'} variant={user?.role === 1 ? danger : primary}
-                                onClick = {() => modifyUserHandler(user?._id?.toString(), user?.estado, user?.role === 1 ? 0 : 1, user?.group)}
-                            >
+                        <Button className={'col-12 m-2'} variant={user?.role === 1 ? danger : primary}
+                            onClick = {() => editUserHandler(user?._id?.toString(), user?.estado, user?.role === 1 ? 0 : 1, user?.group)}
+                        >
 
-                                {user?.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
+                            {user?.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
 
-                            </Button>
+                        </Button>
 
-                            <br/>
+                        <br/>
 
-                            <Button className={'col-12 m-2'} variant={primary}
-                                onClick = {() => openConfirmModalHandler(user?.email)}
-                            >
-                                RESETEAR CONTRASEÑA
-                            </Button>
+                        <Button className={'col-12 m-2'} variant={primary}
+                            onClick = {() => openConfirmModalHandler(user?.email)}
+                        >
+                            RESETEAR CONTRASEÑA
+                        </Button>
 
-                        </Card.Body>
-                    </Card>
-                )})
-            }
+                    </Card.Body>
+                </Card>
+            ))}
         </div>
-    </>
-    )
+    </>)
 }

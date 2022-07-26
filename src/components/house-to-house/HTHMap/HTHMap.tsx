@@ -3,15 +3,16 @@ import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { useDispatch, useSelector } from 'react-redux'
 import { Loading } from '../../commons'
 import { hthMapStyle, HTHMarkerComponent, HTHNewFaceOptions, HTHPolygonComponent } from '../'
-import { setValuesAndOpenAlertModalReducer } from '../../../store/AlertModalSlice'
-import { useAuth } from '../../../context/authContext'
+import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { googleMapsAPIKey, mapId } from '../../../config'
 import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services'
-import { typeAppDispatch, typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState, typeUser } from '../../../models'
+import { typeAppDispatch, typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState } from '../../../models'
 
 export const HTHMap = (props: any) => {
 
-    const user: typeUser|undefined = useAuth().user
+    const { user } = useSelector((state: typeRootState) => ({
+        user: state.user
+    }))
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: googleMapsAPIKey,
         id: mapId

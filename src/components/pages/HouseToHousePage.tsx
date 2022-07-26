@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
 import { HTHDoNotCalls, HTHMap, HTHObservations } from '../house-to-house'
-import { useAuth } from '../../context/authContext'
 import { generalBlue } from '../../config'
 import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../../services'
-import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../../models'
+import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 
 export const HouseToHousePage = () => {
     
     const territory = useParams<any>().territory as typeTerritoryNumber
-    const user: typeUser|undefined = useAuth().user
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
+    const navigate: NavigateFunction = useNavigate()
     const [currentFace, setCurrentFace] = useState<typePolygon>()
     const [loading, setLoading] = useState<boolean>(true)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
@@ -62,15 +62,14 @@ export const HouseToHousePage = () => {
     }
 
     useEffect(() => {
-        if (user && !user.isAdmin) window.location.href = '/'
         if (!territory || !loading) return
         getHTHStreetsByTerritoryService(territory).then((streets0: string[]|null) => {
             getHTHTerritoryService(territory).then((hthTerritory0: typeHTHTerritory|null) => {
                 if (!hthTerritory0) return
                 if (streets0 && streets0.length)
-                    streets0.forEach(x => {
-                        if (hthTerritory0.streets.indexOf(x) !== -1) hthTerritory0.streets.push(x)
-                    })
+                streets0.forEach(x => {
+                    if (hthTerritory0.streets.indexOf(x) !== -1) hthTerritory0.streets.push(x)
+                })
                 setTerritoryHTH(hthTerritory0)
                 if (currentFace) selectBlockAndFaceHandler(currentFace.block, currentFace.face, hthTerritory0)
                 setLoading(false)
@@ -78,10 +77,11 @@ export const HouseToHousePage = () => {
         })
         return () => {
             setCurrentFace(undefined)
-            setTerritoryHTH(undefined)
+            //setTerritoryHTH(undefined)
         }
     }, [territory, loading, user, currentFace])
-    
+
+    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
 
     return (
     <>

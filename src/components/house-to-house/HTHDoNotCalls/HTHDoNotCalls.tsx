@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { HTHDoNotCallsForm, HTHDoNotCallsItem } from '../'
 import { generalBlue } from '../../../config'
-import { useAuth } from '../../../context/authContext'
-import { typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../../../models'
+import { typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 
 export const HTHDoNotCalls = (props: any) => {
 
-    const user: typeUser|undefined = useAuth().user
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isMobile, user } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
+    }))
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const territory: typeTerritoryNumber = props.territory

@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { HTHObservationsForm, HTHObservationsItem } from '../'
-import { useAuth } from '../../../context/authContext'
 import { generalBlue } from '../../../config'
-import { typeObservation, typePolygon, typeRootState, typeTerritoryNumber, typeUser } from '../../../models'
+import { typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 
 export const HTHObservations = (props: any) => {
 
-    const user: typeUser|undefined = useAuth().user
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const { isMobile, user } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
+    }))
     const currentFace: typePolygon = props.currentFace
     const date: string = props.date
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler

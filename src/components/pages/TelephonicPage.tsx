@@ -3,22 +3,21 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { Loading, WarningToaster } from '../commons'
-import { Col0a, Col0b, Col1, Col2, Col3, Col4, LocalStatistics, MapModal, TerritoryWarningToaster } from '../telephonic-components'
+import { Col0a, Col0b, Col1, Col2, Col3, Col4, LocalStatistics, MapModal, TerritoryWarningToaster, WarningToaster } from '../telephonic-components'
+import { Loading } from '../commons'
 import { SERVER } from '../../config'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
-import { useAuth } from '../../context/authContext'
-import { getHouseholdsByTerritoryService, modifyHouseholdService, markTerritoryAsFinishedService } from '../../services'
-import { householdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeTerritoryNumber, typeUser } from '../../models'
-import { aDejarCarta, contesto, danger, dark, noContesto, noLlamar, noPredicado, primary, success, warning } from '../../models'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { getHouseholdsByTerritoryService, modifyHouseholdService, markTerritoryAsFinishedService, getHouseholdVariant } from '../../services'
+import { householdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
+import { dark, noPredicado } from '../../models'
 
 export const TelephonicPage = () => {
 
-    const user: typeUser|undefined = useAuth().user
     const territory: typeTerritoryNumber|undefined = useParams<any>().territory as typeTerritoryNumber
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
     const navigate: NavigateFunction = useNavigate()
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
@@ -168,6 +167,7 @@ export const TelephonicPage = () => {
             householdsToShow0 = householdsToShow1.slice(0, brought)
             if (householdsToShow0.length === householdsToShow1.length) setShowBottomBtns(false)
         }
+        householdsToShow0 = getHouseholdVariant(householdsToShow0)
         setHouseholdsToShow(householdsToShow0)
     }, [brought, currentBlock, households, isShowingAllAvailable, isShowingAllStates, territory])
 
@@ -198,6 +198,8 @@ export const TelephonicPage = () => {
             else { console.log("Conectado") }
         }, 1500)
     }, [socket, socket?.connected])
+
+    useEffect(() => { if (!user || !user.isAuth) navigate('/acceso')}, [navigate, user])
 
     return (
         <>
@@ -301,86 +303,65 @@ export const TelephonicPage = () => {
             }
 
 
-            {!isShowingStatistics && householdsToShow && !!householdsToShow.length && householdsToShow.map((household: typeHousehold) => {
+            {!isShowingStatistics && householdsToShow && !!householdsToShow.length && householdsToShow.map((household: typeHousehold) =>
+                <Card key={household.inner_id}
+                    id={`card_${household.inner_id}`}
+                    className={`${household.asignado ? 'assigned-household' : ''} ${isDarkMode ? 'bg-dark text-white' : 'bg-white'} animate__animated animate__bounceInLeft animate__faster`}
+                    style={{
+                        border: '1px solid gray',
+                        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                        marginBottom: '50px'
+                    }}
+                >   
+                    <Container fluid={'lg'}>
 
-                if (household.estado === noPredicado) household = { ...household, variante: success }
-                if (household.estado === contesto) household = { ...household, variante: primary }
-                if (household.estado === noContesto) household = { ...household, variante: warning }
-                if (household.estado === aDejarCarta) household = { ...household, variante: danger }
-                if (household.estado === noLlamar) household = { ...household, variante: dark }
+                        <Row style={{ margin: '0 25px', paddingTop: '15px', paddingBottom: '12px' }}>
 
-                const secColorClass: string = isDarkMode && household.asignado ? 'assigned-household' : (
-                    isDarkMode ? 'bg-dark text-white' : (
-                        household.asignado ? 'assigned-household' : 'bg-white'
-                    )
-                )
+                            <Col1
+                                household={household}
+                                showGoogleMapHandler={showGoogleMapHandler}
+                            />
 
-                return (
-                
-                    <Card key={household.inner_id}
-                        id={`card_${household.inner_id}`}
-                        className={secColorClass}
-                        style={{
-                            border: '1px solid gray',
-                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-                            marginBottom: '50px'
-                        }}
-                    >   
-                        <Container fluid={'lg'}>
+                            <Col2
+                                household={household}
+                                cardId={`card_${household.inner_id}`}
+                            />
 
-                            <Row style={{ margin: '0 25px', paddingTop: '15px', paddingBottom: '12px' }}>
+                            <Col3
+                                household={household}
+                                modifyHouseholdHandler={modifyHouseholdHandler}
+                            />
 
-                                <Col1
-                                    household={household}
-                                    showGoogleMapHandler={showGoogleMapHandler}
-                                />
+                            <Col4
+                                household={household}
+                                modifyHouseholdHandler={modifyHouseholdHandler}
+                            />
 
-                                <Col2
-                                    household={household}
-                                    cardId={`card_${household.inner_id}`}
-                                />
-
-                                <Col3
-                                    household={household}
-                                    modifyHouseholdHandler={modifyHouseholdHandler}
-                                />
-
-                                <Col4
-                                    household={household}
-                                    modifyHouseholdHandler={modifyHouseholdHandler}
-                                />
-
-                            </Row>
-                        </Container>
-                    </Card>
-                )
-            })}
+                        </Row>
+                    </Container>
+                </Card>
+            )}
 
             {!isShowingStatistics && householdsToShow && !!householdsToShow.length && loaded &&
-                <>
-                    <Pagination size={'lg'}
-                        className={`text-center align-items-center justify-content-center ${showBottomBtns ? '' : 'd-none'}`}
-                        style={{
-                            marginTop: '80px',
-                            fontWeight: 'bolder',
-                        }
-                    }>
-                        <Pagination.Item onClick={() => getTenMoreHandler()}>
-                            Mostrar 10 más
-                        </Pagination.Item>
+                <Pagination size={'lg'}
+                    className={`text-center align-items-center justify-content-center ${showBottomBtns ? '' : 'd-none'}`}
+                    style={{
+                        fontWeight: 'bolder',
+                        marginTop: '80px'
+                    }
+                }>
+                    <Pagination.Item onClick={() => getTenMoreHandler()}>
+                        Mostrar 10 más
+                    </Pagination.Item>
 
-                        <Pagination.Item onClick={() => setBroughtAllHandler()}>
-                            Ver todos {!isShowingAllStates && <span>los no predicados</span>}
-                        </Pagination.Item>
-                    </Pagination>
-                </>
+                    <Pagination.Item onClick={() => setBroughtAllHandler()}>
+                        Ver todos {!isShowingAllStates && <span>los no predicados</span>}
+                    </Pagination.Item>
+                </Pagination>
             }
 
             {(!householdsToShow || !householdsToShow.length) && !loaded &&
-                <>
-                    <br/>
-                    <Loading />
-                </>
+                <Loading mt={5} mb={2} />
             }
 
             {householdsToShow && !householdsToShow.length && !isShowingAllStates && loaded && !isShowingStatistics && currentBlock &&

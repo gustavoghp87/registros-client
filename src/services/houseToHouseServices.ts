@@ -1,5 +1,6 @@
 import { SERVER } from '../config'
-import { getTokenService, headers } from './'
+import { headers } from './'
+import { getTokenService } from './userServices'
 import { typeBlock, typeDoNotCall, typeFace, typeHTHMap, typeHTHTerritory, typeObservation, typePolygon, typeResponseData, typeTerritoryNumber } from '../models'
 
 const base: string = `${SERVER}/api/house-to-house`

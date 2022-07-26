@@ -1,9 +1,12 @@
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { typeRootState } from '../../models'
 
 export const PrivacyPolicyPage = () => {
     
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+
+    useEffect(() => window.scrollTo(0, 0), [])
 
     return (
         <div className={isDarkMode ? 'text-white' : ''} style={{ marginTop: '80px' }}>

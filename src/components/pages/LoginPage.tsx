@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Loading } from '../commons'
-import { setValuesAndOpenAlertModalReducer } from '../../store/AlertModalSlice'
-import { useAuth } from '../../context/authContext'
-import { getFailingEmailFromLSService, registerUserService, sendLinkToRecoverAccount, setFailingEmailFromLSService } from '../../services'
-import { typeAppDispatch, typeResponseData, typeRootState } from '../../models'
+import { refreshUser, setValuesAndOpenAlertModalReducer } from '../../store'
+import { getFailingEmailFromLSService, setFailingEmailFromLSService } from '../../services'
+import { getUserByTokenService, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
+import { typeAppDispatch, typeResponseData, typeRootState, typeUser } from '../../models'
 
 export const LoginPage = () => {
 
-    //const user: typeUser|undefined = useAuth().user
     const { executeRecaptcha } = useGoogleReCaptcha()
-    const { login, user } = useAuth()
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const navigate: NavigateFunction = useNavigate()
     const [confPassword, setConfPassword] = useState<string>('')
     const [email, setEmail] = useState<string>("")
     const [group, setGroup] = useState<number>(0)
@@ -68,11 +69,14 @@ export const LoginPage = () => {
         setLoading(true)
         if (email.length === 0 || password.length < 6) return openAlertModalHandler("Problemas", "Faltan datos")
         if (!executeRecaptcha) return setLoading(false)
-        const recaptchaToken = await executeRecaptcha("")
-        if (!login) return openAlertModalHandler("Problemas", "Refrescar la página")
-        const response: typeResponseData|null = await login(email, password, recaptchaToken)
+        const recaptchaToken: string = await executeRecaptcha()
+        if (!recaptchaToken) return openAlertModalHandler("Problemas", "Refrescar la página")
+        const response: typeResponseData|null = await loginService(email, password, recaptchaToken)
         if (response && response.success && response.newToken) {
-            window.location.href = '/index'
+            const user0: typeUser|null = await getUserByTokenService(response.newToken)
+            if (user0) dispatch(refreshUser(user0))
+            else return openAlertModalHandler("Problemas", "Refrescar la página")
+            navigate('/index')
         } else if (!response || response.recaptchaFails) {
             setFailingEmailFromLSService(email)
             openAlertModalHandler("Problemas", "Refrescar la página")
@@ -102,19 +106,15 @@ export const LoginPage = () => {
                 if (data.recaptchaFails) {
                     openAlertModalHandler("Problemas", "Se refrescará la página por un problema", () => window.location.reload())
                 } else if (data.userExists) {
-                    openAlertModalHandler("Problemas", "Ya existe un usuario con ese correo", () => window.location.href = '/acceso')
+                    openAlertModalHandler("Problemas", "Ya existe un usuario con ese correo", () => navigate('/acceso'))
                 } else if (data.success) {
-                    openAlertModalHandler("Registro exitoso", `Resta ser habilitado por el grupo de predicación. ${email}`, () => window.location.href = '/')
+                    openAlertModalHandler("Registro exitoso", `Resta ser habilitado por el grupo de predicación. ${email}`, () => navigate('/'))
                 }
             } else {
                 openAlertModalHandler("Problemas", "Algo salió mal", () => window.location.reload())
             }
         })
     }
-    
-    useEffect(() => {
-        if (user && user.isAuth) window.location.href = '/index'
-    }, [user])
 
     useEffect(() => {
         const failingEmail: string|null = getFailingEmailFromLSService()
@@ -125,6 +125,8 @@ export const LoginPage = () => {
             document.getElementById('emailInput')?.focus()
         }
     }, [])
+
+    useEffect(() => { if (user && user.isAuth) navigate('/index')}, [navigate, user])
 
     return (<>
         <Container className={isDarkMode ? 'bg-dark' : 'bg-white'}
@@ -221,23 +223,29 @@ export const LoginPage = () => {
                 </button>
 
 
-                <a className={'d-block text-end'} href={'#top'}
-                    style={{
-                        fontSize: '1rem',
-                        margin: '18px 0 10px 0'
-                    }}
+                <p className={'d-block text-end'}
                     onClick={() => {
                         clearInputs()
                         setIsRegister(x => !x)
                     }}
+                    style={{
+                        color: '#0000cd',
+                        cursor: 'pointer',
+                        fontSize: '1rem',
+                        margin: '18px 0 10px 0',
+                        textDecoration: 'underline'
+                    }}
                 >
                     {isRegister ? "Volver a ingreso" : "Registrar una cuenta"}
-                </a>
+                </p>
 
-                <a className={'d-block text-end'} href={'#top'}
+                <p className={'d-block text-end'}
                     style={{
+                        color: '#0000cd',
+                        cursor: 'pointer',
                         fontSize: '1rem',
-                        margin: '0 0 22px'
+                        margin: '0 0 22px',
+                        textDecoration: 'underline'
                     }}
                     onClick={() => {
                         if (email && email.includes('@') && email.includes('.')) openConfirmModalHandler()
@@ -245,20 +253,19 @@ export const LoginPage = () => {
                     }}
                 >
                     Olvidé mi contraseña
-                </a>
+                </p>
                 
             </Container>
-
 
         </Container>
 
         {isRegister &&
             <p className={`text-center mb-4 ${isDarkMode ? 'text-white' : ''}`}
                 style={{ fontSize: '0.9rem', paddingBottom: '12px' }}>
-                Luego de registrarse, se debe aguardar la autorización del grupo de territorios
+                Luego de registrarse, se debe aguardar la autorización de los administradores
             </p>
         }
 
-        {loading && <Loading />}
+        {loading && <Loading mt={8} />}
     </>)
 }
