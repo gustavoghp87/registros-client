@@ -227,7 +227,7 @@ export const TelephonicPage = () => {
             </h1>
 
 
-            {!loaded &&
+            {loaded &&
                 <Button variant={dark}
                     onClick={() => setShowMap(!showMap)}
                     style={{ display: 'block', margin: '22px auto' }}
@@ -237,13 +237,14 @@ export const TelephonicPage = () => {
             }
 
             {showMap &&
-                <img src={`/img/${territory}.jpg`} alt={`Mapa del territorio ${territory}`}
-                    className={'d-block mx-auto'}
+                <img src={`/img/${territory}.jpg`}
+                    alt={`Mapa del territorio ${territory}`}
+                    className={'d-block'}
                     style={{
                         border: isDarkMode ? '1px solid white' : '1px solid black',
                         borderRadius: '8px',
                         height: 'auto',
-                        marginBlock: '30px',
+                        margin: '30px auto 50px auto',
                         padding: isMobile ? '10px' : '20px',
                         width: isMobile ? '99%' : '40%'
                     }}

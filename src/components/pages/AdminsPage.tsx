@@ -101,6 +101,7 @@ export const AdminsPage = () => {
 
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
+        document.getElementById('adminsPageDropdownBtn')?.classList.remove('btn-primary')
     }, [])
 
     useEffect(() => {
@@ -145,7 +146,7 @@ export const AdminsPage = () => {
                 <DropdownButton
                     as={ButtonGroup}
                     className={'d-block mx-auto text-center'}
-                    variant={'primary'}
+                    id={"adminsPageDropdownBtn"}
                     title={`Viendo ${viendo}`}
                 >
                     <Dropdown.Item eventKey={"0"} onClick={() => setViendo("todos")} active={viendo === "todos"}> Ver todos </Dropdown.Item>

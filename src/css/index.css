@@ -100,3 +100,20 @@ input[type="checkbox"].checkboxdos {
   background-color: #25457d !important;
   border: 1px solid #25457d !important;
 }
+
+.dropdown-item.active, .dropdown-item:active {
+  background-color: #4a6da7 !important;
+  color: white !important;
+}
+
+#adminsPageDropdownBtn {
+  background-color: #4a6da7 !important;
+  border: 1px solid #4a6da7 !important;
+  color: white !important;
+  font-size: 1.2rem;
+}
+
+#adminsPageDropdownBtn:hover {
+  background-color: #25457d !important;
+  border: 1px solid #25457d !important;
+}
