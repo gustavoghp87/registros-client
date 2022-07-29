@@ -85,3 +85,18 @@ input[type="checkbox"].checkboxdos {
   50%  {background: black;}
   100% {background: red;}
 }
+
+
+/* Admins Page */
+
+.page-item.active span {
+  background-color: #4a6da7 !important;
+  border: 1px solid #4a6da7 !important;
+  color: white !important;
+  font-size: 1.2rem;
+}
+
+.page-item.active span:hover {
+  background-color: #25457d !important;
+  border: 1px solid #25457d !important;
+}

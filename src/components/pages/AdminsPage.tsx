@@ -113,18 +113,6 @@ export const AdminsPage = () => {
     }, [])
 
     useEffect(() => {
-        setInterval(() => {
-            const pages = document.getElementsByClassName('page-item')
-            for (let item of pages) {
-                if (item.classList.contains('active')) (item.firstChild as HTMLElement)?.classList.add('btn-general-blue')
-            }
-
-        }, 300)
-        
-    }, [groupVisible])
-    
-
-    useEffect(() => {
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
     }, [socket, socket?.connected])
 
@@ -295,7 +283,7 @@ export const AdminsPage = () => {
                         <hr/>
                     
 
-                        <button className={`col-12 btn ${user.estado ? 'btn-general-red' : 'btn-general-blue'} m-2`}
+                        <button className={`col-12 btn btn ${user.estado ? 'btn-general-red' : 'btn-general-blue'} m-2`}
                             onClick={() => editUserHandler(user._id.toString(), !user.estado, user.role, user.group)}
                         >
                             {user.estado ? "DESACTIVAR" : "ACTIVAR"}
@@ -303,7 +291,7 @@ export const AdminsPage = () => {
 
                         <br/>
 
-                        <button className={`col-12 ${user.role === 1 ? 'btn-general-red' : 'btn-general-blue'} m-2`}
+                        <button className={`col-12 btn ${user.role === 1 ? 'btn-general-red' : 'btn-general-blue'} m-2`}
                             onClick = {() => editUserHandler(user._id.toString(), user.estado, user.role === 1 ? 0 : 1, user.group)}
                         >
                             {user.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}

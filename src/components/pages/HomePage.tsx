@@ -13,8 +13,6 @@ export const HomePage = () => {
     }))
     const navigate: NavigateFunction = useNavigate()
 
-    console.log(user);
-
     return (
     <>
         <H2 title={"BIENVENIDOS"} />
