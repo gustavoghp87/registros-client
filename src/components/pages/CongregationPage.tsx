@@ -1,47 +1,87 @@
-import { H2, SideBar } from '../commons'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { H2, Loading, SideBar } from '../commons'
+import { getCongregationItems } from '../../services/congregationServices'
+import { typeRootState } from '../../models'
+
+export type typeCongregationItem = {
+    title: string
+    ids: string[]
+}
 
 export const CongregationPage = () => {
 
-    // data-embed-doc-id="
+    const { isMobile } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile
+    }))
+    const [currentItem, setCurrentItem] = useState<typeCongregationItem>()
+    const [currentItemNumber, setCurrentItemNumber] = useState<number>(1)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [items, setItems] = useState<typeCongregationItem[]>()
 
-    const ids = {
-        anunciosYCartas: ["1xkPvTkuZDWbJr93crzD1t6ca1O7L7Yqf", "1r-tH9IClOR-kFyrI5GkR1TIQqwehF9pJ", "1y2ByTUWhP7dIoukbCMAp5E5VkqN-Tfzv", "1iptV_ikuitFHJ6Sx1AAXLiy_Q3gVD4cB"],
-        programaDeReuniones: ["1oY5e7lbgyqjLmdIjw4NHn9p05K2UX4Gi", "198BUsd2Gls8QMZcsS5TP0siIQdJrVh7n", "1JlHHRcV2oYRPMhCX06DUXqgWESV5LxBy", "1RaVulqE6QQJurCSSpRO72yAU8bQktZKe"]
-    }
+    const setCurrentElementNumberHandler = (element: number): void => setCurrentItemNumber(element)
 
-    if (!ids) return (<h1> Failed </h1>)
+    useEffect(() => {
+        getCongregationItems().then((congregationItems0: typeCongregationItem[]|null) => {
+            if (congregationItems0) setItems(congregationItems0)
+        })
+    }, [])
+
+    useEffect(() => {
+        if (!items) return
+        if (currentItemNumber === 1) setCurrentItem(items[0])
+        else if (currentItemNumber === 2) setCurrentItem(items[1])
+        else if (currentItemNumber === 3) setCurrentItem(items[2])
+        else if (currentItemNumber === 4) setCurrentItem(items[3])
+        else if (currentItemNumber === 5) setCurrentItem(items[4])
+        else if (currentItemNumber === 6) setCurrentItem(items[5])
+    }, [currentItemNumber, items])
+
+    if (!items) return (<Loading mt={24} />)
 
     return (
-        <div>
-            <div style={{ padding: '50px 0px 0px 370px' }}>
-                <SideBar />
+        <div className={'row'}>
+            <div className={`col-lg-2 ${isMobile ? 'mt-3' : ''}`}
+                style={{
+                    backgroundColor: isMobile ? '' : 'lightgray',
+                    maxHeight: isMobile ? '500px' : '350px'
+                }}
+            >
+                <SideBar
+                    currentItemNumber={currentItemNumber}
+                    items={items}
+                    setCurrentElementNumberHandler={setCurrentElementNumberHandler}
+                />
             </div>
 
-            <H2 title={"Anuncios y Cartas"} />
-            {ids.anunciosYCartas && !!ids.anunciosYCartas.length && ids.anunciosYCartas.map((id: string) =>
-                <iframe
-                    allow={'autoplay'}
-                    height={'700px'}
-                    key={id}    
-                    src={`https://drive.google.com/file/d/${id}/preview`}
-                    title={"Predicación"}
-                    width={'100%'}
-                />
-            )}
+            {isMobile && <hr className={'mt-1'} />}
 
-            <H2 title={"Programa de reuniones"} />
-            {ids.anunciosYCartas && !!ids.programaDeReuniones.length && ids.programaDeReuniones.map((id: string) =>
-                <iframe
-                    allow={'autoplay'}
-                    height={'700px'}
-                    key={id}
-                    src="https://drive.google.com/file/d/1gp97oxqinhHULS_zDBx7_56F1oNyXQsJ/preview"
-                    title={"Sonido"}
-                    width={'100%'}
-                />
-            )}
+            <div className={'col-lg-10'}>
+                {currentItem && items && !!items.length && items.map((item: typeCongregationItem) =>
+                    <div className={item.title === currentItem.title ? '' : 'd-none'} key={item.title}>
 
-            
+                        {!isMobile && <hr className={''} style={{ marginTop: '80px' }} />}
+
+                        <H2 title={item.title.toUpperCase()} mt={'30px'} />
+
+                        {isLoading && <Loading mt={18} mb={10} />}
+
+                        {item.ids && !!item.ids.length && item.ids.map((id: string, index: number) =>
+                            <iframe
+                                allow={'autoplay'}
+                                className={'mt-3 mb-5 animate__animated animate__bounceInLeft animate__faster'}
+                                height={'700px'}
+                                key={index}
+                                onLoad={() => setIsLoading(false)}
+                                src={`https://drive.google.com/file/d/${id}/preview`}
+                                style={{ background: 'lightgray center center no-repeat' }}
+                                title={item.title + (index + 1)}
+                                width={'100%'}
+                            />
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

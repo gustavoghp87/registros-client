@@ -116,8 +116,6 @@ export const AdminsPage = () => {
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
     }, [socket, socket?.connected])
 
-    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
-
     return (<>
         <H2 title={"ADMINISTRADORES"} />
 

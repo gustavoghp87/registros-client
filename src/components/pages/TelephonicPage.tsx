@@ -199,8 +199,6 @@ export const TelephonicPage = () => {
         }, 1500)
     }, [socket, socket?.connected])
 
-    useEffect(() => { if (!user || !user.isAuth) navigate('/acceso')}, [navigate, user])
-
     return (
         <>
             <TerritoryWarningToaster />

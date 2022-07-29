@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
-import { H2, Loading } from '../commons'
 import { HTHDoNotCalls, HTHMap, HTHObservations } from '../house-to-house'
+import { H2, Loading } from '../commons'
 import { generalBlue } from '../../config'
 import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../../services'
 import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
@@ -16,7 +16,6 @@ export const HouseToHousePage = () => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const navigate: NavigateFunction = useNavigate()
     const [currentFace, setCurrentFace] = useState<typePolygon>()
     const [loading, setLoading] = useState<boolean>(true)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
@@ -80,8 +79,6 @@ export const HouseToHousePage = () => {
             //setTerritoryHTH(undefined)
         }
     }, [territory, loading, user, currentFace])
-
-    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
 
     return (
     <>

@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react'
-import { Link, NavigateFunction, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Card, Button } from 'react-bootstrap'
-import { generalBlue } from '../../config'
 import { H2, Loading } from '../commons'
+import { generalBlue } from '../../config'
 import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../../services'
 import { typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../../models'
 
 export const StatisticsPage = () => {
 
-    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile,
-        user: state.user
+        isMobile: state.mobileMode.isMobile
     }))
-    const navigate: NavigateFunction = useNavigate()
     const [globalStatistics, setGlobalStatistics] = useState<typeStatistic|null>()
     const [loading, setLoading] = useState<boolean>(false)
     const [localStatisticsArray, setLocalStatisticsArray] = useState<typeLocalStatistic[]|null>()
@@ -42,8 +40,6 @@ export const StatisticsPage = () => {
             setStates(undefined)
         }
     }, [])
-
-    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
 
     return (
     <>

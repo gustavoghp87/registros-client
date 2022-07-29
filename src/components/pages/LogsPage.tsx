@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 import { Card, Button, ListGroup } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
@@ -15,7 +14,6 @@ export const LogsPage = () => {
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const navigate: NavigateFunction = useNavigate()
     const [logsPackage, setLogsPackage] = useState<typeLogsObj>()
     const [showCampaignAssignments, setShowCampaignAssignments] = useState<boolean>(false)
     const [showCampaignFinishing, setShowCampaignFinishing] = useState<boolean>(false)
@@ -47,13 +45,10 @@ export const LogsPage = () => {
     ] : []
 
     useEffect(() => {
-        //if (user && !user.isAuth) { window.location.href = '/'; return }
         if (!logsPackage) getAllLogsService().then((logsObject: typeLogsObj|null) => {
             if (logsObject) setLogsPackage(logsObject)
         })
-    }, [user, logsPackage])
-
-    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
+    }, [logsPackage])
 
     return (
     <>

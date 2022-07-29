@@ -1,11 +1,10 @@
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
-import { FaUserAlt } from 'react-icons/fa'
+import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
+import { FaUserAlt } from 'react-icons/fa'
 import { logout, setValuesAndOpenAlertModalReducer } from '../../store'
 import { generalBlue } from '../../config'
-import { logoutService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState } from '../../models'
-import { useNavigate } from 'react-router'
 
 export const NavBar = () => {
 
@@ -27,7 +26,6 @@ export const NavBar = () => {
     }
 
     const logoutHandler = () => {
-        logoutService()
         dispatch(logout())
         navigate('/acceso')
     }
@@ -43,59 +41,79 @@ export const NavBar = () => {
             
             <Navbar.Collapse id={"responsive-navbar-nav"}>
                 <Nav className={'mr-auto'}>
-                    <Nav.Link className={user && user.isAuth ? '' : 'd-none'}
-                        onClick={() => navigate('/index')}
-                        style={{ color }}
-                    >
-                        &nbsp; &nbsp;Territorios&nbsp; &nbsp;
-                    </Nav.Link>
-
-                    <Nav.Link className={((user && !user.isAuth) || !user) ? '' : 'd-none'}
-                        onClick={() => navigate('/acceso')}
-                        style={{ color }
-                    }>
-                        &nbsp; &nbsp;Entrar&nbsp; &nbsp;
-                    </Nav.Link>
-
-                    <Nav.Link className={user && user.role === 1 ? '' : 'd-none'}
-                        onClick={() => navigate('/estadisticas')}
-                        style={{ color, margin: isMobile ? '8px 0' : '0' }}
-                    >
-                        &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
-                    </Nav.Link>
-                    <Nav.Link className={user && user.role === 1 ? '' : 'd-none'}
-                        onClick={() => navigate('/admins')}
-                        style={{ color }}
-                    >
-                        &nbsp; &nbsp;Administradores&nbsp; &nbsp;
-                    </Nav.Link>
-                </Nav>
-
-                <Nav.Link className={`d-flex align-items-center ${user && user.isAuth ? '' : 'd-none'}`}
-                    onClick={() => navigate('/usuario')}
-                    style={ isMobile ? {
-                        marginBottom: '15px', paddingLeft: '13px', marginTop: '10px'
-                    } : {
-                        marginBottom: '0', paddingLeft: '', marginTop: ''
-                    }}
-                >
-                    {isMobile &&
-                        <span className={'mb-1'}>
-                            <FaUserAlt size={'17px'} color={'lightgray'} />
-                            &nbsp;&nbsp;
-                        </span>
+                    {user && user.isAuth ?
+                        <>
+                            <Nav.Link
+                                onClick={() => navigate('/index')}
+                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                            >
+                                &nbsp; &nbsp;Territorios&nbsp; &nbsp;
+                            </Nav.Link>
+                            <Nav.Link
+                                onClick={() => navigate('/congregacion')}
+                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                            >
+                                &nbsp; &nbsp;Congregación&nbsp; &nbsp;
+                            </Nav.Link>
+                        </>
+                        :
+                        <Nav.Link
+                            onClick={() => navigate('/acceso')}
+                            style={{ color }
+                        }>
+                            &nbsp; &nbsp;Entrar&nbsp; &nbsp;
+                        </Nav.Link>
                     }
-                    <span style={{ color }}> Mi Usuario </span> &nbsp;
-                </Nav.Link>
 
-                <Nav className={user && user.isAuth ? '' : 'd-none'}>
-                    <Form>
-                        <Button variant={'outline-info'} style={{ color, borderColor: color }} onClick={() => openLogoutConfirmModal()}>
-                            CERRAR SESIÓN
-                        </Button>
-                    </Form>
+                    {user && user.isAdmin &&
+                        <>
+                            <Nav.Link
+                                onClick={() => navigate('/estadisticas')}
+                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                            >
+                                &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
+                            </Nav.Link>
+
+                            <Nav.Link
+                                onClick={() => navigate('/admins')}
+                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                            >
+                                &nbsp; &nbsp;Administradores&nbsp; &nbsp;
+                            </Nav.Link>
+                        </>
+                    }
                 </Nav>
 
+                {user && user.isAuth &&
+                    <>
+                        <Nav.Link className={'d-flex align-items-center'}
+                            onClick={() => navigate('/usuario')}
+                            style={{
+                                margin: isMobile ? '8px 0' : 0,
+                                paddingLeft:  isMobile ? '13px' : 0
+                            }}
+                        >
+                            {!isMobile &&
+                                <span className={'mb-1'}>
+                                    <FaUserAlt size={'17px'} color={'lightgray'} />
+                                    &nbsp;&nbsp;
+                                </span>
+                            }
+                            <span style={{ color }}> Mi Usuario </span> &nbsp;&nbsp;
+                        </Nav.Link>
+                        <Nav>
+                            <Form>
+                                <Button variant={`outline-info ${isMobile ? 'my-3' : ''}`}
+                                    onClick={() => openLogoutConfirmModal()}
+                                    style={{ color, borderColor: color }}
+                                >
+                                    CERRAR SESIÓN
+                                </Button>
+                            </Form>
+                        </Nav>
+                    </>
+                }
+                
             </Navbar.Collapse>
         </Navbar>
     )

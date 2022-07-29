@@ -1,4 +1,5 @@
 import { Credentials } from 'google-auth-library'
+import { typeCongregationItem } from '../components/pages'
 import { typeBlock, typeCampaignPack, typeCoords, typeHousehold, typeHTHTerritory, typeLocalStatistic, typeLogsObj, typeStateOfTerritory, typeStatistic, typeUser } from './'
 
 export type typeResponseData = {
@@ -33,4 +34,5 @@ export type typeResponseData = {
     gmailKeys?: Credentials
     coordinates?: typeCoords
     address?: string
+    congregationItems?: typeCongregationItem[]
 }

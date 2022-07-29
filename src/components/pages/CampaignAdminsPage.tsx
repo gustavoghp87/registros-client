@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
@@ -10,13 +9,10 @@ import { getUsersService } from '../../services/userServices'
 
 export const CampaignAdminsPage = () => {
     
-    const { isMobile, user } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile,
-        user: state.user
+    const { isMobile } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const navigate: NavigateFunction = useNavigate()
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
     const [showFiltered, setShowFiltered] = useState(false)
     const [users, setUsers] = useState<typeUser[]>()
@@ -77,8 +73,6 @@ export const CampaignAdminsPage = () => {
         })
         refreshHandler()
     }, [])
-
-    useEffect(() => { if (!user || !user.isAdmin) navigate('/acceso')}, [navigate, user])
 
     return (
     <>

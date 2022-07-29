@@ -19,6 +19,10 @@ input[type="checkbox"].checkboxdos {
   padding-top: 10px;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 /* Or transform:"scale(1.5)" */
 
 

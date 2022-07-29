@@ -180,7 +180,6 @@ export const logoutAllService = async (): Promise<boolean> => {
 
 export const logoutService = (): void => {
     clearTokenService()
-    clearUserService()
 }
 
 export const registerUserService = async (email: string, password: string, group: number, recaptchaToken: string): Promise<typeResponseData|null> => {

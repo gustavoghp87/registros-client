@@ -11,9 +11,8 @@ import { typeAppDispatch, typeResponseData, typeRootState, typeUser } from '../.
 export const LoginPage = () => {
 
     const { executeRecaptcha } = useGoogleReCaptcha()
-    const { isDarkMode, user } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode,
-        user: state.user
+    const { isDarkMode } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const navigate: NavigateFunction = useNavigate()
@@ -114,8 +113,6 @@ export const LoginPage = () => {
             document.getElementById('emailInput')?.focus()
         }
     }, [])
-
-    useEffect(() => { if (user && user.isAuth) navigate('/index')}, [navigate, user])
 
     return (<>
 

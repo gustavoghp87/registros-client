@@ -72,8 +72,6 @@ export const UserPage = () => {
         })
     }, [dispatch])
 
-    useEffect(() => { if (!user || !user.isAuth) navigate('/acceso')}, [navigate, user])
-
     return (
     <>
         <H2 title={"Usuario"} />

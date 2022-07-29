@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 import { GeoLocationModal, H2, Loading } from '../commons'
 import { TerritoryCampaigneNumberBlock } from '../index/TerritoryCampaignNumberBlock'
@@ -13,7 +12,6 @@ export const IndexPage = () => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const navigate: NavigateFunction = useNavigate()
     const [showedMode1, setShowedMode1] = useState<boolean>(false)
     const [showedMode2, setShowedMode2] = useState<boolean>(true)
     const [showedMode3, setShowedMode3] = useState<boolean>(true)
@@ -31,8 +29,6 @@ export const IndexPage = () => {
             setTerritories(asignados)
         }
     }, [user, territories])
-
-    useEffect(() => { if (!user || !user.isAuth) navigate('/acceso')}, [navigate, user])
 
     return (
         <>
