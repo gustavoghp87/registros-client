@@ -122,10 +122,6 @@ export const TelephonicPage = () => {
     const hideGoogleMapHandler = (): void => showGoogleMapHandler("")
 
     useEffect(() => {
-        if (!territory || (user && !user.isAuth)) window.location.href = '/acceso'
-    }, [territory, user])
-
-    useEffect(() => {
         if (territory) getHouseholdsByTerritoryService(territory).then((response: [typeHousehold[], typeBlock[], typeStateOfTerritory]|null) => {
             if (!response || !response[0] || !response[0].length || !response[1] || !response[0].length) return setLoaded(true)
             setBlocks(response[1])
@@ -262,7 +258,7 @@ export const TelephonicPage = () => {
                 />
             }
 
-            {territory &&
+            {territory && households && !!households.length &&
                 <Col0b
                     currentBlock={currentBlock}
                     isShowingAll={isShowingAllStates}

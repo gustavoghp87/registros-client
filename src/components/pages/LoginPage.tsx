@@ -62,9 +62,11 @@ export const LoginPage = () => {
         const response: typeResponseData|null = await loginService(email, password, recaptchaToken)
         if (response && response.success && response.newToken) {
             const user0: typeUser|null = await getUserByTokenService(response.newToken)
-            if (user0) dispatch(refreshUser(user0))
-            else return openAlertModalHandler("Problemas", "Refrescar la página")
-            navigate('/index')
+            if (user0) {
+                dispatch(refreshUser(user0))
+                return
+            }
+            openAlertModalHandler("Problemas", "Refrescar la página")
         } else if (!response || response.recaptchaFails) {
             setFailingEmailFromLSService(email)
             openAlertModalHandler("Problemas", "Refrescar la página")

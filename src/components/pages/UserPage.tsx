@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Card, Button, Form, FloatingLabel } from 'react-bootstrap'
+import { Card, Form, FloatingLabel } from 'react-bootstrap'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { H2 } from '../commons'
 import { refreshUser, setValuesAndOpenAlertModalReducer } from '../../store'
 import { changePswService, getUserByTokenService, logoutAllService } from '../../services/userServices'
-import { primary, typeAppDispatch, typeRootState, typeUser } from '../../models'
+import { typeAppDispatch, typeRootState, typeUser } from '../../models'
 
 export const UserPage = () => {
     
@@ -158,18 +158,17 @@ export const UserPage = () => {
                         </FloatingLabel>
                     </Form.Group>
 
-                    <Button
-                        className={'my-2'}
+                    <button
+                        className={'btn btn-general-blue my-2'}
                         onClick={() => openConfirmModalHandler(2)}
-                        type={'submit'}
-                        variant={primary}
                     >
                         Aceptar
-                    </Button>
+                    </button>
 
                     <button className={'btn btn-general-red'} onClick={() => setShow(false)}>
                         Cancelar
                     </button>
+
                 </Card>
             }
         </>

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Card, Button, ListGroup } from 'react-bootstrap'
+import { Card, ListGroup } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
-import { generalBlue } from '../../config'
 import { getAllLogsService } from '../../services'
 import { typeLog, typeLogsObj, typeRootState } from '../../models'
 
@@ -69,12 +68,12 @@ export const LogsPage = () => {
                 <Card key={index} className={`my-4 p-4 ${isDarkMode ? 'bg-dark text-white' : ''} ${logs ? '' : 'd-none'}`}>
                     <Card.Header className={'text-center h1 py-4'}>
                         <div className={'mb-3'}> {title} </div>
-                        <Button style={{ backgroundColor: generalBlue, width: '200px' }}
-                            size={undefined}
+                        <button className={'btn btn-general-blue'}
                             onClick={() => setShow()}
+                            style={{ width: '200px' }}
                         >
                             {show ? "Ocultar" : "Ver"}
-                        </Button>
+                        </button>
                     </Card.Header>
                     <br />
                     <ListGroup variant={'flush'} className={show ? '' : 'd-none'}>

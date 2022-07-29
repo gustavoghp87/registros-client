@@ -20,14 +20,14 @@ export const userSlice = createSlice({
     initialState: userInLS,
     reducers: {
         logout: (state) => {
+            localStorage.setItem('user', JSON.stringify(unauthenticatedUser))
             logoutService()
             state = unauthenticatedUser
-            localStorage.setItem('user', JSON.stringify(unauthenticatedUser))
             return state
         },
         refreshUser: (state, action: PayloadAction<typeUser>) => {
-            state = action.payload
             localStorage.setItem('user', JSON.stringify(action.payload))
+            state = action.payload
             return state
         }
     }

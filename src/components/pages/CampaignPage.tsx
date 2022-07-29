@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
-import { Button, Col, Row, Toast } from 'react-bootstrap'
+import { Col, Row, Toast } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { H2 } from '../commons'
@@ -121,10 +121,10 @@ export const CampaignPage = () => {
             <Toast.Body> Estos registros serán eliminados al finalizar la campaña </Toast.Body>
         </Toast>
 
-        <Button className={`btn btn-danger d-block m-auto mt-4 mb-0 p-3 ${campaignPack?.terminado ? '' : ''}`}
+        <button className={`btn btn-general-red d-block m-auto mt-4 mb-0 p-3 ${campaignPack?.terminado ? '' : ''}`}
             onClick={() => openConfirmModalHandler()}>
             Marcar todos como terminados
-        </Button>
+        </button>
 
         <div style={{ display: 'block', margin: '40px auto' }}>
             <Row>

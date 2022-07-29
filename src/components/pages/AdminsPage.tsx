@@ -2,12 +2,12 @@ import io, { Socket } from 'socket.io-client'
 import { useState, useEffect } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card, Button, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
+import { Card, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
 import { SERVER } from '../../config'
 import { refreshUser, setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
 import { assignTerritoryService, changePswOtherUserService, editUserService, getUserByTokenService, getUsersService } from '../../services/userServices'
-import { danger, dark, primary, typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
+import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
 
 export const AdminsPage = () => {
     
@@ -113,6 +113,18 @@ export const AdminsPage = () => {
     }, [])
 
     useEffect(() => {
+        setInterval(() => {
+            const pages = document.getElementsByClassName('page-item')
+            for (let item of pages) {
+                if (item.classList.contains('active')) (item.firstChild as HTMLElement)?.classList.add('btn-general-blue')
+            }
+
+        }, 300)
+        
+    }, [groupVisible])
+    
+
+    useEffect(() => {
         if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
     }, [socket, socket?.connected])
 
@@ -167,7 +179,7 @@ export const AdminsPage = () => {
                         width: isMobile ? '95%': '500px',
                         margin: '30px auto 60px auto',
                         backgroundColor: '#f6f6f8',
-                        display: viendo === 'todos' || (user && user?.group && user?.group.toString()) === viendo.slice(-1) ? '' : 'none'
+                        display: viendo === 'todos' || (user && user.group && user.group.toString()) === viendo.slice(-1) ? '' : 'none'
                     }}>
                     
                     <Card.Body style={{ padding: '30px' }}>
@@ -177,7 +189,7 @@ export const AdminsPage = () => {
                             padding: '20px',
                             fontSize: isMobile ? '1.3rem' : '1.8rem'
                         }}>
-                            Usuario: <br/> {user?.email}
+                            Usuario: <br/> {user.email}
                         </Card.Title>
 
 
@@ -186,26 +198,25 @@ export const AdminsPage = () => {
 
                         <Card.Text style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
                             Territorios asignados: &nbsp;
-                            {user?.asign && !!user?.asign.length &&
-                                user?.asign.map((asign: number) => (
+                            {user.asign && !!user.asign.length &&
+                                user.asign.map((asign: number) => (
                                     <span key={asign} className={'d-inline-block'}>
                                         {asign} &nbsp;
                                     </span>
                                 ))
                             }
-                            {(!user?.asign || !user?.asign.length) &&
+                            {(!user.asign || !user.asign.length) &&
                                 <span> ninguno </span>
                             }
                         </Card.Text>
 
 
-                        <Button className={'col-12 m-2'}
-                            variant={primary}
+                        <button className={'col-12 btn btn-general-blue m-2'}
                             style={{ marginTop: '10px' }}
                             onClick={() => setAsignVisible(!asignVisible)}
                         >
                             CAMBIAR ASIGNACIONES
-                        </Button>
+                        </button>
 
                         <div style={{
                             display: asignVisible ? 'block' : 'none',
@@ -217,14 +228,16 @@ export const AdminsPage = () => {
                                     id={index.toString()}
                                     style={{ width: '60px' }}
                                     min={1}
-                                    onChange={(event: any) => setAsig([user?._id?.toString(), event.target.value])}
+                                    onChange={(event: any) => setAsig([user._id.toString(), event.target.value])}
                                 />
                                 
                                 &nbsp;
                                 
-                                <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), false, index.toString())}>
+                                <button className={'btn btn-general-blue'}
+                                    onClick={() => assignTerritoryHandler(user._id.toString(), false, index.toString())}
+                                >
                                     &nbsp; Asignar &nbsp;
-                                </Button>
+                                </button>
 
                             </div>
 
@@ -233,35 +246,39 @@ export const AdminsPage = () => {
                                     id={index.toString() + "-b"}
                                     style={{ width: '60px' }}
                                     min={1}
-                                    onChange={(event: any) => setDesasig([user?._id?.toString(), event.target.value])}
+                                    onChange={(event: any) => setDesasig([user._id.toString(), event.target.value])}
                                 />
                                 &nbsp;
-                                <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), false, index.toString() + "-b")}>
+                                <button className={'btn btn-general-blue'}
+                                    onClick={() => assignTerritoryHandler(user._id.toString(), false, index.toString() + "-b")}
+                                >
                                     Desasignar
-                                </Button>
+                                </button>
                             </div>
 
                             <div style={{ marginTop: '12px' }}>
-                                <Button onClick={() => assignTerritoryHandler(user?._id?.toString(), true, null)}>
+                                <button className={'btn btn-general-blue'}
+                                    onClick={() => assignTerritoryHandler(user._id.toString(), true, null)}
+                                >
                                     Desasignar todos
-                                </Button>
+                                </button>
                             </div>
                         </div>
 
                         <hr/>
 
-                        <Card.Text style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 600 }}>
-                            Grupo: {user?.group} &nbsp;&nbsp;
-                            <Button variant={isDarkMode ? danger : dark} onClick={() => setGroupVisible(!groupVisible)}>
+                        <Card.Text className={'text-center mt-3'} style={{ fontSize: '1.2rem', fontWeight: 600 }}>
+                            Grupo: {user.group} &nbsp;&nbsp;
+                            <button className={'btn btn-general-blue'} onClick={() => setGroupVisible(!groupVisible)}>
                                 CAMBIAR GRUPO
-                            </Button>
+                            </button>
                         </Card.Text>
 
-                        <div style={{ width: '350px', margin: 'auto' }}>
-                            <div style={{ display: groupVisible ? 'block' : 'none' }}>
+                        {groupVisible &&
+                            <div className={'mx-auto mt-4 mb-4'} style={{ width: '350px' }}>
                                 <Pagination size={'lg'} style={{ textAlign: 'center' }}>
                                     {groups.map((groupNumber: number) =>
-                                        <Pagination.Item key={groupNumber}
+                                        <Pagination.Item key={groupNumber} className={''}
                                             active={groupNumber === user.group}
                                             onClick={() => {
                                                 editUserHandler(user._id.toString(), user.estado, user.role, groupNumber)
@@ -272,36 +289,33 @@ export const AdminsPage = () => {
                                     )}
                                 </Pagination>
                             </div>
-                        </div>
+                        }
                     
 
                         <hr/>
                     
 
-                        <Button className={'col-12 m-2'} variant={ user?.estado ? danger : primary }
-                            onClick={() => editUserHandler(user?._id?.toString(), !user?.estado, user?.role, user?.group)}>
-                            
-                            {user?.estado ? "DESACTIVAR" : "ACTIVAR"}
-                        
-                        </Button>
-
-                        <br/>
-
-                        <Button className={'col-12 m-2'} variant={user?.role === 1 ? danger : primary}
-                            onClick = {() => editUserHandler(user?._id?.toString(), user?.estado, user?.role === 1 ? 0 : 1, user?.group)}
+                        <button className={`col-12 btn ${user.estado ? 'btn-general-red' : 'btn-general-blue'} m-2`}
+                            onClick={() => editUserHandler(user._id.toString(), !user.estado, user.role, user.group)}
                         >
-
-                            {user?.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
-
-                        </Button>
+                            {user.estado ? "DESACTIVAR" : "ACTIVAR"}
+                        </button>
 
                         <br/>
 
-                        <Button className={'col-12 m-2'} variant={primary}
-                            onClick = {() => openConfirmModalHandler(user?.email)}
+                        <button className={`col-12 ${user.role === 1 ? 'btn-general-red' : 'btn-general-blue'} m-2`}
+                            onClick = {() => editUserHandler(user._id.toString(), user.estado, user.role === 1 ? 0 : 1, user.group)}
+                        >
+                            {user.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
+                        </button>
+
+                        <br/>
+
+                        <button className={'col-12 btn btn-general-blue m-2'}
+                            onClick = {() => openConfirmModalHandler(user.email)}
                         >
                             RESETEAR CONTRASEÑA
-                        </Button>
+                        </button>
 
                     </Card.Body>
                 </Card>

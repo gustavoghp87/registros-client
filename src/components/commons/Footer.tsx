@@ -12,7 +12,7 @@ export const Footer = () => {
             <div className={'main-footer'}
                 style={{
                     backgroundColor: generalBlue,
-                    height: '120px',
+                    height: '160px',
                     marginTop: '200px',
                     paddingBottom: '20px',
                     paddingTop: isMobile ? '10px' : '20px'
@@ -27,9 +27,11 @@ export const Footer = () => {
                     width: '100%'
                 }}>
                     <a href={'https://misericordiaweb.com/'} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
-                        misericordiaweb.com
+                        Misericordia Web
                     </a>
                 </div>
+
+                <h5 className={'text-center text-white mt-2 mb-3'}> Comunicación: misericordiawebapp@gmail.com </h5>
 
                 <div className={'text-center mt-2'}>
 
@@ -38,8 +40,8 @@ export const Footer = () => {
                     {isMobile && <br/>}
                     
                     <Link to={'/servicio'} className={`${isMobile ? '' : 'ml-2'} text-white`}> Términos de Uso </Link>
-                </div>
 
+                </div>
             </div>
         </>
     )

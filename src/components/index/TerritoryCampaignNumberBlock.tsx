@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Row, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { Row } from 'react-bootstrap'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { askForANewCampaignPackService, getCampaignPacksServiceByUser } from '../../services'
 import { typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
@@ -67,14 +67,14 @@ export const TerritoryCampaigneNumberBlock = () => {
                     <Link key={campaignPack.id}
                         className={`btn btn-success h-100 p-4 ${campaignPack.terminado ? 'd-none' : ''}`}
                         style={{
-                            width: '140px',
                             borderRadius: '15px',
-                            margin: '0 1% 0px 1%'
+                            margin: '0 1% 0px 1%',
+                            width: '140px'
                         }}
-                        to={`celulares/${campaignPack?.id?.toString()}`}
+                        to={`/celulares/${campaignPack.id.toString()}`}
                         type={'button'}
                     >
-                        <h2 className={'m-auto'}
+                        <h2 className={'mx-auto'}
                             style={{
                                 fontFamily: '"Arial Black", Gadget, sans-serif',
                                 fontSize: isMobile ? '2.3rem' : ''
@@ -92,12 +92,14 @@ export const TerritoryCampaigneNumberBlock = () => {
                 }
             </Row>
 
-            <Button
-                className={`btn btn-success d-block m-auto mt-4 py-3 px-4 ${showForm ? '' : 'd-none'}`}
-                onClick={() => openConfirmModalHandler()}
-            >
-                <span> Pedir un nuevo paquete de teléfonos <br /> para la Campaña de Celulares 2022 </span>
-            </Button>
+            {showForm &&
+                <button
+                    className={`btn btn-success d-block m-auto mb-4 py-3 px-4`}
+                    onClick={() => openConfirmModalHandler()}
+                >
+                    <span> Pedir un nuevo paquete de teléfonos <br /> para la Campaña de Celulares 2022 </span>
+                </button>
+            }
 
         </div>
     </>

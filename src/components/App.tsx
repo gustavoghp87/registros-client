@@ -60,12 +60,14 @@ export const App = () => {
 
                             {(!user || !user.isAuth) ?
                                 <Route path={'/acceso'} element={<Pages.LoginPage />} />
-                                : <>
-                                <Route path={'/congregacion'} element={<Pages.CongregationPage />} />
-                                <Route path={'/index'} element={<Pages.IndexPage />} />
-                                <Route path={'/territorios/:territory'} element={<Pages.TelephonicPage />} />
-                                <Route path={'/usuario'} element={<Pages.UserPage /> } />
-                            </>}
+                                :
+                                <>
+                                    <Route path={'/congregacion'} element={<Pages.CongregationPage />} />
+                                    <Route path={'/index'} element={<Pages.IndexPage />} />
+                                    <Route path={'/territorios/:territory'} element={<Pages.TelephonicPage />} />
+                                    <Route path={'/usuario'} element={<Pages.UserPage /> } />
+                                </>
+                            }
 
                             {user && user.isAdmin && <>
                                 <Route path={'/admins'} element={<Pages.AdminsPage />} />

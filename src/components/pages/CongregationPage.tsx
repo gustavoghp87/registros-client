@@ -11,7 +11,8 @@ export type typeCongregationItem = {
 
 export const CongregationPage = () => {
 
-    const { isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
     const [currentItem, setCurrentItem] = useState<typeCongregationItem>()
@@ -41,10 +42,10 @@ export const CongregationPage = () => {
 
     return (
         <div className={'row'}>
-            <div className={`col-lg-2 ${isMobile ? 'mt-3' : ''}`}
+            <div className={`col-lg-2 ${isMobile ? 'mt-3 w-75 mx-auto text-center' : 'mt-5'}`}
                 style={{
                     backgroundColor: isMobile ? '' : 'lightgray',
-                    maxHeight: isMobile ? '500px' : '350px'
+                    maxHeight: isMobile ? '500px' : '380px'
                 }}
             >
                 <SideBar
@@ -54,7 +55,7 @@ export const CongregationPage = () => {
                 />
             </div>
 
-            {isMobile && <hr className={'mt-1'} />}
+            {isMobile && <hr className={`mt-3 mb-0 ${isDarkMode ? 'text-white' : ''}`} />}
 
             <div className={'col-lg-10'}>
                 {currentItem && items && !!items.length && items.map((item: typeCongregationItem) =>

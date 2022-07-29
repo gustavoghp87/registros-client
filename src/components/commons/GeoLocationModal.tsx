@@ -34,7 +34,6 @@ export const GeoLocationModal = (props: any) => {
             setCenterCoords(position)
 
             getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
-                console.log(address0)
                 if (address0) setAddress(address0)
             })
 

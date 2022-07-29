@@ -78,95 +78,97 @@ export const CampaignAdminsPage = () => {
     <>
         <H2 title={"CAMPAÑA CELULARES 2022"} />
 
-        <Button variant={showFiltered ? primary : danger} style={{ display: 'block', margin: '30px auto 0 auto' }}
-            onClick={() => setShowFiltered(!showFiltered)}>
-            {showFiltered ? 'Ver todos' : 'Ver solo No Asignados No Terminados'}
-        </Button>
+        {campaignPacks && !!campaignPacks.length &&
+            <button className={`btn ${showFiltered ? 'btn-general-blue' : 'btn-general-red'} d-block mx-auto mt-5`}
+                onClick={() => setShowFiltered(!showFiltered)}
+            >
+                {showFiltered ? 'Ver todos' : 'Ver solo No Asignados No Terminados'}
+            </button>
+        }
 
         <div style={{ margin: '80px auto' }}>
+            {users && !!users.length && campaignPacks && !!campaignPacks.length && campaignPacks.map((campaignPack: typeCampaignPack) => {
+                let filtered = false
+                if (showFiltered && ((campaignPack.asignado && campaignPack.asignado !== noAsignado) || campaignPack.terminado)) filtered = true
+                
+                return (
 
-            {users && !!users.length && campaignPacks && !!campaignPacks.length &&
-                campaignPacks.map((campaignPack: typeCampaignPack) => {
-                    let filtered = false
-                    if (showFiltered && ((campaignPack?.asignado && campaignPack?.asignado !== noAsignado) || campaignPack?.terminado)) filtered = true
-                    
-                    return (
+                <Card key={campaignPack.id}
+                    className={`pt-2 py-3 mb-4 text-white ${campaignPack.terminado ? 'bg-info' : 'bg-dark'}`}
+                    style={{ display: filtered ? 'none' : '' }}
+                >
+                    <Card.Body>
+                        <Row>
+                            <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
+                                <br />
+                                <h3> Paquete {campaignPack.id} </h3>
+                                {/* <h4> Grupo de paquetes: {campaignPack.paquete} </h4> */}
+                                <h4> {putHyphens(campaignPack.desde)} </h4>
+                                <h4> {putHyphens(campaignPack.al)} </h4>
+                            </Col>
 
-                    <Card key={campaignPack?.id}
-                        className={`pt-2 py-3 mb-4 text-white ${campaignPack?.terminado ? 'bg-info' : 'bg-dark'}`}
-                        style={{ display: filtered ? 'none' : '' }}
-                    >
-                        <Card.Body>
-                            <Row>
-                                <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
-                                    <br />
-                                    <h3> Paquete {campaignPack?.id} </h3>
-                                    {/* <h4> Grupo de paquetes: {campaignPack?.paquete} </h4> */}
-                                    <h4> {putHyphens(campaignPack?.desde)} </h4>
-                                    <h4> {putHyphens(campaignPack?.al)} </h4>
-                                </Col>
+                            <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
+                                <h4> Asignado a: </h4>
+                                <SplitButton
+                                    variant={(!campaignPack.asignado || campaignPack.asignado === noAsignado) ? primary : danger}
+                                    className={'mt-2'}
+                                    title={campaignPack.asignado ? campaignPack.asignado : noAsignado}
+                                >
+                                    <Dropdown.Item onClick={() => assignCampaignPackByEmailHandler(campaignPack.id, 'Nadie')}>
+                                        Nadie
+                                    </Dropdown.Item>
 
-                                <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
-                                    <h4> Asignado a: </h4>
-                                    <SplitButton
-                                        variant={(!campaignPack?.asignado || campaignPack?.asignado === noAsignado) ? primary : danger}
-                                        className={'mt-2'}
-                                        title={campaignPack?.asignado ? campaignPack?.asignado : noAsignado}
-                                    >
-                                        <Dropdown.Item onClick={() => assignCampaignPackByEmailHandler(campaignPack?.id, 'Nadie')}>
-                                            Nadie
+                                    <Dropdown.Item onClick={() => assignCampaignPackByEmailHandler(campaignPack.id, 'Alguien sin cuenta')}>
+                                        Alguien sin cuenta
+                                    </Dropdown.Item>
+
+                                    <Dropdown.Divider />
+                                    
+                                    {users.map((user: typeUser, index: number) => (
+                                        <Dropdown.Item key={index}
+                                            eventKey={index.toString()}
+                                            onClick={() => assignCampaignPackByEmailHandler(campaignPack.id, user.email)}>
+                                            {user.email}
                                         </Dropdown.Item>
+                                    ))}
+                                    
+                                </SplitButton>
 
-                                        <Dropdown.Item onClick={() => assignCampaignPackByEmailHandler(campaignPack?.id, 'Alguien sin cuenta')}>
-                                            Alguien sin cuenta
-                                        </Dropdown.Item>
+                                <br/>
+                                <br/>
 
-                                        <Dropdown.Divider />
-                                        
-                                        {users.map((user: typeUser, index: number) => (
-                                            <Dropdown.Item key={index}
-                                                eventKey={index.toString()}
-                                                onClick={() => assignCampaignPackByEmailHandler(campaignPack?.id, user.email)}>
-                                                {user.email}
-                                            </Dropdown.Item>
-                                        ))}
-                                        
-                                    </SplitButton>
+                                <Button variant={secondary}
+                                    style={{ display: campaignPack.terminado ? 'none' : '' }}
+                                    onClick={() => { openConfirmModalHandler(campaignPack.id) }}
+                                >
+                                    Marcar como terminado
+                                </Button>
+                            </Col>
 
-                                    <br/>
-                                    <br/>
+                            <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
+                                <h4 className={'mt-3 mb-2'}>
+                                    {campaignPack.terminado ? "TERMINADO" : "NO TERMINADO"}
+                                </h4>
+                                <h4>
+                                    Llamados: {campaignPack.terminado ? '50' : campaignPack.llamados ? campaignPack.llamados.length : '0'}
+                                </h4>
+                                <Button variant={campaignPack.accessible ? primary : danger}
+                                    className={`mt-2 ${campaignPack.terminado ? 'd-none' : ''}`}
+                                    onClick={() => enableAccesibilityModeHandler(campaignPack.id, !campaignPack.accessible)}
+                                >
+                                    {campaignPack.accessible ? "Paquete accesible" : "Habilitar accesibilidad"}
+                                </Button>
+                            </Col>
 
-                                    <Button variant={secondary}
-                                        style={{ display: campaignPack?.terminado ? 'none' : '' }}
-                                        onClick={() => { openConfirmModalHandler(campaignPack?.id) }}
-                                    >
-                                        Marcar como terminado
-                                    </Button>
-                                </Col>
+                        </Row>
+                    </Card.Body>
+                </Card>
+                )
+            })}
 
-                                <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
-                                    <h4 className={'mt-3 mb-2'}>
-                                        {campaignPack?.terminado ? "TERMINADO" : "NO TERMINADO"}
-                                    </h4>
-                                    <h4>
-                                        Llamados: {campaignPack?.terminado ? '50' : campaignPack?.llamados ? campaignPack?.llamados.length : '0'}
-                                    </h4>
-                                    <Button variant={campaignPack?.accessible ? primary : danger}
-                                        className={`mt-2 ${campaignPack?.terminado ? 'd-none' : ''}`}
-                                        onClick={() => enableAccesibilityModeHandler(campaignPack?.id, !campaignPack?.accessible)}
-                                    >
-                                        {campaignPack?.accessible ? "Paquete accesible" : "Habilitar accesibilidad"}
-                                    </Button>
-                                </Col>
-
-                            </Row>
-                        </Card.Body>
-                    </Card>
-                    )
-                })
+            {(!users || !users.length || !campaignPacks || !campaignPacks.length) &&
+                <Loading mt={20} />
             }
-
-            {(!users || !users.length || !campaignPacks || !campaignPacks.length) && <><br /> <br /> <Loading /></>}
 
         </div>
     </>

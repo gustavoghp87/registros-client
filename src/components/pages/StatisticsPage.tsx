@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Card, Button } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
 import { generalBlue } from '../../config'
 import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../../services'
@@ -92,8 +92,8 @@ export const StatisticsPage = () => {
 
         
         {showBtn && globalStatistics &&
-            <Button
-                className={'d-block mx-auto'}
+            <button
+                className={'btn btn-general-blue d-block mx-auto'}
                 onClick={() => retrieveLocalStats()}
                 style={{
                     backgroundColor: generalBlue,
@@ -102,7 +102,7 @@ export const StatisticsPage = () => {
                 }}
             >
                 Traer Estadísticas por Territorio
-            </Button>
+            </button>
         }
 
 

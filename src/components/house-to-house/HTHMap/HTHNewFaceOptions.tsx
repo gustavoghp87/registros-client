@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Container, Dropdown, FloatingLabel, Form } from 'react-bootstrap'
+import { Container, Dropdown, FloatingLabel, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { getHTHStreetsByTerritoryService } from '../../../services'
@@ -153,9 +153,11 @@ export const HTHNewFaceOptions = (props: any) => {
                 >
                     <Form.Control type={'text'} placeholder={" "} onChange={(event: any) => setSelectedStreetPrev(event.target.value)} />
                 </FloatingLabel>
-                <Button variant={danger} className={'d-block mx-auto btn-block'} onClick={() => setSelectedStreet(selectedStreetPrev)}>
+                <button className={'d-block mx-auto btn btn-general-red btn-block'}
+                    onClick={() => setSelectedStreet(selectedStreetPrev)}
+                >
                     Aceptar
-                </Button>
+                </button>
             </Container>
         }
 
