@@ -106,6 +106,7 @@ export const AdminsPage = () => {
 
     useEffect(() => {
         const newSocket = io(SERVER, { withCredentials: true })
+        newSocket.connect()
         newSocket.on(userChangeString, (updatedUser: typeUser) => {
             if (updatedUser) getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
         })

@@ -165,8 +165,9 @@ export const TelephonicPage = () => {
     }, [brought, currentBlock, households, isShowingAllAvailable, isShowingAllStates, territory])
 
     useEffect(() => {
-        if (!user || !households || !territory) return
+        if (!user || !territory) return
         const newSocket: Socket = io(SERVER, { withCredentials: true })
+        newSocket.connect()
         newSocket.on(householdChangeString, (updatedHousehold: typeHousehold, userEmail: string) => {
             if (!updatedHousehold || updatedHousehold.territorio !== territory) return
             updatedHousehold.doNotMove = true
@@ -185,7 +186,7 @@ export const TelephonicPage = () => {
         })
         if (newSocket) setSocket(newSocket)
         return () => setSocket(undefined)
-    }, [households, territory, user])
+    }, [territory, user])
     
     useEffect(() => {
         if (!socket) return
@@ -210,6 +211,10 @@ export const TelephonicPage = () => {
                     userEmailWarningToaster={userEmailWarningToaster}
                 />
             }
+
+            {/* {!socket && <h1> No hay Socket </h1>}
+            {socket && !socket.connected && <h1> El Socket no está conectado </h1>}
+            {socket && socket.connected && <h1> Socket {socket.id} </h1>} */}
 
             <H2 title={`TERRITORIO ${territory} ${stateOfTerritory?.isFinished ? "- TERMINADO" : ""}`} mb={'40px'} />
 
