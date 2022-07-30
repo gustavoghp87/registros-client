@@ -12,7 +12,7 @@ export const getNumberOfFreePhonesService = async (territory: string): Promise<n
             method: 'GET',
             headers
         })
-        const data: typeResponseData = await response?.json()
+        const data: typeResponseData = await response.json()
         if (!data || !data.success || data.numberOfFreePhones === undefined) return null
         return data.numberOfFreePhones
     } catch (error) {
@@ -28,7 +28,7 @@ export const getLocalStatisticsService = async (territory: string): Promise<type
             method: 'GET',
             headers
         })
-        const data: typeResponseData = await response?.json()
+        const data: typeResponseData = await response.json()
         if (!data || !data.success || !data.localStatistic) return null
         return data.localStatistic
     } catch (error) {

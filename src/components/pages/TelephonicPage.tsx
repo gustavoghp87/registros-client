@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { Col0a, Col0b, Col1, Col2, Col3, Col4, LocalStatistics, MapModal, WarningToasterFewHouseholds, WarningToasterSameTerritory } from '../telephonic-components'
-import { H2, Loading } from '../commons'
+import { Col0a, Col0b, Col1, Col2, Col3, Col4, FewHouseholdsWarning, LocalStatistics, MapModal } from '../telephonic-components'
+import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { getHouseholdsByTerritoryService, modifyHouseholdService, markTerritoryAsFinishedService, getHouseholdVariant } from '../../services'
@@ -36,7 +36,7 @@ export const TelephonicPage = () => {
     const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
     const [socket, setSocket] = useState<Socket>()
     const [stateOfTerritory, setStateOfTerritory] = useState<typeStateOfTerritory>()
-    const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string|null>(null)
+    const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string>()
 
     const openAlertModalHandler = (title: string, message: string): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -131,6 +131,7 @@ export const TelephonicPage = () => {
             setBlocks(undefined)
             setHouseholds(undefined)
             setStateOfTerritory(undefined)
+            setUserEmailWarningToaster(undefined)
         }
     }, [territory])
 
@@ -196,8 +197,6 @@ export const TelephonicPage = () => {
 
     return (
         <>
-            <WarningToasterFewHouseholds />
-
             {showGoogleMapAddress &&
                 <MapModal
                     address={showGoogleMapAddress}
@@ -205,16 +204,27 @@ export const TelephonicPage = () => {
                 />
             }
 
-            {showWarningToaster && userEmailWarningToaster &&
-                <WarningToasterSameTerritory
-                    closeWarningToaster={closeWarningToaster}
-                    userEmailWarningToaster={userEmailWarningToaster}
+            <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
+                <FewHouseholdsWarning
+                    territory={territory}
                 />
-            }
 
-            {/* {!socket && <h1> No hay Socket </h1>}
-            {socket && !socket.connected && <h1> El Socket no está conectado </h1>}
-            {socket && socket.connected && <h1> Socket {socket.id} </h1>} */}
+                {(!socket || !socket.connected) &&
+                    <WarningToaster
+                        bodyText={"Refrescar la página y verificar que hay internet"}
+                        headerText={<strong>Hay un problema de conexión</strong>}
+                    />
+                }
+
+                {showWarningToaster && userEmailWarningToaster &&
+                    <WarningToaster
+                        bodyText={["Este territorio está siendo trabajado por el usuario ", <strong key={0}>{userEmailWarningToaster}</strong>]}
+                        closeWarningToaster={closeWarningToaster}
+                        headerText={<strong>Posible confusión de asignación</strong>}
+                    />
+                }
+            </div>
+
 
             <H2 title={`TERRITORIO ${territory} ${stateOfTerritory?.isFinished ? "- TERMINADO" : ""}`} mb={'40px'} />
 
