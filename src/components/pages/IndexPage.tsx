@@ -30,6 +30,8 @@ export const IndexPage = () => {
         }
     }, [user, territories])
 
+    useEffect(() => window.scrollTo(0, 0), [])
+
     return (
         <>
             {(!user || !user.isAuth) &&

@@ -13,7 +13,8 @@ export const H2 = (props: any) => {
             style={{
                 fontSize: isMobile ? '2.4rem' : '3.5rem',
                 fontWeight: 'bolder',
-                marginTop: props.mt ? props.mt : '80px'
+                marginTop: props.mt ?? '80px',
+                marginBottom: props.mb ?? ''
             }}
         >
             {props.title}

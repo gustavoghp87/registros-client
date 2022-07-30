@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { useSelector } from 'react-redux'
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { Modal } from 'react-bootstrap'
 import { Loading } from '../commons'
 import { googleMapsAPIKey, mapId } from '../../config'
@@ -50,7 +50,7 @@ export const MapModal = (props: any) => {
             <Modal
                 fullscreen={'md-down'}
                 onHide={() => hideGoogleMapHandler()}
-                show={centerCoords ? true : false}
+                show={!!centerCoords}
                 size={'lg'}
             >
                 <Modal.Header closeButton>

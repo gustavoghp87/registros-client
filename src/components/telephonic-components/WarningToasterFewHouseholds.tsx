@@ -4,11 +4,11 @@ import { useParams } from 'react-router-dom'
 import { AiOutlineWarning } from 'react-icons/ai'
 import { getNumberOfFreePhonesService } from '../../services'
 
-export const TerritoryWarningToaster = () => {
+export const WarningToasterFewHouseholds = () => {
 
     const { territorio } = useParams<string>()
-    const [showA, setShowA] = useState<boolean>(true)
     const [numberOfFreePhones, setNumberOfFreePhones] = useState<number>()
+    const [showA, setShowA] = useState<boolean>(true)
     
     const toggleShowA = () => setShowA(!showA)
     

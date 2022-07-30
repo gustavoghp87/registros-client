@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { Col0a, Col0b, Col1, Col2, Col3, Col4, LocalStatistics, MapModal, TerritoryWarningToaster, WarningToaster } from '../telephonic-components'
-import { Loading } from '../commons'
+import { Col0a, Col0b, Col1, Col2, Col3, Col4, LocalStatistics, MapModal, WarningToasterFewHouseholds, WarningToasterSameTerritory } from '../telephonic-components'
+import { H2, Loading } from '../commons'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { getHouseholdsByTerritoryService, modifyHouseholdService, markTerritoryAsFinishedService, getHouseholdVariant } from '../../services'
@@ -50,7 +50,7 @@ export const TelephonicPage = () => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: modal === 1 ? "¿Confirmar abrir territorio?" : "¿Confirmar finalizar territorio?",
-            message: modal === 1 ? `El territorio ${territory} se abrirá de nuevo` : `El territorio ${territory} se dará por terminado y se te desasignará`,
+            message: modal === 1 ? `El territorio ${territory} se abrirá de nuevo` : `El territorio ${territory} se dará por terminado ${!user.isAdmin ? 'y se te desasignará' : '' }`,
             execution: modal === 1 ? openTerritoryHandler : closeTerritoryHandler
         }))
     }
@@ -74,18 +74,14 @@ export const TelephonicPage = () => {
         asignado = !asignado ? false : true
         const updatedHousehold: typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
         if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "")
-        sendUpdatedHousehold(updatedHousehold)
-    }
-    
-    const sendUpdatedHousehold = (updatedHousehold: typeHousehold): void => {
-        if (!socket || !socket.connected || !updatedHousehold || !user)
+        if (!socket || !socket.connected || !user)
             return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet")
         socket.emit(householdChangeString, {
             updatedHousehold,
             userEmail: user.email
         })
     }
-    
+
     const getTenMoreHandler = (): void => setBrought(x => x + 10)
 
     const setBroughtAllHandler = (): void => {
@@ -115,13 +111,14 @@ export const TelephonicPage = () => {
         }
     }
 
-    const toggleShowWarningToaster = (): void => setShowWarningToaster(false)
+    const closeWarningToaster = (): void => setShowWarningToaster(false)
 
     const showGoogleMapHandler = (address: string): void => setShowGoogleMapAddress(address)
 
     const hideGoogleMapHandler = (): void => showGoogleMapHandler("")
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         if (territory) getHouseholdsByTerritoryService(territory).then((response: [typeHousehold[], typeBlock[], typeStateOfTerritory]|null) => {
             if (!response || !response[0] || !response[0].length || !response[1] || !response[0].length) return setLoaded(true)
             setBlocks(response[1])
@@ -168,16 +165,19 @@ export const TelephonicPage = () => {
     }, [brought, currentBlock, households, isShowingAllAvailable, isShowingAllStates, territory])
 
     useEffect(() => {
-        if (!user || !user.email || !households || !territory) return
+        if (!user || !households || !territory) return
         const newSocket: Socket = io(SERVER, { withCredentials: true })
         newSocket.on(householdChangeString, (updatedHousehold: typeHousehold, userEmail: string) => {
-            if (!updatedHousehold || updatedHousehold.territorio !== territory || !households) return
+            if (!updatedHousehold || updatedHousehold.territorio !== territory) return
             updatedHousehold.doNotMove = true
-            const households0: typeHousehold[] = households.map(x => {
-                if (x.inner_id === updatedHousehold.inner_id) x = updatedHousehold
-                return x
+            setHouseholds(x => {
+                if (!x) return undefined
+                const updatedHouseholdsToShow = x.map(y => {
+                    if (y.inner_id === updatedHousehold.inner_id) y = updatedHousehold
+                    return y
+                })
+                return updatedHouseholdsToShow
             })
-            setHouseholds(households0)
             if (userEmail !== user.email) {
                 setShowWarningToaster(true)
                 setUserEmailWarningToaster(userEmail)
@@ -189,15 +189,13 @@ export const TelephonicPage = () => {
     
     useEffect(() => {
         if (!socket) return
-        setTimeout(() => {
-            if (!socket.connected) { console.log("Sin conectar") }
-            else { console.log("Conectado") }
-        }, 1500)
+        if (!socket.connected) { console.log("Sin conectar") }
+        else { console.log("Conectado") }
     }, [socket, socket?.connected])
 
     return (
         <>
-            <TerritoryWarningToaster />
+            <WarningToasterFewHouseholds />
 
             {showGoogleMapAddress &&
                 <MapModal
@@ -206,33 +204,21 @@ export const TelephonicPage = () => {
                 />
             }
 
-            {user &&
-                <WarningToaster
-                    currentUserEmail={user.email}
-                    showWarningToaster={showWarningToaster}
-                    toggleShowWarningToaster={toggleShowWarningToaster}
+            {showWarningToaster && userEmailWarningToaster &&
+                <WarningToasterSameTerritory
+                    closeWarningToaster={closeWarningToaster}
                     userEmailWarningToaster={userEmailWarningToaster}
                 />
             }
 
-            <h1 className={isDarkMode ? 'text-white' : ''}
-                style={{
-                    fontSize: isMobile ? '2.6rem' : '2.8rem',
-                    fontWeight: 'bolder',
-                    margin: '80px auto 40px auto',
-                    textAlign: 'center'
-                }}
-            >
-                TERRITORIO {territory} {stateOfTerritory?.isFinished ? "- TERMINADO" : ""} 
-            </h1>
-
+            <H2 title={`TERRITORIO ${territory} ${stateOfTerritory?.isFinished ? "- TERMINADO" : ""}`} mb={'40px'} />
 
             {loaded &&
                 <Button variant={dark}
-                    onClick={() => setShowMap(!showMap)}
+                    onClick={() => setShowMap(x => !x)}
                     style={{ display: 'block', margin: '22px auto' }}
                 >
-                    {showMap ? 'Ocultar Mapa' : 'Ver Mapa'}
+                    {showMap ? "Ocultar Mapa" : "Ver Mapa"}
                 </Button>
             }
 
@@ -301,7 +287,7 @@ export const TelephonicPage = () => {
             {!isShowingStatistics && householdsToShow && !!householdsToShow.length && householdsToShow.map((household: typeHousehold) =>
                 <Card key={household.inner_id}
                     id={`card_${household.inner_id}`}
-                    className={`${household.asignado ? 'assigned-household' : ''} ${isDarkMode ? 'bg-dark text-white' : 'bg-white'} animate__animated animate__bounceInLeft animate__faster`}
+                    className={`${household.asignado ? 'bg-secondary' : isDarkMode ? 'bg-dark text-white' : ''} animate__animated animate__bounceInLeft animate__faster`}
                     style={{
                         border: '1px solid gray',
                         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
@@ -356,7 +342,7 @@ export const TelephonicPage = () => {
             }
 
             {(!householdsToShow || !householdsToShow.length) && !loaded &&
-                <Loading mt={5} mb={2} />
+                <Loading mt={12} mb={2} />
             }
 
             {householdsToShow && !householdsToShow.length && !isShowingAllStates && loaded && !isShowingStatistics && currentBlock &&

@@ -28,6 +28,8 @@ export const CongregationPage = () => {
         })
     }, [])
 
+    useEffect(() => window.scrollTo(0, 0), [])
+
     useEffect(() => {
         if (!items) return
         if (currentItemNumber === 1) setCurrentItem(items[0])
@@ -36,6 +38,16 @@ export const CongregationPage = () => {
         else if (currentItemNumber === 4) setCurrentItem(items[3])
         else if (currentItemNumber === 5) setCurrentItem(items[4])
         else if (currentItemNumber === 6) setCurrentItem(items[5])
+
+        //document.querySelectorAll("ali#credit").forEach(el=>el.click())
+        // const list0 = Array.from(document.querySelectorAll('[aria-label="Fit to width"]')) as HTMLElement[]
+        // const list1 = Array.from(document.querySelectorAll('[aria-label="Ajustar al ancho"]')) as HTMLElement[]
+        // list
+        // // list0.forEach((x: HTMLElement) => x = x.click())
+        // // list1.forEach((x: HTMLElement) => x.click())
+        // console.log(list0.length)
+        
+
     }, [currentItemNumber, items])
 
     if (!items) return (<Loading mt={24} />)
