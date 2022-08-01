@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
+import { Location, useLocation } from 'react-router'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import { BsBackspace } from 'react-icons/bs'
-import { useSelector } from 'react-redux'
-import { generalBlue } from '../../config'
-import { typeRootState } from '../../models'
+import { generalBlue, typeRootState } from '../../models'
 
 export const ReturnBtn = () => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const navigate: NavigateFunction = useNavigate()
+    const location: Location = useLocation()
     const [show, setShow] = useState<boolean>(false)
 
     useEffect(() => {
-        if (window.location.pathname === '/index') setShow(true)
+        console.log(location)
+        
+        if (window.location.pathname === '/index') setShow(true)  // useLocation
         else if (window.location.pathname.split('/')[1] === 'territorios') setShow(true)
         else if (window.location.pathname.split('/')[1] === 'estadisticas') setShow(true)
         else if (window.location.pathname.split('/')[1] === 'usuario') setShow(true)

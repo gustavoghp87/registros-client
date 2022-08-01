@@ -6,10 +6,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Col0a, Col0b, Col1, Col2, Col3, Col4, FewHouseholdsWarning, LocalStatistics, MapModal } from '../telephonic-components'
 import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { hideLoadingModal, setValuesAndOpenAlertModalReducer, showLoadingModal } from '../../store'
 import { getHouseholdsByTerritoryService, modifyHouseholdService, markTerritoryAsFinishedService, getHouseholdVariant } from '../../services'
 import { householdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
-import { dark, noPredicado } from '../../models'
+import { noPredicado } from '../../models'
 
 export const TelephonicPage = () => {
 
@@ -19,8 +19,9 @@ export const TelephonicPage = () => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const navigate: NavigateFunction = useNavigate()
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const navigate: NavigateFunction = useNavigate()
+    const [addressToShowInGoogleMaps, setAddressToShowInGoogleMaps] = useState<string>("")
     const [blocks, setBlocks] = useState<typeBlock[]>()
     const [brought, setBrought] = useState<number>(10)
     const [currentBlock, setCurrentBlock] = useState<typeBlock>()
@@ -31,7 +32,6 @@ export const TelephonicPage = () => {
     const [isShowingAllAvailable, setIsShowingAllAvailable] = useState<boolean>(false)
     const [isShowingStatistics, setIsShowingStatistics] = useState<boolean>(false)
     const [showBottomBtns, setShowBottomBtns] = useState<boolean>(true)
-    const [showGoogleMapAddress, setShowGoogleMapAddress] = useState<string>("")
     const [showMap, setShowMap] = useState<boolean>(false)
     const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
     const [socket, setSocket] = useState<Socket>()
@@ -64,15 +64,19 @@ export const TelephonicPage = () => {
 
     const openTerritoryHandler = async (): Promise<void> => {
         if (!territory) return
+        dispatch(showLoadingModal())
         const success: boolean = await markTerritoryAsFinishedService(territory, false)
+        dispatch(hideLoadingModal())
         if (!success) openAlertModalHandler("Algo falló", "")
         window.location.reload()
     }
 
     const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
-        noAbonado = !noAbonado ? false : true
-        asignado = !asignado ? false : true
+        dispatch(showLoadingModal())
+        noAbonado = !!noAbonado
+        asignado = !!asignado
         const updatedHousehold: typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
+        dispatch(hideLoadingModal())
         if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "")
         if (!socket || !socket.connected || !user)
             return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet")
@@ -81,8 +85,6 @@ export const TelephonicPage = () => {
             userEmail: user.email
         })
     }
-
-    const getTenMoreHandler = (): void => setBrought(x => x + 10)
 
     const setBroughtAllHandler = (): void => {
         setIsShowingAllAvailable(true)
@@ -113,9 +115,7 @@ export const TelephonicPage = () => {
 
     const closeWarningToaster = (): void => setShowWarningToaster(false)
 
-    const showGoogleMapHandler = (address: string): void => setShowGoogleMapAddress(address)
-
-    const hideGoogleMapHandler = (): void => showGoogleMapHandler("")
+    const hideGoogleMapHandler = (): void => setAddressToShowInGoogleMaps("")
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -188,18 +188,12 @@ export const TelephonicPage = () => {
         if (newSocket) setSocket(newSocket)
         return () => setSocket(undefined)
     }, [territory, user])
-    
-    useEffect(() => {
-        if (!socket) return
-        if (!socket.connected) { console.log("Sin conectar") }
-        else { console.log("Conectado") }
-    }, [socket, socket?.connected])
 
     return (
         <>
-            {showGoogleMapAddress &&
+            {addressToShowInGoogleMaps &&
                 <MapModal
-                    address={showGoogleMapAddress}
+                    address={addressToShowInGoogleMaps}
                     hideGoogleMapHandler={hideGoogleMapHandler}
                 />
             }
@@ -209,7 +203,7 @@ export const TelephonicPage = () => {
                     territory={territory}
                 />
 
-                {(!socket || !socket.connected) &&
+                {loaded && (!socket || !socket.connected) &&
                     <WarningToaster
                         bodyText={"Refrescar la página y verificar que hay internet"}
                         headerText={<strong>Hay un problema de conexión</strong>}
@@ -225,11 +219,10 @@ export const TelephonicPage = () => {
                 }
             </div>
 
-
             <H2 title={`TERRITORIO ${territory} ${stateOfTerritory?.isFinished ? "- TERMINADO" : ""}`} mb={'40px'} />
 
             {loaded &&
-                <Button variant={dark}
+                <Button variant={'dark'}
                     onClick={() => setShowMap(x => !x)}
                     style={{ display: 'block', margin: '22px auto' }}
                 >
@@ -302,7 +295,7 @@ export const TelephonicPage = () => {
             {!isShowingStatistics && householdsToShow && !!householdsToShow.length && householdsToShow.map((household: typeHousehold) =>
                 <Card key={household.inner_id}
                     id={`card_${household.inner_id}`}
-                    className={`${household.asignado ? 'bg-secondary' : isDarkMode ? 'bg-dark text-white' : ''} animate__animated animate__bounceInLeft animate__faster`}
+                    className={`${household.asignado ? 'bg-gray bg-opacity bg-gradient' : isDarkMode ? 'bg-dark text-white' : ''} animate__animated animate__bounceInLeft animate__faster`}
                     style={{
                         border: '1px solid gray',
                         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
@@ -315,7 +308,7 @@ export const TelephonicPage = () => {
 
                             <Col1
                                 household={household}
-                                showGoogleMapHandler={showGoogleMapHandler}
+                                setAddressToShowInGoogleMaps={setAddressToShowInGoogleMaps}
                             />
 
                             <Col2
@@ -346,7 +339,7 @@ export const TelephonicPage = () => {
                         marginTop: '80px'
                     }
                 }>
-                    <Pagination.Item onClick={() => getTenMoreHandler()}>
+                    <Pagination.Item onClick={() => setBrought(x => x + 10)}>
                         Mostrar 10 más
                     </Pagination.Item>
 

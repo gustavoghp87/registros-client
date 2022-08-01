@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
 import { HTHDoNotCalls, HTHMap, HTHObservations } from '../house-to-house'
 import { H2, Loading } from '../commons'
-import { generalBlue } from '../../config'
 import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../../services'
-import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
+import { generalBlue, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 
 export const HouseToHousePage = () => {
     
@@ -125,7 +124,7 @@ export const HouseToHousePage = () => {
             
             {user && user.isAdmin && currentFace &&
                 <button
-                    className={`my-4 btn ${currentFace.isFinished ? 'btn-secondary btn-general-secondary' : 'btn-general-blue'} d-block m-auto w-75`}
+                    className={`my-4 btn ${currentFace.isFinished ? 'btn-secondary' : 'btn-general-blue'} btn-size12 d-block m-auto w-75`}
                     onClick={() => setHTHIsFinishedHandler()}
                 >
                     {currentFace.isFinished ?

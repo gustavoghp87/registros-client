@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Card } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
-import { generalBlue } from '../../config'
 import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../../services'
-import { typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../../models'
+import { generalBlue, typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../../models'
 
 export const StatisticsPage = () => {
 
@@ -15,9 +14,9 @@ export const StatisticsPage = () => {
     }))
     const [globalStatistics, setGlobalStatistics] = useState<typeStatistic|null>()
     const [loading, setLoading] = useState<boolean>(false)
-    const [localStatisticsArray, setLocalStatisticsArray] = useState<typeLocalStatistic[]|null>()
+    const [localStatisticsArray, setLocalStatisticsArray] = useState<typeLocalStatistic[]|null>([])
     const [showBtn, setShowBtn] = useState<boolean>(true)
-    const [states, setStates] = useState<typeStateOfTerritory[]>()
+    const [states, setStates] = useState<typeStateOfTerritory[]>([])
     
     const retrieveLocalStats = async (): Promise<void> => {
         setLoading(true);
@@ -35,10 +34,7 @@ export const StatisticsPage = () => {
         getGlobalStatisticsService().then((data: typeStatistic|null) => {
             if (data) setGlobalStatistics(data)
         })
-        return () => {
-            setLocalStatisticsArray(undefined)
-            setStates(undefined)
-        }
+        return () => setGlobalStatistics(undefined)
     }, [])
 
     return (

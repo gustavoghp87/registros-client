@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { generalRed } from '../../config'
-import { danger, dark, typeBlock, typeRootState } from '../../models'
+import { generalRed, typeBlock, typeRootState } from '../../models'
 
 type radioObj = {
     name: string
@@ -59,7 +58,7 @@ const BlockToggleButton = (props: any) => {
         <ButtonGroup>
             <ToggleButton
                 type={'radio'}
-                variant={isChecked ? danger : dark}
+                variant={isChecked ? 'danger' : 'dark'}
                 name={"radio"}
                 value={radio?.value}
                 //checked={isChecked}

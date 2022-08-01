@@ -24,7 +24,7 @@ export const TerritoryNumberBlock = (props: any) => {
 
                 {user && user.isAuth && territories && !!territories.length && territories.map((territory: number) =>
                     <button key={territory}
-                        className={`btn ${mode === 1 ? 'btn-general-blue' : 'btn-danger'} animate__animated animate__bounce`}
+                        className={`btn ${mode === 1 ? 'btn-general-blue' : 'btn-general-red'} animate__animated animate__bounce`}
                         onClick={() => navigate(mode === 1 ?
                             `/casa-en-casa/${territory?.toString()}`
                             :

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { changeDarkModeReducer } from '../../store'
-import { typeAppDispatch, typeRootState } from '../../models'
+import { generalBlue, typeAppDispatch, typeRootState } from '../../models'
 
 export const DarkModeButton = () => {
 
@@ -11,19 +11,22 @@ export const DarkModeButton = () => {
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     
     return (
-        <div className={'custom-control custom-switch'} style={{ position: 'fixed', bottom: '20px' }}>
-            <input className={'custom-control-input'}
-                type={'checkbox'}
-                id={"customSwitches"}
+        <div className={'form-check form-switch'} style={{ position: 'fixed', bottom: '20px' }}>
+
+            <input id={"darkModeSwitch"}
+                className={'form-check-input'}
                 checked={isDarkMode}
                 onChange={() => dispatch(changeDarkModeReducer())}
+                type={'checkbox'}
             />
-            <label className={'custom-control-label'}
-                htmlFor={'customSwitches'}
-                style={{ color: isDarkMode ? 'white' : 'red' }}
+
+            <label htmlFor={'darkModeSwitch'}
+                className={'form-check-label'}
+                style={{ color: isDarkMode ? 'white' : generalBlue }}
             >
-                <b> {isMobile ? '' : (isDarkMode ? 'Modo Claro' : 'Modo Oscuro')} </b>
+                <b> {isMobile ? '' : (isDarkMode ? "Oscuro" : "Claro")} </b>
             </label>
+
         </div>
     )
 }

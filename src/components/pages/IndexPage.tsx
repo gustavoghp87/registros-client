@@ -45,7 +45,7 @@ export const IndexPage = () => {
 
                 <H2 title={"CASA EN CASA"} />
 
-                <button className={`btn btn-general-blue btn-block mt-4`}
+                <button className={`btn btn-general-blue w-100 mt-4`}
                     onClick={() => setShowedMode1(!showedMode1)}
                     type={'button'}
                 >
@@ -61,7 +61,6 @@ export const IndexPage = () => {
                     <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
                         <TerritoryNumberBlock
                             mode={1}
-                            style={{ cursor: 'pointer' }}
                             territories={territoriesAll}
                             user={user}
                         />
@@ -86,21 +85,19 @@ export const IndexPage = () => {
             {user && user.isAuth && <>
                 <H2 title={"TELEFÓNICA"} />
 
-                <button className={`btn btn-danger btn-block mt-4`}
+                <button className={`btn btn-general-red w-100 pointer mt-4`}
                     onClick={() => setShowedMode2(!showedMode2)}
-                    style={{ cursor: 'pointer' }}
                     type={'button'}
                 >
                     {showedMode2 === true ? 'Ocultar' : 'Ver territorios'}
                 </button>
 
                 <div className={`${showedMode2 === true ? '' : 'd-none'}`}>
-                    <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
+                    <div className={`card card-body pointer mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
                         <TerritoryNumberBlock
-                            user={user}
-                            territories={territories}
                             mode={2}
-                            style={{ cursor: 'pointer' }}
+                            territories={territories}
+                            user={user}
                         />
                     </div>
                 </div>
@@ -121,7 +118,7 @@ export const IndexPage = () => {
                 <>
                     <H2 title={"CAMPAÑA CELULARES 2022"} />
                     
-                    <button className={'btn btn-success btn-block mt-4'}
+                    <button className={'btn btn-success w-100 mt-4'}
                         type={'button'}
                         onClick={() => setShowedMode3(true)}    // dummy
                     >

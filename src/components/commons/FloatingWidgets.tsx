@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { ReturnBtn } from './ReturnBtn'
+import { ReturnBtn } from './'
 import { typeRootState } from '../../models'
 
 export const FloatingWidgets = () => {
@@ -52,13 +52,13 @@ export const FloatingWidgets = () => {
                             zIndex: 1
                         }}
                     >
-                        <p className={'text-right mb-0'}>
+                        <p className={'text-end mb-0'}>
                             {isMobile ? user.email.split('@')[0] : user.email}
                         </p>
-                        <p className={'text-right mb-0'}>
+                        <p className={'text-end mb-0'}>
                             Grupo {user.group}
                         </p>
-                        <p className={'text-right'}>
+                        <p className={'text-end'}>
                             {user.role ? isMobile ? "Admin" : "Administrador" : ""}
                         </p>
                     </div>

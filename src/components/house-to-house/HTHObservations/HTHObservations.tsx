@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { HTHObservationsForm, HTHObservationsItem } from '../'
-import { generalBlue } from '../../../config'
-import { typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { generalBlue, typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 
 export const HTHObservations = (props: any) => {
 
@@ -50,7 +49,7 @@ export const HTHObservations = (props: any) => {
             }
 
             {user && user.isAdmin &&
-                <button className={'btn btn-general-blue d-block mx-auto'}
+                <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
                     style={{ marginTop: '50px' }}
                     onClick={() => setShowForm(!showForm)}
                 >

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
-import { Col, Row, Toast } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { H2 } from '../commons'
+import { Col, Row } from 'react-bootstrap'
+import { H2, WarningToaster } from '../commons'
+import { hideLoadingModal, setValuesAndOpenAlertModalReducer, showLoadingModal } from '../../store'
 import { editCampaignPackService, getCampaignPackService, closeCampaignPackService, putHyphens } from '../../services'
-import { success, typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
+import { typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
 
 export const CampaignPage = () => {
 
@@ -40,6 +40,7 @@ export const CampaignPage = () => {
     }
 
     const editCampaignPackHandler = (phoneNumber: number, checked: boolean): void => {
+        dispatch(showLoadingModal())
         let areThere49: boolean = false
         if (campaignPack?.llamados?.length === 49) areThere49 = true
         editCampaignPackService(phoneNumber, checked, id).then((success: boolean) => {
@@ -53,7 +54,7 @@ export const CampaignPage = () => {
     }
 
     const closeCampaignPackHandler = (): void => {
-        closeCampaignPackService(id).then(() => {
+        closeCampaignPackService(id).then((success: boolean) => {
             if (!success) return openAlertModalHandler("Algo falló", "")
             navigate('/index')
         })
@@ -78,6 +79,7 @@ export const CampaignPage = () => {
     }
 
     const refreshHandler = useCallback((): void => {
+        dispatch(showLoadingModal())
         if (id) getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
             if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
                 return navigate('/index')
@@ -91,7 +93,10 @@ export const CampaignPage = () => {
             }
             setPhoneNumbers(phones)
         })
-    }, [id, navigate])
+        dispatch(hideLoadingModal())
+    }, [dispatch, id, navigate])
+
+    const closeWarningToaster = (): void => setShowToast(false)
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -109,48 +114,41 @@ export const CampaignPage = () => {
             Paquete de teléfonos {id}
         </h1>
 
-        <Toast show={showToast}
-            className={'d-block m-auto'}
-            style={{ border: '1px solid lightgray', marginBottom: '50px' }}
-            onClose={() => setShowToast(false)}
-        >
-            <Toast.Header style={{ border: '1px solid lightgray' }}>
-                <strong className={'mr-auto'}> Campaña Celulares 2022 </strong>
-                <small> </small>
-            </Toast.Header>
-            <Toast.Body> Estos registros serán eliminados al finalizar la campaña </Toast.Body>
-        </Toast>
+        {showToast &&
+            <WarningToaster
+                bodyText={"Estos registros serán eliminados al finalizar la campaña"}
+                closeWarningToaster={closeWarningToaster}
+                headerText={<strong>Campaña Celulares 2022</strong>}
+                isCentered={true}
+            />
+        }
 
         <button className={`btn btn-general-red d-block m-auto mt-4 mb-0 p-3 ${campaignPack?.terminado ? '' : ''}`}
-            onClick={() => openConfirmModalHandler()}>
+            onClick={() => openConfirmModalHandler()}
+        >
             Marcar todos como terminados
         </button>
 
-        <div style={{ display: 'block', margin: '40px auto' }}>
-            <Row>
-                <Col lg={4} sm={6}>
-                    {phoneNumbers && !!phoneNumbers.length && phoneNumbers.map((phoneNumber: number, index: number) => (
-                        <div key={index}>
-                            <PhoneChecker1 phoneNumber={phoneNumber} display={index < 17} />
-                        </div>
-                    ))}
-                </Col>
-                <Col lg={4} sm={6}>
-                    {phoneNumbers && !!phoneNumbers.length && phoneNumbers.map((phoneNumber: number, index: number) => (
-                        <div key={index}>
-                            <PhoneChecker1 phoneNumber={phoneNumber} display={index > 16 && index < 34} />
-                        </div>
-                    ))}
-                </Col>
-                <Col lg={4} sm={6}>
-                    {phoneNumbers && !!phoneNumbers.length && phoneNumbers.map((phoneNumber: number, index: number) => (
-                        <div key={index}>
-                            <PhoneChecker1 phoneNumber={phoneNumber} display={index > 33} />
-                        </div>
-                    ))}
-                </Col>
-            </Row>
-        </div>
-    </>
-    )
+        {phoneNumbers && !!phoneNumbers.length &&
+            <div style={{ display: 'block', margin: '40px auto' }}>
+                <Row>
+                    <Col lg={4} sm={6}>
+                        {phoneNumbers.map((phoneNumber: number, index: number) =>
+                            <PhoneChecker1 key={index} phoneNumber={phoneNumber} display={index < 17} />
+                        )}
+                    </Col>
+                    <Col lg={4} sm={6}>
+                        {phoneNumbers.map((phoneNumber: number, index: number) =>
+                            <PhoneChecker1 key={index} phoneNumber={phoneNumber} display={index > 16 && index < 34} />
+                        )}
+                    </Col>
+                    <Col lg={4} sm={6}>
+                        {phoneNumbers.map((phoneNumber: number, index: number) =>
+                                <PhoneChecker1 key={index} phoneNumber={phoneNumber} display={index > 33} />
+                        )}
+                    </Col>
+                </Row>
+            </div>
+        }
+    </>)
 }

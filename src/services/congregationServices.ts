@@ -1,8 +1,7 @@
 import { SERVER } from '../config'
 import { headers } from './'
 import { getTokenService } from './userServices'
-import { typeResponseData } from '../models'
-import { typeCongregationItem } from '../components/pages'
+import { typeCongregationItem, typeResponseData } from '../models'
 
 const base: string = `${SERVER}/api/congregation`
 

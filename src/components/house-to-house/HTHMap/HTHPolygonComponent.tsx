@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
-import { generalBlue, generalRed } from '../../../config'
-import { typeHTHTerritory, typePolygon } from '../../../models'
 import { editInfoWindowsStyles } from '../../../services'
+import { generalBlue, generalRed, typeHTHTerritory, typePolygon } from '../../../models'
 
 export const HTHPolygonComponent = (props: any) => {
 

@@ -1,4 +1,4 @@
-import { typeCongregationItem } from '../pages'
+import { typeCongregationItem } from '../../models'
 
 export const SideBar = (props: any) => {
 

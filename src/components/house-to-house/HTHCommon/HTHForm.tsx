@@ -1,6 +1,6 @@
 import { Button, Container, Form, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { dark, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 
 export const HTHForm = (props: any) => {
 
@@ -124,14 +124,13 @@ export const HTHForm = (props: any) => {
 
                 {isMobile ?
                     <div className={'pt-3'}>
-                        <button className={'btn btn-general-blue d-block mx-auto btn-block'} type={'submit'}> ACEPTAR </button>
-                        <br />
-                        <Button variant={dark} className={'d-block mx-auto'} onClick={() => cancelFormHandler()}> CANCELAR </Button>
+                        <button className={'btn btn-general-blue w-100 mb-3'}> ACEPTAR </button>
+                        <Button variant={'dark'} className={'w-100'} onClick={() => cancelFormHandler()}> CANCELAR </Button>
                     </div>
                 :
                     <div className={'pt-3'} style={{ minHeight: '70px' }}>
-                        <Button variant={dark} className={'float-right w-25'} onClick={() => cancelFormHandler()}> CANCELAR </Button>
-                        <button className={'btn btn-general-blue float-right mr-2 w-50'} type={'submit'}> ACEPTAR </button>
+                        <Button variant={'dark'} className={'float-end w-25'} onClick={() => cancelFormHandler()}> CANCELAR </Button>
+                        <button className={'btn btn-general-blue float-end me-2 w-50'}> ACEPTAR </button>
                     </div>
                 }
 

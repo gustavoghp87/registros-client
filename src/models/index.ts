@@ -1,5 +1,6 @@
 export * from './campaign'
 export * from './constants'
+export * from './congregation'
 export * from './houseToHouse'
 export * from './httpResponse'
 export * from './log'

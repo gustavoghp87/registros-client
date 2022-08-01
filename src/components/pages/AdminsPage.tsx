@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
-import { H2, Loading } from '../commons'
+import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
 import { refreshUser, setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
 import { assignTerritoryService, changePswOtherUserService, editUserService, getUserByTokenService, getUsersService } from '../../services/userServices'
@@ -58,7 +58,8 @@ export const AdminsPage = () => {
     }
 
     const sendUpdatedUser = (updatedUser: typeUser): void => {
-        if (socket) socket.emit(userChangeString, updatedUser)
+        if (socket && socket.connected) socket.emit(userChangeString, updatedUser)
+        else openAlertModalHandler('alert', "Error", "Se desconectó el actualizador; refrescar la página")
     }
 
     const refreshMyUserHandler = (user_id: string): void => {
@@ -100,7 +101,9 @@ export const AdminsPage = () => {
     }
 
     useEffect(() => {
-        getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
+        getUsersService().then((users0: typeUser[]|null) => {
+            if (users0) setUsers(users0)
+        })
         document.getElementById('adminsPageDropdownBtn')?.classList.remove('btn-primary')
     }, [])
 
@@ -108,18 +111,25 @@ export const AdminsPage = () => {
         const newSocket = io(SERVER, { withCredentials: true })
         newSocket.connect()
         newSocket.on(userChangeString, (updatedUser: typeUser) => {
-            if (updatedUser) getUsersService().then((users: typeUser[]|null) => { if (users) setUsers(users) })
+            if (updatedUser) getUsersService().then((users: typeUser[]|null) => {
+                if (users) setUsers(users)
+            })
         })
         if (newSocket) setSocket(newSocket)
         return () => setSocket(undefined)
     }, [])
 
-    useEffect(() => {
-        if (socket && !socket.connected) { console.log("Sin conectar") } else { console.log("Conectado") }
-    }, [socket, socket?.connected])
-
     return (<>
         <H2 title={"ADMINISTRADORES"} />
+
+        <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
+            {users && (!socket || !socket.connected) &&
+                <WarningToaster
+                    bodyText={"Refrescar la página y verificar que hay internet"}
+                    headerText={<strong>Hay un problema de conexión</strong>}
+                />
+            }
+        </div>
 
         <button className={'btn btn-general-red d-block mx-auto mt-5 mb-0'}
             onClick={() => navigate('/logs')}

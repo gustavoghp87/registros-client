@@ -1,10 +1,9 @@
-import { Navbar, Nav, Button, Form } from 'react-bootstrap'
+import { useEffect } from 'react'
+import { Navbar, Nav, Button, Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { FaUserAlt } from 'react-icons/fa'
 import { logout, setValuesAndOpenAlertModalReducer } from '../../store'
-import { generalBlue } from '../../config'
-import { typeAppDispatch, typeRootState } from '../../models'
+import { generalBlue, typeAppDispatch, typeRootState } from '../../models'
 
 export const NavBar = () => {
 
@@ -29,92 +28,94 @@ export const NavBar = () => {
         dispatch(logout())
         navigate('/acceso')
     }
+
+    useEffect(() => {
+        document.getElementById('responsive-navbar-nav')?.addEventListener('click', () => {
+            (Array.from(document.getElementsByClassName('navbar-toggler'))[0] as HTMLElement).click()
+        })
+    }, [])
     
     return (
         <Navbar style={{ backgroundColor: generalBlue }} collapseOnSelect expand={'lg'}>
 
-            <Navbar.Brand onClick={() => navigate('/')} style={{ color, cursor: 'pointer' }}>
-                &nbsp; INICIO
-            </Navbar.Brand>
+            <Container fluid>
 
-            <Navbar.Toggle />
-            
-            <Navbar.Collapse id={"responsive-navbar-nav"}>
-                <Nav className={'mr-auto'}>
-                    {user && user.isAuth ?
-                        <>
-                            <Nav.Link
-                                onClick={() => navigate('/index')}
-                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
-                            >
-                                &nbsp; &nbsp;Territorios&nbsp; &nbsp;
-                            </Nav.Link>
-                            <Nav.Link
-                                onClick={() => navigate('/congregacion')}
-                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
-                            >
-                                &nbsp; &nbsp;Congregación&nbsp; &nbsp;
-                            </Nav.Link>
-                        </>
-                        :
-                        <Nav.Link
-                            onClick={() => navigate('/acceso')}
-                            style={{ color }
-                        }>
-                            &nbsp; &nbsp;Entrar&nbsp; &nbsp;
-                        </Nav.Link>
-                    }
+                <Navbar.Brand className={'pointer'} onClick={() => navigate('/')} style={{ color }}>
+                    &nbsp;&nbsp; INICIO
+                </Navbar.Brand>
 
-                    {user && user.isAdmin &&
-                        <>
-                            <Nav.Link
-                                onClick={() => navigate('/estadisticas')}
-                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
-                            >
-                                &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
-                            </Nav.Link>
-
-                            <Nav.Link
-                                onClick={() => navigate('/admins')}
-                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
-                            >
-                                &nbsp; &nbsp;Administradores&nbsp; &nbsp;
-                            </Nav.Link>
-                        </>
-                    }
-                </Nav>
-
-                {user && user.isAuth &&
-                    <>
-                        <Nav.Link className={'d-flex align-items-center'}
-                            onClick={() => navigate('/usuario')}
-                            style={{
-                                margin: isMobile ? '8px 0' : 0,
-                                paddingLeft:  isMobile ? '13px' : 0
-                            }}
-                        >
-                            {!isMobile &&
-                                <span className={'mb-1'}>
-                                    <FaUserAlt size={'17px'} color={'lightgray'} />
-                                    &nbsp;&nbsp;
-                                </span>
-                            }
-                            <span style={{ color }}> Mi Usuario </span> &nbsp;&nbsp;
-                        </Nav.Link>
-                        <Nav>
-                            <Form>
-                                <Button variant={`outline-info ${isMobile ? 'my-3' : ''}`}
-                                    onClick={() => openLogoutConfirmModal()}
-                                    style={{ color, borderColor: color }}
-                                >
-                                    CERRAR SESIÓN
-                                </Button>
-                            </Form>
-                        </Nav>
-                    </>
-                }
+                <Navbar.Toggle />
                 
-            </Navbar.Collapse>
+                <Navbar.Collapse id={"responsive-navbar-nav"}>
+                    <Nav className={'me-auto'}>
+                        {user && user.isAuth ?
+                            <>
+                                <Nav.Link
+                                    onClick={() => navigate('/index')}
+                                    style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                                >
+                                    &nbsp; &nbsp;Territorios&nbsp; &nbsp;
+                                </Nav.Link>
+                                
+                                <Nav.Link
+                                    onClick={() => navigate('/congregacion')}
+                                    style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                                >
+                                    &nbsp; &nbsp;Congregación&nbsp; &nbsp;
+                                </Nav.Link>
+                            </>
+                            :
+                                <Nav.Link
+                                    onClick={() => navigate('/acceso')}
+                                    style={{ color }
+                                }>
+                                    &nbsp; &nbsp;Entrar&nbsp; &nbsp;
+                                </Nav.Link>
+                        }
+
+                        {user && user.isAdmin &&
+                            <>
+                                <Nav.Link
+                                    onClick={() => navigate('/estadisticas')}
+                                    style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                                >
+                                    &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
+                                </Nav.Link>
+
+                                <Nav.Link
+                                    onClick={() => navigate('/admins')}
+                                    style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                                >
+                                    &nbsp; &nbsp;Administradores&nbsp; &nbsp;
+                                </Nav.Link>
+                            </>
+                        }
+                    </Nav>
+
+                    {user && user.isAuth &&
+                        <Nav >
+                            <Nav.Link className={''}
+                                onClick={() => navigate('/usuario')}
+                                style={{
+                                    margin: isMobile ? '8px 0' : 0,
+                                    paddingLeft:  isMobile ? '13px' : 0
+                                }}
+                            >
+                                <span style={{ color }}> Mi Usuario </span> &nbsp;&nbsp;&nbsp;
+                            </Nav.Link>
+                            
+                            <Button
+                                className={`${isMobile ? 'my-3' : ''}`}
+                                variant={'outline-info'}
+                                onClick={() => openLogoutConfirmModal()}
+                                style={{ color, borderColor: color }}
+                            >
+                                CERRAR SESIÓN
+                            </Button>
+                        </Nav>
+                    }
+                </Navbar.Collapse>
+            </Container>
         </Navbar>
     )
 }

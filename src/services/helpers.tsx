@@ -1,4 +1,4 @@
-import { aDejarCarta, contesto, danger, dark, noContesto, noLlamar, noPredicado, primary, success, typeHousehold, warning } from '../models'
+import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeHousehold } from '../models'
 
 type typeHeaders = {
     'Accept': string
@@ -99,11 +99,11 @@ export const editInfoWindowsStyles = (): NodeJS.Timeout => setTimeout((): void =
 export const getHouseholdVariant = (households: typeHousehold[]): typeHousehold[] => {
     if (!households || !households.length) return households
     return households.map(x => {
-        if (x.estado === noPredicado) x = { ...x, variante: success }
-        if (x.estado === contesto) x = { ...x, variante: primary }
-        if (x.estado === noContesto) x = { ...x, variante: warning }
-        if (x.estado === aDejarCarta) x = { ...x, variante: danger }
-        if (x.estado === noLlamar) x = { ...x, variante: dark }
+        if (x.estado === noPredicado) x = { ...x, variante: 'success' }
+        if (x.estado === contesto) x = { ...x, variante: 'primary' }
+        if (x.estado === noContesto) x = { ...x, variante: 'warning' }
+        if (x.estado === aDejarCarta) x = { ...x, variante: 'danger' }
+        if (x.estado === noLlamar) x = { ...x, variante: 'dark' }
         return x
     })
 }

@@ -4,7 +4,7 @@ import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService, putHyphens } from '../../services'
-import { danger, noAsignado, primary, secondary, typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
+import { noAsignado, typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
 import { getUsersService } from '../../services/userServices'
 
 export const CampaignAdminsPage = () => {
@@ -110,7 +110,7 @@ export const CampaignAdminsPage = () => {
                             <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
                                 <h4> Asignado a: </h4>
                                 <SplitButton
-                                    variant={(!campaignPack.asignado || campaignPack.asignado === noAsignado) ? primary : danger}
+                                    variant={(!campaignPack.asignado || campaignPack.asignado === noAsignado) ? 'primary' : 'danger'}
                                     className={'mt-2'}
                                     title={campaignPack.asignado ? campaignPack.asignado : noAsignado}
                                 >
@@ -137,7 +137,7 @@ export const CampaignAdminsPage = () => {
                                 <br/>
                                 <br/>
 
-                                <Button variant={secondary}
+                                <Button variant={'secondary'}
                                     style={{ display: campaignPack.terminado ? 'none' : '' }}
                                     onClick={() => { openConfirmModalHandler(campaignPack.id) }}
                                 >
@@ -152,7 +152,7 @@ export const CampaignAdminsPage = () => {
                                 <h4>
                                     Llamados: {campaignPack.terminado ? '50' : campaignPack.llamados ? campaignPack.llamados.length : '0'}
                                 </h4>
-                                <Button variant={campaignPack.accessible ? primary : danger}
+                                <Button variant={campaignPack.accessible ? 'primary' : 'danger'}
                                     className={`mt-2 ${campaignPack.terminado ? 'd-none' : ''}`}
                                     onClick={() => enableAccesibilityModeHandler(campaignPack.id, !campaignPack.accessible)}
                                 >

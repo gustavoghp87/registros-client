@@ -259,7 +259,7 @@ export const HTHMap = (props: any) => {
         {user && user.isAdmin && !isMobile &&
             <div className={'d-flex justify-content-center'}>
                 {!isAddingPolygon &&
-                    <button className={`mt-4 mr-4 btn ${isEditingView ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
+                    <button className={`mt-4 me-4 btn ${isEditingView ? 'btn-danger btn-size12' : 'btn-general-blue'}`}
                         onClick={() => {
                             if (isEditingView) {
                                 initMapViewEditingHandler()
@@ -274,7 +274,7 @@ export const HTHMap = (props: any) => {
                     </button>
                 }
                 {!isEditingView && !showNewFaceOptions &&
-                    <button className={`mt-4 btn ${isAddingPolygon ? 'btn-danger btn-general-secondary' : 'btn-general-blue'}`}
+                    <button className={`mt-4 btn ${isAddingPolygon ? 'btn-danger btn-size12' : 'btn-general-blue'}`}
                         onClick={() => {
                             if (isAddingPolygon) {
                                 addFaceHandler()
@@ -290,7 +290,7 @@ export const HTHMap = (props: any) => {
                     </button>
                 }
                 {(isEditingView || isAddingPolygon) && <>
-                    <button className={`btn btn-secondary btn-general-secondary mt-4 ${showNewFaceOptions ? '' : 'ml-4'}`}
+                    <button className={`btn btn-secondary btn-size12 mt-4 ${showNewFaceOptions ? '' : 'ms-4'}`}
                         onClick={() => cancelChangesHandler()}
                     >
                         Cancelar Cambios

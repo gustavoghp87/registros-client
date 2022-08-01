@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Pages from './pages'
-import { AlertModal, DarkModeButton, FloatingWidgets, Footer, NavBar } from './commons'
+import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
 import { recaptchaPublicKey } from '../config'
 import { changeMobileModeReducer, refreshUser } from '../store'
 import { typeAppDispatch, typeRootState, typeUser } from '../models'
@@ -11,9 +11,10 @@ import { getUserByTokenService } from '../services/userServices'
 
 export const App = () => {
     
-    const { isDarkMode, isMobile, showingAlertModal, user } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, showingAlertModal, showingLoadingModal, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
+        showingLoadingModal: state.loadingModal.showingLoadingModal,
         showingAlertModal: state.alertModal.showingAlertModal,
         user: state.user
     }))
@@ -43,6 +44,8 @@ export const App = () => {
                     <div style={{ position: 'fixed', width: '100%', zIndex: 4 }}>
                         <NavBar />
                         <FloatingWidgets />
+                        {showingAlertModal && <AlertModal />}
+                        {showingLoadingModal && <LoadingModal />}
                     </div>
 
                     <div style={{
@@ -83,8 +86,6 @@ export const App = () => {
 
                         <DarkModeButton />
 
-                        {showingAlertModal && <AlertModal />}
-                        
                     </div>
 
                     <Footer />

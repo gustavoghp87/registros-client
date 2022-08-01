@@ -1,7 +1,6 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { generalRed } from '../../config'
-import { danger, dark, typeRootState } from '../../models'
+import { generalRed, typeRootState } from '../../models'
 
 export const Col0b = (props: any) => {
  
@@ -55,7 +54,7 @@ export const Col0b = (props: any) => {
                     }}
                     type={'radio'}
                     value={radios[0]?.value}
-                    variant={isShowingAll ? dark : (isShowingStatistics ? dark : danger)}
+                    variant={isShowingAll ? 'dark' : (isShowingStatistics ? 'dark' : 'danger')}
                 >
                     <div
                         onClick={() => setIsShowingAllStatesHandler(false)}

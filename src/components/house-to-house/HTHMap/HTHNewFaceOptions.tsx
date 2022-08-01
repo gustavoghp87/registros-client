@@ -3,7 +3,7 @@ import { Container, Dropdown, FloatingLabel, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { getHTHStreetsByTerritoryService } from '../../../services'
-import { danger, typeAppDispatch, typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
+import { typeAppDispatch, typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
 
 export const HTHNewFaceOptions = (props: any) => {
 
@@ -90,7 +90,7 @@ export const HTHNewFaceOptions = (props: any) => {
         <div className={'d-flex justify-content-center my-4'}>
             {!selectedBlock && showBlockMenu &&
                 <Dropdown className={'d-inline'}>
-                    <Dropdown.Toggle variant={danger}>
+                    <Dropdown.Toggle variant={'danger'}>
                         {selectedBlock ? `Manzana ${selectedBlock}` : "Seleccionar la Manzana"} &nbsp;
                     </Dropdown.Toggle>
                     <Dropdown.Menu show={showBlockMenu}>
@@ -105,7 +105,7 @@ export const HTHNewFaceOptions = (props: any) => {
             }
             {!selectedFace && showFaceMenu &&
                 <Dropdown className={'d-inline'}>
-                    <Dropdown.Toggle variant={danger}>
+                    <Dropdown.Toggle variant={'danger'}>
                         {selectedFace ? `==> Cara ${selectedFace}` : "Seleccionar la Cara"} &nbsp;
                     </Dropdown.Toggle>
                     <Dropdown.Menu show={showFaceMenu}>
@@ -120,7 +120,7 @@ export const HTHNewFaceOptions = (props: any) => {
             }
             {!selectedStreet && showStreetMenu &&
                 <Dropdown className={'d-inline'}>
-                    <Dropdown.Toggle variant={danger}>
+                    <Dropdown.Toggle variant={'danger'}>
                         {selectedStreet ? `==> Calle ${selectedStreet}` : "Seleccionar la Calle"} &nbsp;
                     </Dropdown.Toggle>
                     <Dropdown.Menu show={showStreetMenu}>
@@ -137,7 +137,7 @@ export const HTHNewFaceOptions = (props: any) => {
                     </Dropdown.Menu>
                 </Dropdown>
             }
-            <button className={'btn btn-secondary btn-general-secondary d-inline ml-4'} onClick={() => cancelHandler(true)}>
+            <button className={'btn btn-secondary btn-size12 d-inline ms-4'} onClick={() => cancelHandler(true)}>
                 &nbsp;&nbsp; Limpiar &nbsp; &nbsp;
             </button>
         </div>
@@ -153,7 +153,7 @@ export const HTHNewFaceOptions = (props: any) => {
                 >
                     <Form.Control type={'text'} placeholder={" "} onChange={(event: any) => setSelectedStreetPrev(event.target.value)} />
                 </FloatingLabel>
-                <button className={'d-block mx-auto btn btn-general-red btn-block'}
+                <button className={'btn btn-general-red btn-size12 w-100'}
                     onClick={() => setSelectedStreet(selectedStreetPrev)}
                 >
                     Aceptar

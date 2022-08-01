@@ -29,6 +29,7 @@ export const FormLayout = (props: any) => {
     const clearInputs = (): void => {
         if (isRegister) setEmail(getFailingEmailFromLSService() ?? "")
         else setEmail('')
+        setIsRegister(x => !x)
         setPassword('')
         setConfPassword('')
         setGroup(0)
@@ -128,7 +129,7 @@ export const FormLayout = (props: any) => {
                 </>}
 
                 <button
-                    className={`btn ${(isRegister || isRecovery) ? 'btn-general-red' : 'btn-general-blue'} btn-block mt-3`}
+                    className={`btn ${(isRegister || isRecovery) ? 'btn-general-red' : 'btn-general-blue'} d-block w-100 mt-3`}
                     style={{ fontWeight: 'bolder', height: '50px' }}
                     onClick={() => action()}
                 >
@@ -143,32 +144,30 @@ export const FormLayout = (props: any) => {
                     </Link>
                     :
                     <>
-                        <p className={'d-block text-end'}
-                            onClick={() => {
-                                clearInputs()
-                                setIsRegister(x => !x)
-                            }}
+                        <p className={'text-end'}
                             style={{
                                 color: '#0000cd',
-                                cursor: 'pointer',
                                 fontSize: '1rem',
                                 margin: '18px 0 10px 0',
                                 textDecoration: 'underline'
                             }}
                         >
-                            {isRegister ? "Volver a ingreso" : "Registrar una cuenta"}
+                            <span className={'pointer'} onClick={() => clearInputs()}>
+                                {isRegister ? "Volver a ingreso" : "Registrar una cuenta"}
+                            </span>
                         </p>
-                        <p className={'d-block text-end'}
-                            onClick={() => recoverAccountHandler()}
+                        
+                        <p className={'text-end'}
                             style={{
                                 color: '#0000cd',
-                                cursor: 'pointer',
                                 fontSize: '1rem',
                                 margin: '0 0 22px',
                                 textDecoration: 'underline'
                             }}
                         >
-                            Olvidé mi contraseña
+                            <span className={'pointer'} onClick={() => recoverAccountHandler()}>
+                                Olvidé mi contraseña
+                            </span>
                         </p>
                     </>
                 }

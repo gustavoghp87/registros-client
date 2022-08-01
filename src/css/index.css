@@ -32,16 +32,11 @@ input[type="checkbox"].checkboxdos {
   background-color: #4a6da7 !important;
   border: 1px solid #4a6da7 !important;
   color: white !important;
-  font-size: 1.2rem;
 }
 
 .btn-general-blue:hover {
   background-color: #25457d !important;
   border: 1px solid #25457d !important;
-}
-
-.btn-general-secondary {
-  font-size: 1.2rem !important;
 }
 
 .btn-general-red {
@@ -53,6 +48,18 @@ input[type="checkbox"].checkboxdos {
 .btn-general-red:hover {
   background-color: #921b27 !important;
   border: 1px solid #921b27 !important;
+}
+
+.btn-size12 {
+  font-size: 1.2rem !important;
+}
+
+.bg-opacity {
+  --bs-bg-opacity: .7 !important;
+}
+
+.bg-gray {
+  background-color: #adb5bd;
 }
 
 

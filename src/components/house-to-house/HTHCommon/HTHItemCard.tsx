@@ -32,7 +32,7 @@ export const HTHItemCard = (props: any) => {
             {user && user.isAdmin && <>
 
                 {editHandler &&
-                    <div className={'mt-1 mb-2 py-1'} style={{ border: '1px solid lightgray', borderRadius: '5px', cursor: 'pointer' }}
+                    <div className={'mt-1 mb-2 py-1 pointer'} style={{ border: '1px solid lightgray', borderRadius: '5px' }}
                         onClick={() => editHandler()}
                     >
                         <h4 className={'d-inline'}>
@@ -42,7 +42,7 @@ export const HTHItemCard = (props: any) => {
                     </div>
                 }
 
-                <div className={'mt-1 mb-2 py-1'} style={{ border: '1px solid lightgray', borderRadius: '5px', cursor: 'pointer' }}
+                <div className={'mt-1 mb-2 py-1 pointer'} style={{ border: '1px solid lightgray', borderRadius: '5px' }}
                     onClick={() => deleteHandler()}
                 >
                     <h4 className={'d-inline'}>

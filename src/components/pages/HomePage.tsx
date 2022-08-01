@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux'
 import { NavigateFunction, useNavigate } from 'react-router'
-import { generalBlue } from '../../config'
 import { H2 } from '../commons'
-import { typeRootState } from '../../models'
+import { generalBlue, typeRootState } from '../../models'
 
 export const HomePage = () => {
 
@@ -26,7 +25,7 @@ export const HomePage = () => {
             A<br/>MISERICORDIA WEB
         </h1>
 
-        <div onClick={() => navigate(user && user.isAuth ? 'index' : 'acceso')} style={{ cursor: 'pointer', textDecoration: 'none' }}>
+        <div className={'pointer'} onClick={() => navigate(user && user.isAuth ? 'index' : 'acceso')} style={{ textDecoration: 'none' }}>
             <h3 style={{
                 backgroundColor: 'lightgray',
                 color: generalBlue,
