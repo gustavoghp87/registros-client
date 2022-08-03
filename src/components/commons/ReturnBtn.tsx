@@ -9,23 +9,22 @@ import { generalBlue, typeRootState } from '../../models'
 export const ReturnBtn = () => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const navigate: NavigateFunction = useNavigate()
     const location: Location = useLocation()
+    const navigate: NavigateFunction = useNavigate()
     const [show, setShow] = useState<boolean>(false)
 
     useEffect(() => {
-        console.log(location)
-        
-        if (window.location.pathname === '/index') setShow(true)  // useLocation
-        else if (window.location.pathname.split('/')[1] === 'territorios') setShow(true)
-        else if (window.location.pathname.split('/')[1] === 'estadisticas') setShow(true)
-        else if (window.location.pathname.split('/')[1] === 'usuario') setShow(true)
-        else if (window.location.pathname.split('/')[1] === 'admins') setShow(true)
-        else if (window.location.pathname.split('/')[1] === 'celulares-admins') setShow(true)
-        else if (window.location.pathname.split('/')[1] === 'celulares') setShow(true)
-        else if (window.location.pathname.split('/')[1] === 'logs') setShow(true)
-        else if (window.location.pathname.split('/')[1] === 'casa-en-casa') setShow(true)
-    }, [])
+        if (location.pathname === '/index' ||
+            location.pathname.split('/')[1] === 'admins' ||
+            location.pathname.split('/')[1] === 'casa-en-casa' ||
+            location.pathname.split('/')[1] === 'celulares' ||
+            location.pathname.split('/')[1] === 'celulares-admins' ||
+            location.pathname.split('/')[1] === 'estadisticas' ||
+            location.pathname.split('/')[1] === 'logs' ||
+            location.pathname.split('/')[1] === 'usuario' ||
+            location.pathname.split('/')[1] === 'territorios'
+        ) setShow(true)
+    }, [location.pathname])
     
     return (<>
         {show &&

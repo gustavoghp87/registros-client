@@ -29,7 +29,7 @@ export const WarningToaster = (props: any) => {
                 style={{
                     marginLeft: isMobile ? '10px' : '0',
                     maxWidth: '420px',
-                    width: isMobile ? undefined : '380px',
+                    width: isMobile ? '99%' : '380px',
                     zIndex: 3
                 }}
             >

@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,12 +27,6 @@ export const NavBar = () => {
         dispatch(logout())
         navigate('/acceso')
     }
-
-    useEffect(() => {
-        document.getElementById('responsive-navbar-nav')?.addEventListener('click', () => {
-            (Array.from(document.getElementsByClassName('navbar-toggler'))[0] as HTMLElement).click()
-        })
-    }, [])
     
     return (
         <Navbar style={{ backgroundColor: generalBlue }} collapseOnSelect expand={'lg'}>
@@ -46,7 +39,7 @@ export const NavBar = () => {
 
                 <Navbar.Toggle />
                 
-                <Navbar.Collapse id={"responsive-navbar-nav"}>
+                <Navbar.Collapse>
                     <Nav className={'me-auto'}>
                         {user && user.isAuth ?
                             <>

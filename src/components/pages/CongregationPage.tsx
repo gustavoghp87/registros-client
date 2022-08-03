@@ -10,7 +10,7 @@ export const CongregationPage = () => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const [currentItem, setCurrentItem] = useState<typeCongregationItem>({ title: "", ids: []})
+    const [currentItem, setCurrentItem] = useState<typeCongregationItem>({ title: "", ids: [] })
     const [currentItemNumber, setCurrentItemNumber] = useState<number>(1)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [items, setItems] = useState<typeCongregationItem[]>([])
@@ -34,7 +34,7 @@ export const CongregationPage = () => {
         else if (currentItemNumber === 6) setCurrentItem(items[5])
     }, [currentItemNumber, items])
 
-    if (!items) return (<Loading mt={24} />)
+    if (!items || !items.length) return (<Loading mt={24} />)
 
     return (
         <div className={'row w-100'}>
