@@ -3,7 +3,7 @@ import { Card, Form, FloatingLabel } from 'react-bootstrap'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { H2 } from '../commons'
-import { refreshUser, setValuesAndOpenAlertModalReducer } from '../../store'
+import { refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { changePswService, getUserByTokenService, logoutAllService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser } from '../../models'
 
@@ -68,7 +68,7 @@ export const UserPage = () => {
 
     useEffect(() => {
         getUserByTokenService().then((user: typeUser|null) => {
-            if (user) dispatch(refreshUser(user))
+            if (user) dispatch(refreshUserReducer(user))
         })
     }, [dispatch])
 

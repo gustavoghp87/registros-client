@@ -2,14 +2,16 @@ import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeHousehold
 
 type typeHeaders = {
     'Accept': string
-    'Authorization': string
     'Content-Type': string
+    'x-Authorization': string
+    'x-Recaptcha-Token': string
 }
 
 export const headers: typeHeaders = {
     'Accept': 'application/json',
-    'Authorization': localStorage.getItem('token') || "",
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'x-Authorization': localStorage.getItem('token') || "",
+    'x-Recaptcha-Token': localStorage.getItem('recaptchaToken') || ""
 }
 
 export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {

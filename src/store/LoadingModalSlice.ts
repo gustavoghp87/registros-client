@@ -4,13 +4,15 @@ export const loadingModalSlice = createSlice({
     name: 'loadingModal',
     initialState: { showingLoadingModal: false },
     reducers: {
-        hideLoadingModal: () => {
-            return { showingLoadingModal: false }
+        hideLoadingModalReducer: (state) => {
+            state.showingLoadingModal = false
+            return state
         },
-        showLoadingModal: () => {
-            return { showingLoadingModal: true }
+        showLoadingModalReducer: (state) => {
+            state.showingLoadingModal = true
+            return state
         }
     }
 })
 
-export const { hideLoadingModal, showLoadingModal } = loadingModalSlice.actions
+export const { hideLoadingModalReducer, showLoadingModalReducer } = loadingModalSlice.actions

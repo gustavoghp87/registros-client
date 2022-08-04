@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Card, Pagination, DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
-import { refreshUser, setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
+import { refreshUserReducer, setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
 import { assignTerritoryService, changePswOtherUserService, editUserService, getUserByTokenService, getUsersService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
 
@@ -64,7 +64,7 @@ export const AdminsPage = () => {
 
     const refreshMyUserHandler = (user_id: string): void => {
         if (user && user._id === user_id) {
-            getUserByTokenService().then((user0: typeUser|null) => user0 ? dispatch(refreshUser(user)) : null)
+            getUserByTokenService().then((user0: typeUser|null) => user0 ? dispatch(refreshUserReducer(user)) : null)
         }
     }
     
@@ -151,25 +151,25 @@ export const AdminsPage = () => {
             {!users && <Loading />}
 
             {users && !!users.length &&
-            <>
-                <h2 className={`text-center mb-3 ${isDarkMode ? 'text-white' : ''}`}> Viendo {viendo} </h2>
+                <>
+                    <h2 className={`text-center mb-3 ${isDarkMode ? 'text-white' : ''}`}> Viendo {viendo} </h2>
                 
-                <DropdownButton
-                    as={ButtonGroup}
-                    className={'d-block mx-auto text-center'}
-                    id={"adminsPageDropdownBtn"}
-                    title={`Viendo ${viendo}`}
-                >
-                    <Dropdown.Item eventKey={"0"} onClick={() => setViendo("todos")} active={viendo === "todos"}> Ver todos </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item eventKey={"1"} onClick={() => setViendo("Grupo 1")} active={viendo === "Grupo 1"}> Grupo 1 </Dropdown.Item>
-                    <Dropdown.Item eventKey={"2"} onClick={() => setViendo("Grupo 2")} active={viendo === "Grupo 2"}> Grupo 2 </Dropdown.Item>
-                    <Dropdown.Item eventKey={"3"} onClick={() => setViendo("Grupo 3")} active={viendo === "Grupo 3"}> Grupo 3 </Dropdown.Item>
-                    <Dropdown.Item eventKey={"4"} onClick={() => setViendo("Grupo 4")} active={viendo === "Grupo 4"}> Grupo 4 </Dropdown.Item>
-                    <Dropdown.Item eventKey={"5"} onClick={() => setViendo("Grupo 5")} active={viendo === "Grupo 5"}> Grupo 5 </Dropdown.Item>
-                    <Dropdown.Item eventKey={"6"} onClick={() => setViendo("Grupo 6")} active={viendo === "Grupo 6"}> Grupo 6 </Dropdown.Item>
-                </DropdownButton>
-            </>
+                    <DropdownButton
+                        as={ButtonGroup}
+                        className={'d-block mx-auto text-center'}
+                        id={"adminsPageDropdownBtn"}
+                        title={`Viendo ${viendo}`}
+                    >
+                        <Dropdown.Item eventKey={"0"} onClick={() => setViendo("todos")} active={viendo === "todos"}> Ver todos </Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item eventKey={"1"} onClick={() => setViendo("Grupo 1")} active={viendo === "Grupo 1"}> Grupo 1 </Dropdown.Item>
+                        <Dropdown.Item eventKey={"2"} onClick={() => setViendo("Grupo 2")} active={viendo === "Grupo 2"}> Grupo 2 </Dropdown.Item>
+                        <Dropdown.Item eventKey={"3"} onClick={() => setViendo("Grupo 3")} active={viendo === "Grupo 3"}> Grupo 3 </Dropdown.Item>
+                        <Dropdown.Item eventKey={"4"} onClick={() => setViendo("Grupo 4")} active={viendo === "Grupo 4"}> Grupo 4 </Dropdown.Item>
+                        <Dropdown.Item eventKey={"5"} onClick={() => setViendo("Grupo 5")} active={viendo === "Grupo 5"}> Grupo 5 </Dropdown.Item>
+                        <Dropdown.Item eventKey={"6"} onClick={() => setViendo("Grupo 6")} active={viendo === "Grupo 6"}> Grupo 6 </Dropdown.Item>
+                    </DropdownButton>
+                </>
             }
 
             {users && !!users.length && users.map((user: typeUser, index: number) => (

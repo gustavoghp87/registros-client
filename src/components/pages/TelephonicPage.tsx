@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Col0a, Col0b, Col1, Col2, Col3, Col4, FewHouseholdsWarning, LocalStatistics, MapModal } from '../telephonic-components'
 import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
-import { hideLoadingModal, setValuesAndOpenAlertModalReducer, showLoadingModal } from '../../store'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 import { getHouseholdsByTerritoryService, modifyHouseholdService, markTerritoryAsFinishedService, getHouseholdVariant } from '../../services'
 import { householdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
 import { noPredicado } from '../../models'
@@ -64,19 +64,19 @@ export const TelephonicPage = () => {
 
     const openTerritoryHandler = async (): Promise<void> => {
         if (!territory) return
-        dispatch(showLoadingModal())
+        dispatch(showLoadingModalReducer())
         const success: boolean = await markTerritoryAsFinishedService(territory, false)
-        dispatch(hideLoadingModal())
+        dispatch(hideLoadingModalReducer())
         if (!success) openAlertModalHandler("Algo falló", "")
         window.location.reload()
     }
 
     const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
-        dispatch(showLoadingModal())
+        dispatch(showLoadingModalReducer())
         noAbonado = !!noAbonado
         asignado = !!asignado
         const updatedHousehold: typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
-        dispatch(hideLoadingModal())
+        dispatch(hideLoadingModalReducer())
         if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "")
         if (!socket || !socket.connected || !user)
             return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet")

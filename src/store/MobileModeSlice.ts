@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { breakingPoint } from '../models'
 
 type typeMobileModeState = {
     isMobile: boolean
@@ -6,7 +7,7 @@ type typeMobileModeState = {
 
 export const mobileModeSlice = createSlice({
     name: 'mobileMode',
-    initialState: { isMobile: window.screen.width < 992 },
+    initialState: { isMobile: window.screen.width < breakingPoint },
     reducers: {
         changeMobileModeReducer: (state, action: PayloadAction<typeMobileModeState>) => {
             state = { isMobile: action.payload.isMobile }

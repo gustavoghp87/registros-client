@@ -1,5 +1,5 @@
 import { SERVER } from '../config'
-import { getDarkModeFromLSService, getTokenFromLSService, headers, removeTokenFromLSService, removeUserFromLSService, setDarkModeFromLSService, setTokenFromLSService } from './'
+import { getDarkModeFromLSService, getTokenFromLSService, headers, removeTokenFromLSService, setDarkModeFromLSService, setTokenFromLSService } from './'
 import { typeResponseData, typeUser } from '../models'
 
 const base: string = `${SERVER}/api/user`
@@ -10,7 +10,6 @@ export const setDarkModeService = (darkMode: boolean): void => setDarkModeFromLS
 export const getTokenService = (): string|null => getTokenFromLSService()
 export const setTokenService = (newToken: string): void => setTokenFromLSService(newToken)
 export const clearTokenService = (): void => removeTokenFromLSService()
-const clearUserService = (): void => removeUserFromLSService()
 
 export const assignTerritoryService = async (user_id: string, asignar: number|null, desasignar: number|null, all: boolean|null): Promise<typeUser|null> => {
     if (!getTokenService()) return null

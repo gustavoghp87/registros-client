@@ -3,7 +3,7 @@ import { NavigateFunction, useNavigate } from 'react-router'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormLayout, Loading } from '../commons'
-import { refreshUser, setValuesAndOpenAlertModalReducer } from '../../store'
+import { refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { getFailingEmailFromLSService, setFailingEmailFromLSService } from '../../services'
 import { getUserByTokenService, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
 import { typeAppDispatch, typeResponseData, typeRootState, typeUser } from '../../models'
@@ -63,7 +63,7 @@ export const LoginPage = () => {
         if (response && response.success && response.newToken) {
             const user0: typeUser|null = await getUserByTokenService(response.newToken)
             if (user0) {
-                dispatch(refreshUser(user0))
+                dispatch(refreshUserReducer(user0))
                 return
             }
             openAlertModalHandler("Problemas", "Refrescar la página")
@@ -92,16 +92,16 @@ export const LoginPage = () => {
             if (!recaptchaToken)
                 return openAlertModalHandler("Problemas", "Se refrescará la página por un problema", () => window.location.reload())
             const data: typeResponseData|null = await registerUserService(email, password, group, recaptchaToken)
-            if (data) {
-                if (data.recaptchaFails) {
-                    openAlertModalHandler("Problemas", "Se refrescará la página por un problema", () => window.location.reload())
-                } else if (data.userExists) {
-                    openAlertModalHandler("Problemas", "Ya existe un usuario con ese correo", () => navigate('/acceso'))
-                } else if (data.success) {
-                    openAlertModalHandler("Registro exitoso", `Resta ser habilitado por el grupo de predicación. ${email}`, () => navigate('/'))
-                }
+            if (!data)
+                return openAlertModalHandler("Problemas", "Algo salió mal", () => window.location.reload())
+            if (data.recaptchaFails) {
+                openAlertModalHandler("Problemas", "Se refrescará la página por un problema", () => window.location.reload())
+            } else if (data.userExists) {
+                openAlertModalHandler("Problemas", "Ya existe un usuario con ese correo", () => navigate('/acceso'))
+            } else if (data.success) {
+                openAlertModalHandler("Registro exitoso", `Resta ser habilitado por el grupo de predicación. ${email}`, () => navigate('/'))
             } else {
-                openAlertModalHandler("Problemas", "Algo salió mal", () => window.location.reload())
+                openAlertModalHandler("Respuesta desconocida", `Algo falló. ${email}`, () => navigate('/'))
             }
         })
     }

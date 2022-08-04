@@ -3,7 +3,7 @@ import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Col, Row } from 'react-bootstrap'
 import { H2, WarningToaster } from '../commons'
-import { hideLoadingModal, setValuesAndOpenAlertModalReducer, showLoadingModal } from '../../store'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 import { editCampaignPackService, getCampaignPackService, closeCampaignPackService, putHyphens } from '../../services'
 import { typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
 
@@ -40,7 +40,7 @@ export const CampaignPage = () => {
     }
 
     const editCampaignPackHandler = (phoneNumber: number, checked: boolean): void => {
-        dispatch(showLoadingModal())
+        dispatch(showLoadingModalReducer())
         let areThere49: boolean = false
         if (campaignPack?.llamados?.length === 49) areThere49 = true
         editCampaignPackService(phoneNumber, checked, id).then((success: boolean) => {
@@ -79,7 +79,7 @@ export const CampaignPage = () => {
     }
 
     const refreshHandler = useCallback((): void => {
-        dispatch(showLoadingModal())
+        dispatch(showLoadingModalReducer())
         if (id) getCampaignPackService(id).then((campaignPack: typeCampaignPack|null) => {
             if (!campaignPack || campaignPack.terminado || campaignPack.llamados?.length === 50) {
                 return navigate('/index')
@@ -93,7 +93,7 @@ export const CampaignPage = () => {
             }
             setPhoneNumbers(phones)
         })
-        dispatch(hideLoadingModal())
+        dispatch(hideLoadingModalReducer())
     }, [dispatch, id, navigate])
 
     const closeWarningToaster = (): void => setShowToast(false)

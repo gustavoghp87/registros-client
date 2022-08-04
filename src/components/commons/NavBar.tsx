@@ -1,7 +1,7 @@
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout, setValuesAndOpenAlertModalReducer } from '../../store'
+import { logoutReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { generalBlue, typeAppDispatch, typeRootState } from '../../models'
 
 export const NavBar = () => {
@@ -24,7 +24,7 @@ export const NavBar = () => {
     }
 
     const logoutHandler = () => {
-        dispatch(logout())
+        dispatch(logoutReducer())
         navigate('/acceso')
     }
     
