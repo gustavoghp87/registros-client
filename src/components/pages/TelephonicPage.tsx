@@ -200,6 +200,7 @@ export const TelephonicPage = () => {
 
             <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
                 <FewHouseholdsWarning
+                    households={households}
                     territory={territory}
                 />
 
