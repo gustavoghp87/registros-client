@@ -7,7 +7,7 @@ import { typeLog, typeLogsObj, typeRootState } from '../../models'
 
 type typeDoubleArray = [typeLog[], boolean, React.Dispatch<React.SetStateAction<boolean>>, string] | []
 
-export const LogsPage = () => {
+export const Logs = () => {
     
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
@@ -22,13 +22,21 @@ export const LogsPage = () => {
     const [showPreaching, setShowPreaching] = useState<boolean>(false)
     const [showEmailErrors, setShowEmailErrors] = useState<boolean>(false)
     const [showErrors, setShowErrors] = useState<boolean>(false)
+
     const setShowCampaignAssignmentsHandler = (): void => setShowCampaignAssignments(!showCampaignAssignments)
+    
     const setShowCampaignFinishingHandler = (): void => setShowCampaignFinishing(!showCampaignFinishing)
+    
     const setShowLoginsHandler = (): void => setShowLogins(!showLogins)
+    
     const setShowUserChangesHandler = (): void => setShowUserChanges(!showUserChanges)
+    
     const setShowStateChangesHandler = (): void => setShowStateChanges(!showStateChanges)
+    
     const setShowPreachingHandler = (): void => setShowPreaching(!showPreaching)
+    
     const setShowEmailErrorsHandler = (): void => setShowEmailErrors(!showEmailErrors)
+    
     const setShowErrorsHandler = (): void => setShowErrors(!showErrors)
 
     const showedLogs: typeDoubleArray[]|[] = logsPackage ? [
@@ -44,16 +52,15 @@ export const LogsPage = () => {
     ] : []
 
     useEffect(() => {
-        if (!logsPackage) getAllLogsService().then((logsObject: typeLogsObj|null) => {
+        getAllLogsService().then((logsObject: typeLogsObj|null) => {
             if (logsObject) setLogsPackage(logsObject)
         })
-    }, [logsPackage])
+        return () => setLogsPackage(undefined)
+    }, [])
 
     return (
     <>
-        <H2 title={"LOGS DE LA APLICACIÓN"} />
-
-        <br /> <br /> <br />
+        <H2 title={"LOGS DE LA APLICACIÓN"} mb={'70px'} />
 
         {!logsPackage && <> <Loading /> </>}
 
@@ -76,15 +83,15 @@ export const LogsPage = () => {
                         </button>
                     </Card.Header>
                     <br />
-                    <ListGroup variant={'flush'} className={show ? '' : 'd-none'}>
-                        {logs && !!logs.length && logs.map((log: typeLog, index: number) =>
-                            <div key={index}>
-                                <ListGroup.Item className={isDarkMode ? 'bg-dark text-white' : ''}>
+                    {show &&
+                        <ListGroup variant={'flush'}>
+                            {logs && !!logs.length && logs.map((log: typeLog, index: number) =>
+                                <ListGroup.Item className={isDarkMode ? 'bg-dark text-white' : ''} key={index}>
                                     {log.logText}
                                 </ListGroup.Item>
-                            </div>
-                        )}
-                    </ListGroup>
+                            )}
+                        </ListGroup>
+                    }
                 </Card>
             )
         })}

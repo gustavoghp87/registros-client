@@ -7,19 +7,22 @@ import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackBy
 import { noAsignado, typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
 import { getUsersService } from '../../services/userServices'
 
-export const CampaignAdminsPage = () => {
+export const Campaign = (props: any) => {
     
     const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const setIsLoading: Function = props.setIsLoading
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
     const [showFiltered, setShowFiltered] = useState(false)
     const [users, setUsers] = useState<typeUser[]>()
     let id: number = 0
 
     const refreshHandler = (): void => {
+        setIsLoading(true)
         getCampaignPacksService().then((campaignPacks: typeCampaignPack[]|null) => {
+            setIsLoading(false)
             if (campaignPacks) setCampaignPacks(campaignPacks)
         })
     }
@@ -44,21 +47,29 @@ export const CampaignAdminsPage = () => {
     }
 
     const closeCampaignPackHandler = async () => {
-        if (id) closeCampaignPackService(id).then((success: boolean) => {
+        if (!id) return
+        setIsLoading(true)
+        closeCampaignPackService(id).then((success: boolean) => {
+            setIsLoading(false)
             if (!success) return openAlertModalHandler("Algo falló", "")
             refreshHandler()
         })
     }
 
     const assignCampaignPackByEmailHandler = async (id: number, email: string) => {
-        if (id && email) assignCampaignPackByEmailService(id, email).then((success: boolean) => {
+        if (!id || !email) return
+        setIsLoading(true)
+        assignCampaignPackByEmailService(id, email).then((success: boolean) => {
+            setIsLoading(false)
             if (!success) return openAlertModalHandler("Algo falló", "")
             refreshHandler()
         })
     }
 
     const enableAccesibilityModeHandler = (id: number, accessible: boolean): void => {
+        setIsLoading(true)
         enableAccesibilityModeService(id, accessible).then((success: boolean) => {
+            setIsLoading(false)
             if (!success) return openAlertModalHandler("Algo falló", "")
             refreshHandler()
         })
@@ -66,12 +77,13 @@ export const CampaignAdminsPage = () => {
     
     useEffect(() => {
         getUsersService().then((users: typeUser[]|null) => {
-            if (users) {
-                users.sort((a: typeUser, b: typeUser) => a.email.localeCompare(b.email))
-                setUsers(users)
-            }
+            if (!users) return
+            users.sort((a: typeUser, b: typeUser) => a.email.localeCompare(b.email))
+            setUsers(users)
         })
-        refreshHandler()
+        getCampaignPacksService().then((campaignPacks: typeCampaignPack[]|null) => {
+            if (campaignPacks) setCampaignPacks(campaignPacks)
+        })
     }, [])
 
     return (

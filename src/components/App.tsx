@@ -57,6 +57,7 @@ export const App = () => {
                         <Route path={'/privacidad'} element={ <Pages.PrivacyPolicyPage /> } />
                         <Route path={'/recovery/:id'} element={ <Pages.RecoveryPage /> } />
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
+                        <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />
 
                         {(!user || !user.isAuth) ?
                             <Route path={'/acceso'} element={<Pages.LoginPage />} />
@@ -71,11 +72,8 @@ export const App = () => {
 
                         {user && user.isAdmin && <>
                             <Route path={'/admins'} element={<Pages.AdminsPage />} />
-                            <Route path={'/celulares-admins'} element={<Pages.CampaignAdminsPage />} />
                             <Route path={'/casa-en-casa/:territory'} element={<Pages.HouseToHousePage />} />
                             <Route path={'/gmail'} element={<Pages.GmailTokensPage />} />
-                            <Route path={'/logs'} element={<Pages.LogsPage />} />
-                            <Route path={'/estadisticas'} element={<Pages.StatisticsPage />} />
                         </>}
 
                         <Route path={'/*'} element={ <Navigate to={'/'} replace /> } />

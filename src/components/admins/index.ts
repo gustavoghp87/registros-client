@@ -1,2 +1,5 @@
+export { Campaign } from './Campaign'
+export { Logs } from './Logs'
+export { Statistics } from './Statistics'
 export { Users } from './Users'
 export { UsersCard } from './UsersCard'

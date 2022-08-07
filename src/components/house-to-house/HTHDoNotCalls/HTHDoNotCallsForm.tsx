@@ -16,7 +16,7 @@ export const HTHDoNotCallsForm = (props: any) => {
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const territory: typeTerritoryNumber = props.territory
     const [streetNumber, setStreetNumber] = useState<number>(0)
-    const [doorBell, setDoorBell] = useState<string>('')
+    const [doorBell, setDoorBell] = useState<string>("")
     const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
 
     const submitHandler = (e: Event): void => {
@@ -25,7 +25,7 @@ export const HTHDoNotCallsForm = (props: any) => {
         const newDoNotCall: typeDoNotCall = {
             creator: user.email,
             date,
-            doorBell,
+            doorBell: doorBell.trim(),
             id: +new Date(),
             streetNumber
         }

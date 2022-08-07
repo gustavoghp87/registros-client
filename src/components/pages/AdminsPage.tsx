@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Users } from '../admins'
+import { Campaign, Logs, Statistics, Users } from '../admins'
 import { H2 } from '../commons'
 import { hideLoadingModalReducer, showLoadingModalReducer } from '../../store'
 import { typeAppDispatch, typeRootState } from '../../models'
@@ -25,32 +25,32 @@ export const AdminsPage = () => {
         <>
             <H2 title={"ADMINISTRADORES"} />
 
-            <button className={'btn btn-general-red btn-size12 d-block mx-auto mt-5 mb-0'}
+            <button className={`btn ${currentSection === 'users' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-5 mb-0`}
                 onClick={() => setCurrentSection('users')}
                 style={{ width: '300px' }}
             >
-                Usuarios
+                {currentSection === 'users' ? "Usuarios" : "Ir a Usuarios"}
             </button>
 
-            <button className={'btn btn-general-red btn-size12 d-block mx-auto mt-4 mb-0'}
+            <button className={`btn ${currentSection === 'statistics' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-0`}
                 onClick={() => setCurrentSection('statistics')}
                 style={{ width: '300px' }}
             >
-                Ir a Estadísticas de Telefónica
+                {currentSection === 'statistics' ? "Estadísticas de Telefónica" : "Ir a Estadísticas de Telefónica"}
             </button>
 
-            <button className={'btn btn-general-red btn-size12 d-block mx-auto mt-4 mb-0'}
+            <button className={`btn ${currentSection === 'logs' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-0`}
                 onClick={() => setCurrentSection('logs')}
                 style={{ width: '300px' }}
             >
-                Ir a Logs de la Aplicación
+                {currentSection === 'logs' ? "Logs de la Aplicación" : "Ir a Logs de la Aplicación"}
             </button>
 
-            <button className={'btn btn-general-red btn-size12 d-block mx-auto mt-4 mb-5'}
+            <button className={`btn ${currentSection === 'campaign' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-5`}
                 onClick={() => setCurrentSection('campaign')}
                 style={{ width: '300px' }}
             >
-                Ir a Campaña Celulares 2022
+                {currentSection === 'campaign' ? "Campaña Celulares 2022" : "Ir a Campaña Celulares 2022"}
             </button>
 
 
@@ -58,27 +58,19 @@ export const AdminsPage = () => {
 
 
             {currentSection === 'users' &&
-                <Users
-                    setIsLoading={setIsLoading}
-                />
+                <Users setIsLoading={setIsLoading} />
             }
 
             {currentSection === 'statistics' &&
-                <Users
-                    setIsLoading={setIsLoading}
-                />
+                <Statistics />
             }
 
             {currentSection === 'logs' &&
-                <Users
-                    setIsLoading={setIsLoading}
-                />
+                <Logs />
             }
 
             {currentSection === 'campaign' &&
-                <Users
-                    setIsLoading={setIsLoading}
-                />
+                <Campaign />
             }
 
         </>

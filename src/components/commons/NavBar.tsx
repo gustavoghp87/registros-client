@@ -75,21 +75,12 @@ export const NavBar = () => {
                         }
 
                         {user && user.isAdmin &&
-                            <>
-                                <Nav.Link
-                                    onClick={() => navigateHandler('/estadisticas')}
-                                    style={{ color, margin: isMobile ? '8px 0' : '0' }}
-                                >
-                                    &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
-                                </Nav.Link>
-
-                                <Nav.Link
-                                    onClick={() => navigateHandler('/admins')}
-                                    style={{ color, margin: isMobile ? '8px 0' : '0' }}
-                                >
-                                    &nbsp; &nbsp;Administradores&nbsp; &nbsp;
-                                </Nav.Link>
-                            </>
+                            <Nav.Link
+                                onClick={() => navigateHandler('/admins')}
+                                style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                            >
+                                &nbsp; &nbsp;Administradores&nbsp; &nbsp;
+                            </Nav.Link>
                         }
                     </Nav>
 

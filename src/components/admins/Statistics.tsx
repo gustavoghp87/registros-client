@@ -6,7 +6,7 @@ import { H2, Loading } from '../commons'
 import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../../services'
 import { generalBlue, typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../../models'
 
-export const StatisticsPage = () => {
+export const Statistics = () => {
 
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
@@ -19,15 +19,14 @@ export const StatisticsPage = () => {
     const [states, setStates] = useState<typeStateOfTerritory[]>([])
     
     const retrieveLocalStats = async (): Promise<void> => {
-        setLoading(true);
-        setShowBtn(false);
+        setLoading(true)
+        setShowBtn(false)
         const allLocalStatistics: typeLocalStatistic[]|null = await getAllLocalStatisticsService()
-        if (allLocalStatistics) {
-            setLocalStatisticsArray(allLocalStatistics)
-            setLoading(false)
-            const states1: typeStateOfTerritory[]|null = await getStateOfTerritoriesService()
-            if (states1) setStates(states1)
-        }
+        if (!allLocalStatistics) return
+        setLocalStatisticsArray(allLocalStatistics)
+        setLoading(false)
+        const states1: typeStateOfTerritory[]|null = await getStateOfTerritoriesService()
+        if (states1) setStates(states1)
     }
 
     useEffect(() => {

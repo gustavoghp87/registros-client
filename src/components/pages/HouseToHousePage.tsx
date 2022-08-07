@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
+import { io, Socket } from 'socket.io-client'
 import { HTHDoNotCalls, HTHMap, HTHObservations } from '../house-to-house'
-import { H2, Loading } from '../commons'
+import { H2, Loading, WarningToaster } from '../commons'
+import { SERVER } from '../../config'
 import { getHTHStreetsByTerritoryService, getHTHTerritoryService, setHTHIsFinishedService } from '../../services'
 import { generalBlue, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
+
+const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const HouseToHousePage = () => {
     
@@ -41,9 +45,9 @@ export const HouseToHousePage = () => {
 
     const setHTHIsFinishedHandler = async (): Promise<void> => {
         if (!currentFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
-        setHTHIsFinishedService(!currentFace.isFinished, territory, currentFace.block, currentFace.face, currentFace.id)
-        .then((success: boolean) => {
-            if (success) refreshHTHTerritoryHandler()
+        setHTHIsFinishedService(!currentFace.isFinished, territory, currentFace.block, currentFace.face, currentFace.id).then((success: boolean) => {
+            if (!success) return alert("Algo falló")
+            refreshHTHTerritoryHandler()
         })
     }
 
@@ -75,13 +79,29 @@ export const HouseToHousePage = () => {
         })
         return () => {
             setCurrentFace(undefined)
-            //setTerritoryHTH(undefined)
+            setTerritoryHTH(undefined)
         }
     }, [territory, loading, user, currentFace])
+
+    useEffect(() => {
+        socket.on('hth-change', (something: any) => {
+            console.log(something)
+        })
+        return () => { socket.off('hth-change') }
+    }, [])
 
     return (
     <>
         <H2 title={"CASA EN CASA"} />
+
+        {territoryHTH && (!socket || !socket.connected) &&
+            <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
+                <WarningToaster
+                    bodyText={"Refrescar la página y verificar que hay internet"}
+                    headerText={<strong>Hay un problema de conexión</strong>}
+                />
+            </div>
+        }
 
         <h1 className={`text-center mt-4 ${isDarkMode ? 'text-white' : ''}`} style={{ fontWeight: 'bolder' }}>
             SELECCIONAR CARA DE MANZANA

@@ -22,14 +22,13 @@ export const HTHObservationsForm = (props: any) => {
     
     const submitHandler = (e: Event) => {
         e.preventDefault()
-        if (!text || !user) return
+        if (!text || !text.trim() || !user) return
         const newObservation: typeObservation = {
             creator: user.email,
             date,
             id: idEdit ? idEdit : +new Date(),
-            text
+            text: text.trim()
         }
-        console.log("New observation:", newObservation)
         
         if (!editText) {
             addHTHObservationService(newObservation, territory, currentFace.block, currentFace.face, currentFace.id).then((success: boolean) => {
