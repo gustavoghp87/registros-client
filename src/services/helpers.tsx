@@ -64,12 +64,16 @@ export const adjustModalStyles = (): NodeJS.Timeout => setTimeout((): void => {
 
 export const editInfoWindowsStyles = (): NodeJS.Timeout => setTimeout((): void => {
     const elements = document.getElementsByClassName('gm-ui-hover-effect') as HTMLCollectionOf<HTMLElement>
+    const v = document.getElementsByClassName('gm-style-iw-tc') as HTMLCollectionOf<HTMLElement>
     const w = document.getElementsByClassName('gm-style-iw-a') as HTMLCollectionOf<HTMLElement>
     const x = document.getElementsByClassName('gm-style-iw gm-style-iw-c') as HTMLCollectionOf<HTMLElement>
     const y = document.getElementsByClassName('gm-style-iw-d') as HTMLCollectionOf<HTMLElement>
     const z = document.getElementsByClassName('gm-style-iw-t') as HTMLCollectionOf<HTMLElement>
     for (let i = 0; i < elements.length; i++) {
         elements[i].classList.add('d-none')
+    }
+    for (let i = 0; i < v.length; i++) {
+        v[i].classList.remove('gm-style-iw-tc')
     }
     for (let i = 0; i < x.length; i++) {
         x[i].style.backgroundColor = 'transparent'

@@ -11,6 +11,8 @@ import { getHouseholdsByTerritoryService, modifyHouseholdService, markTerritoryA
 import { householdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
 import { noPredicado } from '../../models'
 
+const socket: Socket = io(SERVER, { withCredentials: true })
+
 export const TelephonicPage = () => {
 
     const territory: typeTerritoryNumber|undefined = useParams<any>().territory as typeTerritoryNumber
@@ -34,7 +36,6 @@ export const TelephonicPage = () => {
     const [showBottomBtns, setShowBottomBtns] = useState<boolean>(true)
     const [showMap, setShowMap] = useState<boolean>(false)
     const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
-    const [socket, setSocket] = useState<Socket>()
     const [stateOfTerritory, setStateOfTerritory] = useState<typeStateOfTerritory>()
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string>()
 
@@ -166,10 +167,7 @@ export const TelephonicPage = () => {
     }, [brought, currentBlock, households, isShowingAllAvailable, isShowingAllStates, territory])
 
     useEffect(() => {
-        if (!user || !territory) return
-        const newSocket: Socket = io(SERVER, { withCredentials: true })
-        newSocket.connect()
-        newSocket.on(householdChangeString, (updatedHousehold: typeHousehold, userEmail: string) => {
+        socket.on(householdChangeString, (updatedHousehold: typeHousehold, userEmail: string) => {
             if (!updatedHousehold || updatedHousehold.territorio !== territory) return
             updatedHousehold.doNotMove = true
             setHouseholds(x => {
@@ -185,9 +183,8 @@ export const TelephonicPage = () => {
                 setUserEmailWarningToaster(userEmail)
             }
         })
-        if (newSocket) setSocket(newSocket)
-        return () => setSocket(undefined)
-    }, [territory, user])
+        return () => { socket.off(householdChangeString) }
+    }, [territory, user.email])
 
     return (
         <>

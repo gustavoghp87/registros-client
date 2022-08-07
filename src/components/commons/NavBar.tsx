@@ -1,8 +1,9 @@
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
-import { useNavigate } from 'react-router'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { generalBlue, typeAppDispatch, typeRootState } from '../../models'
+import { useState } from 'react'
 
 export const NavBar = () => {
 
@@ -11,10 +12,12 @@ export const NavBar = () => {
         user: state.user
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const navigate = useNavigate()
+    const navigate: NavigateFunction = useNavigate()
+    const [expanded, setExpanded] = useState(false)
     const color = '#fbfbfb'
     
     const openLogoutConfirmModal = (): void => {
+        setExpanded(false)
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: "¿Cerrar sesión?",
@@ -27,31 +30,36 @@ export const NavBar = () => {
         dispatch(logoutReducer())
         navigate('/acceso')
     }
+
+    const navigateHandler = (url: string): void => {
+        setExpanded(false)
+        navigate(url)
+    }
     
     return (
-        <Navbar style={{ backgroundColor: generalBlue }} collapseOnSelect expand={'lg'}>
+        <Navbar expanded={expanded} style={{ backgroundColor: generalBlue }} expand={'lg'}>
 
             <Container fluid>
 
-                <Navbar.Brand className={'pointer'} onClick={() => navigate('/')} style={{ color }}>
+                <Navbar.Brand className={'pointer'} onClick={() => navigateHandler('/')} style={{ color }}>
                     &nbsp;&nbsp; INICIO
                 </Navbar.Brand>
 
-                <Navbar.Toggle />
+                <Navbar.Toggle onClick={() => setExpanded(x => !x)} />
                 
                 <Navbar.Collapse>
                     <Nav className={'me-auto'}>
                         {user && user.isAuth ?
                             <>
                                 <Nav.Link
-                                    onClick={() => navigate('/index')}
+                                    onClick={() => navigateHandler('/index')}
                                     style={{ color, margin: isMobile ? '8px 0' : '0' }}
                                 >
                                     &nbsp; &nbsp;Territorios&nbsp; &nbsp;
                                 </Nav.Link>
                                 
                                 <Nav.Link
-                                    onClick={() => navigate('/congregacion')}
+                                    onClick={() => navigateHandler('/congregacion')}
                                     style={{ color, margin: isMobile ? '8px 0' : '0' }}
                                 >
                                     &nbsp; &nbsp;Congregación&nbsp; &nbsp;
@@ -59,7 +67,7 @@ export const NavBar = () => {
                             </>
                             :
                                 <Nav.Link
-                                    onClick={() => navigate('/acceso')}
+                                    onClick={() => navigateHandler('/acceso')}
                                     style={{ color }
                                 }>
                                     &nbsp; &nbsp;Entrar&nbsp; &nbsp;
@@ -69,14 +77,14 @@ export const NavBar = () => {
                         {user && user.isAdmin &&
                             <>
                                 <Nav.Link
-                                    onClick={() => navigate('/estadisticas')}
+                                    onClick={() => navigateHandler('/estadisticas')}
                                     style={{ color, margin: isMobile ? '8px 0' : '0' }}
                                 >
                                     &nbsp; &nbsp;Estadísticas&nbsp; &nbsp;
                                 </Nav.Link>
 
                                 <Nav.Link
-                                    onClick={() => navigate('/admins')}
+                                    onClick={() => navigateHandler('/admins')}
                                     style={{ color, margin: isMobile ? '8px 0' : '0' }}
                                 >
                                     &nbsp; &nbsp;Administradores&nbsp; &nbsp;
@@ -88,7 +96,7 @@ export const NavBar = () => {
                     {user && user.isAuth &&
                         <Nav >
                             <Nav.Link className={''}
-                                onClick={() => navigate('/usuario')}
+                                onClick={() => navigateHandler('/usuario')}
                                 style={{
                                     margin: isMobile ? '8px 0' : 0,
                                     paddingLeft:  isMobile ? '13px' : 0
@@ -108,6 +116,7 @@ export const NavBar = () => {
                         </Nav>
                     }
                 </Navbar.Collapse>
+
             </Container>
         </Navbar>
     )

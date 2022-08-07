@@ -80,7 +80,7 @@ export const UserPage = () => {
         <>
             <Card
                 className={`text-center ${isDarkMode ? 'bg-dark text-white' : ''}`}
-                style={{ padding: '25px', margin: '30px auto' }}
+                style={{ margin: '30px auto', maxWidth: '700px', padding: '25px' }}
             >
                 
                 <h1 className={'mt-2'}> {user.email} </h1>
@@ -136,7 +136,7 @@ export const UserPage = () => {
                             label={"Contraseña actual"}
                             className={'mb-3 text-secondary'}
                         >
-                            <Form.Control type={'text'}
+                            <Form.Control type={'password'}
                                 autoFocus
                                 onChange={(event: any) => setPsw(event.target.value)}
                                 placeholder={"Contraseña actual"}
