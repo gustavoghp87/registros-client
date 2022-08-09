@@ -5,16 +5,16 @@ import { typeRootState } from '../../models'
 export const Loading = (props: any) => {
 
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const mb: number = props.mb || 0
-    const mt: number = props.mt || 0
+    const mb: string = props.mb
+    const mt: string = props.mt
     const white: boolean = props.white
     const big: boolean = props.big
 
     return (
         <div className={`text-center ${(isDarkMode || !!white) ? 'text-white' : ''}`}
             style={{
-                marginBottom: `${mb*5}px`,
-                marginTop: `${mt*5}px`
+                marginBottom: mb,
+                marginTop: mt
             }}
         >
             <Spinner animation={'grow'} role={'status'} /> &nbsp; &nbsp;

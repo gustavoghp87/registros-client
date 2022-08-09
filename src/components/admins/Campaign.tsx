@@ -90,6 +90,10 @@ export const Campaign = (props: any) => {
     <>
         <H2 title={"CAMPAÑA CELULARES 2022"} />
 
+        {(!users || !users.length || !campaignPacks || !campaignPacks.length) &&
+            <Loading mt={'50px'} />
+        }
+
         {campaignPacks && !!campaignPacks.length &&
             <button className={`btn ${showFiltered ? 'btn-general-blue' : 'btn-general-red'} d-block mx-auto mt-5`}
                 onClick={() => setShowFiltered(!showFiltered)}
@@ -177,11 +181,6 @@ export const Campaign = (props: any) => {
                 </Card>
                 )
             })}
-
-            {(!users || !users.length || !campaignPacks || !campaignPacks.length) &&
-                <Loading mt={20} />
-            }
-
         </div>
     </>
     )

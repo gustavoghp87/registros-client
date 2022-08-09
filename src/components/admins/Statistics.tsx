@@ -79,7 +79,7 @@ export const Statistics = () => {
 
             </div>
         :
-            <Loading mt={15} mb={2} />
+            <Loading mt={'50px'} />
         }
 
         <br/>
@@ -129,7 +129,7 @@ export const Statistics = () => {
         
         {loading &&
             <>
-                <Loading mt={8} mb={4} />
+                <Loading mt={'40px'} mb={'20px'} />
 
                 <h4 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
                     Esto demora 10 segundos

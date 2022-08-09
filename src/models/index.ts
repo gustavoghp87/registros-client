@@ -4,7 +4,7 @@ export * from './congregation'
 export * from './houseToHouse'
 export * from './httpResponse'
 export * from './log'
-export * from './store'
 export * from './statistic'
 export * from './telephonic'
 export * from './user'
+export * from './store'   // keep at the last

@@ -60,9 +60,9 @@ export const Logs = () => {
 
     return (
     <>
-        <H2 title={"LOGS DE LA APLICACIÓN"} mb={'70px'} />
+        <H2 title={"LOGS DE LA APLICACIÓN"} />
 
-        {!logsPackage && <> <Loading /> </>}
+        {!logsPackage && <Loading mt={'50px'} />}
 
         {logsPackage && showedLogs.map((log: typeDoubleArray, index: number) => {
             if (!log) return (<></>)
@@ -72,7 +72,10 @@ export const Logs = () => {
             const title: string = log[3] ? log[3] : ""
 
             return (
-                <Card key={index} className={`my-4 p-4 ${isDarkMode ? 'bg-dark text-white' : ''} ${logs ? '' : 'd-none'}`}>
+                <Card key={index}
+                    className={`mb-4 p-4 ${isDarkMode ? 'bg-dark text-white' : ''} ${logs ? '' : 'd-none'}`}
+                    style={{ marginTop: '70px' }}
+                >
                     <Card.Header className={'text-center h1 py-4'}>
                         <div className={'mb-3'}> {title} </div>
                         <button className={'btn btn-general-blue'}

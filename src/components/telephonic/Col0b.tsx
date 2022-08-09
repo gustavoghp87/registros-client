@@ -94,7 +94,7 @@ export const Col0b = (props: any) => {
                         variant={isShowingStatistics ? 'danger' : 'dark'}
                     >
                         <div
-                            onClick={() => setIsShowingStatisticsHandler(true)}
+                            onClick={() => setIsShowingStatisticsHandler()}
                             style={{ color: 'white', lineHeight: '40px', padding: '0 15px', textDecoration: 'none' }}
                         >
                             {radios[2]?.name}

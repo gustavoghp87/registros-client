@@ -22,7 +22,7 @@ export const LocalStatistics = (props: any) => {
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const households: typeHousehold[] = props.households
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const stateOfTerritory: typeStateOfTerritory = props.stateOfTerritory
     const [localStatistics, setLocalStatistics] = useState<typeLocalStatistic>()
     const [processedData, setProcessedData] = useState<typeProcessedData>()
@@ -44,20 +44,20 @@ export const LocalStatistics = (props: any) => {
         dispatch(setValuesAndOpenAlertModalReducer({
             showingAlertModal: true,
             mode: 'confirm',
-            title: `¿Resetear Territorio ${territory}?`,
+            title: `¿Resetear Territorio ${territoryNumber}?`,
             message,
             execution: resetNowHandler
         }))
     }
     
     const resetNowHandler = async (): Promise<void> => {
-        if (!territory || !option) return
-        const success: boolean = await resetTerritoryService(territory, option)
+        if (!territoryNumber || !option) return
+        const success: boolean = await resetTerritoryService(territoryNumber, option)
         if (success) window.location.reload()
     }
 
     useEffect(() => {
-        if (territory && households && households.length) {
+        if (territoryNumber && households && households.length) {
             const statistics0: typeLocalStatistic = {
                 count: households.length,
                 countContesto: households.filter(x => x.estado === contesto && !x.noAbonado).length,
@@ -66,7 +66,7 @@ export const LocalStatistics = (props: any) => {
                 countNoLlamar: households.filter(x => x.estado === noLlamar && !x.noAbonado).length,
                 countNoAbonado: households.filter(x => x.noAbonado).length,
                 libres: households.filter(x => x.estado === noPredicado && !x.noAbonado).length,
-                territorio: territory
+                territorio: territoryNumber
             }
             setLocalStatistics(statistics0)
 
@@ -84,118 +84,105 @@ export const LocalStatistics = (props: any) => {
                 predicadas
             })
         }
-    }, [households, territory])
+    }, [households, territoryNumber])
+    
+    if (!localStatistics || !processedData) {
+        return <Loading mt={'40px'} />
+    }
     
     return (
     <>        
-        <H2 title={"ESTADÍSTICAS"} />
+        <H2 title={"ESTADÍSTICAS"} mb={'30px'} />
 
-        {localStatistics && processedData
-        ?
-            <div style={{ margin: isMobile ? '0' : '0 10%' }}>
+        <div style={{ margin: isMobile ? '0' : '0 10%' }}>
+
+            <br/>
+
+            <Card
+                className={`px-5 py-3 ${isMobile ? 'text-center' : ''} ${isDarkMode ? 'bg-dark text-white' : ''}`}
+            >
+
+                <h1 className={'text-center mt-3'}> Generales </h1>
 
                 <br/>
 
-                <Card
-                    className={isDarkMode ? 'bg-dark text-white' : ''}
-                    style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}
-                >
+                <h4>{`Hay ${localStatistics.count} viviendas: ${localStatistics.count - localStatistics.countNoAbonado} abonadas y ${localStatistics.countNoAbonado} no abonadas`} </h4>
 
-                    <h3 className={'text-center mt-3'}>{`Generales`}</h3>
+                <br/>
 
-                    <br/>
+                <h4> Libres para llamar: {localStatistics.libres} <span style={{ fontSize: 21 }}>({(1000 - Math.round(processedData.llamadasRel*10))/10}%)</span> </h4>
 
-                    <h4>{`Hay ${localStatistics.count} viviendas: ${localStatistics.count - localStatistics.countNoAbonado} abonadas y ${localStatistics.countNoAbonado} no abonadas`} </h4>
+                <br/>
 
-                    <br/>
+                <h4> Llamadas: {processedData.llamadas} <span style={{ fontSize: 21 }}>({processedData.llamadasRel}%)</span></h4>
 
-                    <h4> Libres para llamar: {localStatistics.libres} <span style={{ fontSize: 21 }}>({(1000 - Math.round(processedData.llamadasRel*10))/10}%)</span> </h4>
+                <br/>
 
-                    <br/>
+                <hr />
 
-                    <h4> Llamadas: {processedData.llamadas} <span style={{ fontSize: 21 }}>({processedData.llamadasRel}%)</span></h4>
+                <h3 className={'text-center mt-3'}>{`Composición de Llamadas (${processedData.llamadas})`}</h3>
 
-                    <br/>
+                <br/>
 
-                    <hr />
+                <h4>{`No abonados: ${localStatistics.countNoAbonado} viviendas`} </h4>
 
-                    <h3 className={'text-center mt-3'}>{`Composición de Llamadas (${processedData.llamadas})`}</h3>
+                <br/>
 
-                    <br/>
+                <h4>{`No contestó: ${localStatistics.countNoContesto} viviendas`} </h4>
+                
+                <br/>
 
-                    <h4>{`No abonados: ${localStatistics.countNoAbonado} viviendas`} </h4>
+                <h4 className={'mb-3'}>{`Predicadas: ${processedData.predicadas} viviendas`} </h4>
 
-                    <br/>
+                <h4> &nbsp;&nbsp; {`-Contestó: ${localStatistics.countContesto} viviendas`} </h4>
 
-                    <h4>{`No contestó: ${localStatistics.countNoContesto} viviendas`} </h4>
-                    
-                    <br/>
+                <h4> &nbsp;&nbsp; {`-A dejar carta: ${localStatistics.countDejarCarta} viviendas`} </h4>
 
-                    <h4 className={'mb-3'}>{`Predicadas: ${processedData.predicadas} viviendas`} </h4>
+                <h4> &nbsp;&nbsp; {`-No llamar: ${localStatistics.countNoLlamar} viviendas`} </h4>
 
-                    <h4> &nbsp;&nbsp; {`-Contestó: ${localStatistics.countContesto} viviendas`} </h4>
+                {stateOfTerritory && stateOfTerritory.resetDate && !!stateOfTerritory.resetDate.length &&
+                    <div className={'my-4'}>
+                        <hr />
 
-                    <h4> &nbsp;&nbsp; {`-A dejar carta: ${localStatistics.countDejarCarta} viviendas`} </h4>
-
-                    <h4> &nbsp;&nbsp; {`-No llamar: ${localStatistics.countNoLlamar} viviendas`} </h4>
-
-                    {stateOfTerritory && stateOfTerritory.resetDate && !!stateOfTerritory.resetDate.length &&
-                        <>
-                            <hr />
-                            <h3 className={'text-center mt-3'}>{`Reseteos del territorio ${territory}`}</h3>
-                            <br/>
-                        </>
-                    }
-                        
-                    {stateOfTerritory && stateOfTerritory.resetDate && !!stateOfTerritory.resetDate.length &&
-                        stateOfTerritory.resetDate.map((reset: typeResetDate, index: number) =>
+                        <h3 className={'text-center my-4'}>{`Reseteos del territorio ${territoryNumber}`}</h3>
+                
+                        {stateOfTerritory.resetDate.map((reset: typeResetDate, index: number) =>
                             <h4 key={index}>
                                 &nbsp; {`-El ${timeConverter(reset.date.toString(), true)} con la opción ${reset.option}`}
                             </h4>
-                        )
-                    }
+                        )}
+                    </div>
+                }
+            </Card>
 
-                    <br/>
-
-                </Card>
-
-                <div className={'container mt-5'} style={{ maxWidth: '450px' }}>
-                    <button className={'btn btn-general-red btn-block d-block mx-auto mb-4 p-3'}
-                        onClick={() => resetHandler(1)}
-                        style={{ fontSize: '1.1rem' }}
-                    >
-                        Limpiar los de más de 6 meses (menos los no abonados)
-                    </button>
-                    <button className={'btn btn-general-red btn-block d-block mx-auto mb-4 p-3'}
-                        onClick={() => resetHandler(2)}
-                        style={{ fontSize: '1.1rem' }}
-                    >
-                        Limpiar todos (menos los no abonados)
-                    </button>
-                    <button className={'btn btn-general-red btn-block d-block mx-auto mb-4 p-3'}
-                        onClick={() => resetHandler(3)}
-                        style={{ fontSize: '1.1rem' }}
-                    >
-                        Limpiar los de más de 6 meses
-                    </button>
-                    <button className={'btn btn-general-red btn-block d-block mx-auto mb-4 p-3'}
-                        onClick={() => resetHandler(4)}
-                        style={{ fontSize: '1.1rem' }}
-                    >
-                        Limpiar absolutamente todos
-                    </button>
-                </div>
-
+            <div className={'container mt-5'} style={{ maxWidth: '450px' }}>
+                <button className={'btn btn-general-red btn-size12 mb-4 p-3'}
+                    onClick={() => resetHandler(1)}
+                    style={{ width: isMobile ? '100%' : '100%' }}
+                >
+                    Limpiar los de más de 6 meses<br/>menos los no abonados
+                </button>
+                <button className={'btn btn-general-red btn-size12 mb-4 p-3'}
+                    onClick={() => resetHandler(2)}
+                    style={{ width: isMobile ? '100%' : '100%' }}
+                >
+                    Limpiar todos<br/>menos los no abonados
+                </button>
+                <button className={'btn btn-general-red btn-size12 mb-4 p-3'}
+                    onClick={() => resetHandler(3)}
+                    style={{ width: isMobile ? '100%' : '100%' }}
+                >
+                    Limpiar los de más de 6 meses<br/>incluso los no abonados
+                </button>
+                <button className={'btn btn-general-red btn-size12 mb-4 p-3'}
+                    onClick={() => resetHandler(4)}
+                    style={{ width: isMobile ? '100%' : '100%' }}
+                >
+                    Limpiar absolutamente todos
+                </button>
             </div>
-        :
-            <>
-                <br/>
-                <br/>
-                <br/>
-                <Loading />
-            </>
-        }
 
+        </div>
     </>
     )
 }

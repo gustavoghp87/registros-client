@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, Pagination } from 'react-bootstrap'
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs'
-import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
 import { assignTerritoryService, changePswOtherUserService, editUserService, getUserByTokenService } from '../../services/userServices'
 import { refreshUserReducer, setValuesAndOpenAlertModalReducer, typeMode } from '../../store'

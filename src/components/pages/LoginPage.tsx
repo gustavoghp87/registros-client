@@ -142,7 +142,7 @@ export const LoginPage = () => {
             </p>
         }
 
-        {loading && <Loading mt={8} />}
+        {loading && <Loading mt={'40px'} />}
 
     </>)
 }

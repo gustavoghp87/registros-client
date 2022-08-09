@@ -34,7 +34,7 @@ export const CongregationPage = () => {
         else if (currentItemNumber === 6) setCurrentItem(items[5])
     }, [currentItemNumber, items])
 
-    if (!items || !items.length) return (<Loading mt={24} />)
+    if (!items || !items.length) return (<Loading mt={'120px'} />)
 
     return (
         <div className={'row w-100'}>
@@ -61,7 +61,7 @@ export const CongregationPage = () => {
 
                         <H2 title={item.title.toUpperCase()} mt={'30px'} />
 
-                        {isLoading && <Loading mt={18} mb={10} />}
+                        {isLoading && <Loading mt={'90px'} mb={'50px'} />}
 
                         {item.ids && !!item.ids.length && item.ids.map((id: string, index: number) =>
                             <iframe

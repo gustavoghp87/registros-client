@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { NavigateFunction, useNavigate } from 'react-router'
+import { useDispatch, useSelector } from 'react-redux'
 import { GeoLocationModal, H2, Loading } from '../commons'
-import { TerritoryCampaigneNumberBlock } from '../index/TerritoryCampaignNumberBlock'
-import { TerritoryNumberBlock } from '../index/TerritoryNumberBlock'
-import { typeRootState } from '../../models'
+import { TerritoryCampaigneNumberBlock, TerritoryNumberBlock } from '../index'
+import { refreshUserReducer } from '../../store'
+import { getUserByTokenService } from '../../services/userServices'
+import { typeAppDispatch, typeRootState, typeUser } from '../../models'
 
 export const IndexPage = () => {
 
@@ -12,6 +14,8 @@ export const IndexPage = () => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const navigate: NavigateFunction = useNavigate()
     const [showedMode1, setShowedMode1] = useState<boolean>(false)
     const [showedMode2, setShowedMode2] = useState<boolean>(true)
     const [showedMode3, setShowedMode3] = useState<boolean>(true)
@@ -22,28 +26,27 @@ export const IndexPage = () => {
     const setShowGeolocationModalHandler = (): void => setShowGeolocationModal(false)
     
     useEffect(() => {
+        window.scrollTo(0, 0)
+        getUserByTokenService().then((user: typeUser|null) =>
+            user ? dispatch(refreshUserReducer(user)) : navigate('/')
+        )
+    }, [dispatch, navigate])
+    
+    useEffect(() => {
         if (user && (!user.asign || !user.asign.length)) setShowedMode2(false)
-        if (user && user.asign && !!user.asign.length && (!territories || !territories.length)) {
-            let asignados: number[] = [...user.asign]
-            asignados = asignados.sort((a: number, b: number) => a - b)
-            setTerritories(asignados)
-        }
-    }, [user, territories])
-
-    useEffect(() => window.scrollTo(0, 0), [])
+        if (!user || !user.asign || !user.asign.length) return
+        setTerritories([...user.asign].sort((a: number, b: number) => a - b))
+    }, [user])
 
     return (
         <>
+            <H2 title={"CASA EN CASA"} />
+
             {(!user || !user.isAuth) &&
-                <>
-                    <br/> <br/> <br/>
-                    <Loading />
-                </>
+                <Loading mt={'40px'}/>
             }
 
             {user && user.isAdmin && <>
-
-                <H2 title={"CASA EN CASA"} />
 
                 <button className={`btn btn-general-blue w-100 mt-4`}
                     onClick={() => setShowedMode1(!showedMode1)}

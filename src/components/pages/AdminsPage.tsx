@@ -16,6 +16,8 @@ export const AdminsPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [currentSection, setCurrentSection] = useState<adminsSections>('users')
 
+    useEffect(() => window.scrollTo(0, 0), [])
+
     useEffect(() => {
         if (isLoading) dispatch(showLoadingModalReducer())
         else dispatch(hideLoadingModalReducer())

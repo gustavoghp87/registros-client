@@ -1,24 +1,20 @@
-import io, { Socket } from 'socket.io-client'
 import { useState, useEffect } from 'react'
-import { Button, Card, Container, Pagination, Row } from 'react-bootstrap'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { Col0a, Col0b, Col1, Col2, Col3, Col4, FewHouseholdsWarning, LocalStatistics, MapModal } from '../telephonic-components'
+import { io, Socket } from 'socket.io-client'
+import { Col0a, Col0b, FewHouseholdsWarning, FreePhonesMessage, LocalStatistics, MapModal, PhonesToShowPagination, StateOfTerritoryBtn, StaticMap, TelephonicCard } from '../telephonic'
 import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
-import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
-import { getHouseholdsByTerritoryService, modifyHouseholdService, markTerritoryAsFinishedService, getHouseholdVariant } from '../../services'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { getHouseholdsByTerritoryService, getHouseholdsToShow, getHouseholdVariant } from '../../services'
 import { householdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
-import { noPredicado } from '../../models'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const TelephonicPage = () => {
 
-    const territory: typeTerritoryNumber|undefined = useParams<any>().territory as typeTerritoryNumber
-    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile,
+    const territoryNumber: typeTerritoryNumber = useParams<any>().territory as typeTerritoryNumber
+    const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
@@ -27,14 +23,13 @@ export const TelephonicPage = () => {
     const [blocks, setBlocks] = useState<typeBlock[]>()
     const [brought, setBrought] = useState<number>(10)
     const [currentBlock, setCurrentBlock] = useState<typeBlock>()
-    const [households, setHouseholds] = useState<typeHousehold[]>()
+    const [households, setHouseholds] = useState<typeHousehold[]>([])
     const [householdsToShow, setHouseholdsToShow] = useState<typeHousehold[]>()
     const [loaded, setLoaded] = useState<boolean>(false)
     const [isShowingAllStates, setIsShowingAllStates] = useState<boolean>(false)
     const [isShowingAllAvailable, setIsShowingAllAvailable] = useState<boolean>(false)
     const [isShowingStatistics, setIsShowingStatistics] = useState<boolean>(false)
-    const [showBottomBtns, setShowBottomBtns] = useState<boolean>(true)
-    const [showMap, setShowMap] = useState<boolean>(false)
+    const [showPagination, setShowPagination] = useState<boolean>(true)
     const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
     const [stateOfTerritory, setStateOfTerritory] = useState<typeStateOfTerritory>()
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string>()
@@ -47,131 +42,77 @@ export const TelephonicPage = () => {
         }))
     }
 
-    const openConfirmModalHandler = (modal: number) => {
-        dispatch(setValuesAndOpenAlertModalReducer({
-            mode: 'confirm',
-            title: modal === 1 ? "¿Confirmar abrir territorio?" : "¿Confirmar finalizar territorio?",
-            message: modal === 1 ? `El territorio ${territory} se abrirá de nuevo` : `El territorio ${territory} se dará por terminado ${!user.isAdmin ? 'y se te desasignará' : '' }`,
-            execution: modal === 1 ? openTerritoryHandler : closeTerritoryHandler
-        }))
-    }
-    
-    const closeTerritoryHandler = async (): Promise<void> => {
-        if (!territory) return
-        const success = await markTerritoryAsFinishedService(territory, true)
-        if (!success) return openAlertModalHandler("Algo falló", "")
-        navigate('/index')
-    }
-
-    const openTerritoryHandler = async (): Promise<void> => {
-        if (!territory) return
-        dispatch(showLoadingModalReducer())
-        const success: boolean = await markTerritoryAsFinishedService(territory, false)
-        dispatch(hideLoadingModalReducer())
-        if (!success) openAlertModalHandler("Algo falló", "")
-        window.location.reload()
-    }
-
-    const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
-        dispatch(showLoadingModalReducer())
-        noAbonado = !!noAbonado
-        asignado = !!asignado
-        const updatedHousehold: typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
-        dispatch(hideLoadingModalReducer())
-        if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "")
-        if (!socket || !socket.connected || !user)
-            return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet")
-        socket.emit(householdChangeString, {
-            updatedHousehold,
-            userEmail: user.email
-        })
-    }
-
     const setBroughtAllHandler = (): void => {
         setIsShowingAllAvailable(true)
-        setShowBottomBtns(false)
+        setShowPagination(false)
     }
 
     const setCurrentBlockHandler = (value: typeBlock): void => {
-        setCurrentBlock(value)
-        setBrought(10)
+        setIsShowingStatistics(false)
         setIsShowingAllAvailable(false)
-        setIsShowingAllStatesHandler(false)
-        setShowBottomBtns(true)
+        setIsShowingAllStates(false)
+        setBrought(10)
+        setShowPagination(true)
+        setCurrentBlock(value)
     }
     
     const setIsShowingAllStatesHandler = (value: boolean): void => {
+        setIsShowingStatistics(false)
+        setIsShowingAllAvailable(false)
         setIsShowingAllStates(value)
-        setIsShowingStatisticsHandler(false)
+        setBrought(10)
+        setShowPagination(true)
     }
 
-    const setIsShowingStatisticsHandler = (value: boolean) => {
-        setIsShowingStatistics(value)
-        if (value) {
-            setIsShowingAllStates(false)
-            setIsShowingAllAvailable(false)
-            setCurrentBlock(undefined)
-        }
+    const setIsShowingStatisticsHandler = () => {
+        setIsShowingStatistics(true)
+        setIsShowingAllAvailable(false)
+        setIsShowingAllStates(false)
+        setCurrentBlock(undefined)
     }
 
-    const closeWarningToaster = (): void => setShowWarningToaster(false)
+    const closeWarningToasterHandler = (): void => setShowWarningToaster(false)
 
     const hideGoogleMapHandler = (): void => setAddressToShowInGoogleMaps("")
 
     useEffect(() => {
+        if (!territoryNumber) return navigate('/index')
         window.scrollTo(0, 0)
-        if (territory) getHouseholdsByTerritoryService(territory).then((response: [typeHousehold[], typeBlock[], typeStateOfTerritory]|null) => {
-            if (!response || !response[0] || !response[0].length || !response[1] || !response[0].length) return setLoaded(true)
+        getHouseholdsByTerritoryService(territoryNumber).then((response: [typeHousehold[], typeBlock[], typeStateOfTerritory]|null) => {
+            setLoaded(true)
+            if (!response || !response[0] || !response[0].length || !response[1] || !response[1].length) return navigate('/index')
             setBlocks(response[1])
             setCurrentBlock(response[1][0])
             setHouseholds(response[0])
             setStateOfTerritory(response[2])
-            setLoaded(true)
         })
         return () => {
             setBlocks(undefined)
-            setHouseholds(undefined)
             setStateOfTerritory(undefined)
             setUserEmailWarningToaster(undefined)
         }
-    }, [territory])
+    }, [navigate, territoryNumber])
 
     useEffect(() => {
-        if (!territory || !households || !households.length) return
-        let householdsToShow0: typeHousehold[]
-        if (isShowingAllStates && isShowingAllAvailable) {
-            householdsToShow0 = households.filter(x =>
-                x.manzana === currentBlock && x.territorio === territory
-            )
-            setShowBottomBtns(false)
-        } else if (!isShowingAllStates && isShowingAllAvailable) {
-            householdsToShow0 = households.filter(x =>
-                x.manzana === currentBlock && x.territorio === territory && ((x.estado === noPredicado && x.noAbonado !== true) || x.doNotMove)
-            )
-            setShowBottomBtns(false)
-        } else if (isShowingAllStates && !isShowingAllAvailable) {
-            const householdsToShow1 = households.filter(x =>
-                x.manzana === currentBlock && x.territorio === territory
-            )
-            householdsToShow0 = householdsToShow1.slice(0, brought)
-            if (householdsToShow0.length === householdsToShow1.length) setShowBottomBtns(false)
-        } else {
-            const householdsToShow1 = households.filter(x =>
-                x.manzana === currentBlock && x.territorio === territory && ((x.estado === noPredicado && x.noAbonado !== true) || x.doNotMove)
-            )
-            householdsToShow0 = householdsToShow1.slice(0, brought)
-            if (householdsToShow0.length === householdsToShow1.length) setShowBottomBtns(false)
+        if (!currentBlock) return setHouseholdsToShow([])
+        let householdsToShow0: typeHousehold[] = getHouseholdsToShow(households, territoryNumber, currentBlock, isShowingAllStates, isShowingAllAvailable)
+        const temp: typeHousehold[] = householdsToShow0
+        if (!isShowingAllAvailable) {
+            householdsToShow0 = householdsToShow0.slice(0, brought)
+        }
+        if (isShowingAllAvailable || householdsToShow0.length === temp.length) {
+            setShowPagination(false)
         }
         householdsToShow0 = getHouseholdVariant(householdsToShow0)
         setHouseholdsToShow(householdsToShow0)
-    }, [brought, currentBlock, households, isShowingAllAvailable, isShowingAllStates, territory])
-
+    }, [brought, currentBlock, households, isShowingAllAvailable, isShowingAllStates, territoryNumber])
+    
     useEffect(() => {
         socket.on(householdChangeString, (updatedHousehold: typeHousehold, userEmail: string) => {
-            if (!updatedHousehold || updatedHousehold.territorio !== territory) return
+            if (!updatedHousehold || updatedHousehold.territorio !== territoryNumber) return
             updatedHousehold.doNotMove = true
             setHouseholds(x => {
-                if (!x) return undefined
+                if (!x) return []
                 const updatedHouseholdsToShow = x.map(y => {
                     if (y.inner_id === updatedHousehold.inner_id) y = updatedHousehold
                     return y
@@ -184,7 +125,11 @@ export const TelephonicPage = () => {
             }
         })
         return () => { socket.off(householdChangeString) }
-    }, [territory, user.email])
+    }, [territoryNumber, user.email])
+
+    if (!loaded) {
+        return <Loading mt={'60px'} mb={'10px'} />
+    }
 
     return (
         <>
@@ -198,10 +143,10 @@ export const TelephonicPage = () => {
             <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
                 <FewHouseholdsWarning
                     households={households}
-                    territory={territory}
+                    territory={territoryNumber}
                 />
 
-                {loaded && (!socket || !socket.connected) &&
+                {(!socket || !socket.connected) &&
                     <WarningToaster
                         bodyText={"Refrescar la página y verificar que hay internet"}
                         headerText={<strong>Hay un problema de conexión</strong>}
@@ -211,151 +156,73 @@ export const TelephonicPage = () => {
                 {showWarningToaster && userEmailWarningToaster &&
                     <WarningToaster
                         bodyText={["Este territorio está siendo trabajado por el usuario ", <strong key={0}>{userEmailWarningToaster}</strong>]}
-                        closeWarningToaster={closeWarningToaster}
+                        closeWarningToaster={closeWarningToasterHandler}
                         headerText={<strong>Posible confusión de asignación</strong>}
                     />
                 }
             </div>
 
-            <H2 title={`TERRITORIO ${territory} ${stateOfTerritory?.isFinished ? "- TERMINADO" : ""}`} mb={'40px'} />
+            <H2 title={"TELEFÓNICA"} mb={'0px'} />
+            <H2 title={`TERRITORIO ${territoryNumber} ${stateOfTerritory?.isFinished ? "- TERMINADO" : ""}`} mt={'10px'} mb={'50px'} />
 
-            {loaded &&
-                <Button variant={'dark'}
-                    onClick={() => setShowMap(x => !x)}
-                    style={{ display: 'block', margin: '22px auto' }}
-                >
-                    {showMap ? "Ocultar Mapa" : "Ver Mapa"}
-                </Button>
+            {!isShowingStatistics && 
+                <StaticMap territoryNumber={territoryNumber} />
             }
 
-            {showMap &&
-                <img src={`/img/${territory}.jpg`}
-                    alt={`Mapa del territorio ${territory}`}
-                    className={'d-block'}
-                    style={{
-                        border: isDarkMode ? '1px solid white' : '1px solid black',
-                        borderRadius: '8px',
-                        height: 'auto',
-                        margin: '30px auto 50px auto',
-                        padding: isMobile ? '10px' : '20px',
-                        width: isMobile ? '99%' : '40%'
-                    }}
-                />
-            }
-    
-            {blocks && !!blocks.length &&
-                <Col0a
-                    blocks={blocks}
-                    currentBlock={currentBlock}
-                    setCurrentBlockHandler={setCurrentBlockHandler}
-                />
-            }
+            <Col0a
+                blocks={blocks}
+                currentBlock={currentBlock}
+                setCurrentBlockHandler={setCurrentBlockHandler}
+            />
 
-            {territory && households && !!households.length &&
-                <Col0b
-                    currentBlock={currentBlock}
-                    isShowingAll={isShowingAllStates}
-                    isShowingStatistics={isShowingStatistics}
-                    setIsShowingAllStatesHandler={setIsShowingAllStatesHandler}
-                    setIsShowingStatisticsHandler={setIsShowingStatisticsHandler}
-                />
-            }
+            <Col0b
+                currentBlock={currentBlock}
+                isShowingAll={isShowingAllStates}
+                isShowingStatistics={isShowingStatistics}
+                setIsShowingAllStatesHandler={setIsShowingAllStatesHandler}
+                setIsShowingStatisticsHandler={setIsShowingStatisticsHandler}
+            />
 
-            {stateOfTerritory && !isShowingStatistics && <>
-                {stateOfTerritory.isFinished ?
-                    <button
-                        className={'d-block mx-auto mt-3 mb-5 btn btn-general-red'}
-                        onClick={() => openConfirmModalHandler(1)}
-                        style={{ fontSize: '1.2rem' }}
-                    >
-                        Desmarcar este territorio como terminado
-                    </button>
-                    :
-                    <button
-                        className={`d-block mx-auto mt-3 mb-5 btn btn-general-blue ${stateOfTerritory === undefined ? 'd-none' : ''}`}
-                        onClick={() => openConfirmModalHandler(2)}
-                        style={{ fontSize: '1.2rem' }}
-                    >
-                        Marcar este territorio como terminado
-                    </button>
-                }
-            </>}
+            {!isShowingStatistics ?
+                <>
+                    {stateOfTerritory &&
+                        <StateOfTerritoryBtn
+                            openAlertModalHandler={openAlertModalHandler}
+                            stateOfTerritory={stateOfTerritory}
+                            territoryNumber={territoryNumber}
+                        />
+                    }
 
-            {isShowingStatistics && households && !!households.length &&
+                    <FreePhonesMessage
+                        currentBlock={currentBlock}
+                        households={households}
+                        territoryNumber={territoryNumber}
+                    />
+
+                    {householdsToShow?.map((household: typeHousehold) =>
+                        <TelephonicCard
+                            household={household}
+                            key={household.inner_id}
+                            openAlertModalHandler={openAlertModalHandler}
+                            setAddressToShowInGoogleMaps={setAddressToShowInGoogleMaps}
+                            socket={socket}
+                        />
+                    )}
+
+                    {!!householdsToShow?.length && showPagination &&
+                        <PhonesToShowPagination
+                            isShowingAllStates={isShowingAllStates}
+                            setBrought={setBrought}
+                            setBroughtAllHandler={setBroughtAllHandler}
+                        />
+                    }
+                </>
+                :
                 <LocalStatistics
                     households={households}
-                    territory={territory}
+                    territoryNumber={territoryNumber}
                     stateOfTerritory={stateOfTerritory}
                 />
-            }
-
-
-            {!isShowingStatistics && householdsToShow && !!householdsToShow.length && householdsToShow.map((household: typeHousehold) =>
-                <Card key={household.inner_id}
-                    id={`card_${household.inner_id}`}
-                    className={`${household.asignado ? 'bg-gray bg-opacity bg-gradient' : isDarkMode ? 'bg-dark text-white' : ''} animate__animated animate__bounceInLeft animate__faster`}
-                    style={{
-                        border: '1px solid gray',
-                        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-                        marginBottom: '50px'
-                    }}
-                >   
-                    <Container fluid={'lg'}>
-
-                        <Row style={{ margin: '0 25px', paddingTop: '15px', paddingBottom: '12px' }}>
-
-                            <Col1
-                                household={household}
-                                setAddressToShowInGoogleMaps={setAddressToShowInGoogleMaps}
-                            />
-
-                            <Col2
-                                household={household}
-                                cardId={`card_${household.inner_id}`}
-                            />
-
-                            <Col3
-                                household={household}
-                                modifyHouseholdHandler={modifyHouseholdHandler}
-                            />
-
-                            <Col4
-                                household={household}
-                                modifyHouseholdHandler={modifyHouseholdHandler}
-                            />
-
-                        </Row>
-                    </Container>
-                </Card>
-            )}
-
-            {!isShowingStatistics && householdsToShow && !!householdsToShow.length && loaded &&
-                <Pagination size={'lg'}
-                    className={`text-center align-items-center justify-content-center ${showBottomBtns ? '' : 'd-none'}`}
-                    style={{
-                        fontWeight: 'bolder',
-                        marginTop: '80px'
-                    }
-                }>
-                    <Pagination.Item onClick={() => setBrought(x => x + 10)}>
-                        Mostrar 10 más
-                    </Pagination.Item>
-
-                    <Pagination.Item onClick={() => setBroughtAllHandler()}>
-                        Ver todos {!isShowingAllStates && <span>los no predicados</span>}
-                    </Pagination.Item>
-                </Pagination>
-            }
-
-            {(!householdsToShow || !householdsToShow.length) && !loaded &&
-                <Loading mt={12} mb={2} />
-            }
-
-            {householdsToShow && !householdsToShow.length && !isShowingAllStates && loaded && !isShowingStatistics && currentBlock &&
-                <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
-                    <br/>
-                    No hay viviendas no llamadas en esta manzana {currentBlock} del territorio {territory}
-                </h3>
             }
         </>
     )

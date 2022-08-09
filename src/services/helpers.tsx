@@ -1,4 +1,4 @@
-import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeHousehold } from '../models'
+import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeBlock, typeHousehold, typeTerritoryNumber } from '../models'
 
 type typeHeaders = {
     'Accept': string
@@ -112,4 +112,26 @@ export const getHouseholdVariant = (households: typeHousehold[]): typeHousehold[
         if (x.estado === noLlamar) x = { ...x, variante: 'dark' }
         return x
     })
+}
+
+export const getHouseholdsToShow = (households: typeHousehold[],
+ territory: typeTerritoryNumber, currentBlock: typeBlock, isShowingAllStates: boolean, isShowingAllAvailable: boolean): typeHousehold[] => {
+    if (isShowingAllStates && isShowingAllAvailable) {  // helper
+        households = households.filter(x =>
+            x.manzana === currentBlock && x.territorio === territory
+        )
+    } else if (!isShowingAllStates && isShowingAllAvailable) {
+        households = households.filter(x =>
+            x.manzana === currentBlock && x.territorio === territory && ((x.estado === noPredicado && x.noAbonado !== true) || x.doNotMove)
+        )
+    } else if (isShowingAllStates && !isShowingAllAvailable) {
+        households = households.filter(x =>
+            x.manzana === currentBlock && x.territorio === territory
+        )
+    } else {
+        households = households.filter(x =>
+            x.manzana === currentBlock && x.territorio === territory && ((x.estado === noPredicado && x.noAbonado !== true) || x.doNotMove)
+        )
+    }
+    return households
 }

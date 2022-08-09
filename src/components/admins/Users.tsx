@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Card, DropdownButton, ButtonGroup, Dropdown, Form } from 'react-bootstrap'
 import { io, Socket } from 'socket.io-client'
 import { H2, Loading, WarningToaster } from '../commons'
 import { UsersCard } from './'
 import { SERVER } from '../../config'
 import { getUsersService } from '../../services/userServices'
-import { typeUser, userChangeString } from '../../models'
+import { typeRootState, typeUser, userChangeString } from '../../models'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const Users = (props: any) => {
 
+    const { isDarkMode } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode
+    }))
     const setIsLoading: Function = props.setIsLoading
     const [emailSearchInputText, setEmailSearchInputText] = useState<string>("")
     const [selectedGroup, setSelectedGroup] = useState<number>(0)
@@ -55,9 +59,9 @@ export const Users = (props: any) => {
 
     return (
     <>
-        <H2 title={"USUARIOS"} mb={'40px'} />
+        <H2 title={"USUARIOS"} />
     
-        {!users && <Loading />}
+        {!users && <Loading mt={'50px'} />}
         
         {users && (!socket || !socket.connected) &&
             <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
@@ -69,12 +73,15 @@ export const Users = (props: any) => {
         }
 
         {!!users?.length &&
-            <Card className={'mx-auto text-center mt-4'} style={{ backgroundColor: '#f6f6f8', maxWidth: '500px' }}>
+            <Card
+                className={`mx-auto text-center ${isDarkMode ? 'bg-dark text-white' : ''}`}
+                style={{ backgroundColor: '#f6f6f8', marginTop: '70px', maxWidth: '500px' }}
+            >
                 <Card.Body>
                     
                     <Card.Title className={'mt-4 mb-2'}> <h1>Mostrando {usersToShow?.length || 0} </h1> </Card.Title>
 
-                    <div className={'row w-100'}>
+                    <div className={'row w-100 mx-0'}>
                         <div className={'col-sm-6'}>
                             <Card.Title className={'mt-4 mb-3'}> Buscar por correo: </Card.Title>
 

@@ -1,12 +1,12 @@
-import { Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typeHousehold, typeRootState } from '../../models'
+import { Col, Row } from 'react-bootstrap'
 import { getReducedPhoneNumber } from '../../services'
+import { typeHousehold, typeRootState } from '../../models'
 
 export const Col2 = (props: any) => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const cardId: string = props.cardId
+    const card: any = props.card
     const household: typeHousehold = props.household
 
     return (
@@ -24,10 +24,7 @@ export const Col2 = (props: any) => {
             {!household.noAbonado &&
                 <Row style={{ padding: '20px 0 1% 0' }}>
                     <h4 className={'text-center m-auto'}
-                        onMouseOver={() => {
-                            const card = document.getElementById(cardId)
-                            if (card) card.style.marginBottom = '160px'
-                        }}
+                        onMouseOver={() => (card.current as HTMLElement).style.marginBottom = '160px'}
                         style={{ fontSize: isMobile ? '2.5rem' : '3rem' }}
                     >
 
