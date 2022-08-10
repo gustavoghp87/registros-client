@@ -11,7 +11,6 @@ export const StateOfTerritoryBtn = (props: any) => {
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const navigate: NavigateFunction = useNavigate()
-    
     const openAlertModalHandler: Function = props.openAlertModalHandler
     const stateOfTerritory: typeStateOfTerritory = props.stateOfTerritory
     const territory: typeTerritoryNumber = props.territory
@@ -45,7 +44,7 @@ export const StateOfTerritoryBtn = (props: any) => {
         <>
             {stateOfTerritory.isFinished ?
                 <button
-                    className={'d-block mx-auto mt-3 mb-5 btn btn-general-red'}
+                    className={'btn btn-general-red d-block mx-auto py-2 mt-3 mb-5'}
                     onClick={() => openConfirmModalHandler(1)}
                     style={{ fontSize: '1.2rem' }}
                 >
@@ -53,7 +52,7 @@ export const StateOfTerritoryBtn = (props: any) => {
                 </button>
                 :
                 <button
-                    className={`d-block mx-auto mt-3 mb-5 btn btn-general-blue ${stateOfTerritory === undefined ? 'd-none' : ''}`}
+                    className={'btn btn-general-blue d-block mx-auto py-2 mt-3 mb-5'}
                     onClick={() => openConfirmModalHandler(2)}
                     style={{ fontSize: '1.2rem' }}
                 >

@@ -24,6 +24,7 @@ export const WarningToaster = (props: any) => {
         {!isCentered ?
             <Toast show={true}
                 bg={'danger'}
+                className={'my-2'}
                 onClose={() => closeWarningToaster()}
                 ref={ref}
                 style={{

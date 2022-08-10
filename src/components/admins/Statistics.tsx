@@ -38,7 +38,7 @@ export const Statistics = () => {
 
     return (
     <>
-        <H2 title={"ESTADÍSTICAS GLOBALES"} />
+        <H2 title={"ESTADÍSTICAS DE LA TELEFÓNICA"} />
 
         {globalStatistics ?
             <div style={{ margin: isMobile ? '0' : '0 10%' }}>

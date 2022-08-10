@@ -1,16 +1,16 @@
 export type typeLog = {
-    timestamp: number
     logText: string
+    timestamp: number
 }
 
 export type typeLogsObj = {
-    loginLogs: typeLog[]
+    appLogs: typeLog[]
     campaignAssignmentLogs: typeLog[]
     campaignFinishingLogs: typeLog[]
-    territoryChangeLogs: typeLog[]
-    stateOfTerritoryChangeLogs: typeLog[]
     emailErrorLogs: typeLog[]
     errorLogs: typeLog[]
+    loginLogs: typeLog[]
+    stateOfTerritoryChangeLogs: typeLog[]
+    territoryChangeLogs: typeLog[]
     userChangesLogs: typeLog[]
-    appLogs: typeLog[]
 }

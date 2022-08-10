@@ -1,4 +1,4 @@
-import { typeFace } from './houseToHouse'
+import { typeBlock } from '.'
 
 export type typeHousehold = {
     _id?: Object
@@ -14,10 +14,6 @@ export type typeHousehold = {
     territorio: string
     variante: typeVariant
 }
-
-export type typeBlock = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
-
-export type typeTerritoryNumber = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24' | '25' | '26' | '27' | '28' | '29' | '30' | '31' | '32' | '33' | '34' | '35' | '36' | '37' | '38' | '39' | '40' | '41' | '42' | '43' | '44' | '45' | '46' | '47' | '48' | '49' | '50' | '51' | '52' | '53' | '54' | '55' | '56'
 
 export type typeCallingState = "No predicado" | "Contestó" | "No contestó" | "A dejar carta" | "No llamar"
 
@@ -37,6 +33,20 @@ export type typeResetDate = {
 
 type typeOption = 1 | 2 | 3 | 4
 
+export type typeStatistic = {
+    count: number
+    countContesto: number
+    countNoContesto: number
+    countDejarCarta: number
+    countNoLlamar: number
+    countNoAbonado: number
+    libres: number
+}
+
+export interface typeLocalStatistic extends typeStatistic {
+    territorio: string
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,29 +54,26 @@ type typeOption = 1 | 2 | 3 | 4
 
 type typeTelephonicTerritory = {
     _id?: Object
-    blocks: typeBlocks[]
+    households: typeHousehold1
+    stateOfTerritory: typeStateOfTerritory1
     territoryNumber: number
 }
 
-type typeBlocks = {
-    block: typeBlock
-    faces: typeStreet[]
-}
-
-type typeStreet = {
-    face: typeFace
-    households: typeHousehold1[]
-    street: string
-}
-
 type typeHousehold1 = {
+    address: string //
     assigned?: boolean
+    block: typeBlock
     callingState: typeCallingState
     dateOfLastCall: string
-    doorBell: string
+    //doorBell: string
     inner_id: number
     notSubscribed: boolean
     phoneNumber: string
-    streetNumber: number
+    //streetNumber: number
     variant: typeVariant
+}
+
+type typeStateOfTerritory1 = {
+    isFinished: boolean
+    resetDates: typeResetDate[]
 }

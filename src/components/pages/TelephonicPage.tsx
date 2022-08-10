@@ -6,7 +6,7 @@ import { Col0a, Col0b, FewHouseholdsWarning, FreePhonesMessage, LocalStatistics,
 import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { getHouseholdsByTerritoryService, getHouseholdsToShow, getHouseholdVariant } from '../../services'
+import { getBlocks, getHouseholdsByTerritoryService, getHouseholdsToShow, getHouseholdVariant } from '../../services'
 import { householdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
@@ -80,9 +80,10 @@ export const TelephonicPage = () => {
         window.scrollTo(0, 0)
         getHouseholdsByTerritoryService(territoryNumber).then((response: [typeHousehold[], typeBlock[], typeStateOfTerritory]|null) => {
             setLoaded(true)
-            if (!response || !response[0] || !response[0].length || !response[1] || !response[1].length) return navigate('/index')
-            setBlocks(response[1])
-            setCurrentBlock(response[1][0])
+            if (!response || !response[0] || !response[0].length) return navigate('/index')
+            const blocks: typeBlock[] = getBlocks(response[0])
+            setBlocks(blocks)
+            setCurrentBlock(blocks[0])
             setHouseholds(response[0])
             setStateOfTerritory(response[2])
         })
@@ -127,10 +128,6 @@ export const TelephonicPage = () => {
         return () => { socket.off(householdChangeString) }
     }, [territoryNumber, user.email])
 
-    if (!loaded) {
-        return <Loading mt={'60px'} mb={'10px'} />
-    }
-
     return (
         <>
             {addressToShowInGoogleMaps &&
@@ -140,48 +137,56 @@ export const TelephonicPage = () => {
                 />
             }
 
-            <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
-                <FewHouseholdsWarning
-                    households={households}
-                    territory={territoryNumber}
-                />
-
-                {(!socket || !socket.connected) &&
-                    <WarningToaster
-                        bodyText={"Refrescar la página y verificar que hay internet"}
-                        headerText={<strong>Hay un problema de conexión</strong>}
+            {loaded &&
+                <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
+                    <FewHouseholdsWarning
+                        households={households}
+                        territory={territoryNumber}
                     />
-                }
 
-                {showWarningToaster && userEmailWarningToaster &&
-                    <WarningToaster
-                        bodyText={["Este territorio está siendo trabajado por el usuario ", <strong key={0}>{userEmailWarningToaster}</strong>]}
-                        closeWarningToaster={closeWarningToasterHandler}
-                        headerText={<strong>Posible confusión de asignación</strong>}
-                    />
-                }
-            </div>
+                    {(!socket || !socket.connected) &&
+                        <WarningToaster
+                            bodyText={"Refrescar la página y verificar que hay internet"}
+                            headerText={<strong>Hay un problema de conexión</strong>}
+                        />
+                    }
+
+                    {showWarningToaster && userEmailWarningToaster &&
+                        <WarningToaster
+                            bodyText={["Este territorio está siendo trabajado por el usuario ", <strong key={0}>{userEmailWarningToaster}</strong>]}
+                            closeWarningToaster={closeWarningToasterHandler}
+                            headerText={<strong>Posible confusión de asignación</strong>}
+                        />
+                    }
+                </div>
+            }
 
             <H2 title={"TELEFÓNICA"} mb={'0px'} />
             <H2 title={`TERRITORIO ${territoryNumber} ${stateOfTerritory?.isFinished ? "- TERMINADO" : ""}`} mt={'10px'} mb={'50px'} />
 
-            {!isShowingStatistics && 
+            {!loaded && <Loading mt={'60px'} mb={'10px'} />}
+
+            {loaded && !isShowingStatistics && 
                 <StaticMap territoryNumber={territoryNumber} />
             }
 
-            <Col0a
-                blocks={blocks}
-                currentBlock={currentBlock}
-                setCurrentBlockHandler={setCurrentBlockHandler}
-            />
+            {loaded &&
+                <>
+                    <Col0a
+                        blocks={blocks}
+                        currentBlock={currentBlock}
+                        setCurrentBlockHandler={setCurrentBlockHandler}
+                    />
 
-            <Col0b
-                currentBlock={currentBlock}
-                isShowingAll={isShowingAllStates}
-                isShowingStatistics={isShowingStatistics}
-                setIsShowingAllStatesHandler={setIsShowingAllStatesHandler}
-                setIsShowingStatisticsHandler={setIsShowingStatisticsHandler}
-            />
+                    <Col0b
+                        currentBlock={currentBlock}
+                        isShowingAll={isShowingAllStates}
+                        isShowingStatistics={isShowingStatistics}
+                        setIsShowingAllStatesHandler={setIsShowingAllStatesHandler}
+                        setIsShowingStatisticsHandler={setIsShowingStatisticsHandler}
+                    />
+                </>
+            }
 
             {!isShowingStatistics ?
                 <>

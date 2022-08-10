@@ -135,3 +135,11 @@ export const getHouseholdsToShow = (households: typeHousehold[],
     }
     return households
 }
+
+export const getBlocks = (households: typeHousehold[]): typeBlock[] => {
+    let blocks: typeBlock[] = []
+    for (let i = 1; i < 10; i++) {
+        if (households.some(x => x.manzana === i.toString())) blocks.push(i.toString() as typeBlock)
+    }
+    return blocks
+}
