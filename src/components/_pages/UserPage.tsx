@@ -3,7 +3,7 @@ import { Card, Form, FloatingLabel } from 'react-bootstrap'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { H2 } from '../commons'
-import { refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
+import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { changePswService, getUserByTokenService, logoutAllService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser } from '../../models'
 
@@ -65,10 +65,12 @@ export const UserPage = () => {
     }
 
     useEffect(() => {
-        getUserByTokenService().then((user: typeUser|null) => {
-            if (user) dispatch(refreshUserReducer(user))
+        getUserByTokenService().then((user: typeUser|false|null) => {
+            if (user) return dispatch(refreshUserReducer(user))
+            if (user === false) dispatch(logoutReducer())
+            navigate('/acceso')
         })
-    }, [dispatch])
+    }, [dispatch, navigate])
 
     return (
     <>

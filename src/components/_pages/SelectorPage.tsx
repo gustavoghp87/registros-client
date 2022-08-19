@@ -17,9 +17,9 @@ export const SelectorPage = () => {
     
     useEffect(() => {
         window.scrollTo(0, 0)
-        getUserByTokenService().then((user: typeUser|null) => {
+        getUserByTokenService().then((user: typeUser|false|null) => {
             if (user) return dispatch(refreshUserReducer(user))
-            dispatch(logoutReducer())
+            if (user === false) dispatch(logoutReducer())
             navigate('/acceso')
         })
     }, [dispatch, navigate])

@@ -28,7 +28,7 @@ export const TelephonicSelector = () => {
 
             {show &&
                 <>
-                    {user && user.phoneAssignments.length ?
+                    {user && user.phoneAssignments?.length ?
                         <TerritoryNumberBlock
                             classes={'btn-general-red animate__animated animate__bounce'}
                             territories={[...user.phoneAssignments].sort((a: number, b: number) => a - b)}

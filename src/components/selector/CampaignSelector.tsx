@@ -61,7 +61,7 @@ export const CampaignSelector = () => {
                 <>
                     {show &&
                         <>
-                            {assignedPacks.length ?
+                            {assignedPacks?.length ?
                                 <TerritoryNumberBlock
                                     classes={'btn-success'}
                                     territories={assignedPacks}

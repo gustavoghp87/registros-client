@@ -95,7 +95,7 @@ export const getEmailByEmailLink = async (id: string): Promise<string|null> => {
     }
 }
 
-export const getUserByTokenService = async (): Promise<typeUser|null> => {
+export const getUserByTokenService = async (): Promise<typeUser|false|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(base, {
@@ -105,7 +105,7 @@ export const getUserByTokenService = async (): Promise<typeUser|null> => {
         const data: typeResponseData = await response.json()
         if (!data || !data.success || !data.user) {
             if (data && !data.success) removeTokenService()
-            return null
+            return false
         }
         data.user.isAuth = true
         data.user.isAdmin = data.user.role === 1
@@ -117,7 +117,7 @@ export const getUserByTokenService = async (): Promise<typeUser|null> => {
     }
 }
 
-export const getUserByTokenService1 = async (token: string): Promise<typeUser|null> => {
+export const getUserByTokenService1 = async (token: string): Promise<typeUser|false|null> => {
     if (!token) return null
     try {
         const response = await fetch(base, {
@@ -127,7 +127,7 @@ export const getUserByTokenService1 = async (token: string): Promise<typeUser|nu
         const data: typeResponseData = await response.json()
         if (!data || !data.success || !data.user) {
             if (data && !data.success) removeTokenService()
-            return null
+            return false
         }
         data.user.isAuth = true
         data.user.isAdmin = data.user.role === 1

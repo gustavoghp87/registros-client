@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Pages from './_pages'
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
-import { changeMobileModeReducer, refreshUserReducer } from '../store'
+import { changeMobileModeReducer, logoutReducer, refreshUserReducer } from '../store'
 import { breakingPoint, typeAppDispatch, typeRootState, typeUser } from '../models'
 import { getUserByTokenService, logoutService } from '../services/userServices'
 
@@ -28,8 +28,9 @@ export const App = () => {
     }, [dispatch, isMobile])
 
     useEffect(() => {
-        getUserByTokenService().then((user: typeUser|null) => {
+        getUserByTokenService().then((user: typeUser|false|null) => {
             if (user) dispatch(refreshUserReducer(user))
+            else if (user === false) dispatch(logoutReducer())
         })
         if (user && !user.phoneAssignments) logoutService()
     }, [dispatch, user])

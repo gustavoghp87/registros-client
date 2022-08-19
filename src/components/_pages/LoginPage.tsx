@@ -3,7 +3,7 @@ import { NavigateFunction, useNavigate } from 'react-router'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormLayout, Loading } from '../commons'
-import { refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
+import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { getFailingEmailFromLSService, setFailingEmailToLSService } from '../../services'
 import { getUserByTokenService1, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
 import { typeAppDispatch, typeResponseData, typeRootState, typeUser } from '../../models'
@@ -63,8 +63,9 @@ export const LoginPage = () => {
         const response: typeResponseData|null = await loginService(email, password, recaptchaToken)
         setLoading(false)
         if (response && response.success && response.newToken) {
-            const user0: typeUser|null = await getUserByTokenService1(response.newToken)
-            if (!user0) return openAlertModalHandler("Problemas (2)", "Refrescar la página", 2)
+            const user0: typeUser|false|null = await getUserByTokenService1(response.newToken)
+            if (user0 === false) dispatch(logoutReducer())
+            if (!user0) return openAlertModalHandler("Problemas (2)", "Refrescar la página; ver si hay internet", 2)
             dispatch(refreshUserReducer(user0))
         } else if (!response || response.recaptchaFails) {
             setFailingEmailToLSService(email)

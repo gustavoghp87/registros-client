@@ -51,7 +51,6 @@ export const UsersCard = (props: any) => {
         setIsLoading(false)
         if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al modificar usuario", 2)
         sendUpdatedUser(updatedUser)
-        refreshMyUserHandler(email)
     }
 
     const assignTerritoryHandler = async (isToAssign: boolean, all: boolean): Promise<void> => {
@@ -70,7 +69,6 @@ export const UsersCard = (props: any) => {
         setIsLoading(false)
         if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al cambiar las asignaciones", 2)
         sendUpdatedUser(updatedUser)
-        refreshMyUserHandler(currentUser.email)
         setAssignValue(0)
         setUnssignValue(0)
     }
@@ -80,12 +78,6 @@ export const UsersCard = (props: any) => {
         else openAlertModalHandler('alert', "Error", "Se desconectó el actualizador; refrescar la página", 2)
     }
 
-    const refreshMyUserHandler = (useremail: string): void => {
-        if (user && user.email === useremail) {
-            getUserByTokenService().then((user0: typeUser|null) => user0 ? dispatch(refreshUserReducer(user)) : null)
-        }
-    }
-    
     const resetPasswordHandler = async (): Promise<void> => {
         setIsLoading(true)
         const response: [string, boolean]|null = await changePswOtherUserService(currentUser.email)
@@ -283,11 +275,13 @@ export const UsersCard = (props: any) => {
 
                     <br/>
 
-                    <button className={'col-12 btn btn-general-blue my-2'}
-                        onClick = {() => openCloseSessionsConfirmModalHandler()}
-                    >
-                        RESETEAR CONTRASEÑA
-                    </button>
+                    {user?.email !== currentUser.email &&
+                        <button className={'col-12 btn btn-general-blue my-2'}
+                            onClick = {() => openCloseSessionsConfirmModalHandler()}
+                        >
+                            RESETEAR CONTRASEÑA
+                        </button>
+                    }
                     
                 </>}
             </Card.Body>
