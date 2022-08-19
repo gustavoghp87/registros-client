@@ -3,7 +3,7 @@ export const removeTokenFromLSService = (): void => localStorage.removeItem('tok
 export const setTokenToLSService = (token: string) => localStorage.setItem('token', token)
 
 export const getUserFromLSService = (): string|null => localStorage.getItem('user')
-export const removeUserFromLSService = () => localStorage.removeItem('user')
+//export const removeUserFromLSService = () => localStorage.removeItem('user')
 export const setUserToLSService = (user: string) => localStorage.setItem('user', user)
 
 export const getFailingEmailFromLSService = (): string|null => localStorage.getItem('failingEmail')

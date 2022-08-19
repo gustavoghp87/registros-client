@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Card, Pagination } from 'react-bootstrap'
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs'
 import { Socket } from 'socket.io-client'
-import { refreshUserReducer, setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
-import { assignTerritoryService, changePswOtherUserService, editUserService, getUserByTokenService } from '../../services/userServices'
+import { setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
+import { assignTerritoryService, changePswOtherUserService, editUserService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
 
 export const UsersCard = (props: any) => {

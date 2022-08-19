@@ -1,7 +1,6 @@
 import { typeBlock, typeFace, typeTerritoryNumber } from '.'
 
 export type typeHTHTerritory = {
-    _id?: Object
     map: typeHTHMap
     territoryNumber: typeTerritoryNumber
 }

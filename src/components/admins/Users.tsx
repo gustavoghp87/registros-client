@@ -128,7 +128,7 @@ export const Users = (props: any) => {
 
         {usersToShow?.map((user: typeUser) => (
             <UsersCard
-                key={user._id}
+                key={user.id}
                 setIsLoading={setIsLoading}
                 socket={socket}
                 user={user}

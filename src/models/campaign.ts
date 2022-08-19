@@ -1,5 +1,4 @@
 export type typeCampaignPack = {
-    _id?: Object
     assignedTo: string
     calledPhones: number[]
     from: number

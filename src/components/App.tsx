@@ -1,11 +1,11 @@
 import { Suspense, useEffect } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Location, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Pages from './_pages'
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
 import { changeMobileModeReducer, logoutReducer, refreshUserReducer } from '../store'
 import { breakingPoint, typeAppDispatch, typeRootState, typeUser } from '../models'
-import { getUserByTokenService, logoutService } from '../services/userServices'
+import { getUserByTokenService } from '../services/userServices'
 
 export const App = () => {
     
@@ -17,6 +17,7 @@ export const App = () => {
         user: state.user
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const location: Location = useLocation()
     
     useEffect(() => {
         window.addEventListener('resize', (event: any) => {
@@ -28,12 +29,12 @@ export const App = () => {
     }, [dispatch, isMobile])
 
     useEffect(() => {
+        if (location.pathname === '/selector') return
         getUserByTokenService().then((user: typeUser|false|null) => {
-            if (user) dispatch(refreshUserReducer(user))
-            else if (user === false) dispatch(logoutReducer())
+            if (user) return dispatch(refreshUserReducer(user))
+            if (user === false) dispatch(logoutReducer())
         })
-        if (user && !user.phoneAssignments) logoutService()
-    }, [dispatch, user])
+    }, [dispatch, location.pathname, user])
 
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>

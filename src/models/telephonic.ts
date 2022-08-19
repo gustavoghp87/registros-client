@@ -5,7 +5,6 @@ export type typeCallingState = "No predicado" | "No contestó" | "Contestó" | "
 type typeVariant = 'success' | 'dark' | 'primary' | 'danger' | 'warning' | 'light' | 'secondary' | 'info' | 'link'
 
 export type typeTelephonicTerritory = {
-    _id?: Object
     households: typeHousehold[]
     stateOfTerritory: typeStateOfTelephonicTerritory
     territoryNumber: typeTerritoryNumber

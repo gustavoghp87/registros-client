@@ -1,5 +1,5 @@
 import { pointer } from '../config'
-import { getDarkModeFromLSService, getHeaders, getTokenFromLSService, removeTokenFromLSService, removeUserFromLSService, setDarkModeToLSService, setTokenToLSService, setUserToLSService } from '.'
+import { getDarkModeFromLSService, getHeaders, getTokenFromLSService, removeTokenFromLSService, setDarkModeToLSService, setTokenToLSService, setUserToLSService } from '.'
 import { typeResponseData, typeUser } from '../models'
 
 const base: string = pointer.user
@@ -190,7 +190,6 @@ export const logoutAllService = async (): Promise<boolean> => {
 
 export const logoutService = (): void => {
     removeTokenService()
-    removeUserFromLSService()
 }
 
 export const registerUserService = async (email: string, password: string, group: number, recaptchaToken: string): Promise<typeResponseData|null> => {

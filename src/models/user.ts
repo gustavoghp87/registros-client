@@ -1,6 +1,4 @@
 export type typeUser = {
-    __v?: number
-    _id: Object
     email: string
     group: number
     id: number

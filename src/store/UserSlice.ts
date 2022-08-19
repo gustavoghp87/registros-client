@@ -4,7 +4,6 @@ import { logoutService } from '../services/userServices'
 import { typeUser } from '../models'
 
 const unauthenticatedUser: typeUser = {
-    _id: { id: 0 },
     email: "",
     group: 0,
     id: 0,
