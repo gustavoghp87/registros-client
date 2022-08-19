@@ -30,11 +30,11 @@ export const App = () => {
 
     useEffect(() => {
         if (location.pathname === '/selector') return
-        getUserByTokenService().then((user: typeUser|false|null) => {
-            if (user) return dispatch(refreshUserReducer(user))
-            if (user === false) dispatch(logoutReducer())
+        getUserByTokenService().then((user0: typeUser|false|null) => {
+            if (user0) return dispatch(refreshUserReducer(user0))
+            if (user0 === false) dispatch(logoutReducer())
         })
-    }, [dispatch, location.pathname, user])
+    }, [dispatch, location.pathname])
 
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>

@@ -10,18 +10,20 @@ export const Logs = () => {
 
     const sortAndSliceLogsArray = (logs: typeLogObj[]): typeLogObj[] => logs?.sort((a, b) => b.timestamp - a.timestamp).slice(0, 100)
 
+    const removeDuplicates = (logs: typeLogObj[]): typeLogObj[] => logs   // TODO
+
     useEffect(() => {
         getAllLogsService().then((allLogsObj0: typeAllLogsObj|null) => {
             if (!allLogsObj0) return
             setLogs([
-                { logs: sortAndSliceLogsArray(allLogsObj0.campaignLogs.logs), title: "Campaña 2022" },
-                { logs: sortAndSliceLogsArray(allLogsObj0.errorLogs.logs), title: "Errores generales de la App" },
-                { logs: sortAndSliceLogsArray(allLogsObj0.loginLogs.logs), title: "Ingresos a la App" },
-                { logs: sortAndSliceLogsArray(allLogsObj0.userLogs.logs), title: "Cambios en los Usuarios" },
-                { logs: sortAndSliceLogsArray(allLogsObj0.telephonicStateLogs.logs), title: "Cambios en estados de Territorios de la Telefónica" },
-                { logs: sortAndSliceLogsArray(allLogsObj0.telephonicLogs.logs), title: "Llamados de Telefónica" },
-                { logs: sortAndSliceLogsArray(allLogsObj0.houseToHouseAdminLogs.logs), title: "Casa en casa - Admins" },
-                { logs: sortAndSliceLogsArray(allLogsObj0.houseToHouseLogs.logs), title: "Casa en casa" }
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.campaignLogs.logs)), title: "Campaña 2022" },
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.errorLogs.logs)), title: "Errores generales de la App" },
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.loginLogs.logs)), title: "Ingresos a la App" },
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.userLogs.logs)), title: "Cambios en los Usuarios" },
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.telephonicStateLogs.logs)), title: "Cambios en estados de Territorios de la Telefónica" },
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.telephonicLogs.logs)), title: "Llamados de Telefónica" },
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseAdminLogs.logs)), title: "Casa en casa - Admins" },
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseLogs.logs)), title: "Casa en casa" }
             ])
         })
         return () => setLogs(undefined)
