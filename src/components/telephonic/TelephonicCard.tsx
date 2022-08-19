@@ -1,11 +1,11 @@
+import { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Container, Row } from 'react-bootstrap'
 import { Socket } from 'socket.io-client'
 import { Col1, Col2, Col3, Col4 } from '.'
-import { householdChangeString, typeAppDispatch, typeHousehold, typeRootState } from '../../models'
+import { telephonicHouseholdChangeString, typeAppDispatch, typeCallingState, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
 import { hideLoadingModalReducer, showLoadingModalReducer } from '../../store'
 import { modifyHouseholdService } from '../../services'
-import { useRef } from 'react'
 
 export const TelephonicCard = (props: any) => {
 
@@ -19,17 +19,21 @@ export const TelephonicCard = (props: any) => {
     const setAddressToShowInGoogleMaps: Function = props.setAddressToShowInGoogleMaps
     const openAlertModalHandler: Function = props.openAlertModalHandler
     const socket: Socket = props.socket
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
 
-    const modifyHouseholdHandler = async (inner_id: string, estado: string, noAbonado: boolean, asignado: boolean|undefined): Promise<void> => {
+    const modifyHouseholdHandler = async (householdId: number,
+     callingState: typeCallingState, notSubscribed: boolean, isAssigned: boolean|undefined): Promise<void> => {
         dispatch(showLoadingModalReducer())
-        noAbonado = !!noAbonado
-        asignado = !!asignado
-        const updatedHousehold: typeHousehold|null = await modifyHouseholdService(inner_id, estado, noAbonado, asignado)
+        notSubscribed = !!notSubscribed
+        isAssigned = !!isAssigned
+        const updatedHousehold: typeHousehold|null =
+            await modifyHouseholdService(territoryNumber, householdId, callingState, notSubscribed, isAssigned)
         dispatch(hideLoadingModalReducer())
-        if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "")
+        if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "", 2)
         if (!socket || !socket.connected || !user)
-            return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet")
-        socket.emit(householdChangeString, {
+            return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet", 2)
+        socket.emit(telephonicHouseholdChangeString, {
+            territoryNumber,
             updatedHousehold,
             userEmail: user.email
         })
@@ -37,8 +41,8 @@ export const TelephonicCard = (props: any) => {
 
     return (
         <Card
-            className={`${household.asignado ? 'bg-gray bg-opacity bg-gradient' : isDarkMode ? 'bg-dark text-white' : ''} animate__animated animate__bounceInLeft animate__faster`}
-            key={household.inner_id}
+            className={`${household.isAssigned ? 'bg-gray bg-opacity bg-gradient' : isDarkMode ? 'bg-dark text-white' : ''} animate__animated animate__bounceInLeft animate__faster`}
+            key={household.householdId}
             ref={householdCard}
             style={{
                 border: '1px solid gray',

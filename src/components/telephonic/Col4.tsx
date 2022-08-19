@@ -19,9 +19,9 @@ export const Col4 = (props: any) => {
                     </h4>
 
                     <input className={'checkboxuno'} type={'checkbox'}
-                        checked={!!household.noAbonado}
+                        checked={!!household.notSubscribed}
                         onChange={() => { }}
-                        onClick={() => modifyHouseholdHandler(household.inner_id, household.estado, !household.noAbonado, !!household.asignado)}
+                        onClick={() => modifyHouseholdHandler(household.householdId, household.callingState, !household.notSubscribed, !!household.isAssigned)}
                         style={{ marginTop: '0.5rem', padding: 5, marginLeft: '0rem' }}
                     />
 
@@ -31,11 +31,12 @@ export const Col4 = (props: any) => {
                         Asignado
                     </h4>
 
-                    <input className={'checkboxuno'} type={'checkbox'}
-                        checked={!!household.asignado}
+                    <input className={'checkboxuno'}
+                        checked={!!household.isAssigned}
                         onChange={() => { }}
-                        onClick={() => modifyHouseholdHandler(household.inner_id, household.estado, !!household.noAbonado, !household.asignado)}
-                        style={{ marginTop: '0.5rem', padding: 5, marginLeft: '0rem' }}
+                        onClick={() => modifyHouseholdHandler(household.householdId, household.callingState, !!household.notSubscribed, !household.isAssigned)}
+                        style={{ marginLeft: '0rem', marginTop: '0.5rem', padding: 5 }}
+                        type={'checkbox'}
                     />
                 </div>
             </Row>

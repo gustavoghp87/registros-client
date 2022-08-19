@@ -1,10 +1,10 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Pagination } from 'react-bootstrap'
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs'
 import { Socket } from 'socket.io-client'
-import { assignTerritoryService, changePswOtherUserService, editUserService, getUserByTokenService } from '../../services/userServices'
 import { refreshUserReducer, setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
+import { assignTerritoryService, changePswOtherUserService, editUserService, getUserByTokenService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
 
 export const UsersCard = (props: any) => {
@@ -18,88 +18,98 @@ export const UsersCard = (props: any) => {
     const currentUser: typeUser = props.user
     const setIsLoading: Function = props.setIsLoading
     const socket: Socket = props.socket
-    const assignInput = useRef<any>()
-    const unassignInput = useRef<any>()
-    const [asig, setAsig] = useState<string[]>([])
-    const [asignVisible, setAsignVisible] = useState<boolean>(false)
-    const [desasig, setDesasig] = useState<string[]>([])
+    const [assignValue, setAssignValue] = useState<number>(0)
+    const [unassignValue, setUnssignValue] = useState<number>(0)
+    const [changeTelephonicAssignmentsVisible, setChangeTelephonicAssignmentsVisible] = useState<boolean>(false)
     const [groupVisible, setGroupVisible] = useState<boolean>(false)
     const [showCardBody, setShowCardBody] = useState<boolean>(false)
     const groups: number[] = [1,2,3,4,5,6]
-    let email: string = ""
 
-    const openAlertModalHandler = (mode: typeMode, title: string, message: string, execution: Function|undefined = undefined): void => {
+    const openAlertModalHandler = (mode: typeMode, title: string, message: string, animation?: number, execution?: Function): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode,
             title,
             message,
-            execution
+            execution,
+            animation
         }))
     }
 
-    const editUserHandler = async (user_id: string, estado: boolean, role: number, group: number): Promise<void> => {
-        setIsLoading(true)
-        const updatedUser: typeUser|null = await editUserService(user_id, estado, role, group)
-        setIsLoading(false)
-        if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al modificar usuario")
-        sendUpdatedUser(updatedUser)
-        refreshMyUserHandler(user_id)
+    const openCloseSessionsConfirmModalHandler = (): void => {
+        openAlertModalHandler(
+            'confirm',
+            "¿Resetear clave?",
+            `Esto reseteará la contraseña del usuario ${currentUser.email}, cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`,
+            undefined,
+            resetPasswordHandler
+        )
     }
 
-    const assignTerritoryHandler = async (user_id: string, all: boolean): Promise<void> => {
-        if (!user_id) return
+    const editUserHandler = async (email: string, isActive: boolean, role: number, group: number): Promise<void> => {
         setIsLoading(true)
-        let asignar = asig[0] === user_id && asig[1] ? parseInt(asig[1]) : null
-        let desasignar = desasig[0] === user_id && desasig[1] ? parseInt(desasig[1]) : null
-        const updatedUser: typeUser|null = await assignTerritoryService(user_id, asignar, desasignar, all)
+        const updatedUser: typeUser|null = await editUserService(email, isActive, role, group)
         setIsLoading(false)
-        if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al cambiar las asignaciones")
+        if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al modificar usuario", 2)
         sendUpdatedUser(updatedUser)
-        refreshMyUserHandler(user_id)
-        if (assignInput.current) (assignInput.current as HTMLInputElement).value = ""
-        if (unassignInput.current) (unassignInput.current as HTMLInputElement).value = ""
-        setAsig([])
-        setDesasig([])
+        refreshMyUserHandler(email)
+    }
+
+    const assignTerritoryHandler = async (isToAssign: boolean, all: boolean): Promise<void> => {
+        setIsLoading(true)
+        let updatedUser: typeUser|null
+        if (all) {
+            updatedUser = await assignTerritoryService(currentUser.email, null, null, true)
+        } else if (isToAssign && assignValue) {
+            updatedUser = await assignTerritoryService(currentUser.email, assignValue, null, false)
+        } else if (unassignValue) {
+            updatedUser = await assignTerritoryService(currentUser.email, null, unassignValue, false)
+        } else {
+            setIsLoading(false)
+            return
+        }
+        setIsLoading(false)
+        if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al cambiar las asignaciones", 2)
+        sendUpdatedUser(updatedUser)
+        refreshMyUserHandler(currentUser.email)
+        setAssignValue(0)
+        setUnssignValue(0)
     }
 
     const sendUpdatedUser = (updatedUser: typeUser): void => {
         if (socket && socket.connected) socket.emit(userChangeString, updatedUser)
-        else openAlertModalHandler('alert', "Error", "Se desconectó el actualizador; refrescar la página")
+        else openAlertModalHandler('alert', "Error", "Se desconectó el actualizador; refrescar la página", 2)
     }
 
-    const refreshMyUserHandler = (user_id: string): void => {
-        if (user && user._id === user_id) {
+    const refreshMyUserHandler = (useremail: string): void => {
+        if (user && user.email === useremail) {
             getUserByTokenService().then((user0: typeUser|null) => user0 ? dispatch(refreshUserReducer(user)) : null)
         }
     }
-
-    const openConfirmModalHandler = (selectedEmail: string): void => {
-        if (selectedEmail) email = selectedEmail
-        else return
-        openAlertModalHandler(
-            'confirm',
-            "¿Resetear clave?",
-            `Esto reseteará la contraseña del usuario ${email}, cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`,
-            resetPasswordHandler
-        )
-    }
     
     const resetPasswordHandler = async (): Promise<void> => {
-        if (!email)
-            return openAlertModalHandler('alert', "Algo falló", "Refrescar la página y volver a intentar")
         setIsLoading(true)
-        const response = await changePswOtherUserService(email)
+        const response: [string, boolean]|null = await changePswOtherUserService(currentUser.email)
         setIsLoading(false)
-        if (response && response.success && response.newPassword)
-            openAlertModalHandler('alert', `Clave reseteada y enviada por email a ${email}`, `Nueva clave: ${response.newPassword}`)
-        else if (response && response.newPassword && response.emailFailed)
-            openAlertModalHandler('alert', "Se reseteó la contraseña pero falló el envío del email", `Nueva clave: ${response.newPassword}`)
+        if (!response || !response[0])
+            openAlertModalHandler('alert', "Error", `Algo falló al resetear la contraseña de ${currentUser.email}`, 2)
+        else if (response[1])
+            openAlertModalHandler('alert', `Clave reseteada y enviada por email a ${currentUser.email}`, `Nueva clave: ${response[0]}`, 1)
         else
-            openAlertModalHandler('alert', "Error", `Algo falló al resetear la contraseña de ${email}`)
+            openAlertModalHandler('alert', "Se reseteó la contraseña pero falló el envío del email", `Nueva clave: ${response[0]}`)
     }
 
+    const openUnassignAllConfirmationModalHandler = () => openAlertModalHandler(
+        'confirm',
+        "¿Desasignar todos?",
+        "Se van a desasignar todos los territorios de telefónica de " + currentUser.email,
+        undefined,
+        unassignAllHandler
+    )
+
+    const unassignAllHandler = async (): Promise<void> => assignTerritoryHandler(false, true)
+
     return (
-        <Card key={currentUser._id.toString()}
+        <Card key={currentUser.email}
             className={isDarkMode ? 'bg-dark text-white' : ''}
             style={{
                 backgroundColor: '#f6f6f8',
@@ -107,7 +117,6 @@ export const UsersCard = (props: any) => {
                 width: isMobile ? '95%': '500px'
             }}
         >
-            
             <Card.Body style={{ padding: `30px 30px ${showCardBody ? '30px' : '12px'} 30px` }}>
 
                 <Card.Title
@@ -133,74 +142,72 @@ export const UsersCard = (props: any) => {
 
                     <Card.Text style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
                         Territorios asignados: &nbsp;
-                        {currentUser.asign && !!currentUser.asign.length &&
-                            currentUser.asign.map((asign: number) => (
-                                <span key={asign} className={'d-inline-block'}>
-                                    {asign} &nbsp;
+                        {currentUser.phoneAssignments.length ?
+                            currentUser.phoneAssignments.sort((a: number, b: number) => a - b).map((territoryNumber: number) => (
+                                <span key={territoryNumber} className={'d-inline-block'}>
+                                    {territoryNumber} &nbsp;
                                 </span>
                             ))
-                        }
-                        {(!currentUser.asign || !currentUser.asign.length) &&
+                            :
                             <span> ninguno </span>
                         }
                     </Card.Text>
 
-
                     <button className={'col-12 btn btn-general-blue my-2'}
                         style={{ marginTop: '10px' }}
-                        onClick={() => setAsignVisible(!asignVisible)}
+                        onClick={() => setChangeTelephonicAssignmentsVisible(x => !x)}
                     >
                         CAMBIAR ASIGNACIONES
                     </button>
 
-                    <div style={{
-                        display: asignVisible ? 'block' : 'none',
-                        padding: '20px',
-                        textAlign: 'center'
-                    }}>
-                        <div style={{ marginTop: '12px' }}>
-                            <input
-                                min={1}
-                                onChange={(event: any) => setAsig([currentUser._id.toString(), event.target.value])}
-                                ref={assignInput}
-                                style={{ width: '60px' }}
-                                type={'number'}
-                            />
-                            
-                            &nbsp;
-                            
-                            <button className={'btn btn-general-blue'}
-                                onClick={() => assignTerritoryHandler(currentUser._id.toString(), false)}
-                            >
-                                &nbsp; Asignar &nbsp;
-                            </button>
+                    {changeTelephonicAssignmentsVisible &&
+                        <div className={'text-center p-4'}>
+                            <div style={{ marginTop: '12px' }}>
+                                <input
+                                    min={1}
+                                    onChange={(e: any) => setAssignValue(e.target.value)}
+                                    style={{ width: '60px' }}
+                                    type={'number'}
+                                    value={assignValue || ""}
+                                />
+                                
+                                &nbsp;
+                                
+                                <button className={'btn btn-general-blue'}
+                                    disabled={!assignValue}
+                                    onClick={() => assignTerritoryHandler(true, false)}
+                                >
+                                    &nbsp; Asignar &nbsp;
+                                </button>
 
-                        </div>
+                            </div>
 
-                        <div style={{ marginTop: '12px' }}>
-                            <input
-                                min={1}
-                                onChange={(event: any) => setDesasig([currentUser._id.toString(), event.target.value])}
-                                ref={unassignInput}
-                                style={{ width: '60px' }}
-                                type={'number'}
-                            />
-                            &nbsp;
-                            <button className={'btn btn-general-blue'}
-                                onClick={() => assignTerritoryHandler(currentUser._id.toString(), false)}
-                            >
-                                Desasignar
-                            </button>
-                        </div>
+                            <div style={{ marginTop: '12px' }}>
+                                <input
+                                    min={1}
+                                    onChange={(e: any) => setUnssignValue(e.target.value)}
+                                    style={{ width: '60px' }}
+                                    type={'number'}
+                                    value={unassignValue || ""}
+                                />
+                                &nbsp;
+                                <button className={'btn btn-general-blue'}
+                                    disabled={!unassignValue}
+                                    onClick={() => assignTerritoryHandler(false, false)}
+                                >
+                                    Desasignar
+                                </button>
+                            </div>
 
-                        <div style={{ marginTop: '12px' }}>
-                            <button className={'btn btn-general-blue'}
-                                onClick={() => assignTerritoryHandler(currentUser._id.toString(), true)}
-                            >
-                                Desasignar todos
-                            </button>
+                            <div style={{ marginTop: '12px' }}>
+                                <button className={'btn btn-general-blue'}
+                                    onClick={() => openUnassignAllConfirmationModalHandler()}
+                                >
+                                    Desasignar todos
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    }
 
                     <hr/>
 
@@ -219,7 +226,7 @@ export const UsersCard = (props: any) => {
                                         <Pagination.Item key={groupNumber} className={''}
                                             active={groupNumber === currentUser.group}
                                             onClick={() => {
-                                                editUserHandler(currentUser._id.toString(), currentUser.estado, currentUser.role, groupNumber)
+                                                editUserHandler(currentUser.email, currentUser.isActive, currentUser.role, groupNumber)
                                             }}
                                         >
                                             {groupNumber}
@@ -231,7 +238,7 @@ export const UsersCard = (props: any) => {
                                         <Pagination.Item key={groupNumber} className={''}
                                             active={groupNumber === currentUser.group}
                                             onClick={() => {
-                                                editUserHandler(currentUser._id.toString(), currentUser.estado, currentUser.role, groupNumber)
+                                                editUserHandler(currentUser.email, currentUser.isActive, currentUser.role, groupNumber)
                                             }}
                                         >
                                             {groupNumber}
@@ -245,7 +252,7 @@ export const UsersCard = (props: any) => {
                                         <Pagination.Item key={groupNumber} className={''}
                                             active={groupNumber === currentUser.group}
                                             onClick={() => {
-                                                editUserHandler(currentUser._id.toString(), currentUser.estado, currentUser.role, groupNumber)
+                                                editUserHandler(currentUser.email, currentUser.isActive, currentUser.role, groupNumber)
                                             }}
                                         >
                                             {groupNumber}
@@ -260,16 +267,16 @@ export const UsersCard = (props: any) => {
                     <hr/>
                 
 
-                    <button className={`col-12 btn btn ${currentUser.estado ? 'btn-general-red' : 'btn-general-blue'} my-2`}
-                        onClick={() => editUserHandler(currentUser._id.toString(), !currentUser.estado, currentUser.role, currentUser.group)}
+                    <button className={`col-12 btn btn ${currentUser.isActive ? 'btn-general-red' : 'btn-general-blue'} my-2`}
+                        onClick={() => editUserHandler(currentUser.email, !currentUser.isActive, currentUser.role, currentUser.group)}
                     >
-                        {currentUser.estado ? "DESACTIVAR" : "ACTIVAR"}
+                        {currentUser.isActive ? "DESACTIVAR" : "ACTIVAR"}
                     </button>
 
                     <br/>
 
                     <button className={`col-12 btn ${currentUser.role === 1 ? 'btn-general-red' : 'btn-general-blue'} my-2`}
-                        onClick = {() => editUserHandler(currentUser._id.toString(), currentUser.estado, currentUser.role === 1 ? 0 : 1, currentUser.group)}
+                        onClick = {() => editUserHandler(currentUser.email, currentUser.isActive, currentUser.role === 1 ? 0 : 1, currentUser.group)}
                     >
                         {currentUser.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
                     </button>
@@ -277,7 +284,7 @@ export const UsersCard = (props: any) => {
                     <br/>
 
                     <button className={'col-12 btn btn-general-blue my-2'}
-                        onClick = {() => openConfirmModalHandler(currentUser.email)}
+                        onClick = {() => openCloseSessionsConfirmModalHandler()}
                     >
                         RESETEAR CONTRASEÑA
                     </button>

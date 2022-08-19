@@ -11,7 +11,7 @@ export const HTHDoNotCalls = (props: any) => {
     }))
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [showForm, setShowForm] = useState<boolean>(false)
     
     const closeShowFormHandler = (): void => setShowForm(false)
@@ -40,7 +40,7 @@ export const HTHDoNotCalls = (props: any) => {
                             currentFace={currentFace}
                             doNotCall={doNotCall}
                             refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                            territory={territory}
+                            territoryNumber={territoryNumber}
                         />
                     </div>
                 ))
@@ -60,7 +60,7 @@ export const HTHDoNotCalls = (props: any) => {
                     closeShowFormHandler={closeShowFormHandler}
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territory={territory}    
+                    territoryNumber={territoryNumber}    
                 />
             }
         </div>

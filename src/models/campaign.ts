@@ -1,9 +1,10 @@
 export type typeCampaignPack = {
-    accessible?: boolean
-    al: number
-    asignado?: string
-    desde: number
+    _id?: Object
+    assignedTo: string
+    calledPhones: number[]
+    from: number
     id: number
-    llamados?: number[]
-    terminado?: boolean
+    isAccessible: boolean
+    isFinished: boolean
+    to: number
 }

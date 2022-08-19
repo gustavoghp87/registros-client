@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 export type typeMode = 'alert' | 'confirm'
 
 type typeAlertModalState = {
+    animation?: number
     execution?: Function|undefined
     message: string
     mode: typeMode
@@ -23,20 +24,22 @@ export const alertModalSlice = createSlice({
     reducers: {
         closeAlertModalReducer: (state) => {
             state = {
-                showingAlertModal: false,
+                animation: undefined,
+                message: "",
                 mode: 'alert',
-                title: "",
-                message: ""
+                showingAlertModal: false,
+                title: ""
             }
             return state
         },
         setValuesAndOpenAlertModalReducer: (state, action: PayloadAction<typeAlertModalState>) => {
             state = {
-                showingAlertModal: true,
-                mode: action?.payload?.mode ?? 'alert',
-                title: action?.payload?.title || "",
+                animation: action?.payload?.animation,
+                execution: action?.payload?.execution,
                 message: action?.payload?.message || "",
-                execution: action?.payload?.execution
+                mode: action?.payload?.mode ?? 'alert',
+                showingAlertModal: true,
+                title: action?.payload?.title || "",
             }
             return state
         }

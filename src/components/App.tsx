@@ -1,7 +1,7 @@
 import { Suspense, useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import * as Pages from './pages'
+import * as Pages from './_pages'
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
 import { changeMobileModeReducer, refreshUserReducer } from '../store'
 import { breakingPoint, typeAppDispatch, typeRootState, typeUser } from '../models'
@@ -64,8 +64,8 @@ export const App = () => {
                             :
                             <>
                                 <Route path={'/congregacion'} element={<Pages.CongregationPage />} />
-                                <Route path={'/index'} element={<Pages.IndexPage />} />
-                                <Route path={'/territorios/:territory'} element={<Pages.TelephonicPage />} />
+                                <Route path={'/selector'} element={<Pages.SelectorPage />} />
+                                <Route path={'/telefonica/:territory'} element={<Pages.TelephonicPage />} />
                                 <Route path={'/usuario'} element={<Pages.UserPage /> } />
                             </>
                         }

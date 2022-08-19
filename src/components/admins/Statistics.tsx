@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Card } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
-import { getAllLocalStatisticsService, getGlobalStatisticsService, getStateOfTerritoriesService } from '../../services'
-import { generalBlue, typeLocalStatistic, typeRootState, typeStateOfTerritory, typeStatistic } from '../../models'
+import { getLocalStatisticsService, getGlobalStatisticsService } from '../../services'
+import { generalBlue, typeLocalTelephonicStatistic, typeRootState, typeTelephonicStatistic } from '../../models'
 
 export const Statistics = () => {
 
@@ -12,26 +12,33 @@ export const Statistics = () => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const [globalStatistics, setGlobalStatistics] = useState<typeStatistic|null>()
-    const [loading, setLoading] = useState<boolean>(false)
-    const [localStatisticsArray, setLocalStatisticsArray] = useState<typeLocalStatistic[]|null>([])
+    const [globalS, setGlobalStatistics] = useState<typeTelephonicStatistic>()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [localS, setLocalStatistics] = useState<typeLocalTelephonicStatistic[]>([])
     const [showBtn, setShowBtn] = useState<boolean>(true)
-    const [states, setStates] = useState<typeStateOfTerritory[]>([])
     
     const retrieveLocalStats = async (): Promise<void> => {
-        setLoading(true)
+        setIsLoading(true)
         setShowBtn(false)
-        const allLocalStatistics: typeLocalStatistic[]|null = await getAllLocalStatisticsService()
+        const allLocalStatistics: typeLocalTelephonicStatistic[]|null = await getLocalStatisticsService()
+        setIsLoading(false)
         if (!allLocalStatistics) return
-        setLocalStatisticsArray(allLocalStatistics)
-        setLoading(false)
-        const states1: typeStateOfTerritory[]|null = await getStateOfTerritoriesService()
-        if (states1) setStates(states1)
+        setLocalStatistics(allLocalStatistics)
     }
 
     useEffect(() => {
-        getGlobalStatisticsService().then((data: typeStatistic|null) => {
-            if (data) setGlobalStatistics(data)
+        getGlobalStatisticsService().then((data: typeTelephonicStatistic|null) => {
+            setIsLoading(false)
+            if (!data) return
+            data.numberOf_ADejarCarta_relative = Math.round((data.numberOf_ADejarCarta * 100)/data.numberOfHouseholds)
+            data.numberOf_FreePhones = data.numberOfHouseholds - data.numberOf_ADejarCarta - data.numberOf_Contesto - data.numberOf_NoAbonado - data.numberOf_NoContesto - data.numberOf_NoLlamar
+            data.numberOf_NoContesto_relative = Math.round((data.numberOf_Contesto * 100)/data.numberOfHouseholds)
+            data.numberOf_NoLlamar_relative = Math.round((data.numberOf_NoLlamar * 100)/data.numberOfHouseholds)
+            data.numberOfAlreadyCalled = data.numberOf_Contesto + data.numberOf_NoContesto + data.numberOf_NoLlamar + data.numberOf_NoAbonado
+            data.numberOfAlreadyCalledRelative = Math.round((data.numberOfAlreadyCalled * 100)/data.numberOfHouseholds)
+            data.numberOfAlreadyDone = data.numberOf_Contesto + data.numberOf_NoLlamar + data.numberOf_ADejarCarta
+            data.numberOfAlreadyDoneRelative = Math.round((data.numberOfAlreadyCalled * 100)/data.numberOfHouseholds)
+            setGlobalStatistics(data)
         })
         return () => setGlobalStatistics(undefined)
     }, [])
@@ -40,40 +47,40 @@ export const Statistics = () => {
     <>
         <H2 title={"ESTADÍSTICAS DE LA TELEFÓNICA"} />
 
-        {globalStatistics ?
+        {globalS ?
             <div style={{ margin: isMobile ? '0' : '0 10%' }}>
                 <br/>
                 <br/>
                 <Card
                     className={isDarkMode ? 'bg-dark text-white' : ''}
-                    style={{ padding: '35px', textAlign: isMobile ? 'center' : 'left' }}
+                    style={{ padding: '35px', textAlign: isMobile ? 'center' : undefined }}
                 >
 
-                    <h4>{`Hay ${globalStatistics.count} viviendas, ${globalStatistics.countNoAbonado} no abonadas. Neto: ${globalStatistics.count - globalStatistics.countNoAbonado}`} </h4>
+                    <h4> Hay {globalS.numberOfHouseholds} viviendas, {globalS.numberOf_NoAbonado} no abonadas. Neto: {globalS.numberOfHouseholds - globalS.numberOf_NoAbonado} </h4>
 
                     <br/>
 
-                    <h4>Llamadas: {globalStatistics.countContesto + globalStatistics.countNoContesto + globalStatistics.countNoLlamar + globalStatistics.countNoAbonado} ({ Math.round( (globalStatistics.countContesto + globalStatistics.countNoContesto + globalStatistics.countNoLlamar + globalStatistics.countNoAbonado) / globalStatistics.count * 1000 )/10}%) (Predicadas (sin cartas) + No contestó + No abonadas) </h4>
+                    <h4> Llamadas: {globalS.numberOfAlreadyCalled} ({globalS.numberOfAlreadyCalledRelative}%) (Predicadas (sin cartas) + No contestó + No abonadas) </h4>
 
                     <br/>
 
-                    <h4>Libres para llamar: {globalStatistics.libres} </h4>
+                    <h4> Libres para llamar: {globalS.numberOf_FreePhones} </h4>
 
                     <hr/>
 
-                    <h4>{`Predicadas: ${globalStatistics.countContesto + globalStatistics.countNoLlamar + globalStatistics.countDejarCarta} viviendas (${Math.round((globalStatistics.countContesto + globalStatistics.countNoLlamar + globalStatistics.countDejarCarta)*10000/globalStatistics.count)/100}%)`} </h4>
+                    <h4> Predicadas: {globalS.numberOfAlreadyDone} viviendas ({globalS.numberOfAlreadyDoneRelative}%) </h4>
 
                     <br/>
 
-                    <h4> &nbsp;&nbsp; {`Contestó: ${globalStatistics.countContesto} viviendas (${Math.round(globalStatistics.countContesto*10000/globalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; Contestó: {globalS.numberOf_Contesto} viviendas ({globalS.numberOf_NoContesto_relative}%) </h4>
 
-                    <h4> &nbsp;&nbsp; {`A dejar carta: ${globalStatistics.countDejarCarta} viviendas (${Math.round(globalStatistics.countDejarCarta*10000/globalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; A dejar carta: {globalS.numberOf_ADejarCarta} viviendas ({globalS.numberOf_ADejarCarta_relative}%) </h4>
 
-                    <h4> &nbsp;&nbsp; {`No llamar: ${globalStatistics.countNoLlamar} viviendas (${Math.round(globalStatistics.countNoLlamar*10000/globalStatistics.count)/100}%)`} </h4>
+                    <h4> &nbsp;&nbsp; No llamar: {globalS.numberOf_NoLlamar} viviendas ({globalS.numberOf_NoLlamar_relative}%) </h4>
 
                     <br/>
 
-                    <h4>{`No contestó: ${globalStatistics.countNoContesto} viviendas (${Math.round(globalStatistics.countNoContesto*10000/globalStatistics.count)/100}%)`} </h4>
+                    <h4> No contestó: {globalS.numberOf_NoContesto} viviendas ({globalS.numberOf_NoContesto_relative}%) </h4>
 
                 </Card>
 
@@ -86,7 +93,7 @@ export const Statistics = () => {
         <br/>
 
         
-        {showBtn && globalStatistics &&
+        {showBtn && globalS &&
             <button
                 className={'btn btn-general-blue d-block mx-auto'}
                 onClick={() => retrieveLocalStats()}
@@ -101,41 +108,26 @@ export const Statistics = () => {
         }
 
 
-        {localStatisticsArray && !!localStatisticsArray.length && localStatisticsArray.map((territory: typeLocalStatistic) => {
-                
-            let isFinished = false
-            if (states) states.forEach((state: typeStateOfTerritory) => {
-                if (state && territory && state.territorio === territory.territorio) isFinished = state.isFinished
-            })
+        {localS && !!localS.length && localS.map((territory: typeLocalTelephonicStatistic) =>
+            <Link key={territory.territoryNumber} to={`/telefonica/${territory.territoryNumber}`}>
+                <Card
+                    className={`d-block mx-auto mt-3 ${territory.numberOf_FreePhones < 50 ? 'bg-danger' : (territory.numberOf_FreePhones < 100 ? 'bg-warning': 'bg-success')} ${territory.isFinished ? 'animate__animated animate__flash animate__infinite animate__slower' : ''}`}
+                    style = {{
+                        color: 'black',
+                        marginBottom: '20px',
+                        maxWidth: isMobile ? '80%' : '55%',
+                        padding: '35px',
+                        textAlign: isMobile ? 'center' : undefined
+                    }}
+                >
+                    <h3> Territorio {territory.territoryNumber} {territory.isFinished ? '- TERMINADO' : ''} </h3>
+                    <h4> Quedan {territory.numberOf_FreePhones} para predicar </h4>
+                </Card>
+            </Link>
+        )}
 
-            return (
-                <Link key={territory.territorio} to={`/territorios/${territory.territorio}`}>
-                    <Card
-                        className={`d-block mx-auto mt-3 ${territory.libres < 50 ? 'bg-danger' : (territory.libres < 100 ? 'bg-warning': 'bg-success')} ${isFinished ? 'animate__animated animate__flash animate__infinite animate__slower' : ''}`}
-                        style = {{
-                            color: 'black',
-                            marginBottom: '20px',
-                            maxWidth: isMobile ? '80%' : '55%',
-                            padding: '35px', textAlign: isMobile ? 'center' : 'left'
-                        }}
-                    >
-                        <h3> Territorio {territory.territorio} {isFinished ? '- TERMINADO' : ''} </h3>
-                        <h4> Quedan {territory.libres} para predicar </h4>
-                    </Card>
-                </Link>
-            )
-        })}
-        
-        
-        {loading &&
-            <>
-                <Loading mt={'40px'} mb={'20px'} />
+        {isLoading && <Loading mt={'40px'} mb={'20px'} />}
 
-                <h4 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
-                    Esto demora 10 segundos
-                </h4>
-            </>
-        }
     </>
     )
 }

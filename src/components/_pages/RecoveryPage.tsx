@@ -15,11 +15,12 @@ export const RecoveryPage = () => {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
 
-    const openAlertModalHandler = (title: string, message: string, execution: Function|undefined = undefined): void => {
+    const openAlertModalHandler = (title: string, message: string, animation?: number, execution?: Function): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'alert',
             title,
             message,
+            animation,
             execution
         }))
     }
@@ -30,12 +31,12 @@ export const RecoveryPage = () => {
         if (password !== confPassword) return openAlertModalHandler("La contraseña no coincide con su confirmación", "")
         const response = await changePswService(null, password, id)
         if (response && response.success) {
-            openAlertModalHandler("Clave cambiada con éxito", "", () => navigate('/'))
+            openAlertModalHandler("Clave cambiada con éxito", "", 1, () => navigate('/'))
         } else if (response && response.expired) {
-            openAlertModalHandler("Este link ya expiró; pedir otro", "", () => navigate('/acceso'))
+            openAlertModalHandler("Este link ya expiró; pedir otro", "", 2, () => navigate('/acceso'))
         } else if (response && response.used) {
-            openAlertModalHandler("Este link de recuperación ya se usó antes", "", () => navigate('/acceso'))
-        } else openAlertModalHandler("Algo salió mal", "")
+            openAlertModalHandler("Este link de recuperación ya se usó antes", "", 2, () => navigate('/acceso'))
+        } else openAlertModalHandler("Algo salió mal", "", 2)
     }
     
     useEffect(() => {
@@ -46,7 +47,8 @@ export const RecoveryPage = () => {
                     mode: 'alert',
                     title: "El link no es válido",
                     message: "",
-                    execution: () => navigate('/')
+                    execution: () => navigate('/'),
+                    animation: 2
                 }))
             }
         })

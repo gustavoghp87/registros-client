@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 import { confirmAlert } from 'react-confirm-alert'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeAlertModalReducer } from '../../store'
-import { adjustModalStyles } from '../../services'
+import { adjustModalStyles, insertAnimationForAlertModal } from '../../services'
 import { typeAppDispatch, typeRootState } from '../../models'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 export const AlertModal = () => {
 
-    const { mode, title, message, execution } = useSelector((state: typeRootState) => state.alertModal)
+    const { mode, title, message, execution, animation } = useSelector((state: typeRootState) => state.alertModal)
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     
     useEffect(() => {
@@ -47,11 +47,12 @@ export const AlertModal = () => {
             closeOnClickOutside: true,
             willUnmount: () => closeModalHandler()
             // overlayClassName: "text-center",
-            // onClickOutside: () => { console.log("click outside") },
-            // onKeypressEscape: () => {console.log("key press escape") },
+            // onClickOutside: () => {},
+            // onKeypressEscape: () => {},
         })
         adjustModalStyles()
-    }, [mode, title, message, execution, dispatch])
+        if (animation) insertAnimationForAlertModal(animation)
+    }, [animation, dispatch, execution, message, mode, title])
 
     return (<></>)
 }

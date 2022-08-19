@@ -14,8 +14,8 @@ export const HTHMarkerComponent = (props: any) => {
             //     url: "/img/svg/carrito-color.svg",
             //     size: new google.maps.Size(88, 81)
             // }}
-            onClick={() => console.log("Clicked", marker.id)}
-            onRightClick={() => console.log("Right click", marker.id)}
+            onClick={() => {}}
+            onRightClick={() => {}}
             options={{
                 // label: 'label 123'
                 position: {

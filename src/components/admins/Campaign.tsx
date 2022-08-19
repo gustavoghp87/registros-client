@@ -4,8 +4,8 @@ import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService, putHyphens } from '../../services'
-import { noAsignado, typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
 import { getUsersService } from '../../services/userServices'
+import { noAsignado, typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
 
 export const Campaign = (props: any) => {
     
@@ -27,11 +27,12 @@ export const Campaign = (props: any) => {
         })
     }
 
-    const openAlertModalHandler = (title: string, message: string): void => {
+    const openAlertModalHandler = (title: string, message: string, animation?: number): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'alert',
             title,
-            message
+            message,
+            animation
         }))
     }
 
@@ -51,7 +52,7 @@ export const Campaign = (props: any) => {
         setIsLoading(true)
         closeCampaignPackService(id).then((success: boolean) => {
             setIsLoading(false)
-            if (!success) return openAlertModalHandler("Algo falló", "")
+            if (!success) return openAlertModalHandler("Algo falló", "", 2)
             refreshHandler()
         })
     }
@@ -61,7 +62,7 @@ export const Campaign = (props: any) => {
         setIsLoading(true)
         assignCampaignPackByEmailService(id, email).then((success: boolean) => {
             setIsLoading(false)
-            if (!success) return openAlertModalHandler("Algo falló", "")
+            if (!success) return openAlertModalHandler("Algo falló", "", 2)
             refreshHandler()
         })
     }
@@ -70,7 +71,7 @@ export const Campaign = (props: any) => {
         setIsLoading(true)
         enableAccesibilityModeService(id, accessible).then((success: boolean) => {
             setIsLoading(false)
-            if (!success) return openAlertModalHandler("Algo falló", "")
+            if (!success) return openAlertModalHandler("Algo falló", "", 2)
             refreshHandler()
         })
     }
@@ -81,8 +82,9 @@ export const Campaign = (props: any) => {
             users.sort((a: typeUser, b: typeUser) => a.email.localeCompare(b.email))
             setUsers(users)
         })
-        getCampaignPacksService().then((campaignPacks: typeCampaignPack[]|null) => {
-            if (campaignPacks) setCampaignPacks(campaignPacks)
+        getCampaignPacksService().then((campaignPacks0: typeCampaignPack[]|null) => {
+            if (!campaignPacks0) return
+            setCampaignPacks(campaignPacks0)
         })
     }, [])
 
@@ -96,7 +98,7 @@ export const Campaign = (props: any) => {
 
         {campaignPacks && !!campaignPacks.length &&
             <button className={`btn ${showFiltered ? 'btn-general-blue' : 'btn-general-red'} d-block mx-auto mt-5`}
-                onClick={() => setShowFiltered(!showFiltered)}
+                onClick={() => setShowFiltered(x => !x)}
             >
                 {showFiltered ? 'Ver todos' : 'Ver solo No Asignados No Terminados'}
             </button>
@@ -104,13 +106,14 @@ export const Campaign = (props: any) => {
 
         <div style={{ margin: '80px auto' }}>
             {users && !!users.length && campaignPacks && !!campaignPacks.length && campaignPacks.map((campaignPack: typeCampaignPack) => {
+                
                 let filtered = false
-                if (showFiltered && ((campaignPack.asignado && campaignPack.asignado !== noAsignado) || campaignPack.terminado)) filtered = true
+                if (showFiltered && ((campaignPack.assignedTo !== noAsignado) || campaignPack.isFinished)) filtered = true
                 
                 return (
 
                 <Card key={campaignPack.id}
-                    className={`pt-2 py-3 mb-4 text-white ${campaignPack.terminado ? 'bg-info' : 'bg-dark'}`}
+                    className={`pt-2 py-3 mb-4 text-white ${campaignPack.isFinished ? 'bg-info' : 'bg-dark'}`}
                     style={{ display: filtered ? 'none' : '' }}
                 >
                     <Card.Body>
@@ -119,16 +122,16 @@ export const Campaign = (props: any) => {
                                 <br />
                                 <h3> Paquete {campaignPack.id} </h3>
                                 {/* <h4> Grupo de paquetes: {campaignPack.paquete} </h4> */}
-                                <h4> {putHyphens(campaignPack.desde)} </h4>
-                                <h4> {putHyphens(campaignPack.al)} </h4>
+                                <h4> {putHyphens(campaignPack.from)} </h4>
+                                <h4> {putHyphens(campaignPack.to)} </h4>
                             </Col>
 
                             <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
                                 <h4> Asignado a: </h4>
                                 <SplitButton
-                                    variant={(!campaignPack.asignado || campaignPack.asignado === noAsignado) ? 'primary' : 'danger'}
+                                    variant={(campaignPack.assignedTo !== noAsignado) ? 'primary' : 'danger'}
                                     className={'mt-2'}
-                                    title={campaignPack.asignado ? campaignPack.asignado : noAsignado}
+                                    title={campaignPack.assignedTo ? campaignPack.assignedTo : noAsignado}
                                 >
                                     <Dropdown.Item onClick={() => assignCampaignPackByEmailHandler(campaignPack.id, 'Nadie')}>
                                         Nadie
@@ -141,7 +144,7 @@ export const Campaign = (props: any) => {
                                     <Dropdown.Divider />
                                     
                                     {users.map((user: typeUser, index: number) => (
-                                        <Dropdown.Item key={index}
+                                        <Dropdown.Item key={user.email}
                                             eventKey={index.toString()}
                                             onClick={() => assignCampaignPackByEmailHandler(campaignPack.id, user.email)}>
                                             {user.email}
@@ -153,26 +156,29 @@ export const Campaign = (props: any) => {
                                 <br/>
                                 <br/>
 
-                                <Button variant={'secondary'}
-                                    style={{ display: campaignPack.terminado ? 'none' : '' }}
-                                    onClick={() => { openConfirmModalHandler(campaignPack.id) }}
-                                >
-                                    Marcar como terminado
-                                </Button>
+                                {!campaignPack.isFinished &&
+                                    <Button
+                                        onClick={() => { openConfirmModalHandler(campaignPack.id) }}
+                                        variant={'secondary'}
+                                    >
+                                        Marcar como terminado
+                                    </Button>
+                                }
                             </Col>
 
                             <Col md={4} className={'text-center'} style={{ marginBottom: isMobile ? '15px' : '' }}>
                                 <h4 className={'mt-3 mb-2'}>
-                                    {campaignPack.terminado ? "TERMINADO" : "NO TERMINADO"}
+                                    {campaignPack.isFinished ? "TERMINADO" : "NO TERMINADO"}
                                 </h4>
                                 <h4>
-                                    Llamados: {campaignPack.terminado ? '50' : campaignPack.llamados ? campaignPack.llamados.length : '0'}
+                                    Llamados: {campaignPack.isFinished ? '50' : campaignPack.calledPhones.length}
                                 </h4>
-                                <Button variant={campaignPack.accessible ? 'primary' : 'danger'}
-                                    className={`mt-2 ${campaignPack.terminado ? 'd-none' : ''}`}
-                                    onClick={() => enableAccesibilityModeHandler(campaignPack.id, !campaignPack.accessible)}
+                                <Button
+                                    className={`mt-2 ${campaignPack.isFinished ? 'd-none' : ''}`}
+                                    onClick={() => enableAccesibilityModeHandler(campaignPack.id, !campaignPack.isAccessible)}
+                                    variant={campaignPack.isAccessible ? 'primary' : 'danger'}
                                 >
-                                    {campaignPack.accessible ? "Paquete accesible" : "Habilitar accesibilidad"}
+                                    {campaignPack.isAccessible ? "Paquete accesible" : "Habilitar accesibilidad"}
                                 </Button>
                             </Col>
 

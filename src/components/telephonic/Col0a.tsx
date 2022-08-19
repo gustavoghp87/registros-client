@@ -65,8 +65,8 @@ const BlockToggleButton = (props: any) => {
                 style={{
                     padding: '0',
                     backgroundColor: `${isChecked ? generalRed : ''}`,
-                    borderTopLeftRadius: `${radio?.value === "1" ? '3px' : ''}`,
-                    borderBottomLeftRadius: `${radio?.value === "1" ? '3px' : ''}`
+                    borderTopLeftRadius: `${radio?.value === '1' ? '3px' : ''}`,
+                    borderBottomLeftRadius: `${radio?.value === '1' ? '3px' : ''}`
                 }}
                 >
                 <div className={'text-white'}

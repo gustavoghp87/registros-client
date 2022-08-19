@@ -13,7 +13,7 @@ export const HTHForm = (props: any) => {
     const date: string = props.date
     const isDoNotCallForm: boolean = props.isDoNotCallForm
     const submitHandler: Function = props.submitHandler
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     
     // do not call
     const doorBell: string = props.doorBell
@@ -91,7 +91,7 @@ export const HTHForm = (props: any) => {
                     <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Territorio </Form.Label>
                         <Form.Control
-                            value={territory}
+                            value={territoryNumber}
                             disabled
                         />
                     </Form.Group>

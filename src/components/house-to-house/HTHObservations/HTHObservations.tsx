@@ -12,7 +12,7 @@ export const HTHObservations = (props: any) => {
     const currentFace: typePolygon = props.currentFace
     const date: string = props.date
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [showForm, setShowForm] = useState<boolean>(false)
 
     const closeShowFormHandler = (): void => setShowForm(false)
@@ -42,7 +42,7 @@ export const HTHObservations = (props: any) => {
                             date={date}
                             observation={observation}
                             refreshDoNotCallHandler={refreshHTHTerritoryHandler}
-                            territory={territory}
+                            territoryNumber={territoryNumber}
                         />
                     </div>
                 ))
@@ -63,7 +63,7 @@ export const HTHObservations = (props: any) => {
                     currentFace={currentFace}
                     date={date}
                     refreshDoNotCallHandler={refreshHTHTerritoryHandler}
-                    territory={territory}
+                    territoryNumber={territoryNumber}
                 />
             }
 

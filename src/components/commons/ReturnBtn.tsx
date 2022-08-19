@@ -14,15 +14,13 @@ export const ReturnBtn = () => {
     const [show, setShow] = useState<boolean>(false)
 
     useEffect(() => {
-        if (location.pathname === '/index' ||
-            location.pathname.split('/')[1] === 'admins' ||
+        if (
+            location.pathname === '/selector' ||
+            location.pathname === 'admins' ||
+            location.pathname === 'usuario' ||
             location.pathname.split('/')[1] === 'casa-en-casa' ||
             location.pathname.split('/')[1] === 'celulares' ||
-            location.pathname.split('/')[1] === 'celulares-admins' ||
-            location.pathname.split('/')[1] === 'estadisticas' ||
-            location.pathname.split('/')[1] === 'logs' ||
-            location.pathname.split('/')[1] === 'usuario' ||
-            location.pathname.split('/')[1] === 'territorios'
+            location.pathname.split('/')[1] === 'telefonica'
         ) setShow(true)
     }, [location.pathname])
     

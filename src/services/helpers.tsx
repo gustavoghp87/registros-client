@@ -1,4 +1,4 @@
-import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeBlock, typeHousehold, typeTerritoryNumber } from '../models'
+import { typeBlock, typeHousehold, typeHTHTerritory } from '../models'
 
 type typeHeaders = {
     'Accept': string
@@ -7,18 +7,16 @@ type typeHeaders = {
     'x-Recaptcha-Token': string
 }
 
-export const headers: typeHeaders = {
+export const getHeaders = (): typeHeaders => ({
     'Accept': 'application/json',
     'Content-Type': 'application/json',
     'x-Authorization': localStorage.getItem('token') || "",
     'x-Recaptcha-Token': localStorage.getItem('recaptchaToken') || ""
-}
+})
 
-export const timeConverter = (UNIX_timestamp: string, parse: boolean): string => {
+export const timeConverter = (UNIX_timestamp: number): string => {
     try {
-        let a: Date;
-        if (parse) a = new Date(parseInt(UNIX_timestamp))
-        else a = new Date(UNIX_timestamp)
+        let a: Date = new Date(UNIX_timestamp)
         let months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
         let year = a.getFullYear()
         let month = months[a.getMonth()]
@@ -29,7 +27,7 @@ export const timeConverter = (UNIX_timestamp: string, parse: boolean): string =>
         return time
     } catch (error) {
         console.log(error)
-        return "No se pudo recuperar la fecha..."
+        return "Error en la fecha..."
     }
 }
 
@@ -60,6 +58,24 @@ export const adjustModalStyles = (): NodeJS.Timeout => setTimeout((): void => {
     buttonGroupElements[0]?.classList?.add('m-auto')
     buttonGroupElements[0]?.classList?.add('mt-4')
     buttonGroupElements[0]?.firstElementChild?.classList?.add('bg-danger')
+}, 200)
+
+export const insertAnimationForAlertModal = (animationNumber: number): NodeJS.Timeout => setTimeout((): void => {
+    if (!animationNumber) return
+    const tag = document.createElement('img')
+    if (animationNumber === 1)
+        tag.src = 'https://upload.wikimedia.org/wikipedia/commons/7/73/Flat_tick_icon.svg'
+    else if (animationNumber === 2)
+        tag.src = 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Flat_cross_icon.svg'
+    else
+        return
+    tag.alt = "Failed"
+    tag.classList.add('w-50')
+    tag.classList.add('pb-3')
+    tag.classList.add('animate__animated')
+    tag.classList.add('animate__heartBeat')
+    const bodyElements: HTMLCollectionOf<Element> = document.getElementsByClassName('react-confirm-alert-body')
+    bodyElements[0]?.prepend(tag)
 }, 200)
 
 export const editInfoWindowsStyles = (): NodeJS.Timeout => setTimeout((): void => {
@@ -105,41 +121,54 @@ export const editInfoWindowsStyles = (): NodeJS.Timeout => setTimeout((): void =
 export const getHouseholdVariant = (households: typeHousehold[]): typeHousehold[] => {
     if (!households || !households.length) return households
     return households.map(x => {
-        if (x.estado === noPredicado) x = { ...x, variante: 'success' }
-        if (x.estado === contesto) x = { ...x, variante: 'primary' }
-        if (x.estado === noContesto) x = { ...x, variante: 'warning' }
-        if (x.estado === aDejarCarta) x = { ...x, variante: 'danger' }
-        if (x.estado === noLlamar) x = { ...x, variante: 'dark' }
+        if (x.callingState === 'No predicado') x = { ...x, variant: 'success' }
+        else if (x.callingState === 'Contestó') x = { ...x, variant: 'primary' }
+        else if (x.callingState === 'No contestó') x = { ...x, variant: 'warning' }
+        else if (x.callingState === 'A dejar carta') x = { ...x, variant: 'danger' }
+        else if (x.callingState === 'No llamar') x = { ...x, variant: 'dark' }
         return x
     })
 }
 
 export const getHouseholdsToShow = (households: typeHousehold[],
- territory: typeTerritoryNumber, currentBlock: typeBlock, isShowingAllStates: boolean, isShowingAllAvailable: boolean): typeHousehold[] => {
-    if (isShowingAllStates && isShowingAllAvailable) {  // helper
+ currentBlock: typeBlock, isShowingAllStates: boolean, isShowingAllAvailable: boolean): typeHousehold[] => {
+    if (isShowingAllStates && isShowingAllAvailable) {
         households = households.filter(x =>
-            x.manzana === currentBlock && x.territorio === territory
+            x.block === currentBlock
         )
     } else if (!isShowingAllStates && isShowingAllAvailable) {
         households = households.filter(x =>
-            x.manzana === currentBlock && x.territorio === territory && ((x.estado === noPredicado && x.noAbonado !== true) || x.doNotMove)
+            x.block === currentBlock && ((x.callingState === 'No predicado' && x.notSubscribed !== true) || x.doNotMove)
         )
     } else if (isShowingAllStates && !isShowingAllAvailable) {
         households = households.filter(x =>
-            x.manzana === currentBlock && x.territorio === territory
+            x.block === currentBlock
         )
     } else {
         households = households.filter(x =>
-            x.manzana === currentBlock && x.territorio === territory && ((x.estado === noPredicado && x.noAbonado !== true) || x.doNotMove)
+            x.block === currentBlock && ((x.callingState === 'No predicado' && x.notSubscribed !== true) || x.doNotMove)
         )
     }
     return households
 }
 
+export const getNumberOfFreePhones = (households: typeHousehold[]): number => {
+    return households.filter(x => !x.notSubscribed && x.callingState === 'No predicado').length
+}
+
 export const getBlocks = (households: typeHousehold[]): typeBlock[] => {
     let blocks: typeBlock[] = []
     for (let i = 1; i < 10; i++) {
-        if (households.some(x => x.manzana === i.toString())) blocks.push(i.toString() as typeBlock)
+        if (households.some(x => x.block === i.toString())) blocks.push(i.toString() as typeBlock)
     }
     return blocks
+}
+
+export const getStreetsByHTHTerritory = (hthTerritory: typeHTHTerritory): string[] => {
+    if (!hthTerritory || !hthTerritory.map || !hthTerritory.map.polygons) return []
+    const streets: string[] = []
+    hthTerritory.map.polygons.forEach(x => {
+        if (!streets.includes(x.street)) streets.push(x.street)
+    })
+    return streets
 }

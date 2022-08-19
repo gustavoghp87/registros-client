@@ -16,21 +16,20 @@ export const FreePhonesMessage = (props: any) => {
     const freePhones: number|undefined = useMemo(() => {
         let currentHouseholds: typeHousehold[] = households
         if (!currentHouseholds || !currentHouseholds.length || !currentBlock) return undefined
-        currentHouseholds = currentHouseholds.filter(x => x.manzana === currentBlock && x.estado === 'No predicado' && !x.noAbonado)
+        currentHouseholds = currentHouseholds.filter(x => x.block === currentBlock && x.callingState === 'No predicado' && !x.notSubscribed)
         return currentHouseholds.length
     }, [currentBlock, households])
 
     return (
         <>
-            {freePhones &&
+            {!!freePhones &&
                 <h3 className={'text-center text-white mb-5 py-3'} style={{ backgroundColor: generalBlue }}>
                     En esta manzana hay {freePhones} teléfonos libres
                 </h3>
             }
 
             {!freePhones && loaded && currentBlock &&
-                <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
-                    <br/>
+                <h3 className={`text-center mb-4 ${isDarkMode ? 'text-white' : ''}`}>
                     No hay viviendas no llamadas en esta manzana {currentBlock} del territorio {territoryNumber}
                 </h3>
             }

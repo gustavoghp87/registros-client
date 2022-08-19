@@ -52,7 +52,7 @@ export const NavBar = () => {
                         {user && user.isAuth ?
                             <>
                                 <Nav.Link
-                                    onClick={() => navigateHandler('/index')}
+                                    onClick={() => navigateHandler('/selector')}
                                     style={{ color, margin: isMobile ? '8px 0' : '0' }}
                                 >
                                     &nbsp; &nbsp;Territorios&nbsp; &nbsp;

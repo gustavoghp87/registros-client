@@ -1,16 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getUserFromLSService, setUserFromLSService } from '../services'
+import { getUserFromLSService, setUserToLSService } from '../services'
 import { logoutService } from '../services/userServices'
 import { typeUser } from '../models'
 
 const unauthenticatedUser: typeUser = {
     _id: { id: 0 },
-    isAuth: false,
-    isAdmin: false,
-    role: 0,
     email: "",
-    estado: false,
-    group: 0
+    group: 0,
+    id: 0,
+    isActive: false,
+    isAdmin: false,
+    isAuth: false,
+    phoneAssignments: [],
+    role: 0
 }
 
 const uls: string|null = getUserFromLSService()
@@ -21,13 +23,13 @@ export const userSlice = createSlice({
     initialState: userInLS,
     reducers: {
         logoutReducer: (state) => {
-            setUserFromLSService(JSON.stringify(unauthenticatedUser))
+            setUserToLSService(JSON.stringify(unauthenticatedUser))
             logoutService()
             state = unauthenticatedUser
             return state
         },
         refreshUserReducer: (state, action: PayloadAction<typeUser>) => {
-            setUserFromLSService(JSON.stringify(action.payload))
+            setUserToLSService(JSON.stringify(action.payload))
             state = action.payload
             return state
         }

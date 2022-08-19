@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { Card } from 'react-bootstrap'
 import { H2, Loading } from '../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { resetTerritoryService, timeConverter } from '../../services'
-import { aDejarCarta, contesto, noContesto, noLlamar, noPredicado, typeAppDispatch, typeHousehold, typeLocalStatistic, typeResetDate, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
-
-type typeProcessedData = {
-    llamadas: number
-    llamadasRel: number
-    predicadas: number
-}
+import { typeAppDispatch, typeLocalTelephonicStatistic, typeResetDate, typeRootState, typeTelephonicTerritory } from '../../models'
 
 type typeOption = 1 | 2 | 3 | 4
 
@@ -21,11 +15,9 @@ export const LocalStatistics = (props: any) => {
         isMobile: state.mobileMode.isMobile
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const households: typeHousehold[] = props.households
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
-    const stateOfTerritory: typeStateOfTerritory = props.stateOfTerritory
-    const [localStatistics, setLocalStatistics] = useState<typeLocalStatistic>()
-    const [processedData, setProcessedData] = useState<typeProcessedData>()
+    const telephonicTerritory: typeTelephonicTerritory = props.telephonicTerritory
+    const [localS, setLocalStatistics] = useState<typeLocalTelephonicStatistic>()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     let option: typeOption = 1
 
     const resetHandler = async (selectedOption: typeOption): Promise<void> => {
@@ -42,51 +34,66 @@ export const LocalStatistics = (props: any) => {
             message = "Esta opción resetea todos los predicados y los no abonados"
         else return
         dispatch(setValuesAndOpenAlertModalReducer({
-            showingAlertModal: true,
             mode: 'confirm',
-            title: `¿Resetear Territorio ${territoryNumber}?`,
+            title: `¿Resetear Territorio ${telephonicTerritory.territoryNumber}?`,
             message,
             execution: resetNowHandler
         }))
     }
     
     const resetNowHandler = async (): Promise<void> => {
-        if (!territoryNumber || !option) return
-        const success: boolean = await resetTerritoryService(territoryNumber, option)
-        if (success) window.location.reload()
+        if (!option) return
+        setIsLoading(true)
+        const modifiedCount: number|null = await resetTerritoryService(telephonicTerritory.territoryNumber, option)
+        setIsLoading(false)
+        if (modifiedCount === null) dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title: "Error",
+            message: "Algo falló y no se pudo resetear el territorio.",
+            animation: 2
+        }))
+        else if (modifiedCount > 0) dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: "Terminado",
+            message: `Se resetearon las viviendas usando la opción ${option}`,
+            execution: () => window.location.reload(),
+            animation: 1
+        }))
+        else dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'alert',
+            title: "No se hicieron cambios",
+            message: `Parece que con la opción ${option} no queda ninguna vivienda para resetear.`
+        }))
     }
 
     useEffect(() => {
-        if (territoryNumber && households && households.length) {
-            const statistics0: typeLocalStatistic = {
-                count: households.length,
-                countContesto: households.filter(x => x.estado === contesto && !x.noAbonado).length,
-                countNoContesto: households.filter(x => x.estado === noContesto && !x.noAbonado).length,
-                countDejarCarta: households.filter(x => x.estado === aDejarCarta && !x.noAbonado).length,
-                countNoLlamar: households.filter(x => x.estado === noLlamar && !x.noAbonado).length,
-                countNoAbonado: households.filter(x => x.noAbonado).length,
-                libres: households.filter(x => x.estado === noPredicado && !x.noAbonado).length,
-                territorio: territoryNumber
-            }
-            setLocalStatistics(statistics0)
-
-            const llamadas: number = statistics0.countContesto + statistics0.countNoContesto + statistics0.countNoLlamar + statistics0.countDejarCarta
-            const llamadasRel: number = Math.round(llamadas / statistics0.count * 1000 ) / 10
-            const predicadas: number = statistics0.countContesto + statistics0.countNoLlamar + statistics0.countDejarCarta
-            // const predicadasRel: number = datos ? Math.round((datos.countContesto + datos.countNoLlamar + datos.countDejarCarta)*10000/datos.count/10)/10 : 0
-            // const noContestoRel: number = datos ? Math.round(datos.countNoContesto*10000/datos.count/10)/10 : 0
-            // const contestoRel: number = datos ? Math.round(datos.countContesto*10000/datos.count/10)/10 : 0
-            // const aDejarCartaRel: number = datos ? Math.round(datos.countDejarCarta*10000/datos.count/10)/10 : 0
-            // const noLlamarRel: number = datos ? Math.round(datos.countNoLlamar*10000/datos.count/10)/10 : 0
-            setProcessedData({
-                llamadas,
-                llamadasRel,
-                predicadas
-            })
+        if (!telephonicTerritory.households.length) return
+        const statistics0: typeLocalTelephonicStatistic = {
+            isFinished: telephonicTerritory.stateOfTerritory.isFinished,
+            numberOfHouseholds: telephonicTerritory.households.length,
+            numberOf_Contesto: telephonicTerritory.households.filter(x => x.callingState === 'Contestó' && !x.notSubscribed).length,
+            numberOf_NoContesto: telephonicTerritory.households.filter(x => x.callingState === 'No contestó' && !x.notSubscribed).length,
+            numberOf_ADejarCarta: telephonicTerritory.households.filter(x => x.callingState === 'A dejar carta' && !x.notSubscribed).length,
+            numberOf_NoLlamar: telephonicTerritory.households.filter(x => x.callingState === 'No llamar' && !x.notSubscribed).length,
+            numberOf_NoAbonado: telephonicTerritory.households.filter(x => x.notSubscribed).length,
+            numberOf_FreePhones: telephonicTerritory.households.filter(x => x.callingState === 'No predicado' && !x.notSubscribed).length,
+            territoryNumber: telephonicTerritory.territoryNumber,
+            numberOf_ADejarCarta_relative: 0,
+            numberOf_NoLlamar_relative: 0,
+            numberOfAlreadyCalled: 0,
+            numberOfAlreadyCalledRelative: 0,
+            numberOfAlreadyDone: 0,
+            numberOfAlreadyDoneRelative: 0,
+            numberOf_NoContesto_relative: 0
         }
-    }, [households, territoryNumber])
+        statistics0.numberOfAlreadyCalled = statistics0.numberOf_Contesto + statistics0.numberOf_NoContesto + statistics0.numberOf_NoLlamar + statistics0.numberOf_ADejarCarta + statistics0.numberOf_NoAbonado
+        statistics0.numberOfAlreadyCalledRelative = Math.round(statistics0.numberOfAlreadyCalled * 100/statistics0.numberOfHouseholds)
+        statistics0.numberOfAlreadyDone = statistics0.numberOf_Contesto + statistics0.numberOf_NoLlamar + statistics0.numberOf_ADejarCarta
+        statistics0.numberOf_FreePhones_relative = Math.round((statistics0.numberOf_FreePhones * 100)/statistics0.numberOfHouseholds)
+        setLocalStatistics(statistics0)
+    }, [telephonicTerritory])
     
-    if (!localStatistics || !processedData) {
+    if (!localS) {
         return <Loading mt={'40px'} />
     }
     
@@ -98,89 +105,87 @@ export const LocalStatistics = (props: any) => {
 
             <br/>
 
-            <Card
-                className={`px-5 py-3 ${isMobile ? 'text-center' : ''} ${isDarkMode ? 'bg-dark text-white' : ''}`}
-            >
+            <Card className={`px-5 py-3 ${isMobile ? 'text-center' : ''} ${isDarkMode ? 'bg-dark text-white' : ''}`}>
 
                 <h1 className={'text-center mt-3'}> Generales </h1>
 
                 <br/>
 
-                <h4>{`Hay ${localStatistics.count} viviendas: ${localStatistics.count - localStatistics.countNoAbonado} abonadas y ${localStatistics.countNoAbonado} no abonadas`} </h4>
+                <h4> Hay {localS.numberOfHouseholds} viviendas: {localS.numberOfHouseholds - localS.numberOf_NoAbonado} abonadas y {localS.numberOf_NoAbonado} no abonadas </h4>
 
                 <br/>
 
-                <h4> Libres para llamar: {localStatistics.libres} <span style={{ fontSize: 21 }}>({(1000 - Math.round(processedData.llamadasRel*10))/10}%)</span> </h4>
+                <h4> Libres para llamar: {localS.numberOf_FreePhones} <span style={{ fontSize: 21 }}>({localS.numberOf_FreePhones_relative}%)</span> </h4>
 
                 <br/>
 
-                <h4> Llamadas: {processedData.llamadas} <span style={{ fontSize: 21 }}>({processedData.llamadasRel}%)</span></h4>
+                <h4> Llamadas: {localS.numberOfAlreadyCalled} <span style={{ fontSize: 21 }}>({localS.numberOfAlreadyCalledRelative}%)</span></h4>
 
                 <br/>
 
                 <hr />
 
-                <h3 className={'text-center mt-3'}>{`Composición de Llamadas (${processedData.llamadas})`}</h3>
+                <h3 className={'text-center mt-3'}> Composición de Llamadas ({localS.numberOfAlreadyCalled}) </h3>
 
                 <br/>
 
-                <h4>{`No abonados: ${localStatistics.countNoAbonado} viviendas`} </h4>
+                <h4> No abonados: {localS.numberOf_NoAbonado} viviendas </h4>
 
                 <br/>
 
-                <h4>{`No contestó: ${localStatistics.countNoContesto} viviendas`} </h4>
+                <h4> No contestó: {localS.numberOf_NoContesto} viviendas </h4>
                 
                 <br/>
 
-                <h4 className={'mb-3'}>{`Predicadas: ${processedData.predicadas} viviendas`} </h4>
+                <h4 className={'mb-3'}> Predicadas: {localS.numberOfAlreadyDone} viviendas </h4>
 
-                <h4> &nbsp;&nbsp; {`-Contestó: ${localStatistics.countContesto} viviendas`} </h4>
+                <h4> &nbsp;&nbsp; -Contestó: {localS.numberOf_Contesto} viviendas </h4>
 
-                <h4> &nbsp;&nbsp; {`-A dejar carta: ${localStatistics.countDejarCarta} viviendas`} </h4>
+                <h4> &nbsp;&nbsp; -A dejar carta: {localS.numberOf_ADejarCarta} viviendas </h4>
 
-                <h4> &nbsp;&nbsp; {`-No llamar: ${localStatistics.countNoLlamar} viviendas`} </h4>
+                <h4> &nbsp;&nbsp; -No llamar: {localS.numberOf_NoLlamar} viviendas </h4>
 
-                {stateOfTerritory && stateOfTerritory.resetDate && !!stateOfTerritory.resetDate.length &&
+                <br/>
+
+                {!!telephonicTerritory.stateOfTerritory.resetDates.length &&
                     <div className={'my-4'}>
                         <hr />
-
-                        <h3 className={'text-center my-4'}>{`Reseteos del territorio ${territoryNumber}`}</h3>
-                
-                        {stateOfTerritory.resetDate.map((reset: typeResetDate, index: number) =>
+                        <h3 className={'text-center my-4'}> Reseteos del territorio {telephonicTerritory.territoryNumber} </h3>
+                        {telephonicTerritory.stateOfTerritory.resetDates.map((reset: typeResetDate, index: number) =>
                             <h4 key={index}>
-                                &nbsp; {`-El ${timeConverter(reset.date.toString(), true)} con la opción ${reset.option}`}
+                                &nbsp; -El {timeConverter(reset.date)} con la opción {reset.option}
                             </h4>
                         )}
                     </div>
                 }
             </Card>
 
-            <div className={'container mt-5'} style={{ maxWidth: '450px' }}>
-                <button className={'btn btn-general-red btn-size12 mb-4 p-3'}
-                    onClick={() => resetHandler(1)}
-                    style={{ width: isMobile ? '100%' : '100%' }}
-                >
-                    Limpiar los de más de 6 meses<br/>menos los no abonados
-                </button>
-                <button className={'btn btn-general-red btn-size12 mb-4 p-3'}
-                    onClick={() => resetHandler(2)}
-                    style={{ width: isMobile ? '100%' : '100%' }}
-                >
-                    Limpiar todos<br/>menos los no abonados
-                </button>
-                <button className={'btn btn-general-red btn-size12 mb-4 p-3'}
-                    onClick={() => resetHandler(3)}
-                    style={{ width: isMobile ? '100%' : '100%' }}
-                >
-                    Limpiar los de más de 6 meses<br/>incluso los no abonados
-                </button>
-                <button className={'btn btn-general-red btn-size12 mb-4 p-3'}
-                    onClick={() => resetHandler(4)}
-                    style={{ width: isMobile ? '100%' : '100%' }}
-                >
-                    Limpiar absolutamente todos
-                </button>
-            </div>
+            {isLoading ?
+                <Loading mt={'50px'} />
+                :
+                <div className={'container mt-5'} style={{ maxWidth: '450px' }}>
+                    <button className={'btn btn-general-red btn-size12 w-100 mb-4 p-3'}
+                        onClick={() => resetHandler(1)}
+                    >
+                        Limpiar los de más de 6 meses<br/>menos los no abonados
+                    </button>
+                    <button className={'btn btn-general-red btn-size12 w-100 mb-4 p-3'}
+                        onClick={() => resetHandler(2)}
+                    >
+                        Limpiar todos<br/>menos los no abonados
+                    </button>
+                    <button className={'btn btn-general-red btn-size12 w-100 mb-4 p-3'}
+                        onClick={() => resetHandler(3)}
+                    >
+                        Limpiar los de más de 6 meses<br/>incluso los no abonados
+                    </button>
+                    <button className={'btn btn-general-red btn-size12 w-100 mb-4 p-3'}
+                        onClick={() => resetHandler(4)}
+                    >
+                        Limpiar absolutamente todos
+                    </button>
+                </div>
+            }
 
         </div>
     </>

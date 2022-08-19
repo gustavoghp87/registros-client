@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Container, Dropdown, FloatingLabel, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { getHTHStreetsByTerritoryService } from '../../../services'
+import { getHTHStreetsByTerritoryService, getStreetsByHTHTerritory } from '../../../services'
 import { typeAppDispatch, typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
 
 export const HTHNewFaceOptions = (props: any) => {
@@ -47,10 +47,10 @@ export const HTHNewFaceOptions = (props: any) => {
         setShowStreetMenu(false)
     }
 
-    const acceptHandler = (): void => {
+    const acceptHandler = useCallback((): void => {
         addFaceHandler(selectedBlock, selectedFace, selectedStreet)
         cancelHandler(false)
-    }
+    }, [addFaceHandler, selectedBlock, selectedFace, selectedStreet])
 
     useEffect(() => {
         let newFaces: typeFace[] = ['A', 'B', 'C', 'D', 'E', 'F']
@@ -63,28 +63,27 @@ export const HTHNewFaceOptions = (props: any) => {
     }, [selectedBlock, territoryHTH.map.polygons])
     
     useEffect(() => {
-        getHTHStreetsByTerritoryService(territoryHTH.territory).then((streets0: string[]|null) => {
-            if (!streets0 || !streets0.length) return
-            if (territoryHTH.streets) territoryHTH.streets.forEach(x => {
-                if (!streets0.includes(x)) streets0.push(x)
+        const streets000: string[] = []
+        const streets111: string[] = getStreetsByHTHTerritory(territoryHTH)
+        streets111.forEach(x => streets000.push(x))
+        getHTHStreetsByTerritoryService(territoryHTH.territoryNumber).then((streets0: string[]|null) => {
+            if (streets0 && streets0.length) streets0.forEach(x => {
+                if (!streets000.includes(x)) streets000.push(x)
             })
-            setStreets(streets0)
+            setStreets(streets000)
         })
-    }, [territoryHTH.streets, territoryHTH.territory])
-    
+    }, [territoryHTH])
 
     useEffect(() => {
         if (!selectedBlock || !selectedFace || !selectedStreet || selectedStreet === "other") return
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'alert',
             title: 'Agregando Cara',
-            message: `Se va a agregar la Cara ${selectedFace} en la calle ${selectedStreet} de la Manzana ${selectedBlock} del territorio ${territoryHTH.territory}. Si hay un error, cancelar abajo.`
+            message: `Se va a agregar la Cara ${selectedFace} en la calle ${selectedStreet} de la Manzana ${selectedBlock} del territorio ${territoryHTH.territoryNumber}. Si hay un error, cancelar abajo.`
         }))
         acceptHandler()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedBlock, selectedFace, selectedStreet, territoryHTH.territory, dispatch])
-    
-    
+    }, [acceptHandler, dispatch, selectedBlock, selectedFace, selectedStreet, territoryHTH.territoryNumber])
+
     return (<>
     <br/>
         <div className={'d-flex justify-content-center my-4'}>

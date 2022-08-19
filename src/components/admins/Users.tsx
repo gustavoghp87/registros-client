@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, DropdownButton, ButtonGroup, Dropdown, Form } from 'react-bootstrap'
 import { io, Socket } from 'socket.io-client'
 import { H2, Loading, WarningToaster } from '../commons'
 import { UsersCard } from './'
 import { SERVER } from '../../config'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { getUsersService } from '../../services/userServices'
-import { typeRootState, typeUser, userChangeString } from '../../models'
+import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
@@ -15,6 +16,7 @@ export const Users = (props: any) => {
     const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode
     }))
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const setIsLoading: Function = props.setIsLoading
     const [emailSearchInputText, setEmailSearchInputText] = useState<string>("")
     const [selectedGroup, setSelectedGroup] = useState<number>(0)
@@ -23,14 +25,19 @@ export const Users = (props: any) => {
     
     useEffect(() => {
         getUsersService().then((users0: typeUser[]|null) => {
-            if (!users0) return alert("Algo falló")
+            if (!users0) return dispatch(setValuesAndOpenAlertModalReducer({
+                mode:'alert',
+                title: "Problemas",
+                message: "Algo falló al cargar los usuarios; refrescar",
+                animation: 2
+            }))
             setUsers(users0)
         })
         return () => {
             setUsers(undefined)
             setUsersToShow(undefined)
         }
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         socket.on(userChangeString, (updatedUser: typeUser) => {

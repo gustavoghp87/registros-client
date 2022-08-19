@@ -1,17 +1,17 @@
 import { Credentials } from 'google-auth-library'
-import { SERVER } from '../config'
-import { headers } from './'
+import { pointer } from '../config'
+import { getHeaders } from '.'
 import { getTokenService } from './userServices'
 import { typeResponseData } from '../models'
 
-const base: string = `${SERVER}/api/email`
+const base: string = pointer.email
 
 export const getGmailUrlService = async (): Promise<string|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(base, {
             method: 'GET',
-            headers
+            headers: getHeaders()
         })
         const data: typeResponseData|null = await response.json()
         if (!data || !data.success || !data.url) return null
@@ -27,7 +27,7 @@ export const getGmailRequestService = async (code: string): Promise<Credentials|
     try {
         const response = await fetch(base, {
             method: 'POST',
-            headers,
+            headers: getHeaders(),
             body: JSON.stringify({ code })
         })
         const data: typeResponseData|null = await response.json()
@@ -44,7 +44,7 @@ export const saveNewGmailAPITokenToDBService = async (accessToken: string, refre
     try {
         const response = await fetch(base, {
             method: 'PUT',
-            headers,
+            headers: getHeaders(),
             body: JSON.stringify({ accessToken, refreshToken })
         })
         const data: typeResponseData|null = await response.json()

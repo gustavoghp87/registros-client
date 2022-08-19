@@ -1,23 +1,20 @@
 import { useEffect, useState } from 'react'
 import { WarningToaster } from '../commons'
-import { getNumberOfFreePhonesService } from '../../services'
-import { typeHousehold, typeTerritoryNumber } from '../../models'
+import { typeHousehold } from '../../models'
+import { getNumberOfFreePhones } from '../../services'
 
 export const FewHouseholdsWarning = (props: any) => {
 
     const households: typeHousehold[] = props.households
-    const territory: typeTerritoryNumber = props.territory
     const [numberOfFreePhones, setNumberOfFreePhones] = useState<number>()
     const [showToaster, setShowToaster] = useState<boolean>(true)
 
     const closeWarningToaster = (): void => setShowToaster(false)
     
     useEffect(() => {
-        if (territory) getNumberOfFreePhonesService(territory).then((numberOfFreePhones0: number|null) => {
-            if (numberOfFreePhones0 !== null) setNumberOfFreePhones(numberOfFreePhones0)
-        })
+        if (households && households.length) setNumberOfFreePhones(getNumberOfFreePhones(households))
         return () => setNumberOfFreePhones(undefined)
-    }, [households, territory])
+    }, [households])
 
     return (
         <>

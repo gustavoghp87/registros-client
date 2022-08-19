@@ -32,7 +32,7 @@ export const MapModal = (props: any) => {
             else if (!isNaN(parseInt(address.split(' ')[5])))
                 target = target.split(' ')[0] + " " + address.split(' ')[1] + " " + address.split(' ')[2] + " " + address.split(' ')[3] + " " + address.split(' ')[4] + " " + address.split(' ')[5] + " CABA"
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
         getGeocodingFromAddressService(target).then((coordinates: typeCoords|null) => {
             if (coordinates && coordinates.lat && coordinates.lng) setCenterCoords({ lat: coordinates.lat, lng: coordinates.lng })
@@ -85,7 +85,6 @@ export const MapModal = (props: any) => {
 // Geocode.fromLatLng("48.8583701", "2.2922926").then(
 //     (response) => {
 //       const address = response.results[0].formatted_address;
-//       console.log(address);
 //     },
 //     (error) => {
 //       console.error(error);
@@ -113,8 +112,6 @@ export const MapModal = (props: any) => {
 //           }
 //         }
 //       }
-//       console.log(city, state, country);
-//       console.log(address);
 //     },
 //     (error) => {
 //       console.error(error);

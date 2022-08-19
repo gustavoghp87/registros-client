@@ -16,7 +16,7 @@ export const GmailTokensPage = () => {
     }
 
     const step2Handler = async (): Promise<void> => {
-        if (!code) console.log("No Code")
+        if (!code) return
         const credentials0: Credentials|null = await getGmailRequestService(code)
         if (credentials0) setCredentials(credentials0)
     }

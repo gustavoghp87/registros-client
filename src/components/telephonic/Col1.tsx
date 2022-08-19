@@ -1,28 +1,31 @@
 import { Col } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { typeHousehold, typeRootState } from '../../models'
+import { typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
 
 export const Col1 = (props: any) => {
 
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const setAddressToShowInGoogleMaps: Function = props.setAddressToShowInGoogleMaps
     const household: typeHousehold = props.household
+    const setAddressToShowInGoogleMaps: Function = props.setAddressToShowInGoogleMaps
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
 
     return (
 
         <Col xs={12} md={2} style={{ margin: isMobile ? '20px auto' : 'auto' }}>
 
-            {household && household.direccion && <>
+            {household && household.address && <>
 
                 <h4 className={'text-center mt-2'} style={{ fontSize: isMobile ? '1.1rem' : '1.3rem' }}>
-                    Territorio {household.territorio}
+                    Territorio {territoryNumber}
                     <br/>
-                    Manzana {household.manzana}
+                    Manzana {household.block}
                     <br/>
-                    Vivienda {household.inner_id}
+                    Vivienda {household.householdId}
                 </h4>
 
-                <button className={'btn btn-general-blue d-block mx-auto mt-3'} onClick={() => setAddressToShowInGoogleMaps(household.direccion)}>
+                <button className={'btn btn-general-blue d-block mx-auto mt-3'}
+                    onClick={() => setAddressToShowInGoogleMaps(household.address)}
+                >
                     Ver en el Mapa
                 </button>
 

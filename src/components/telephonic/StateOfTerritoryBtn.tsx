@@ -1,8 +1,8 @@
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeAppDispatch, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
-import { markTerritoryAsFinishedService } from '../../services'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
+import { changeStateOfTerritoryService } from '../../services'
+import { typeAppDispatch, typeRootState, typeTerritoryNumber } from '../../models'
 
 export const StateOfTerritoryBtn = (props: any) => {
 
@@ -11,38 +11,38 @@ export const StateOfTerritoryBtn = (props: any) => {
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const navigate: NavigateFunction = useNavigate()
+    const isFinished: boolean = props.isFinished
     const openAlertModalHandler: Function = props.openAlertModalHandler
-    const stateOfTerritory: typeStateOfTerritory = props.stateOfTerritory
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     
     const openConfirmModalHandler = (modal: number) => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: modal === 1 ? "¿Confirmar abrir territorio?" : "¿Confirmar finalizar territorio?",
-            message: modal === 1 ? `El territorio ${territory} se abrirá de nuevo` : `El territorio ${territory} se dará por terminado ${!user.isAdmin ? 'y se te desasignará' : '' }`,
+            message: modal === 1 ? `El territorio ${territoryNumber} se abrirá de nuevo` : `El territorio ${territoryNumber} se dará por terminado ${!user.isAdmin ? 'y se te desasignará' : '' }`,
             execution: modal === 1 ? openTerritoryHandler : closeTerritoryHandler
         }))
     }
 
     const closeTerritoryHandler = async (): Promise<void> => {
-        if (!territory) return
-        const success = await markTerritoryAsFinishedService(territory, true)
-        if (!success) return openAlertModalHandler("Algo falló", "")
-        navigate('/index')
+        if (!territoryNumber) return
+        const success = await changeStateOfTerritoryService(territoryNumber, true)
+        if (!success) return openAlertModalHandler("Algo falló", "", 2)
+        navigate('/selector')
     }
 
     const openTerritoryHandler = async (): Promise<void> => {
-        if (!territory) return
+        if (!territoryNumber) return
         dispatch(showLoadingModalReducer())
-        const success: boolean = await markTerritoryAsFinishedService(territory, false)
+        const success: boolean = await changeStateOfTerritoryService(territoryNumber, false)
         dispatch(hideLoadingModalReducer())
-        if (!success) openAlertModalHandler("Algo falló", "")
+        if (!success) openAlertModalHandler("Algo falló", "", 2)
         window.location.reload()
     }
 
     return (
         <>
-            {stateOfTerritory.isFinished ?
+            {isFinished ?
                 <button
                     className={'btn btn-general-red d-block mx-auto py-2 mt-3 mb-5'}
                     onClick={() => openConfirmModalHandler(1)}

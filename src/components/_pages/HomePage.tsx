@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { H2 } from '../commons'
@@ -12,6 +13,10 @@ export const HomePage = () => {
     }))
     const navigate: NavigateFunction = useNavigate()
 
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     return (
     <>
         <H2 title={"BIENVENIDOS"} />
@@ -25,7 +30,10 @@ export const HomePage = () => {
             A<br/>MISERICORDIA WEB
         </h1>
 
-        <div className={'pointer'} onClick={() => navigate(user && user.isAuth ? 'index' : 'acceso')} style={{ textDecoration: 'none' }}>
+        <div className={'pointer'}
+            onClick={() => navigate(user && user.isAuth ? '/selector' : '/acceso')}
+            style={{ textDecoration: 'none' }}
+        >
             <h3 style={{
                 backgroundColor: 'lightgray',
                 color: generalBlue,

@@ -72,7 +72,7 @@ export const AdminsPage = () => {
             }
 
             {currentSection === 'campaign' &&
-                <Campaign />
+                <Campaign setIsLoading={setIsLoading} />
             }
 
         </>

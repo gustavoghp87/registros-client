@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { io, Socket } from 'socket.io-client'
@@ -7,7 +7,7 @@ import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { getBlocks, getHouseholdsByTerritoryService, getHouseholdsToShow, getHouseholdVariant } from '../../services'
-import { householdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeStateOfTerritory, typeTerritoryNumber } from '../../models'
+import { telephonicHouseholdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeTelephonicTerritory, typeTerritoryNumber } from '../../models'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
@@ -23,7 +23,7 @@ export const TelephonicPage = () => {
     const [blocks, setBlocks] = useState<typeBlock[]>()
     const [brought, setBrought] = useState<number>(10)
     const [currentBlock, setCurrentBlock] = useState<typeBlock>()
-    const [households, setHouseholds] = useState<typeHousehold[]>([])
+    const [telephonicTerritory, setTelephonicTerritory] = useState<typeTelephonicTerritory>()
     const [householdsToShow, setHouseholdsToShow] = useState<typeHousehold[]>()
     const [loaded, setLoaded] = useState<boolean>(false)
     const [isShowingAllStates, setIsShowingAllStates] = useState<boolean>(false)
@@ -31,14 +31,14 @@ export const TelephonicPage = () => {
     const [isShowingStatistics, setIsShowingStatistics] = useState<boolean>(false)
     const [showPagination, setShowPagination] = useState<boolean>(true)
     const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
-    const [stateOfTerritory, setStateOfTerritory] = useState<typeStateOfTerritory>()
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string>()
 
-    const openAlertModalHandler = (title: string, message: string): void => {
+    const openAlertModalHandler = (title: string, message: string, animation?: number): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'alert',
             title,
-            message
+            message,
+            animation
         }))
     }
 
@@ -76,27 +76,29 @@ export const TelephonicPage = () => {
     const hideGoogleMapHandler = (): void => setAddressToShowInGoogleMaps("")
 
     useEffect(() => {
-        if (!territoryNumber) return navigate('/index')
+        if (!territoryNumber) return navigate('/selector')
         window.scrollTo(0, 0)
-        getHouseholdsByTerritoryService(territoryNumber).then((response: [typeHousehold[], typeBlock[], typeStateOfTerritory]|null) => {
+        getHouseholdsByTerritoryService(territoryNumber).then((telephonicTerritory0: typeTelephonicTerritory|null) => {
             setLoaded(true)
-            if (!response || !response[0] || !response[0].length) return navigate('/index')
-            const blocks: typeBlock[] = getBlocks(response[0])
+            if (!telephonicTerritory0) return navigate('/selector')
+            const blocks: typeBlock[] = getBlocks(telephonicTerritory0.households)
             setBlocks(blocks)
             setCurrentBlock(blocks[0])
-            setHouseholds(response[0])
-            setStateOfTerritory(response[2])
+            setTelephonicTerritory(telephonicTerritory0)
         })
         return () => {
             setBlocks(undefined)
-            setStateOfTerritory(undefined)
             setUserEmailWarningToaster(undefined)
+            setTelephonicTerritory(undefined)
         }
     }, [navigate, territoryNumber])
 
-    useEffect(() => {
+    const updateHouseholdsToShow = useCallback(() => {
         if (!currentBlock) return setHouseholdsToShow([])
-        let householdsToShow0: typeHousehold[] = getHouseholdsToShow(households, territoryNumber, currentBlock, isShowingAllStates, isShowingAllAvailable)
+        if (!telephonicTerritory) return
+        
+        let householdsToShow0: typeHousehold[] =
+            getHouseholdsToShow(telephonicTerritory.households, currentBlock, isShowingAllStates, isShowingAllAvailable)
         const temp: typeHousehold[] = householdsToShow0
         if (!isShowingAllAvailable) {
             householdsToShow0 = householdsToShow0.slice(0, brought)
@@ -106,27 +108,32 @@ export const TelephonicPage = () => {
         }
         householdsToShow0 = getHouseholdVariant(householdsToShow0)
         setHouseholdsToShow(householdsToShow0)
-    }, [brought, currentBlock, households, isShowingAllAvailable, isShowingAllStates, territoryNumber])
+    }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory])
+
+    useEffect(() => {
+        updateHouseholdsToShow()
+    }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory, updateHouseholdsToShow])
     
     useEffect(() => {
-        socket.on(householdChangeString, (updatedHousehold: typeHousehold, userEmail: string) => {
-            if (!updatedHousehold || updatedHousehold.territorio !== territoryNumber) return
-            updatedHousehold.doNotMove = true
-            setHouseholds(x => {
-                if (!x) return []
-                const updatedHouseholdsToShow = x.map(y => {
-                    if (y.inner_id === updatedHousehold.inner_id) y = updatedHousehold
-                    return y
-                })
-                return updatedHouseholdsToShow
-            })
+        socket.on(telephonicHouseholdChangeString, (territoryNumber0: typeTerritoryNumber, updatedHousehold: typeHousehold, userEmail: string) => {
+            if (!updatedHousehold || territoryNumber0 !== territoryNumber) return
             if (userEmail !== user.email) {
                 setShowWarningToaster(true)
                 setUserEmailWarningToaster(userEmail)
             }
+            updatedHousehold.doNotMove = true
+            setTelephonicTerritory(x => {
+                if (!x) return x
+                x.households = x.households.map(y => {
+                    if (y.householdId === updatedHousehold.householdId) y = updatedHousehold
+                    return y
+                })
+                return x
+            })
+            updateHouseholdsToShow()
         })
-        return () => { socket.off(householdChangeString) }
-    }, [territoryNumber, user.email])
+        return () => { socket.off(telephonicHouseholdChangeString) }
+    }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory, territoryNumber, updateHouseholdsToShow, user.email])
 
     return (
         <>
@@ -140,8 +147,7 @@ export const TelephonicPage = () => {
             {loaded &&
                 <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
                     <FewHouseholdsWarning
-                        households={households}
-                        territory={territoryNumber}
+                        households={telephonicTerritory?.households}
                     />
 
                     {(!socket || !socket.connected) &&
@@ -162,7 +168,11 @@ export const TelephonicPage = () => {
             }
 
             <H2 title={"TELEFÓNICA"} mb={'0px'} />
-            <H2 title={`TERRITORIO ${territoryNumber} ${stateOfTerritory?.isFinished ? "- TERMINADO" : ""}`} mt={'10px'} mb={'50px'} />
+
+            <H2 title={`TERRITORIO ${territoryNumber} ${telephonicTerritory?.stateOfTerritory.isFinished ? "- TERMINADO" : ""}`}
+                mt={'10px'}
+                mb={'50px'}
+            />
 
             {!loaded && <Loading mt={'60px'} mb={'10px'} />}
 
@@ -190,27 +200,30 @@ export const TelephonicPage = () => {
 
             {!isShowingStatistics ?
                 <>
-                    {stateOfTerritory &&
-                        <StateOfTerritoryBtn
-                            openAlertModalHandler={openAlertModalHandler}
-                            stateOfTerritory={stateOfTerritory}
-                            territoryNumber={territoryNumber}
-                        />
+                    {telephonicTerritory &&
+                        <>
+                            <StateOfTerritoryBtn
+                                isFinished={telephonicTerritory.stateOfTerritory.isFinished}
+                                openAlertModalHandler={openAlertModalHandler}
+                                territoryNumber={territoryNumber}
+                            />
+                            <FreePhonesMessage
+                                currentBlock={currentBlock}
+                                households={telephonicTerritory?.households}
+                                loaded={loaded}
+                                territoryNumber={territoryNumber}
+                            />
+                        </>
                     }
 
-                    <FreePhonesMessage
-                        currentBlock={currentBlock}
-                        households={households}
-                        territoryNumber={territoryNumber}
-                    />
-
-                    {householdsToShow?.map((household: typeHousehold) =>
+                    {!!householdsToShow?.length && householdsToShow?.map((household: typeHousehold) =>
                         <TelephonicCard
                             household={household}
-                            key={household.inner_id}
+                            key={household.householdId}
                             openAlertModalHandler={openAlertModalHandler}
                             setAddressToShowInGoogleMaps={setAddressToShowInGoogleMaps}
                             socket={socket}
+                            territoryNumber={territoryNumber}
                         />
                     )}
 
@@ -224,9 +237,7 @@ export const TelephonicPage = () => {
                 </>
                 :
                 <LocalStatistics
-                    households={households}
-                    territoryNumber={territoryNumber}
-                    stateOfTerritory={stateOfTerritory}
+                    telephonicTerritory={telephonicTerritory}
                 />
             }
         </>

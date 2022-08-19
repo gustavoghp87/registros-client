@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { HTHForm } from '../'
+import { HTHForm } from '..'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { addHTHDoNotCallService } from '../../../services'
 import { typeAppDispatch, typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
@@ -14,7 +14,7 @@ export const HTHDoNotCallsForm = (props: any) => {
     const closeShowFormHandler: Function = props.closeShowFormHandler
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [streetNumber, setStreetNumber] = useState<number>(0)
     const [doorBell, setDoorBell] = useState<string>("")
     const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
@@ -29,7 +29,7 @@ export const HTHDoNotCallsForm = (props: any) => {
             id: +new Date(),
             streetNumber
         }
-        addHTHDoNotCallService(newDoNotCall, territory, currentFace.block, currentFace.face, currentFace.id).then((success: boolean) => {
+        addHTHDoNotCallService(territoryNumber, currentFace.block, currentFace.face, currentFace.id, newDoNotCall).then((success: boolean) => {
             if (success) {
                 closeShowFormHandler()
                 refreshHTHTerritoryHandler()
@@ -39,7 +39,8 @@ export const HTHDoNotCallsForm = (props: any) => {
                 dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: "Algo falló",
-                    message: "Refrescar e intentar de nuevo"
+                    message: "Refrescar e intentar de nuevo",
+                    animation: 2
                 }))
             }
         })
@@ -61,7 +62,7 @@ export const HTHDoNotCallsForm = (props: any) => {
             currentFace={currentFace}
             isDoNotCallForm={true}
             submitHandler={submitHandler}
-            territory={territory}
+            territoryNumber={territoryNumber}
             // specific
             date={date}
             doorBell={doorBell}

@@ -1,38 +1,37 @@
 import { Credentials } from 'google-auth-library'
-import { typeBlock, typeCampaignPack, typeCongregationItem, typeCoords, typeHousehold,
-    typeHTHTerritory,typeLocalStatistic, typeLogsObj, typeStateOfTerritory, typeStatistic, typeUser } from './'
+import * as type from '.'
 
 export type typeResponseData = {
     success: boolean
-    pack?: typeCampaignPack
-    packs?: typeCampaignPack[]
-    logsObject?: typeLogsObj
-    stateOfTerritory?: typeStateOfTerritory
-    stateOfTerritories?: typeStateOfTerritory[]
-    household?: typeHousehold
-    households?: typeHousehold[]
-    blocks?: typeBlock[]
-    newPassword?: string
-    emailFailed?: string
-    newToken?: string,
-    recaptchaFails?: boolean
-    user?: typeUser
-    users?: typeUser[]
-    email?: string
-    wrongPassword?: boolean
-    userExists?: boolean
-    isDisabled?: boolean
-    expired?: boolean
-    used?: boolean
-    statistic?: typeStatistic,
-    localStatistic?: typeLocalStatistic
-    localStatistics?: typeLocalStatistic[]
-    numberOfFreePhones?: number
-    hthTerritory?: typeHTHTerritory
-    streets?: string[]
-    url?: string
-    gmailKeys?: Credentials
-    coordinates?: typeCoords
+    //
     address?: string
-    congregationItems?: typeCongregationItem[]
+    allLogsObj?: type.typeAllLogsObj
+    campaignAssignments?: number[]
+    congregationItems?: type.typeCongregationItem[]
+    coordinates?: type.typeCoords
+    email?: string
+    emailSuccess?: boolean
+    expired?: boolean
+    gmailKeys?: Credentials
+    household?: type.typeHousehold
+    households?: type.typeHousehold[]
+    hthTerritory?: type.typeHTHTerritory
+    isDisabled?: boolean
+    localStatistics?: type.typeLocalTelephonicStatistic[]
+    modifiedCount?: number
+    newPassword?: string
+    newToken?: string,
+    numberOfFreePhones?: number
+    campaignPack?: type.typeCampaignPack
+    campaignPacks?: type.typeCampaignPack[]
+    recaptchaFails?: boolean
+    globalStatistics?: type.typeTelephonicStatistic,
+    telephonicTerritory?: type.typeTelephonicTerritory
+    url?: string
+    used?: boolean
+    user?: type.typeUser
+    userExists?: boolean
+    users?: type.typeUser[]
+    streets?: string[]
+    wrongPassword?: boolean
 }

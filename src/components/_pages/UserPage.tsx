@@ -19,18 +19,19 @@ export const UserPage = () => {
     const [psw, setPsw] = useState('')
     const [show, setShow] = useState(false)
 
-    const openAlertModalHandler = (title: string, message: string): void => {
+    const openAlertModalHandler = (title: string, message: string, animation?: number): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'alert',
             title,
-            message
+            message,
+            animation
         }))
     }
 
     const openConfirmModalHandler = (option: 1|2): void => {
         if (option === 2) {
-            if (!psw || !newPsw || psw.length < 8) return openAlertModalHandler("Completar los campos primero", "")
-            if (newPsw.length < 8) return openAlertModalHandler("La clave debe tener al menos 8 caracteres", "")
+            if (!psw || !newPsw || psw.length < 8) return openAlertModalHandler("Completar los campos primero", "", 2)
+            if (newPsw.length < 8) return openAlertModalHandler("La clave debe tener al menos 8 caracteres", "", 2)
         }
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
@@ -45,25 +46,22 @@ export const UserPage = () => {
         const response = await changePswService(psw, newPsw, null)
         setPsw('')
         setNewPsw('')
-        if (response && response.newToken) openAlertModalHandler("Clave cambiada con éxito", "")
-        else if (response && response.wrongPassword) openAlertModalHandler("Clave incorrecta", "")
-        else openAlertModalHandler("Algo falló", "")
+        if (response && response.newToken) openAlertModalHandler("Clave cambiada con éxito", "", 1)
+        else if (response && response.wrongPassword) openAlertModalHandler("Clave incorrecta", "", 2)
+        else openAlertModalHandler("Algo falló", "", 2)
     }
 
     const logoutAll = async (): Promise<void> => {
         const success: boolean = await logoutAllService()
-        if (!success) return openAlertModalHandler("Algo falló", "Intentar de nuevo")
-        openAlertModalHandler("Cierre exitoso", "")
+        if (!success) return openAlertModalHandler("Algo falló", "Intentar de nuevo", 2)
+        openAlertModalHandler("Cierre exitoso", "", 1)
     }
 
     const getAssignedTerritoriesSorted = (): number[] => {
-        if (user && user.asign && user.asign.length) {
-            let sorted: number[] = [...user.asign]
-            sorted = sorted.sort((a: number, b: number) => a - b)
-            return sorted
-        } else {
-            return []
-        }
+        if (!user || !user.phoneAssignments.length) return []
+        let sorted: number[] = [...user.phoneAssignments]
+        sorted = sorted.sort((a: number, b: number) => a - b)
+        return sorted
     }
 
     useEffect(() => {
@@ -89,11 +87,11 @@ export const UserPage = () => {
 
                     <h3> Territorios asignados: </h3>
 
-                    {user.asign && !!user.asign.length ?
+                    {user.phoneAssignments && !!user.phoneAssignments.length ?
                         getAssignedTerritoriesSorted().map((territorio: number, index: number) => (
                             <button key={index}
                                 className={'btn btn-general-blue d-inline-block text-center active mt-3 mx-1 px-0'}
-                                onClick={() => navigate(`/territorios/${territorio}`)}
+                                onClick={() => navigate(`/telefonica/${territorio}`)}
                                 style={{ fontWeight: 'bolder', width: '65px' }}
                             >
                                 {territorio}
@@ -136,7 +134,7 @@ export const UserPage = () => {
                             label={"Contraseña actual"}
                             className={'mb-3 text-secondary'}
                         >
-                            <Form.Control type={'password'}
+                            <Form.Control type={'text'}
                                 autoFocus
                                 onChange={(event: any) => setPsw(event.target.value)}
                                 placeholder={"Contraseña actual"}

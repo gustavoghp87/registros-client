@@ -16,7 +16,7 @@ export const HTHObservationsForm = (props: any) => {
     const editText: string = props.editText || ''
     const idEdit: number = props.idEdit || 0
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [text, setText] = useState<string>(editText)
     const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
     
@@ -31,22 +31,24 @@ export const HTHObservationsForm = (props: any) => {
         }
         
         if (!editText) {
-            addHTHObservationService(newObservation, territory, currentFace.block, currentFace.face, currentFace.id).then((success: boolean) => {
-                if (success) {
-                    closeShowFormHandler()
-                    refreshDoNotCallHandler()
-                    setText('')
-                } else {
+            addHTHObservationService(territoryNumber, currentFace.block, currentFace.face, currentFace.id, newObservation).then((success: boolean) => {
+                if (!success) {
                     dispatch(setValuesAndOpenAlertModalReducer({
                         mode: 'alert',
                         title: 'Algo falló',
                         message: `No se pudo agregar esta Observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${newObservation.text}"`,
-                        execution: refreshDoNotCallHandler
+                        execution: refreshDoNotCallHandler,
+                        animation: 2
                     }))
+                    return
+                } else {
+                    closeShowFormHandler()
+                    refreshDoNotCallHandler()
+                    setText('')
                 }
             })
         } else {
-            editHTHObservationService(newObservation, territory, currentFace.block, currentFace.face).then((success: boolean) => {
+            editHTHObservationService(territoryNumber, currentFace.block, currentFace.face, newObservation).then((success: boolean) => {
                 if (success) {
                     closeShowFormHandler()
                     refreshDoNotCallHandler()
@@ -56,7 +58,8 @@ export const HTHObservationsForm = (props: any) => {
                         mode: 'alert',
                         title: 'Algo falló',
                         message: `No se pudo editar esta Observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${newObservation.text}"`,
-                        execution: refreshDoNotCallHandler
+                        execution: refreshDoNotCallHandler,
+                        animation: 2
                     }))
                 }
             })
@@ -77,7 +80,7 @@ export const HTHObservationsForm = (props: any) => {
             date={date}
             isDoNotCallForm={false}
             submitHandler={submitHandler}
-            territory={territory}
+            territoryNumber={territoryNumber}
             // specific
             text={text}
             setTextHandler={setTextHandler}

@@ -1,16 +1,36 @@
-export type typeLog = {
-    logText: string
-    timestamp: number
+export type typeLogsPackage = {
+    logs: typeLogObj[]
+    type: typeLogType
 }
 
-export type typeLogsObj = {
-    appLogs: typeLog[]
-    campaignAssignmentLogs: typeLog[]
-    campaignFinishingLogs: typeLog[]
-    emailErrorLogs: typeLog[]
-    errorLogs: typeLog[]
-    loginLogs: typeLog[]
-    stateOfTerritoryChangeLogs: typeLog[]
-    territoryChangeLogs: typeLog[]
-    userChangesLogs: typeLog[]
+export type typeLogObj = {
+    timestamp: number
+    logText: string
+}
+
+export type typeAllLogsObj = {
+    campaignLogs: typeLogsPackage
+    errorLogs: typeLogsPackage
+    houseToHouseAdminLogs: typeLogsPackage
+    houseToHouseLogs: typeLogsPackage
+    loginLogs: typeLogsPackage
+    telephonicStateLogs: typeLogsPackage
+    telephonicLogs: typeLogsPackage
+    userLogs: typeLogsPackage
+}
+
+export type typeLogType =
+    'CampaignLogs' |
+    'ErrorLogs' |
+    'HouseToHouseAdminLogs' |
+    'HouseToHouseLogs' |
+    'LoginLogs' |
+    'TelephonicStateLogs' |
+    'TelephonicLogs' |
+    'UserLogs'
+;
+
+export type typeLogsAndTitle = {
+    logs: typeLogObj[]
+    title: string
 }

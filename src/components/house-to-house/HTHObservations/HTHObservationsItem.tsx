@@ -16,7 +16,7 @@ export const HTHObservationsItem = (props: any) => {
     const date: string = props.date
     const observation: typeObservation = props.observation
     const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [showForm, setShowForm] = useState<boolean>(false)
 
     const editHandler = (): void => {
@@ -34,16 +34,17 @@ export const HTHObservationsItem = (props: any) => {
     }
     
     const deleteConfirmedHandler = (): void => {
-        deleteHTHObservationService(observation.id, territory, currentFace.block, currentFace.face).then((success: boolean) => {
-            if (success) {
-                refreshDoNotCallHandler()
-            } else {
+        deleteHTHObservationService(territoryNumber, currentFace.block, currentFace.face, observation.id).then((success: boolean) => {
+            if (!success) {
                 dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: 'Algo falló',
-                    message: 'Refrescar la página e intentar otra vez'
+                    message: 'Refrescar la página e intentar otra vez',
+                    animation: 2
                 }))
+                return
             }
+            refreshDoNotCallHandler()
         })
     }
 
@@ -67,7 +68,7 @@ export const HTHObservationsItem = (props: any) => {
                     currentFace={currentFace}
                     date={date}
                     refreshDoNotCallHandler={refreshDoNotCallHandler}
-                    territory={territory}
+                    territoryNumber={territoryNumber}
                     // specific
                     editText={observation.text}
                     idEdit={observation.id}

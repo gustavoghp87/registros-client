@@ -44,10 +44,8 @@ export const GeoLocationModal = (props: any) => {
             // if (isLocalhost) Geocode.enableDebug()
             // Geocode.fromLatLng(lat.toString(), lng.toString()).then((response) => {
             //     const address0 = response.results[0].formatted_address
-            //     console.log(address0)
             //     setAddress(address0)
             // }, (error) => {
-            //     console.log(error)
             // })
 
         })

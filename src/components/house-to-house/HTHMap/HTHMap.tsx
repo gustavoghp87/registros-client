@@ -54,14 +54,14 @@ export const HTHMap = (props: any) => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: '¿Modificar este mapa?',
-            message: `El mapa del territorio ${territoryHTH.territory} se va a guardar como se ve ahora`,
+            message: `El mapa del territorio ${territoryHTH.territoryNumber} se va a guardar como se ve ahora`,
             execution: editMapViewHandler
         }))
     }
 
     const editMapViewHandler = async (): Promise<void> => {
         const editedHTHMap: typeHTHMap = territoryHTH.map
-        const unmodifiedHTHTerritory: typeHTHTerritory|null = await getHTHTerritoryService(territoryHTH.territory)
+        const unmodifiedHTHTerritory: typeHTHTerritory|null = await getHTHTerritoryService(territoryHTH.territoryNumber)
         if (!unmodifiedHTHTerritory) return
         const editedHTHPolygons: typePolygon[] = []
         editedHTHMap.polygons.forEach((x, index) => {
@@ -76,17 +76,17 @@ export const HTHMap = (props: any) => {
             dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
                 title: 'Algo falló en el mapa',
-                message: `Algo falló en los datos al querer modificar el mapa del territorio ${territoryHTH.territory}; refrescar la página e intentar de nuevo`
+                message: `Algo falló en los datos al querer modificar el mapa del territorio ${territoryHTH.territoryNumber}; refrescar la página e intentar de nuevo`
             }))
             setIsEditingView(false)
             return
         }
-        editHTHMapService(territoryHTH.territory, editedHTHMap, editedHTHPolygons).then((success: boolean) => {
+        editHTHMapService(territoryHTH.territoryNumber, editedHTHMap, editedHTHPolygons).then((success: boolean) => {
             if (success) reloadHandler()
             else dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
                 title: 'Error al editar el mapa',
-                message: `Algo falló al querer modificar el mapa del territorio ${territoryHTH.territory}; refrescar la página e intentar de nuevo`
+                message: `Algo falló al querer modificar el mapa del territorio ${territoryHTH.territoryNumber}; refrescar la página e intentar de nuevo`
             }))
         })
     }
@@ -128,12 +128,12 @@ export const HTHMap = (props: any) => {
         const newPolygon: typePolygon|undefined = hthMapEdited.polygons.find(x => x.id === 0)
         if (!newPolygon) return
         newPolygon.id = +new Date()
-        addHTHPolygonFaceService(newPolygon, territoryHTH.territory).then((success: boolean) => {
+        addHTHPolygonFaceService(territoryHTH.territoryNumber, newPolygon).then((success: boolean) => {
             if (success) reloadHandler()
             else dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
                 title: 'Error al editar el mapa',
-                message: `Algo falló al querer agregar esta cara al mapa del territorio ${territoryHTH.territory}; refrescar la página e intentar de nuevo`
+                message: `Algo falló al querer agregar esta cara al mapa del territorio ${territoryHTH.territoryNumber}; refrescar la página e intentar de nuevo`
             }))
         })
     }
@@ -174,7 +174,7 @@ export const HTHMap = (props: any) => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: '¿Cancelar cambios en el mapa?',
-            message: `Los cambios hechos en el mapa ${territoryHTH.territory} se eliminarán`,
+            message: `Los cambios hechos en el mapa ${territoryHTH.territoryNumber} se eliminarán`,
             execution: reloadHandler
         }))
     }

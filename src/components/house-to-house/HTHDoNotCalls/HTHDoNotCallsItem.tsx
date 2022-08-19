@@ -10,7 +10,7 @@ export const HTHDoNotCallsItem = (props: any) => {
     const currentFace: typePolygon = props.currentFace
     const doNotCall: typeDoNotCall = props.doNotCall
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territory: typeTerritoryNumber = props.territory
+    const territoryNumber: typeTerritoryNumber = props.territoryNumber
 
     const deleteHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -22,27 +22,25 @@ export const HTHDoNotCallsItem = (props: any) => {
     }
 
     const deleteConfirmedHandler = (): void => {
-        deleteHTHDoNotCallService(doNotCall.id, territory, currentFace.block, currentFace.face).then((success: boolean) => {
-            console.log(success)
-            if (success) {
-                refreshHTHTerritoryHandler()
-            } else {
+        deleteHTHDoNotCallService(territoryNumber, currentFace.block, currentFace.face, doNotCall.id).then((success: boolean) => {
+            if (!success) {
                 dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: 'Algo falló',
-                    message: `No se pudo eliminar este No Tocar de la Manzana ${currentFace.block} Cara ${currentFace.face}: ${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`
+                    message: `No se pudo eliminar este No Tocar de la Manzana ${currentFace.block} Cara ${currentFace.face}: ${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
+                    animation: 2
                 }))
+                return
             }
+            refreshHTHTerritoryHandler()
         })
     }
 
     return (
-        <>
-            <HTHItemCard
-                date={doNotCall.date}
-                deleteHandler={deleteHandler}
-                text={`${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`}
-            />
-        </>
+        <HTHItemCard
+            date={doNotCall.date}
+            deleteHandler={deleteHandler}
+            text={`${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`}
+        />
     )
 }

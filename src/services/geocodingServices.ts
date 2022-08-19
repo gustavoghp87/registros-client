@@ -1,16 +1,16 @@
-import { SERVER } from '../config'
-import { headers } from './'
+import { pointer } from '../config'
+import { getHeaders } from './'
 import { getTokenService } from './userServices'
 import { typeCoords, typeResponseData } from '../models'
 
-const base: string = `${SERVER}/api/geocoding`
+const base: string = pointer.geocoding
 
 export const getGeocodingFromAddressService = async (address: string): Promise<typeCoords|null> => {
     if (!getTokenService() || !address) return null
     try {
         const response = await fetch(`${base}/address`, {
             method: 'POST',
-            headers,
+            headers: getHeaders(),
             body: JSON.stringify({ address })
         })
         const data: typeResponseData|null = await response.json()
@@ -27,7 +27,7 @@ export const getGeocodingFromCoordinatesService = async (coordinates: typeCoords
     try {
         const response = await fetch(`${base}/coordinates`, {
             method: 'POST',
-            headers,
+            headers: getHeaders(),
             body: JSON.stringify({ coordinates })
         })
         const data: typeResponseData|null = await response.json()
