@@ -5,7 +5,7 @@ import * as Pages from './_pages'
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
 import { changeMobileModeReducer, refreshUserReducer } from '../store'
 import { breakingPoint, typeAppDispatch, typeRootState, typeUser } from '../models'
-import { getUserByTokenService } from '../services/userServices'
+import { getUserByTokenService, logoutService } from '../services/userServices'
 
 export const App = () => {
     
@@ -31,7 +31,8 @@ export const App = () => {
         getUserByTokenService().then((user: typeUser|null) => {
             if (user) dispatch(refreshUserReducer(user))
         })
-    }, [dispatch])
+        if (user && !user.phoneAssignments) logoutService()
+    }, [dispatch, user])
 
     return (
         <Suspense fallback={(<div> Cargando... </div>)}>
