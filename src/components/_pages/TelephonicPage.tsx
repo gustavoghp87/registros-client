@@ -6,7 +6,7 @@ import { Col0a, Col0b, FewHouseholdsWarning, FreePhonesMessage, LocalStatistics,
 import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { getBlocks, getHouseholdsByTerritoryService, getHouseholdsToShow, getHouseholdVariant } from '../../services'
+import { getBlocks, getTLPTerritoryService, getHouseholdsToShow, getHouseholdVariant } from '../../services'
 import { telephonicHouseholdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeTelephonicTerritory, typeTerritoryNumber } from '../../models'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
@@ -78,7 +78,7 @@ export const TelephonicPage = () => {
     useEffect(() => {
         if (!territoryNumber) return navigate('/selector')
         window.scrollTo(0, 0)
-        getHouseholdsByTerritoryService(territoryNumber).then((telephonicTerritory0: typeTelephonicTerritory|null) => {
+        getTLPTerritoryService(territoryNumber).then((telephonicTerritory0: typeTelephonicTerritory|null) => {
             setLoaded(true)
             if (!telephonicTerritory0) return navigate('/selector')
             const blocks: typeBlock[] = getBlocks(telephonicTerritory0.households)

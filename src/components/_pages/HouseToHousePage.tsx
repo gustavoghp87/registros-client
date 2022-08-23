@@ -29,6 +29,16 @@ export const HouseToHousePage = () => {
         setTerritoryHTH(territoryHTH0)
     }
 
+    const openConfirmModalHTHIsFinishedHandler = (): void => {
+        if (!currentFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: "Cambiar estado de la Cara",
+            message: currentFace.isFinished ? `Descarmar esta CARA ${currentFace.face} de MANZANA ${currentFace.block} como terminada` : `Marcar esta CARA ${currentFace.face} de MANZANA ${currentFace.block} como terminada`,
+            execution: setHTHIsFinishedHandler
+        }))
+    }
+
     const setHTHIsFinishedHandler = async (): Promise<void> => {
         if (!currentFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
         setHTHIsFinishedService(territoryNumber, currentFace.block, currentFace.face, currentFace.id, !currentFace.isFinished).then((success: boolean) => {
@@ -99,8 +109,6 @@ export const HouseToHousePage = () => {
             if (userEmail && territoryNumber && userEmail !== user.email && territoryNumber0 === territoryNumber) {
                 //refreshHTHTerritoryHandler()
                 console.log("Refrescado por uso del usuario", userEmail)
-            } else {
-                console.log("No refresca", userEmail, territoryNumber0)
             }
         })
         return () => { socket.off(hthChangeString) }
@@ -121,7 +129,7 @@ export const HouseToHousePage = () => {
             </div>
         }
 
-        <h1 className={`text-center mt-4 ${isDarkMode ? 'text-white' : ''}`} style={{ fontWeight: 'bolder' }}>
+        <h1 className={`text-center mt-3 mb-4 ${isDarkMode ? 'text-white' : ''}`} style={{ fontWeight: 'bolder' }}>
             SELECCIONAR CARA DE MANZANA
         </h1>
 
@@ -156,12 +164,12 @@ export const HouseToHousePage = () => {
             {user && user.isAdmin && currentFace &&
                 <button
                     className={`my-4 btn ${currentFace.isFinished ? 'btn-secondary' : 'btn-general-blue'} btn-size12 d-block m-auto w-75`}
-                    onClick={() => setHTHIsFinishedHandler()}
+                    onClick={() => openConfirmModalHTHIsFinishedHandler()}
                 >
                     {currentFace.isFinished ?
                         `Desmarcar Cara ${currentFace.face} de Manzana ${currentFace.block} como terminada`
                         :
-                        `Marcar esta CARA ${currentFace.face} de MANZANA ${currentFace.block} como terminada`
+                        `Marcar esta CARA ${currentFace.face} de Manzana ${currentFace.block} como terminada`
                     }
                 </button>
             }

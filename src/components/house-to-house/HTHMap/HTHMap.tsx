@@ -82,12 +82,12 @@ export const HTHMap = (props: any) => {
             return
         }
         editHTHMapService(territoryHTH.territoryNumber, editedHTHMap, editedHTHPolygons).then((success: boolean) => {
-            if (success) reloadHandler()
-            else dispatch(setValuesAndOpenAlertModalReducer({
+            if (!success) return dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
                 title: 'Error al editar el mapa',
                 message: `Algo falló al querer modificar el mapa del territorio ${territoryHTH.territoryNumber}; refrescar la página e intentar de nuevo`
             }))
+            reloadHandler()
         })
     }
 
@@ -194,7 +194,7 @@ export const HTHMap = (props: any) => {
                 id={mapId}
                 mapContainerClassName={isMobile ? 'position-absolute' : 'd-block m-auto'}
                 mapContainerStyle={{
-                    height: isMobile ? '600px' : '500px',
+                    height: isMobile ? '600px' : '700px',
                     width: isMobile ? '100%' : '90%'
                 }}
                 onLoad={(mapInstance: google.maps.Map) => setMap(mapInstance)}

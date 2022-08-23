@@ -19,21 +19,7 @@ export const MapModal = (props: any) => {
     const [centerCoords, setCenterCoords] = useState<typeCoords>()
     
     useEffect(() => {
-        let target: string = address
-        try {
-            if (!isNaN(parseInt(address.split(' ')[1])))
-                target = address.split(' ')[0] + " " + address.split(' ')[1] + " CABA"
-            else if (!isNaN(parseInt(address.split(' ')[2])))
-                target = address.split(' ')[0] + " " + address.split(' ')[1] + " " + address.split(' ')[2] + " CABA"
-            else if (!isNaN(parseInt(address.split(' ')[3])))
-                target = target.split(' ')[0] + " " + address.split(' ')[1] + " " + address.split(' ')[2] + " " + address.split(' ')[3] + " CABA"
-            else if (!isNaN(parseInt(address.split(' ')[4])))
-                target = target.split(' ')[0] + " " + address.split(' ')[1] + " " + address.split(' ')[2] + " " + address.split(' ')[3] + " " + address.split(' ')[4] + " CABA"
-            else if (!isNaN(parseInt(address.split(' ')[5])))
-                target = target.split(' ')[0] + " " + address.split(' ')[1] + " " + address.split(' ')[2] + " " + address.split(' ')[3] + " " + address.split(' ')[4] + " " + address.split(' ')[5] + " CABA"
-        } catch (error) {
-            console.error(error)
-        }
+        let target: string = address + " CABA"
         getGeocodingFromAddressService(target).then((coordinates: typeCoords|null) => {
             if (coordinates && coordinates.lat && coordinates.lng) setCenterCoords({ lat: coordinates.lat, lng: coordinates.lng })
         })

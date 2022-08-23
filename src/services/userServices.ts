@@ -10,11 +10,29 @@ export const getTokenService = (): string|null => getTokenFromLSService()
 export const setTokenService = (newToken: string): void => setTokenToLSService(newToken)
 const removeTokenService = (): void => removeTokenFromLSService()
 
-export const assignTerritoryService = async (email: string, toAssign: number|null, toUnassign: number|null, all: boolean|null): Promise<typeUser|null> => {
+export const assignHTHTerritoryService = async (email: string, toAssign: number|null, toUnassign: number|null, all: boolean|null): Promise<typeUser|null> => {
     if (!getTokenService()) return null
     try {
         all = !!all
-        const response = await fetch(`${base}/assignment`, {
+        const response = await fetch(`${base}/hth-assignment`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify({ email, toAssign, toUnassign, all })
+        })
+        const data: typeResponseData = await response.json()
+        if (!data || !data.success || !data.user) return null
+        return data.user
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}
+
+export const assignTLPTerritoryService = async (email: string, toAssign: number|null, toUnassign: number|null, all: boolean|null): Promise<typeUser|null> => {
+    if (!getTokenService()) return null
+    try {
+        all = !!all
+        const response = await fetch(`${base}/tlp-assignment`, {
             method: 'PUT',
             headers: getHeaders(),
             body: JSON.stringify({ email, toAssign, toUnassign, all })

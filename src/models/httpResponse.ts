@@ -14,14 +14,12 @@ export type typeResponseData = {
     expired?: boolean
     gmailKeys?: Credentials
     household?: type.typeHousehold
-    households?: type.typeHousehold[]
     hthTerritory?: type.typeHTHTerritory
     isDisabled?: boolean
     localStatistics?: type.typeLocalTelephonicStatistic[]
     modifiedCount?: number
     newPassword?: string
     newToken?: string,
-    numberOfFreePhones?: number
     campaignPack?: type.typeCampaignPack
     campaignPacks?: type.typeCampaignPack[]
     recaptchaFails?: boolean

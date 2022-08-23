@@ -4,7 +4,7 @@ import { Card, Pagination } from 'react-bootstrap'
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs'
 import { Socket } from 'socket.io-client'
 import { setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
-import { assignTerritoryService, changePswOtherUserService, editUserService } from '../../services/userServices'
+import { assignHTHTerritoryService, assignTLPTerritoryService, changePswOtherUserService, editUserService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
 
 export const UsersCard = (props: any) => {
@@ -18,9 +18,12 @@ export const UsersCard = (props: any) => {
     const currentUser: typeUser = props.user
     const setIsLoading: Function = props.setIsLoading
     const socket: Socket = props.socket
-    const [assignValue, setAssignValue] = useState<number>(0)
-    const [unassignValue, setUnssignValue] = useState<number>(0)
-    const [changeTelephonicAssignmentsVisible, setChangeTelephonicAssignmentsVisible] = useState<boolean>(false)
+    const [assignHTHValue, setAssignHTHValue] = useState<number>(0)
+    const [assignTLPValue, setAssignTLPValue] = useState<number>(0)
+    const [unassignHTHValue, setUnassignHTHValue] = useState<number>(0)
+    const [unassignTLPValue, setUnassignTLPValue] = useState<number>(0)
+    const [changeHTHAssignmentsVisible, setChangeHTHAssignmentsVisible] = useState<boolean>(false)
+    const [changeTLPAssignmentsVisible, setChangeTLPAssignmentsVisible] = useState<boolean>(false)
     const [groupVisible, setGroupVisible] = useState<boolean>(false)
     const [showCardBody, setShowCardBody] = useState<boolean>(false)
     const groups: number[] = [1,2,3,4,5,6]
@@ -53,15 +56,15 @@ export const UsersCard = (props: any) => {
         sendUpdatedUser(updatedUser)
     }
 
-    const assignTerritoryHandler = async (isToAssign: boolean, all: boolean): Promise<void> => {
+    const assignHTHTerritoryHandler = async (isToAssign: boolean, all: boolean): Promise<void> => {
         setIsLoading(true)
         let updatedUser: typeUser|null
         if (all) {
-            updatedUser = await assignTerritoryService(currentUser.email, null, null, true)
-        } else if (isToAssign && assignValue) {
-            updatedUser = await assignTerritoryService(currentUser.email, assignValue, null, false)
-        } else if (unassignValue) {
-            updatedUser = await assignTerritoryService(currentUser.email, null, unassignValue, false)
+            updatedUser = await assignHTHTerritoryService(currentUser.email, null, null, true)
+        } else if (isToAssign && assignHTHValue) {
+            updatedUser = await assignHTHTerritoryService(currentUser.email, assignHTHValue, null, false)
+        } else if (unassignHTHValue) {
+            updatedUser = await assignHTHTerritoryService(currentUser.email, null, unassignHTHValue, false)
         } else {
             setIsLoading(false)
             return
@@ -69,8 +72,28 @@ export const UsersCard = (props: any) => {
         setIsLoading(false)
         if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al cambiar las asignaciones", 2)
         sendUpdatedUser(updatedUser)
-        setAssignValue(0)
-        setUnssignValue(0)
+        setAssignHTHValue(0)
+        setUnassignHTHValue(0)
+    }
+
+    const assignTLPTerritoryHandler = async (isToAssign: boolean, all: boolean): Promise<void> => {
+        setIsLoading(true)
+        let updatedUser: typeUser|null
+        if (all) {
+            updatedUser = await assignTLPTerritoryService(currentUser.email, null, null, true)
+        } else if (isToAssign && assignTLPValue) {
+            updatedUser = await assignTLPTerritoryService(currentUser.email, assignTLPValue, null, false)
+        } else if (unassignTLPValue) {
+            updatedUser = await assignTLPTerritoryService(currentUser.email, null, unassignTLPValue, false)
+        } else {
+            setIsLoading(false)
+            return
+        }
+        setIsLoading(false)
+        if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al cambiar las asignaciones", 2)
+        sendUpdatedUser(updatedUser)
+        setAssignTLPValue(0)
+        setUnassignTLPValue(0)
     }
 
     const sendUpdatedUser = (updatedUser: typeUser): void => {
@@ -90,15 +113,25 @@ export const UsersCard = (props: any) => {
             openAlertModalHandler('alert', "Se reseteó la contraseña pero falló el envío del email", `Nueva clave: ${response[0]}`)
     }
 
-    const openUnassignAllConfirmationModalHandler = () => openAlertModalHandler(
+    const openHTHUnassignAllConfirmationModalHandler = () => openAlertModalHandler(
         'confirm',
         "¿Desasignar todos?",
-        "Se van a desasignar todos los territorios de telefónica de " + currentUser.email,
+        "Se van a desasignar todos los territorios de Casa en Casa de " + currentUser.email,
         undefined,
-        unassignAllHandler
+        unassignAllHTHHandler
     )
 
-    const unassignAllHandler = async (): Promise<void> => assignTerritoryHandler(false, true)
+    const openTLPUnassignAllConfirmationModalHandler = () => openAlertModalHandler(
+        'confirm',
+        "¿Desasignar todos?",
+        "Se van a desasignar todos los territorios de Telefónica de " + currentUser.email,
+        undefined,
+        unassignAllTLPHandler
+    )
+
+    const unassignAllHTHHandler = async (): Promise<void> => assignHTHTerritoryHandler(false, true)
+    
+    const unassignAllTLPHandler = async (): Promise<void> => assignTLPTerritoryHandler(false, true)
 
     return (
         <Card key={currentUser.email}
@@ -132,9 +165,83 @@ export const UsersCard = (props: any) => {
 
                     <hr/>
 
-                    <Card.Text style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
+                    <div style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
+                        <h2> Casa en Casa </h2>
                         Territorios asignados: &nbsp;
-                        {currentUser.phoneAssignments.length ?
+                        {!!currentUser.hthAssignments?.length ?
+                            currentUser.hthAssignments.sort((a: number, b: number) => a - b).map((territoryNumber: number) => (
+                                <span key={territoryNumber} className={'d-inline-block'}>
+                                    {territoryNumber} &nbsp;
+                                </span>
+                            ))
+                            :
+                            <span> ninguno </span>
+                        }
+                    </div>
+
+                    <button className={'col-12 btn btn-general-blue mt-4 mb-2'}
+                        onClick={() => setChangeHTHAssignmentsVisible(x => !x)}
+                        style={{ marginTop: '10px' }}
+                    >
+                        CAMBIAR ASIGNACIONES
+                    </button>
+
+                    {changeHTHAssignmentsVisible &&
+                        <div className={'text-center p-4'}>
+                            <div style={{ marginTop: '12px' }}>
+                                <input className={'form-control d-inline-block'}
+                                    min={1}
+                                    onChange={(e: any) => setAssignHTHValue(e.target.value)}
+                                    style={{ width: '70px' }}
+                                    type={'number'}
+                                    value={assignHTHValue || ""}
+                                />
+                                &nbsp;&nbsp;
+                                <button className={'btn btn-general-blue'}
+                                    disabled={!assignHTHValue}
+                                    onClick={() => assignHTHTerritoryHandler(true, false)}
+                                    style={{ width: '102px' }}
+                                >
+                                    &nbsp; Asignar &nbsp;
+                                </button>
+
+                            </div>
+
+                            <div style={{ marginTop: '12px' }}>
+                                <input className={'form-control d-inline-block'}
+                                    min={1}
+                                    onChange={(e: any) => setUnassignHTHValue(e.target.value)}
+                                    style={{ width: '70px' }}
+                                    type={'number'}
+                                    value={unassignHTHValue || ""}
+                                />
+                                &nbsp;&nbsp;
+                                <button className={'btn btn-general-blue'}
+                                    disabled={!unassignHTHValue}
+                                    onClick={() => assignHTHTerritoryHandler(false, false)}
+                                >
+                                    Desasignar
+                                </button>
+                            </div>
+
+                            {!!currentUser.hthAssignments?.length &&
+                                <div style={{ marginTop: '22px' }}>
+                                    <button className={'btn btn-general-blue'}
+                                        onClick={() => openHTHUnassignAllConfirmationModalHandler()}
+                                    >
+                                        Desasignar todos
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <hr/>
+
+                    <div style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
+                        <h2>Telefónica</h2>
+                        Territorios asignados: &nbsp;
+                        {!!currentUser.phoneAssignments?.length ?
                             currentUser.phoneAssignments.sort((a: number, b: number) => a - b).map((territoryNumber: number) => (
                                 <span key={territoryNumber} className={'d-inline-block'}>
                                     {territoryNumber} &nbsp;
@@ -143,31 +250,30 @@ export const UsersCard = (props: any) => {
                             :
                             <span> ninguno </span>
                         }
-                    </Card.Text>
+                    </div>
 
-                    <button className={'col-12 btn btn-general-blue my-2'}
+                    <button className={'col-12 btn btn-general-blue mt-4 mb-2'}
+                        onClick={() => setChangeTLPAssignmentsVisible(x => !x)}
                         style={{ marginTop: '10px' }}
-                        onClick={() => setChangeTelephonicAssignmentsVisible(x => !x)}
                     >
                         CAMBIAR ASIGNACIONES
                     </button>
 
-                    {changeTelephonicAssignmentsVisible &&
+                    {changeTLPAssignmentsVisible &&
                         <div className={'text-center p-4'}>
                             <div style={{ marginTop: '12px' }}>
-                                <input
+                                <input className={'form-control d-inline-block'}
                                     min={1}
-                                    onChange={(e: any) => setAssignValue(e.target.value)}
-                                    style={{ width: '60px' }}
+                                    onChange={(e: any) => setAssignTLPValue(e.target.value)}
+                                    style={{ width: '70px' }}
                                     type={'number'}
-                                    value={assignValue || ""}
+                                    value={assignTLPValue || ""}
                                 />
-                                
-                                &nbsp;
-                                
+                                &nbsp;&nbsp;
                                 <button className={'btn btn-general-blue'}
-                                    disabled={!assignValue}
-                                    onClick={() => assignTerritoryHandler(true, false)}
+                                    disabled={!assignTLPValue}
+                                    onClick={() => assignTLPTerritoryHandler(true, false)}
+                                    style={{ width: '102px' }}
                                 >
                                     &nbsp; Asignar &nbsp;
                                 </button>
@@ -175,29 +281,31 @@ export const UsersCard = (props: any) => {
                             </div>
 
                             <div style={{ marginTop: '12px' }}>
-                                <input
+                                <input className={'form-control d-inline-block'}
                                     min={1}
-                                    onChange={(e: any) => setUnssignValue(e.target.value)}
-                                    style={{ width: '60px' }}
+                                    onChange={(e: any) => setUnassignTLPValue(e.target.value)}
+                                    style={{ width: '70px' }}
                                     type={'number'}
-                                    value={unassignValue || ""}
+                                    value={unassignTLPValue || ""}
                                 />
-                                &nbsp;
+                                &nbsp;&nbsp;
                                 <button className={'btn btn-general-blue'}
-                                    disabled={!unassignValue}
-                                    onClick={() => assignTerritoryHandler(false, false)}
+                                    disabled={!unassignTLPValue}
+                                    onClick={() => assignTLPTerritoryHandler(false, false)}
                                 >
                                     Desasignar
                                 </button>
                             </div>
 
-                            <div style={{ marginTop: '12px' }}>
-                                <button className={'btn btn-general-blue'}
-                                    onClick={() => openUnassignAllConfirmationModalHandler()}
-                                >
-                                    Desasignar todos
-                                </button>
-                            </div>
+                            {!!currentUser.phoneAssignments?.length &&
+                                <div style={{ marginTop: '22px' }}>
+                                    <button className={'btn btn-general-blue'}
+                                        onClick={() => openTLPUnassignAllConfirmationModalHandler()}
+                                    >
+                                        Desasignar todos
+                                    </button>
+                                </div>
+                            }
                         </div>
                     }
 

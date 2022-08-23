@@ -62,6 +62,10 @@ export const App = () => {
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
                         <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />
 
+
+                        <Route path={'/tiempo'} element={ <Pages.WeatherPage /> } />
+
+
                         {(!user || !user.isAuth) ?
                             <Route path={'/acceso'} element={<Pages.LoginPage />} />
                             :
@@ -75,9 +79,12 @@ export const App = () => {
 
                         {user && user.isAdmin && <>
                             <Route path={'/admins'} element={<Pages.AdminsPage />} />
-                            <Route path={'/casa-en-casa/:territory'} element={<Pages.HouseToHousePage />} />
                             <Route path={'/gmail'} element={<Pages.GmailTokensPage />} />
                         </>}
+
+                        {user && (user.isAdmin || user.email === 'usuarioprueba@misericordia') &&
+                            <Route path={'/casa-en-casa/:territory'} element={<Pages.HouseToHousePage />} />
+                        }
 
                         <Route path={'/*'} element={ <Navigate to={'/'} replace /> } />
                     </Routes>

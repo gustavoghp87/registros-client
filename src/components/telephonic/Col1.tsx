@@ -24,7 +24,7 @@ export const Col1 = (props: any) => {
                 </h4>
 
                 <button className={'btn btn-general-blue d-block mx-auto mt-3'}
-                    onClick={() => setAddressToShowInGoogleMaps(household.address)}
+                    onClick={() => setAddressToShowInGoogleMaps(`${household.street} ${household.streetNumber}`)}
                 >
                     Ver en el Mapa
                 </button>

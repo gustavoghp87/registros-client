@@ -38,7 +38,7 @@ export const getGlobalStatisticsService = async (): Promise<typeTelephonicStatis
     }
 }
 
-export const getHouseholdsByTerritoryService = async (territoryNumber: string): Promise<typeTelephonicTerritory|null> => {
+export const getTLPTerritoryService = async (territoryNumber: string): Promise<typeTelephonicTerritory|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/${territoryNumber}`, {

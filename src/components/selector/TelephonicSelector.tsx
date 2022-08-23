@@ -28,15 +28,15 @@ export const TelephonicSelector = () => {
 
             {show &&
                 <>
-                    {user && user.phoneAssignments?.length ?
+                    {!!user.phoneAssignments?.length ?
                         <TerritoryNumberBlock
                             classes={'btn-general-red animate__animated animate__bounce'}
                             territories={[...user.phoneAssignments].sort((a: number, b: number) => a - b)}
                             url={'/telefonica'}
                         />
                         :
-                        <h3 className={`text-center mb-5 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>
-                            No hay territorios de la telefónica asignados <br /> Hablar con el grupo de territorios
+                        <h3 className={`text-center my-5 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>
+                            No hay territorios de la Telefónica asignados <br/> Hablar con el grupo de territorios
                         </h3>
                     }
                 </>

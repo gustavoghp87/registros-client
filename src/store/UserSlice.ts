@@ -6,6 +6,7 @@ import { typeUser } from '../models'
 const unauthenticatedUser: typeUser = {
     email: "",
     group: 0,
+    hthAssignments: [],
     id: 0,
     isActive: false,
     isAdmin: false,

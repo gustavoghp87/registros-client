@@ -5,10 +5,9 @@ import { typeRootState } from '../../models'
 
 export const TerritoryNumberBlock = (props: any) => {
 
-    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile,
-        user: state.user
+        isMobile: state.mobileMode.isMobile
     }))
     const navigate: NavigateFunction = useNavigate()
     const classes: string = props.classes
@@ -22,7 +21,7 @@ export const TerritoryNumberBlock = (props: any) => {
                     padding: isMobile ? '10px' : '40px',
                     justifyContent: 'space-evenly'
                 }}>
-                    {user && !!territories?.length && territories.map((territory: number) =>
+                    {!!territories?.length && territories.map((territory: number) =>
                         <button key={territory}
                             className={`btn ${classes}`}
                             onClick={() => navigate(`${url}/${territory.toString()}`)}
