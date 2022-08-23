@@ -85,7 +85,7 @@ export const HTHPolygonComponent = (props: any) => {
                 strokeColor: '',
                 strokeOpacity: 0.8,
                 strokePosition: google.maps.StrokePosition.INSIDE,
-                strokeWeight: 7
+                strokeWeight: 5
             }}
             path={[
                 polygon.coordsPoint1,
