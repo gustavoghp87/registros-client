@@ -107,7 +107,7 @@ export const HouseToHousePage = () => {
     useEffect(() => {
         socket.on(hthChangeString, (territoryNumber0: typeTerritoryNumber, userEmail: string) => {
             if (userEmail && territoryNumber && userEmail !== user.email && territoryNumber0 === territoryNumber) {
-                //refreshHTHTerritoryHandler()
+                refreshHTHTerritoryHandler()
                 console.log("Refrescado por uso del usuario", userEmail)
             }
         })

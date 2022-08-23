@@ -33,20 +33,17 @@ export const HTHObservations = (props: any) => {
                     'No hay Observaciones en esta cara'}
             </h1>
 
-            {currentFace.observations && !!currentFace.observations.length &&
-                currentFace.observations.map((observation: typeObservation) => (
-                    <div key={observation.id}>
-                        <HTHObservationsItem
-                            closeShowFormHandler={closeShowFormHandler}
-                            currentFace={currentFace}
-                            date={date}
-                            observation={observation}
-                            refreshDoNotCallHandler={refreshHTHTerritoryHandler}
-                            territoryNumber={territoryNumber}
-                        />
-                    </div>
-                ))
-            }
+            {!!currentFace.observations?.length && currentFace.observations.map((observation: typeObservation) => (
+                <HTHObservationsItem
+                    closeShowFormHandler={closeShowFormHandler}
+                    currentFace={currentFace}
+                    date={date}
+                    key={observation.id}
+                    observation={observation}
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    territoryNumber={territoryNumber}
+                />
+            ))}
 
             {user && user.isAdmin &&
                 <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
@@ -62,7 +59,7 @@ export const HTHObservations = (props: any) => {
                     closeShowFormHandler={closeShowFormHandler}
                     currentFace={currentFace}
                     date={date}
-                    refreshDoNotCallHandler={refreshHTHTerritoryHandler}
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryNumber}
                 />
             }

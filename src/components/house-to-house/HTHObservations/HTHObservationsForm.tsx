@@ -15,7 +15,7 @@ export const HTHObservationsForm = (props: any) => {
     const currentFace: typePolygon = props.currentFace
     const editText: string = props.editText || ''
     const idEdit: number = props.idEdit || 0
-    const refreshDoNotCallHandler: Function = props.refreshDoNotCallHandler
+    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [text, setText] = useState<string>(editText)
     const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
@@ -37,13 +37,13 @@ export const HTHObservationsForm = (props: any) => {
                         mode: 'alert',
                         title: 'Algo falló',
                         message: `No se pudo agregar esta Observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${newObservation.text}"`,
-                        execution: refreshDoNotCallHandler,
+                        execution: refreshHTHTerritoryHandler,
                         animation: 2
                     }))
                     return
                 } else {
                     closeShowFormHandler()
-                    refreshDoNotCallHandler()
+                    refreshHTHTerritoryHandler()
                     setText('')
                 }
             })
@@ -51,14 +51,14 @@ export const HTHObservationsForm = (props: any) => {
             editHTHObservationService(territoryNumber, currentFace.block, currentFace.face, newObservation).then((success: boolean) => {
                 if (success) {
                     closeShowFormHandler()
-                    refreshDoNotCallHandler()
+                    refreshHTHTerritoryHandler()
                     setText('')
                 } else {
                     dispatch(setValuesAndOpenAlertModalReducer({
                         mode: 'alert',
                         title: 'Algo falló',
                         message: `No se pudo editar esta Observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${newObservation.text}"`,
-                        execution: refreshDoNotCallHandler,
+                        execution: refreshHTHTerritoryHandler,
                         animation: 2
                     }))
                 }
