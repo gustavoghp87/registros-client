@@ -10,13 +10,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-input[type="checkbox"].checkboxuno {
+input[type='checkbox'].checkbox-1 {
   zoom: 2.4;
 }
 
-input[type="checkbox"].checkboxdos {
+input[type='checkbox'].checkbox-2 {
   zoom: 2.2;
   padding-top: 10px;
+}
+
+.checkbox-3 input[type='checkbox'] {
+  margin-right: 10px;
+  width: 22px;
+  height: 22px;
 }
 
 .pointer {

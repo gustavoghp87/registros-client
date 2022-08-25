@@ -12,6 +12,7 @@ export const HTHDoNotCalls = (props: any) => {
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const territoryNumber: typeTerritoryNumber = props.territoryNumber
+    const [show, setShow] = useState<boolean>(false)
     const [showForm, setShowForm] = useState<boolean>(false)
     
     const closeShowFormHandler = (): void => setShowForm(false)
@@ -19,49 +20,51 @@ export const HTHDoNotCalls = (props: any) => {
     return (
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>
 
-            <h1 className={'py-3 text-center text-white d-block mx-auto'}
+            <h1 className={'py-3 text-center text-white d-block mx-auto pointer'}
+                onClick={() => setShow(x => !x)}
                 style={{
                     backgroundColor: generalBlue,
                     marginBottom: '50px',
                     width: isMobile ? '100%' : '90%'
                 }}
             >
-                {currentFace.doNotCalls && !!currentFace.doNotCalls.length ?
+                {!!currentFace.doNotCalls?.length ?
                     'NO TOCAR'
                     :
                     'No hay No Tocar en esta cara'
                 }
             </h1>
 
-            {currentFace.doNotCalls && !!currentFace.doNotCalls.length &&
-                currentFace.doNotCalls.map((doNotCall: typeDoNotCall, index: number) => (
-                    <div key={index}>
+            {show &&
+                <>
+                    {!!currentFace.doNotCalls?.length && currentFace.doNotCalls.map((doNotCall: typeDoNotCall) => (
                         <HTHDoNotCallsItem
                             currentFace={currentFace}
                             doNotCall={doNotCall}
+                            key={doNotCall.id}
                             refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                             territoryNumber={territoryNumber}
                         />
-                    </div>
-                ))
-            }
+                    ))}
 
-            {user && user.isAdmin &&
-                <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
-                    style={{ marginTop: '50px' }}
-                    onClick={() => setShowForm(!showForm)}
-                >
-                    {showForm ? 'Ocultar' : 'Agregar No Tocar'}
-                </button>
-            }
+                    {user.isAdmin &&
+                        <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
+                            onClick={() => setShowForm(!showForm)}
+                            style={{ marginTop: '50px' }}
+                        >
+                            {showForm ? 'Ocultar' : 'Agregar No Tocar'}
+                        </button>
+                    }
 
-            {user && user.isAdmin && showForm &&
-                <HTHDoNotCallsForm
-                    closeShowFormHandler={closeShowFormHandler}
-                    currentFace={currentFace}
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territoryNumber={territoryNumber}    
-                />
+                    {user.isAdmin && showForm &&
+                        <HTHDoNotCallsForm
+                            closeShowFormHandler={closeShowFormHandler}
+                            currentFace={currentFace}
+                            refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                            territoryNumber={territoryNumber}    
+                        />
+                    }
+                </>
             }
         </div>
     )

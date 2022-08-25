@@ -89,7 +89,7 @@ export const CampaignPage = () => {
                     <a href={`tel:${phoneNumber}`}> {putHyphens(phoneNumber)} </a>
                     &nbsp;&nbsp;
                 </h5>
-                <input className={'checkboxdos d-inline'}
+                <input className={'checkbox-2 d-inline'}
                     checked={campaignPack && campaignPack.calledPhones.includes(phoneNumber)}
                     onChange={() => editCampaignPackHandler(phoneNumber, !campaignPack?.calledPhones.includes(phoneNumber))}
                     type={'checkbox'}

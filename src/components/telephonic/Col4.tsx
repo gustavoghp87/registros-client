@@ -18,7 +18,7 @@ export const Col4 = (props: any) => {
                         No abonado en servicio
                     </h4>
 
-                    <input className={'checkboxuno'} type={'checkbox'}
+                    <input className={'checkbox-1'} type={'checkbox'}
                         checked={!!household.notSubscribed}
                         onChange={() => { }}
                         onClick={() => modifyHouseholdHandler(household.householdId, household.callingState, !household.notSubscribed, !!household.isAssigned)}
@@ -31,7 +31,7 @@ export const Col4 = (props: any) => {
                         Asignado
                     </h4>
 
-                    <input className={'checkboxuno'}
+                    <input className={'checkbox-1'}
                         checked={!!household.isAssigned}
                         onChange={() => { }}
                         onClick={() => modifyHouseholdHandler(household.householdId, household.callingState, !!household.notSubscribed, !household.isAssigned)}

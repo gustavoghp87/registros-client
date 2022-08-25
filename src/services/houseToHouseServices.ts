@@ -1,7 +1,7 @@
 import { pointer } from '../config'
 import { getHeaders } from '.'
 import { getTokenService } from './userServices'
-import { typeBlock, typeDoNotCall, typeFace, typeHTHMap, typeHTHTerritory, typeObservation, typePolygon, typeResponseData, typeTerritoryNumber } from '../models'
+import { typeBlock, typeDoNotCall, typeFace, typeHTHBuilding, typeHTHMap, typeHTHTerritory, typeObservation, typePolygon, typeResponseData, typeTerritoryNumber } from '../models'
 
 const base: string = pointer.houseToHouse
 
@@ -180,6 +180,54 @@ export const setHTHIsFinishedService = async (
             method: 'PATCH',
             headers: getHeaders(),
             body: JSON.stringify({ isFinish, polygonId })
+        })
+        const data: typeResponseData|null = await response.json()
+        return !!data && !!data.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+
+//////// BUILDINGS
+
+type addBuildingServiceResponse = {
+    success: boolean
+    dataError: boolean
+    alreadyExists: boolean
+}
+
+export const addBuildingService = async (
+ territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, newBuilding: typeHTHBuilding): Promise<addBuildingServiceResponse|null> => {
+    if (!getTokenService()) return null
+    try {
+        const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({ newBuilding })
+        })
+        const data: typeResponseData|null = await response.json()
+        if (!data) return null
+        return {
+            success: !!data.success,
+            alreadyExists: !!data.alreadyExists,
+            dataError: !!data.dataError
+        }
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}
+
+export const modifyHTHHouseholdService = async (territoryNumber: typeTerritoryNumber,
+ block: typeBlock, face: typeFace, streetNumber: number, householdId: number, isChecked: boolean): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
+            method: 'PATCH',
+            headers: getHeaders(),
+            body: JSON.stringify({ householdId, isChecked, streetNumber })
         })
         const data: typeResponseData|null = await response.json()
         return !!data && !!data.success

@@ -25,6 +25,7 @@ export type typeMarker = {
 
 export type typePolygon = {
     block: typeBlock
+    buildings?: typeHTHBuilding[]             // new buildings section
     coordsPoint1: typeCoords
     coordsPoint2: typeCoords
     coordsPoint3: typeCoords
@@ -50,3 +51,28 @@ export type typeObservation = {
     id: number
     text: string
 }
+
+
+// new buildings section
+
+export type typeHTHBuilding = {
+    hasCharacters: boolean
+    hasContinuousNumbers: boolean
+    hasLowLevel: boolean
+    households: typeHTHHousehold[]
+    numberOfLevels: number
+    numberPerLevel: number
+    streetNumber: number
+}
+
+export type typeHTHHousehold = {
+    dateOfLastCall: number
+    doorName: string
+    doorNumber: number
+    id: number
+    isChecked: boolean
+    level: number
+    // callingHTHState: typeCallingHTHState
+}
+
+// export type typeCallingHTHState = 'Atendido' | 'No atendido' | 'No tocado' | 'Carta dejada'

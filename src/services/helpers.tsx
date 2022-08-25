@@ -172,3 +172,45 @@ export const getStreetsByHTHTerritory = (hthTerritory: typeHTHTerritory): string
     })
     return streets
 }
+
+const getCharacterForNumber = (apartmentNumber: number): string => {
+    if (apartmentNumber === 1) return 'A'
+    if (apartmentNumber === 2) return 'B'
+    if (apartmentNumber === 3) return 'C'
+    if (apartmentNumber === 4) return 'D'
+    if (apartmentNumber === 5) return 'E'
+    if (apartmentNumber === 6) return 'F'
+    if (apartmentNumber === 7) return 'G'
+    if (apartmentNumber === 8) return 'H'
+    if (apartmentNumber === 9) return 'I'
+    if (apartmentNumber === 10) return 'J'
+    if (apartmentNumber === 11) return 'K'
+    if (apartmentNumber === 12) return 'L'
+    if (apartmentNumber === 13) return 'M'
+    if (apartmentNumber === 14) return 'N'
+    if (apartmentNumber === 15) return 'Ñ'
+    if (apartmentNumber === 16) return 'O'
+    if (apartmentNumber === 17) return 'P'
+    if (apartmentNumber === 18) return 'Q'
+    if (apartmentNumber === 19) return 'R'
+    if (apartmentNumber === 20) return 'S'
+    if (apartmentNumber === 21) return 'T'
+    if (apartmentNumber === 22) return 'U'
+    if (apartmentNumber === 23) return 'V'
+    if (apartmentNumber === 24) return 'W'
+    if (apartmentNumber === 25) return 'X'
+    if (apartmentNumber === 26) return 'Y'
+    if (apartmentNumber === 27) return 'Y'
+    return apartmentNumber.toString()
+}
+
+export const getHouseholdDoorBell = (doorNumber: number,
+ index: number, index1: number, hasContinuousNumbers: boolean, hasCharacters: boolean, numberPerLevel: number): string => {
+    if (hasContinuousNumbers) {
+        if (hasCharacters) return getCharacterForNumber(index*numberPerLevel + index1 + 1)
+        return (index*numberPerLevel + index1 + 1).toString()
+    } else {
+        if (hasCharacters) return getCharacterForNumber(doorNumber)
+        return doorNumber.toString()
+    }
+}
