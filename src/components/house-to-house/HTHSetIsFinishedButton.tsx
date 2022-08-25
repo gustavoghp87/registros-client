@@ -15,7 +15,7 @@ export const HTHSetIsFinishedButton = (props: any) => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: "Cambiar estado de la Cara",
-            message: currentFace.isFinished ? `Descarmar esta CARA ${currentFace.face} de MANZANA ${currentFace.block} como terminada` : `Marcar esta CARA ${currentFace.face} de MANZANA ${currentFace.block} como terminada`,
+            message: currentFace.isFinished ? `Desmarcar esta CARA ${currentFace.face} de MANZANA ${currentFace.block} como terminada` : `Marcar esta CARA ${currentFace.face} de MANZANA ${currentFace.block} como terminada`,
             execution: setHTHIsFinishedHandler
         }))
     }

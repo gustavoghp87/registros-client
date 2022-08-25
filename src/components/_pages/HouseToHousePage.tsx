@@ -46,32 +46,42 @@ export const HouseToHousePage = () => {
 
     const refreshHTHTerritoryHandler = useCallback((): void => {
         setIsLoading(true)
-        getHTHTerritoryService(territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
-            setIsLoading(false)
-            if (!hthTerritory0) return dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Algo falló",
-                message: `No se pudo recuperar el territorio ${territoryNumber}`,
-                animation: 2
-            }))
-            setTerritoryHTHHandler(hthTerritory0)
-            setCurrentFace(x => {
-                if (x && x.block && x.face) {
-                    const currentFace0: typePolygon|undefined = hthTerritory0.map.polygons.find((y: typePolygon) =>
-                        y.block === x.block && y.face === x.face
-                    )
-                    if (currentFace0) {
-                        if (currentFace0.doNotCalls)
-                            x.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
-                        if (currentFace0.observations)
-                            x.observations = currentFace0.observations.reverse()
+        setTimeout(() => {
+            getHTHTerritoryService(territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
+                console.log(hthTerritory0?.map.polygons[0].isFinished);
+                
+                setIsLoading(false)
+                if (!hthTerritory0) return dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "Algo falló",
+                    message: `No se pudo recuperar el territorio ${territoryNumber}`,
+                    animation: 2
+                }))
+                setTerritoryHTHHandler(hthTerritory0)
+                setCurrentFace(x => {
+                    if (x && x.block && x.face) {
+                        const currentFace0: typePolygon|undefined = hthTerritory0.map.polygons.find((y: typePolygon) => y.block === x.block && y.face === x.face)
+                        if (currentFace0) {
+                            x.buildings = currentFace0.buildings
+                            x.coordsPoint1 = currentFace0.coordsPoint1
+                            x.coordsPoint2 = currentFace0.coordsPoint2
+                            x.coordsPoint3 = currentFace0.coordsPoint3
+                            x.isFinished = currentFace0.isFinished
+                            if (currentFace0.doNotCalls)
+                                x.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
+                            if (currentFace0.observations)
+                                x.observations = currentFace0.observations.reverse()
+                        }
                     }
-                }
-                return x
+                    return x
+                })
             })
-        })
-        socket.emit(hthChangeString, territoryNumber, user.email)
+            socket.emit(hthChangeString, territoryNumber, user.email)
+        }, 300)
     }, [dispatch, territoryNumber, user.email])
+
+    console.log(currentFace?.buildings );
+    
 
     useEffect(() => {
         refreshHTHTerritoryHandler()
@@ -141,6 +151,7 @@ export const HouseToHousePage = () => {
             {user && user.isAdmin && currentFace &&
                 <HTHSetIsFinishedButton
                     currentFace={currentFace}
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryHTH={territoryHTH}
                 />
             }
