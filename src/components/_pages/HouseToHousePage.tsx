@@ -46,42 +46,27 @@ export const HouseToHousePage = () => {
 
     const refreshHTHTerritoryHandler = useCallback((): void => {
         setIsLoading(true)
-        setTimeout(() => {
-            getHTHTerritoryService(territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
-                console.log(hthTerritory0?.map.polygons[0].isFinished);
-                
-                setIsLoading(false)
-                if (!hthTerritory0) return dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "Algo falló",
-                    message: `No se pudo recuperar el territorio ${territoryNumber}`,
-                    animation: 2
-                }))
-                setTerritoryHTHHandler(hthTerritory0)
-                setCurrentFace(x => {
-                    if (x && x.block && x.face) {
-                        const currentFace0: typePolygon|undefined = hthTerritory0.map.polygons.find((y: typePolygon) => y.block === x.block && y.face === x.face)
-                        if (currentFace0) {
-                            x.buildings = currentFace0.buildings
-                            x.coordsPoint1 = currentFace0.coordsPoint1
-                            x.coordsPoint2 = currentFace0.coordsPoint2
-                            x.coordsPoint3 = currentFace0.coordsPoint3
-                            x.isFinished = currentFace0.isFinished
-                            if (currentFace0.doNotCalls)
-                                x.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
-                            if (currentFace0.observations)
-                                x.observations = currentFace0.observations.reverse()
-                        }
-                    }
-                    return x
-                })
+        getHTHTerritoryService(territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
+            setIsLoading(false)
+            if (!hthTerritory0) return dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'alert',
+                title: "Algo falló",
+                message: `No se pudo recuperar el territorio ${territoryNumber}`,
+                animation: 2
+            }))
+            setTerritoryHTH(hthTerritory0)
+            setCurrentFace(x => {
+                if (!x) return x
+                const currentFace0: typePolygon|undefined = hthTerritory0.map.polygons.find((y: typePolygon) => y.block === x.block && y.face === x.face)
+                if (currentFace0) {
+                    if (currentFace0.doNotCalls) currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
+                    if (currentFace0.observations) currentFace0.observations = currentFace0.observations.reverse()
+                }
+                return currentFace0
             })
-            socket.emit(hthChangeString, territoryNumber, user.email)
-        }, 300)
+        })
+        socket.emit(hthChangeString, territoryNumber, user.email)
     }, [dispatch, territoryNumber, user.email])
-
-    console.log(currentFace?.buildings );
-    
 
     useEffect(() => {
         refreshHTHTerritoryHandler()
@@ -142,10 +127,15 @@ export const HouseToHousePage = () => {
                 }}
             >
                 <span> TERRITORIO {territoryNumber} </span>
-                {currentFace?.block && <br />}
-                {currentFace?.face && <span> MANZANA {currentFace.block} </span>}
-                {currentFace?.face && <br />}
-                {currentFace?.face && <span> CARA {currentFace.face} </span>}
+                
+                {currentFace &&
+                    <>
+                        <br />
+                        <span> MANZANA {currentFace.block} </span>
+                        <br />
+                        <span> CARA {currentFace.face} </span>
+                    </>
+                }
             </h1>
             
             {user && user.isAdmin && currentFace &&
