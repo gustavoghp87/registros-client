@@ -16,6 +16,7 @@ export type typeResponseData = {                           //  =>  UPDATE MOCKED
     email?: string
     emailSuccess?: boolean
     expired?: boolean
+    forecast?: type.typeForecastResponse
     globalStatistics?: type.typeTelephonicStatistic,
     gmailKeys?: Credentials
     household?: type.typeHousehold
@@ -33,5 +34,6 @@ export type typeResponseData = {                           //  =>  UPDATE MOCKED
     user?: type.typeUser
     userExists?: boolean
     users?: type.typeUser[]
+    weather?: type.typeWeatherResponse
     wrongPassword?: boolean
 }

@@ -81,6 +81,22 @@ export const changePswOtherUserService = async (email: string): Promise<[string,
     }
 }
 
+export const deleteUserService = async (userId: number): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(base, {
+            method: 'DELETE',
+            headers: getHeaders(),
+            body: JSON.stringify({ userId })
+        })
+        const data: typeResponseData = await response.json()
+        return !!data && data.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 export const editUserService = async (email: string, isActive: boolean, role: number, group: number): Promise<typeUser|null> => {
     if (!getTokenService()) return null
     try {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Form, FloatingLabel } from 'react-bootstrap'
-import { H2 } from '../commons'
+import { H2, Hr } from '../commons'
 import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { getCampaignAssignmentsByUser } from '../../services'
 import { changePswService, getUserByTokenService, logoutAllService } from '../../services/userServices'
@@ -83,7 +83,7 @@ export const UserPage = () => {
                         
                         <h1 className={'mt-2 py-2'}> {user.email} </h1>
 
-                        <hr/>
+                        <Hr />
                         
                         <div className={'my-4'}>
 
@@ -104,7 +104,7 @@ export const UserPage = () => {
                             }
                         </div>
 
-                        <hr/>
+                        <Hr />
                         
                         <div className={'my-4'}>
 
@@ -127,7 +127,7 @@ export const UserPage = () => {
 
                         {!!assignedPacks?.length &&
                             <>
-                                <hr/>
+                                <Hr />
 
                                 <div className={'my-4'}>
 
@@ -150,7 +150,7 @@ export const UserPage = () => {
                             </>
                         }
 
-                        <hr/>
+                        <Hr />
 
                         {!show && <>
                             <button

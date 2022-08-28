@@ -37,6 +37,7 @@ export const HouseToHouseSelector = () => {
                     {!!user.hthAssignments.length ?
                         <TerritoryNumberBlock
                             classes={'btn-general-blue animate__animated animate__rubberBand'}
+                            showForecast={true}
                             territories={user.hthAssignments}
                             url={'/casa-en-casa'}
                         />
@@ -56,7 +57,6 @@ export const HouseToHouseSelector = () => {
             
             {!show && <><br/><br/><br/></>}
 
-            <br/><br/><br/>
         </>
     )
 }

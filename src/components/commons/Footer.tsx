@@ -11,7 +11,7 @@ export const Footer = () => {
             <div className={'main-footer'}
                 style={{
                     backgroundColor: generalBlue,
-                    height: '160px',
+                    height: isMobile ? '170px' : '160px',
                     marginTop: '200px',
                     paddingBottom: '20px',
                     paddingTop: isMobile ? '10px' : '20px'

@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Card, Pagination } from 'react-bootstrap'
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs'
 import { Socket } from 'socket.io-client'
+import { Hr } from '../commons'
 import { setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
-import { assignHTHTerritoryService, assignTLPTerritoryService, changePswOtherUserService, editUserService } from '../../services/userServices'
+import { assignHTHTerritoryService, assignTLPTerritoryService, changePswOtherUserService, deleteUserService, editUserService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
 
 export const UsersCard = (props: any) => {
@@ -38,13 +39,23 @@ export const UsersCard = (props: any) => {
         }))
     }
 
-    const openCloseSessionsConfirmModalHandler = (): void => {
+    const openResetPasswordConfirmModalHandler = (): void => {
         openAlertModalHandler(
             'confirm',
             "¿Resetear clave?",
             `Esto reseteará la contraseña del usuario ${currentUser.email}, cerrará su sesión si está abierta y le enviará un correo con la nueva contraseña`,
             undefined,
             resetPasswordHandler
+        )
+    }
+
+    const openDeleteUserConfirmModalHandler = (): void => {
+        openAlertModalHandler(
+            'confirm',
+            "¿Eliminar este usuario?",
+            `Se eliminará el usuario ${currentUser.email} definitivamente`,
+            undefined,
+            deleteUserHandler
         )
     }
 
@@ -113,6 +124,25 @@ export const UsersCard = (props: any) => {
             openAlertModalHandler('alert', "Se reseteó la contraseña pero falló el envío del email", `Nueva clave: ${response[0]}`)
     }
 
+    const deleteUserHandler = async (): Promise<void> => {
+        setIsLoading(true)
+        deleteUserService(currentUser.id).then((success: boolean) => {
+            setIsLoading(false)
+            if (success) openAlertModalHandler(
+                'alert',
+                "Usuario eliminado",
+                `Se eliminó al usuario ${currentUser.email}`,
+                1
+            )
+            else openAlertModalHandler(
+                'alert',
+                "Algo falló",
+                `No se pudo eliminar al usuario ${currentUser.email}`,
+                2
+            )
+        })
+    }
+
     const openHTHUnassignAllConfirmationModalHandler = () => openAlertModalHandler(
         'confirm',
         "¿Desasignar todos?",
@@ -163,7 +193,7 @@ export const UsersCard = (props: any) => {
 
                 {showCardBody && <>
 
-                    <hr/>
+                    <Hr/>
 
                     <div style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
                         <h2> Casa en Casa </h2>
@@ -236,10 +266,10 @@ export const UsersCard = (props: any) => {
                         </div>
                     }
 
-                    <hr/>
+                    <Hr />
 
                     <div style={{ fontWeight: 500, fontSize: '1.2rem', textAlign: 'center' }}>
-                        <h2>Telefónica</h2>
+                        <h2> Telefónica </h2>
                         Territorios asignados: &nbsp;
                         {!!currentUser.phoneAssignments?.length ?
                             currentUser.phoneAssignments.sort((a: number, b: number) => a - b).map((territoryNumber: number) => (
@@ -309,7 +339,7 @@ export const UsersCard = (props: any) => {
                         </div>
                     }
 
-                    <hr/>
+                    <Hr />
 
                     <Card.Text className={'text-center mt-3'} style={{ fontSize: '1.2rem', fontWeight: 600 }}>
                         Grupo: {currentUser.group} &nbsp;&nbsp;
@@ -364,7 +394,7 @@ export const UsersCard = (props: any) => {
                     }
                 
 
-                    <hr/>
+                    <Hr />
                 
 
                     <button className={`col-12 btn btn ${currentUser.isActive ? 'btn-general-red' : 'btn-general-blue'} my-2`}
@@ -385,11 +415,19 @@ export const UsersCard = (props: any) => {
 
                     {user?.email !== currentUser.email &&
                         <button className={'col-12 btn btn-general-blue my-2'}
-                            onClick = {() => openCloseSessionsConfirmModalHandler()}
+                            onClick = {() => openResetPasswordConfirmModalHandler()}
                         >
                             RESETEAR CONTRASEÑA
                         </button>
                     }
+
+                    <button className={'col-12 btn btn-general-blue my-2'}
+                        disabled={!!currentUser.isActive || currentUser.role !== 0 || !!currentUser.hthAssignments?.length
+                     || !!currentUser.phoneAssignments?.length || !!currentUser.phoneAssignments?.length}
+                        onClick = {() => openDeleteUserConfirmModalHandler()}
+                    >
+                        ELIMINAR USUARIO
+                    </button>
                     
                 </>}
             </Card.Body>

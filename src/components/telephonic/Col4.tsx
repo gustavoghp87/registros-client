@@ -1,5 +1,6 @@
 import { Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import { Hr } from '../commons'
 import { typeHousehold, typeRootState } from '../../models'
 
 export const Col4 = (props: any) => {
@@ -25,7 +26,7 @@ export const Col4 = (props: any) => {
                         style={{ marginTop: '0.5rem', padding: 5, marginLeft: '0rem' }}
                     />
 
-                    <hr/>
+                    <Hr />
 
                     <h4 className={'form-check-label'} style={{ fontSize: isMobile ? '1.3rem' : '1.1rem', fontWeight: 600 }}>
                         Asignado

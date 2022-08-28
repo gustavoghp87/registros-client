@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Campaign, Logs, Statistics, Users } from '../admins'
-import { H2 } from '../commons'
+import { H2, Hr } from '../commons'
 import { hideLoadingModalReducer, showLoadingModalReducer } from '../../store'
-import { typeAppDispatch, typeRootState } from '../../models'
+import { typeAppDispatch } from '../../models'
 
 type adminsSections = 'users' | 'statistics' | 'logs' | 'campaign'
 
 export const AdminsPage = () => {
     
-    const { isDarkMode } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode
-    }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [currentSection, setCurrentSection] = useState<adminsSections>('users')
@@ -56,7 +53,7 @@ export const AdminsPage = () => {
             </button>
 
 
-            <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
+            <Hr />
 
 
             {currentSection === 'users' &&

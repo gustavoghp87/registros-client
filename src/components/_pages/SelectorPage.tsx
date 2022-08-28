@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
+import { Hr } from '../commons'
 import { CampaignSelector, HouseToHouseSelector, TelephonicSelector } from '../selector'
 import { logoutReducer, refreshUserReducer } from '../../store'
 import { getUserByTokenService } from '../../services/userServices'
@@ -8,8 +9,7 @@ import { typeAppDispatch, typeRootState, typeUser } from '../../models'
 
 export const SelectorPage = () => {
 
-    const { isDarkMode, user } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode,
+    const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
@@ -27,16 +27,17 @@ export const SelectorPage = () => {
     return (
         <>
             {user && (user.isAdmin || user.email === 'usuarioprueba@misericordia') && <>
+
                 <HouseToHouseSelector />
 
-                <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
-                <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
+                <Hr />
+                <Hr />
             </>}
 
             <TelephonicSelector />
 
-            <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
-            <hr style={{ color: isDarkMode ? 'white' : 'black' }} />
+            <Hr />
+            <Hr />
 
             <CampaignSelector />
         </>

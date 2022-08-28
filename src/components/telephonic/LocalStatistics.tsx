@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card } from 'react-bootstrap'
-import { H2, Loading } from '../commons'
+import { H2, Hr, Loading } from '../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { resetTerritoryService, timeConverter } from '../../services'
 import { typeAppDispatch, typeLocalTelephonicStatistic, typeResetDate, typeRootState, typeTelephonicTerritory } from '../../models'
@@ -123,7 +123,7 @@ export const LocalStatistics = (props: any) => {
 
                 <br/>
 
-                <hr />
+                <Hr />
 
                 <h3 className={'text-center mt-3'}> Composición de Llamadas ({localS.numberOfAlreadyCalled}) </h3>
 
@@ -149,7 +149,7 @@ export const LocalStatistics = (props: any) => {
 
                 {!!telephonicTerritory.stateOfTerritory.resetDates.length &&
                     <div className={'my-4'}>
-                        <hr />
+                        <Hr />
                         <h3 className={'text-center my-4'}> Reseteos del territorio {telephonicTerritory.territoryNumber} </h3>
                         {telephonicTerritory.stateOfTerritory.resetDates.map((reset: typeResetDate, index: number) =>
                             <h4 key={index}>

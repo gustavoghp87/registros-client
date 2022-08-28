@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { H2, Loading, SideBar } from '../commons'
+import { H2, Hr, Loading, SideBar } from '../commons'
 import { getCongregationItems } from '../../services/congregationServices'
 import { typeCongregationItem, typeRootState } from '../../models'
 
 export const CongregationPage = () => {
 
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode,
+    const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))
     const [currentItem, setCurrentItem] = useState<typeCongregationItem>({ title: "", ids: [] })
@@ -37,7 +36,7 @@ export const CongregationPage = () => {
     if (!items || !items.length) return (<Loading mt={'120px'} />)
 
     return (
-        <div className={'row w-100'}>
+        <div className={'row w-100 mx-auto'}>
             <div className={`col-lg-2 ${isMobile ? 'mt-3 w-75 mx-auto text-center' : 'mt-5'}`}
                 style={{
                     backgroundColor: isMobile ? '' : 'lightgray',
@@ -51,13 +50,13 @@ export const CongregationPage = () => {
                 />
             </div>
 
-            {isMobile && <hr className={`mt-3 mb-0 ${isDarkMode ? 'text-white' : ''}`} style={{ maxWidth: '99%' }} />}
+            {isMobile && <Hr classes={'mt-3 mb-0'} />}
 
             <div className={'col-lg-10'}>
                 {currentItem && items && !!items.length && items.map((item: typeCongregationItem) =>
                     <div className={item.title === currentItem.title ? '' : 'd-none'} key={item.title}>
 
-                        {!isMobile && <hr className={isDarkMode ? 'text-white' : ''} style={{ marginTop: '80px' }} />}
+                        {!isMobile && <Hr styles={{ marginTop: '80px' }} />}
 
                         <H2 title={item.title.toUpperCase()} mt={'30px'} />
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Card } from 'react-bootstrap'
-import { H2, Loading } from '../commons'
+import { H2, Hr, Loading } from '../commons'
 import { getLocalStatisticsService, getGlobalStatisticsService } from '../../services'
 import { generalBlue, typeLocalTelephonicStatistic, typeRootState, typeTelephonicStatistic } from '../../models'
 
@@ -66,7 +66,7 @@ export const Statistics = () => {
 
                     <h4> Libres para llamar: {globalS.numberOf_FreePhones} </h4>
 
-                    <hr/>
+                    <Hr />
 
                     <h4> Predicadas: {globalS.numberOfAlreadyDone} viviendas ({globalS.numberOfAlreadyDoneRelative}%) </h4>
 

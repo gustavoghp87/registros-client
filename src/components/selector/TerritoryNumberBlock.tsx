@@ -1,6 +1,7 @@
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 import { Row } from 'react-bootstrap'
+import { WeatherAndForecast } from '../commons'
 import { typeRootState } from '../../models'
 
 export const TerritoryNumberBlock = (props: any) => {
@@ -11,16 +12,19 @@ export const TerritoryNumberBlock = (props: any) => {
     }))
     const navigate: NavigateFunction = useNavigate()
     const classes: string = props.classes
+    const showForecast: boolean = props.showForecast || false
     const territories: number[] = props.territories
     const url: string = props.url
 
     return (
         <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>
             <div className={'container pt-0 mb-0'}>
-                <Row style={{
-                    padding: isMobile ? '10px' : '40px',
-                    justifyContent: 'space-evenly'
-                }}>
+                <Row
+                    style={{
+                        justifyContent: 'space-evenly',
+                        padding: isMobile ? '20px 10px' : '40px'
+                    }}
+                >
                     {!!territories?.length && territories.map((territory: number) =>
                         <button key={territory}
                             className={`btn ${classes}`}
@@ -43,6 +47,7 @@ export const TerritoryNumberBlock = (props: any) => {
                             </h2>
                         </button>
                     )}
+                    {showForecast && <WeatherAndForecast showForecast={true} />}
                 </Row>
             </div>
         </div>

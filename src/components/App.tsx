@@ -62,10 +62,6 @@ export const App = () => {
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
                         <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />
 
-
-                        <Route path={'/tiempo'} element={ <Pages.WeatherPage /> } />
-
-
                         {(!user || !user.isAuth) ?
                             <Route path={'/acceso'} element={<Pages.LoginPage />} />
                             :

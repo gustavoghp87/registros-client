@@ -13,9 +13,9 @@ export const pointer = {
     houseToHouse: `${SERVER}/api/house-to-house`,
     geocoding: `${SERVER}/api/geocoding`,
     log: `${SERVER}/api/log`,
-        // GET: () => { success: boolean, allLogsObj: typeAllLogsObj }
     telephonic: `${SERVER}/api/telephonic`,
-    user: `${SERVER}/api/user`
+    user: `${SERVER}/api/user`,
+    weather: `${SERVER}/api/weather`
 }
 
 export const recaptchaPublicKey = "6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9"
@@ -26,6 +26,8 @@ export const googleMapsAPIKey: string = isLocalhost ? "AIzaSyCWWH0mdRMiQ2fIsWD_x
 
 
 ///////// NEW PROJECT:
+
+// GET: () => { success: boolean, allLogsObj: typeAllLogsObj }
 
 type service = {
     name: string

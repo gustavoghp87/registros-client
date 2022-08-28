@@ -98,9 +98,9 @@ export const NavBar = () => {
                             
                             <Button
                                 className={`${isMobile ? 'my-3' : ''}`}
-                                variant={'outline-info'}
                                 onClick={() => openLogoutConfirmModal()}
                                 style={{ color, borderColor: color }}
+                                variant={'outline-info'}
                             >
                                 CERRAR SESIÓN
                             </Button>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Button, Form, Modal, Card } from 'react-bootstrap'
+import { Hr } from '../../commons'
 import { HTHBuildingCheckbox } from '..'
 import { addBuildingService, getHouseholdDoorBell } from '../../../services'
 import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
@@ -179,7 +180,7 @@ export const HTHAddBuildingModal = (props: any) => {
                             Esquema del Edificio:
                         </h1>
 
-                        <hr />
+                        <Hr />
 
                         {[...levels].slice(hasLowLevel ? 0 : 1, numberOfLevels + 1).map((level: number, index: number) =>
                             <div key={level}>
@@ -193,7 +194,7 @@ export const HTHAddBuildingModal = (props: any) => {
                                         />
                                     )}
                                 </div>
-                                <hr />
+                                <Hr />
                             </div>
                         )}
                     </Card>

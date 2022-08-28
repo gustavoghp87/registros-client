@@ -16,7 +16,7 @@ export const HTHBuildingItem = (props: any) => {
     }
 
     const closeBuildingModalHandler = (): void => setShow(false)
-    
+
     return (
         <>
             <button
