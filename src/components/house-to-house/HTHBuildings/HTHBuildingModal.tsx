@@ -1,5 +1,5 @@
-import { Card, Modal } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import { Modal } from 'react-bootstrap'
 import { Hr } from '../../commons'
 import { HTHBuildingCheckbox } from '..'
 import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
@@ -30,7 +30,7 @@ export const HTHBuildingModal = (props: any) => {
             <Modal.Header closeButton />
 
             <Modal.Body>
-                <Card className={'my-4'}>
+                <div className={'card my-4'}>
 
                     <h1 className={'bg-dark text-white text-center font-weight-bolder mt-4 mb-2 py-2'}
                         style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
@@ -75,7 +75,7 @@ export const HTHBuildingModal = (props: any) => {
 
                         </div>
                     )}
-                </Card>
+                </div>
             </Modal.Body>
         </Modal>
     )

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card, Container, Row } from 'react-bootstrap'
+import { Container, Row } from 'react-bootstrap'
 import { Socket } from 'socket.io-client'
 import { Col1, Col2, Col3, Col4 } from '.'
 import { telephonicHouseholdChangeString, typeAppDispatch, typeCallingState, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
@@ -40,8 +40,8 @@ export const TelephonicCard = (props: any) => {
     }
 
     return (
-        <Card
-            className={`${household.isAssigned ? 'bg-gray bg-opacity bg-gradient' : isDarkMode ? 'bg-dark text-white' : ''} animate__animated animate__bounceInLeft animate__faster`}
+        <div
+            className={`card ${household.isAssigned ? 'bg-gray bg-opacity bg-gradient' : isDarkMode ? 'bg-dark text-white' : ''} animate__animated animate__bounceInLeft animate__faster`}
             key={household.householdId}
             ref={householdCard}
             style={{
@@ -76,6 +76,6 @@ export const TelephonicCard = (props: any) => {
 
                 </Row>
             </Container>
-        </Card>
+        </div>
     )
 }

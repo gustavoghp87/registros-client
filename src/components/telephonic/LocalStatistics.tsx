@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card } from 'react-bootstrap'
 import { H2, Hr, Loading } from '../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { resetTerritoryService, timeConverter } from '../../services'
@@ -105,7 +104,7 @@ export const LocalStatistics = (props: any) => {
 
             <br/>
 
-            <Card className={`px-5 py-3 ${isMobile ? 'text-center' : ''} ${isDarkMode ? 'bg-dark text-white' : ''}`}>
+            <div className={`card px-5 py-3 ${isMobile ? 'text-center' : ''} ${isDarkMode ? 'bg-dark text-white' : ''}`}>
 
                 <h1 className={'text-center mt-3'}> Generales </h1>
 
@@ -158,7 +157,7 @@ export const LocalStatistics = (props: any) => {
                         )}
                     </div>
                 }
-            </Card>
+            </div>
 
             {isLoading ?
                 <Loading mt={'50px'} />

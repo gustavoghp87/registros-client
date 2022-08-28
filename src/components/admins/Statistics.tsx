@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Card } from 'react-bootstrap'
 import { H2, Hr, Loading } from '../commons'
 import { getLocalStatisticsService, getGlobalStatisticsService } from '../../services'
 import { generalBlue, typeLocalTelephonicStatistic, typeRootState, typeTelephonicStatistic } from '../../models'
@@ -51,8 +50,8 @@ export const Statistics = () => {
             <div style={{ margin: isMobile ? '0' : '0 10%' }}>
                 <br/>
                 <br/>
-                <Card
-                    className={isDarkMode ? 'bg-dark text-white' : ''}
+                <div
+                    className={`card ${isDarkMode ? 'bg-dark text-white' : ''}`}
                     style={{ padding: '35px', textAlign: isMobile ? 'center' : undefined }}
                 >
 
@@ -82,7 +81,7 @@ export const Statistics = () => {
 
                     <h4> No contestó: {globalS.numberOf_NoContesto} viviendas ({globalS.numberOf_NoContesto_relative}%) </h4>
 
-                </Card>
+                </div>
 
             </div>
         :
@@ -110,8 +109,8 @@ export const Statistics = () => {
 
         {localS && !!localS.length && localS.map((territory: typeLocalTelephonicStatistic) =>
             <Link key={territory.territoryNumber} to={`/telefonica/${territory.territoryNumber}`}>
-                <Card
-                    className={`d-block mx-auto mt-3 ${territory.numberOf_FreePhones < 50 ? 'bg-danger' : (territory.numberOf_FreePhones < 100 ? 'bg-warning': 'bg-success')} ${territory.isFinished ? 'animate__animated animate__flash animate__infinite animate__slower' : ''}`}
+                <div
+                    className={`card d-block mx-auto mt-3 ${territory.numberOf_FreePhones < 50 ? 'bg-danger' : (territory.numberOf_FreePhones < 100 ? 'bg-warning': 'bg-success')} ${territory.isFinished ? 'animate__animated animate__flash animate__infinite animate__slower' : ''}`}
                     style = {{
                         color: 'black',
                         marginBottom: '20px',
@@ -122,7 +121,7 @@ export const Statistics = () => {
                 >
                     <h3> Territorio {territory.territoryNumber} {territory.isFinished ? '- TERMINADO' : ''} </h3>
                     <h4> Quedan {territory.numberOf_FreePhones} para predicar </h4>
-                </Card>
+                </div>
             </Link>
         )}
 

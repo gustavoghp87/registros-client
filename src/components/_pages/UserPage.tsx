@@ -76,8 +76,8 @@ export const UserPage = () => {
 
             {user &&
                 <>
-                    <Card
-                        className={`text-center ${isDarkMode ? 'bg-dark text-white' : ''}`}
+                    <div
+                        className={`card text-center ${isDarkMode ? 'bg-dark text-white' : ''}`}
                         style={{ margin: '30px auto', maxWidth: '700px', padding: '25px' }}
                     >
                         
@@ -170,7 +170,7 @@ export const UserPage = () => {
                             </button>
                         </>}
 
-                    </Card>
+                    </div>
 
 
                     {show &&

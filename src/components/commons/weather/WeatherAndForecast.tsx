@@ -17,10 +17,11 @@ export const WeatherAndForecast = (props: any) => {
     useEffect(() => {
         const weekdays = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
         const getWeekday = (i: number) => {
-            if (i === new Date().getDay()) return 'Hoy'
-            if (i === new Date().getDay() + 1 || i === new Date().getDay() - 6) return 'Mañana'
+            const today: number = new Date().getDay()
+            if (i === today) return 'Hoy'
+            if (i === today + 1 || i === today - 6) return 'Mañana'
             const date = new Date()
-            date.setDate(date.getDate() + i + 1)
+            date.setDate(date.getDate() + i)
             return weekdays[date.getDay()]
         }
         const weatherIcons: typeWeatherIcons = {
@@ -56,7 +57,7 @@ export const WeatherAndForecast = (props: any) => {
                         weekday: getWeekday(day)
                     },
                     icon: getWeatherIcon(forecast.weather?.[0]?.description),
-                    temperatures: `${Math.floor(forecast.main?.temp_min)}ºC - ${Math.ceil(forecast.main?.temp_max)}ºC`,
+                    temperatures: `${Math.ceil((forecast.main?.temp_max + forecast.main?.temp_min)/2)}ºC`,
                     list: forecast
                 })
             }))
