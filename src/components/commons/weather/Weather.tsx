@@ -3,7 +3,8 @@ import { typeRootState } from '../../../models'
 
 export const Weather = (props: any) => {
 
-    const { isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
     const chance = props.chance
@@ -14,7 +15,7 @@ export const Weather = (props: any) => {
     const temperature = props.temperature
 
     return (
-        <div className={'animate__animated animate__bounceInDown'}
+        <div className={`animate__animated animate__bounceInDown ${isDarkMode ? 'text-white' : ''}`}
         style={{
             alignItems: 'center',
             display: 'flex',
