@@ -39,7 +39,7 @@ export const WeatherAndForecast = (props: any) => {
         const getWeatherIcon = (key: string) => weatherIcons?.[key]
         getWeatherAndForecastService().then((response) => {
             console.log(response)
-            if (!response) return console.log("No se pudieron recuperar datos del tiempo")
+            if (!response) return
             if (response.weather) {
 
             }

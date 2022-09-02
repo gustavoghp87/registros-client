@@ -67,6 +67,8 @@ export const insertAnimationForAlertModal = (animationNumber: number): NodeJS.Ti
         tag.src = 'https://upload.wikimedia.org/wikipedia/commons/7/73/Flat_tick_icon.svg'
     else if (animationNumber === 2)
         tag.src = 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Flat_cross_icon.svg'
+    else if (animationNumber === 3)
+        tag.src = 'https://pic.onlinewebfonts.com/svg/img_570882.png'
     else
         return
     tag.alt = "Failed"

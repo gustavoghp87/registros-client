@@ -60,7 +60,7 @@ export const App = () => {
                         <Route path={'/privacidad'} element={ <Pages.PrivacyPolicyPage /> } />
                         <Route path={'/recovery/:id'} element={ <Pages.RecoveryPage /> } />
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
-                        <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />
+                        {/* <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } /> */}
 
                         {(!user || !user.isAuth) ?
                             <Route path={'/acceso'} element={<Pages.LoginPage />} />
