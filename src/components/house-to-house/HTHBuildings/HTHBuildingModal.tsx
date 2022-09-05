@@ -20,8 +20,8 @@ export const HTHBuildingModal = (props: any) => {
     return (
         <Modal
             backdrop={'static'}
-            backdropClassName={isDarkMode ? 'bg-dark': ''}
-            contentClassName={isDarkMode ? 'bg-dark text-white' : ''}
+            backdropClassName={''}
+            contentClassName={isDarkMode ? 'bg-secondary' : ''}
             keyboard={false}
             onHide={() => closeBuildingModalHandler()}
             show={true}
@@ -34,7 +34,7 @@ export const HTHBuildingModal = (props: any) => {
 
                     <h1 className={'bg-dark text-white text-center font-weight-bolder mt-4 mb-2 py-2'}
                         style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
-                        >
+                    >
                         Edificio {currentFace.street} {currentBuilding.streetNumber}
                     </h1>
 

@@ -38,7 +38,7 @@ export const HTHBuildings = (props: any) => {
 
                     {!!currentFace.buildings?.length &&
                         <>
-                            <Hr classes={'my-4'} styles={{ maxWidth: '500px' }} />
+                            <Hr classes={'mx-auto my-4'} styles={{ maxWidth: '500px' }} />
 
                             {currentFace.buildings.map((building: typeHTHBuilding) =>
                                 <HTHBuildingItem
