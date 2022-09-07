@@ -3,7 +3,7 @@ import { useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
 import { io, Socket } from 'socket.io-client'
-import { HTHBuildings, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
+import { HTHBuildings, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
 import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
@@ -163,6 +163,14 @@ export const HouseToHousePage = () => {
                     territoryNumber={territoryHTH.territoryNumber}
                 />
             </>}
+
+            {user && user.isAdmin && currentFace &&
+                <HTHDeleteFaceButton
+                    currentFace={currentFace}
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    territoryHTH={territoryHTH}
+                />
+            }
 
         </Container>
         

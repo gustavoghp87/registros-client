@@ -71,6 +71,23 @@ export const createHTHTerritoriesService = async (): Promise<boolean> => {
     }
 }
 
+export const deleteHTHPolygonFaceService = async (
+ territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, faceId: number): Promise<boolean> => {
+    if (!getTokenService() || !territoryNumber || !block || !face || !faceId) return false
+    try {
+        const response = await fetch(`${base}/map/${territoryNumber}/${block}/${face}`, {
+            method: 'DELETE',
+            headers: getHeaders(),
+            body: JSON.stringify({ faceId })
+        })
+        const data: typeResponseData|null = await response.json()
+        return !!data && !!data.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 export const deleteHTHDoNotCallService = async (
  territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, doNotCallId: number): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || !block || !face || !doNotCallId) return false
@@ -217,6 +234,23 @@ export const addBuildingService = async (
     } catch (error) {
         console.log(error)
         return null
+    }
+}
+
+export const deleteHTHBuildingService = async (
+ territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, streetNumber: number): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
+            method: 'DELETE',
+            headers: getHeaders(),
+            body: JSON.stringify({ streetNumber })
+        })
+        const data: typeResponseData|null = await response.json()
+        return !!data && !!data.success
+    } catch (error) {
+        console.log(error)
+        return false
     }
 }
 

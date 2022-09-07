@@ -35,13 +35,14 @@ export const HTHSetIsFinishedButton = (props: any) => {
     
     return (
         <button
-            className={`btn ${currentFace.isFinished ? 'btn-secondary' : 'btn-general-blue'} btn-size12 d-block m-auto my-4 py-3 w-50`}
+            className={`btn ${currentFace.isFinished ? 'btn-secondary' : 'btn-general-red'} btn-size12 d-block mx-auto mt-5 py-3 w-100`}
             onClick={() => openConfirmModalHTHIsFinishedHandler()}
+            style={{ maxWidth: '500px' }}
         >
             {currentFace.isFinished ?
                 `Desmarcar Cara ${currentFace.face} de Manzana ${currentFace.block} como terminada`
                 :
-                `Marcar esta CARA ${currentFace.face} de Manzana ${currentFace.block} como terminada`
+                `Marcar CARA ${currentFace.face} de Manzana ${currentFace.block} como terminada`
             }
         </button>
     )

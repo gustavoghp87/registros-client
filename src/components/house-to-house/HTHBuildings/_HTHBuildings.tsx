@@ -17,7 +17,7 @@ export const HTHBuildings = (props: any) => {
     return (
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>
 
-            <h1 className={'py-3 text-center text-white d-block mx-auto pointer'}
+            <h1 className={'py-3 text-center text-white d-block mx-auto pointer rounded-3'}
                 onClick={() => setShow(x => !x)}
                 style={{
                     backgroundColor: generalBlue,

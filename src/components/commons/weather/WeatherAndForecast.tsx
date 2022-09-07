@@ -28,6 +28,7 @@ export const WeatherAndForecast = (props: any) => {
             'broken clouds': <Icons.CloudIcon />,
             'clear sky': <Icons.SunIcon />,
             'few clouds': <Icons.SunBehindCloudIcon />,
+            'light rain': <Icons.SunBehindRainIcon />,
             'overcast-clouds': <Icons.CloudIcon />,
             'scattered clouds': <Icons.SunBehindLargeCloudIcon />,
             'shower rain': <Icons.RainIcon />,
