@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-import { Hr } from '..'
 import { typeRootState } from '../../../models'
 
 export const Weather = (props: any) => {
@@ -64,7 +63,6 @@ export const Weather = (props: any) => {
                     </ul>
                 }
             </div>
-            <Hr />
         </div>
     )
 }

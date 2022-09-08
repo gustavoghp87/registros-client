@@ -47,7 +47,9 @@ export const TerritoryNumberBlock = (props: any) => {
                             </h2>
                         </button>
                     )}
-                    {showForecast && <WeatherAndForecast showForecast={true} />}
+                    {showForecast &&
+                        <WeatherAndForecast showForecast={true} />
+                    }
                 </Row>
             </div>
         </div>
