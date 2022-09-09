@@ -47,7 +47,7 @@ export const Weather = (props: any) => {
                     <div className={'text-center'}>
                         <h6> Sensación térmica: {feelsLike}°C </h6>
                         <h6> Precipitaciones: {rain}mm </h6>
-                        <h6> Chance de lluvia: {chance}% </h6>
+                        <h6> Chance lluvia próximas 3hs: {chance}% </h6>
                     </div>
                     :
                     <ul style={{ 
@@ -59,7 +59,7 @@ export const Weather = (props: any) => {
                     }}>
                         <li className={'mx-4'}> Sensación térmica: {feelsLike}ºC </li>
                         <li className={'mx-4'}> Precipitaciones: {rain}mm </li>
-                        <li className={'mx-4'}> Chance de lluvia: {chance}% </li>
+                        <li className={'mx-4'}> Chance lluvia próximas 3hs: {chance}% </li>
                     </ul>
                 }
             </div>

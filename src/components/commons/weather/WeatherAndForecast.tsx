@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { Hr, Loading } from '..'
 import { Forecast } from './Forecast'
 import { Weather } from './Weather'
@@ -6,92 +6,91 @@ import * as Icons from './WeatherIcons'
 import { getWeatherAndForecastService } from '../../../services'
 import { typeForecast, typeList, typeWeatherIcons } from '../../../models'
 
+const weatherIcons: typeWeatherIcons = {
+    'broken clouds': <Icons.CloudIcon />,
+    'clear sky': <Icons.SunIcon />,
+    'few clouds': <Icons.SunBehindCloudIcon />,
+    'light rain': <Icons.SunBehindRainIcon />,
+    'mist': <Icons.FogIcon />,
+    'overcast clouds': <Icons.CloudIcon />,
+    'overcast-clouds': <Icons.CloudIcon />,
+    'rain': <Icons.SunBehindRainIcon />,
+    'scattered clouds': <Icons.SunBehindLargeCloudIcon />,
+    'shower rain': <Icons.RainIcon />,
+    'snow': <Icons.SnowIcon />,
+    'thunderstorm': <Icons.CloudLightningIcon />,
+    'thunderstorm with light rain': <Icons.CloudLightningIcon />
+}
+
+const getWeatherIcon = (key: string): ReactNode => weatherIcons?.[key] || key
+
 export const WeatherAndForecast = (props: any) => {
 
     const showForecast0: boolean = props.showForecast || false
     const showWeather: boolean = props.showWeather || false
-    const [currentDayForecast, setCurrentDayForecast] = useState<typeList>()
+    const [weatherRightNow, setWeatherRightNow] = useState<typeList>()
     const [forecasts, setForecasts] = useState<typeForecast[]>([])
-    const [location, setLocation] = useState<string>("")
-    const [showForecast, setShowForecast] = useState(showForecast0)
+    const [showForecast, setShowForecast] = useState<boolean>(showForecast0)
+
+    const getWeekday = (i: number) => {
+        const weekdays: string[] = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+        const today: number = new Date().getDay()
+        if (i === today) return 'Hoy'
+        if (i === today + 1 || i === today - 6) return 'Mañana'
+        return weekdays[i]
+    }
 
     useEffect(() => {
-        const weekdays = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-        const getWeekday = (i: number) => {
-            const today: number = new Date().getDay()
-            if (i === today) return 'Hoy'
-            if (i === today + 1 || i === today - 6) return 'Mañana'
-            return weekdays[i]
-        }
-        const weatherIcons: typeWeatherIcons = {
-            'broken clouds': <Icons.CloudIcon />,
-            'clear sky': <Icons.SunIcon />,
-            'few clouds': <Icons.SunBehindCloudIcon />,
-            'light rain': <Icons.SunBehindRainIcon />,
-            'overcast clouds': <Icons.CloudIcon />,
-            'overcast-clouds': <Icons.CloudIcon />,
-            'scattered clouds': <Icons.SunBehindLargeCloudIcon />,
-            'shower rain': <Icons.RainIcon />,
-            mist: <Icons.FogIcon />,
-            rain: <Icons.SunBehindRainIcon />,
-            snow: <Icons.SnowIcon />,
-            thunderstorm: <Icons.CloudLightningIcon />
-        }
-        const getWeatherIcon = (key: string) => weatherIcons?.[key] || key
         getWeatherAndForecastService().then((response) => {
             console.log(response)
             if (!response) return
-            if (response.weather) { }
-            if (!response.forecast) return
-            setLocation(`${response.forecast.city?.name}, ${response.forecast.city?.country}`)
-            if (!response.forecast.list?.length) return
-            setCurrentDayForecast(response.forecast.list[0])
-            setForecasts(response.forecast.list?.map((forecast: typeList) => {
-                const date: Date = new Date(forecast.dt * 1000)
-                const day: number = date.getDay()
-                return ({
-                    date: {
-                        dateDay: date.getDate(),
-                        day: day,
-                        hour: date.getHours(),
-                        weekday: getWeekday(day)
-                    },
-                    icon: getWeatherIcon(forecast.weather?.[0]?.description),
-                    temperatures: `${Math.ceil((forecast.main?.temp_max + forecast.main?.temp_min)/2)}ºC`,
-                    list: forecast
+            if (response.weather) {
+                setWeatherRightNow({
+                    clouds: response.weather.clouds,
+                    dt: response.weather.dt,
+                    dt_txt: response.weather.dt?.toString(),
+                    main: response.weather.main,
+                    name: response.weather.name,
+                    pop: 0,
+                    rain: response.weather.rain,
+                    sys: response.weather.sys,
+                    visibility: response.weather.visibility,
+                    weather: response.weather.weather,
+                    wind: response.weather.wind
                 })
-            }))
+            }
+            if (response.forecast) {
+                if (!response.forecast.list?.length) return
+                setForecasts(response.forecast.list?.map((forecast: typeList) => {
+                    const date: Date = new Date(forecast.dt * 1000)
+                    const day: number = date.getDay()
+                    return ({
+                        date: {
+                            dateDay: date.getDate(),
+                            day: day,
+                            hour: date.getHours(),
+                            weekday: getWeekday(day)
+                        },
+                        icon: getWeatherIcon(forecast.weather?.[0]?.description),
+                        temperatures: `${Math.ceil((forecast.main?.temp_max + forecast.main?.temp_min)/2)}ºC`,
+                        list: forecast
+                    })
+                }))
+            }
         })
     }, [])
 
-    const weatherIcons: typeWeatherIcons = {
-        'broken clouds': <Icons.CloudIcon />,
-        'clear sky': <Icons.SunIcon />,
-        'few clouds': <Icons.SunBehindCloudIcon />,
-        'light rain': <Icons.SunBehindRainIcon />,
-        'overcast clouds': <Icons.CloudIcon />,
-        'overcast-clouds': <Icons.CloudIcon />,
-        'scattered clouds': <Icons.SunBehindLargeCloudIcon />,
-        'shower rain': <Icons.RainIcon />,
-        mist: <Icons.FogIcon />,
-        rain: <Icons.SunBehindRainIcon />,
-        snow: <Icons.SnowIcon />,
-        thunderstorm: <Icons.CloudLightningIcon />
-    }
-
-    const getWeatherIcon = (key: string) => weatherIcons?.[key]
-
     return (
         <>
-            {showWeather && currentDayForecast &&
+            {showWeather && weatherRightNow &&
                 <>
                     <Weather
-                        chance={currentDayForecast?.pop || 0}
-                        feelsLike={Math.round(currentDayForecast?.main?.feels_like || 0)}
-                        icon={getWeatherIcon(currentDayForecast.weather?.[0]?.description)}
-                        location={location}
-                        rain={currentDayForecast?.rain?.['3h'] || 0}
-                        temperature={Math.round(currentDayForecast?.main?.temp || 0)}
+                        chance={(forecasts[0]?.list.pop || 0) * 100}
+                        feelsLike={Math.round(weatherRightNow?.main?.feels_like || 0)}
+                        icon={getWeatherIcon(weatherRightNow.weather?.[0]?.description)}
+                        location={`${weatherRightNow.name}, ${weatherRightNow.sys?.country}`}
+                        rain={(weatherRightNow?.rain?.['1h'] || 0) * 100}
+                        temperature={Math.round(weatherRightNow?.main?.temp || 0)}
                     />
                     <button className={'btn btn-general-blue d-block mx-auto mt-2 mb-4'}
                         onClick={() => setShowForecast(x => !x)}

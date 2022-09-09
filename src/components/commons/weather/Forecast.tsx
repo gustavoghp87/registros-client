@@ -7,6 +7,7 @@ export const Forecast = (props: any) => {
         isMobile: state.mobileMode.isMobile
     }))
     const forecasts: typeForecast[] = props.forecasts
+    // chance={(forecast.pop || 0) * 100}
 
     const divStyles = {
         display: isMobile ? undefined : 'flex',

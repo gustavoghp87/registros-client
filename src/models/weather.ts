@@ -29,19 +29,24 @@ export type typeWeatherResponse = {
     id: number
     main: Main
     name: string
+    rain: {
+        '1h': number
+    }
     sys: {
-        type: number
-        id: number
         country: string
+        id: number
+        pod: string
         sunrise: number
         sunset: number
+        type: number
     }
     timezone: number
     visibility: number
     weather: [typeWeather]
     wind: {
-        speed: number
         deg: number
+        gust: number
+        speed: number
     }
 }
 
@@ -90,10 +95,12 @@ export type Wind = {
 }
   
 export type Rain = {
-    '3h': number
+    '1h'?: number
+    '3h'?: number
 }
   
 export type Sys = {
+    country: string
     pod: string
 }
   
@@ -102,6 +109,7 @@ export type typeList = {
     dt_txt: string
     dt: number
     main: Main
+    name: string
     pop: number
     rain: Rain
     sys: Sys
