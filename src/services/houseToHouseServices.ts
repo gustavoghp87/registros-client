@@ -274,8 +274,6 @@ export const modifyHTHHouseholdService = async (territoryNumber: typeTerritoryNu
 export const setHTHIsSharedBuildingsService = async (territoryNumber: typeTerritoryNumber,
  block: typeBlock, face: typeFace, polygonId: number, streetNumbers: number[]): Promise<boolean> => {
     if (!getTokenService()) return false
-    console.log("Sending", streetNumbers);
-    
     try {
         const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
             method: 'PUT',

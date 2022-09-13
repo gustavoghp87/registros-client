@@ -11,7 +11,6 @@ export const getWeatherAndForecastService = async (): Promise<{ weather?: typeWe
         if (weatherInLS) {
             const weatherInLSObj = JSON.parse(weatherInLS)
             if (weatherInLSObj && weatherInLSObj.timestamp && weatherInLSObj.timestamp + 120000 > +new Date()) {
-                console.log("Weather from LS")
                 return {
                     weather: weatherInLSObj.weather,
                     forecast: weatherInLSObj.forecast

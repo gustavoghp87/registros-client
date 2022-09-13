@@ -35,7 +35,8 @@ export const HTHSetIsFinishedButton = (props: any) => {
     
     return (
         <button
-            className={`btn ${currentFace.isFinished ? 'btn-secondary' : 'btn-general-red'} btn-size12 d-block mx-auto mt-5 py-3 w-100`}
+            className={`btn ${currentFace.isFinished ? 'btn-secondary' : 'btn-general-red'} btn-size12 mx-auto mt-5 py-3 w-100 d-none`}
+            id={'setHTHIsFinishedButton'}
             onClick={() => openConfirmModalHTHIsFinishedHandler()}
             style={{ maxWidth: '500px' }}
         >

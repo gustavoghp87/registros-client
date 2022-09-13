@@ -164,7 +164,7 @@ export const HouseToHousePage = () => {
                 />
             </>}
 
-            {user && user.isAdmin && currentFace &&
+            {user && user.isAdmin && currentFace && !isMobile &&
                 <HTHDeleteFaceButton
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}

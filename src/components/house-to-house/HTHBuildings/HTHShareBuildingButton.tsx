@@ -25,7 +25,7 @@ export const HTHShareBuildingButton = (props: any) => {
             if (checkbox.checked) {
                 const streetNumber: number = parseInt(checkbox.value)
                 if (territoryNumber && currentFace && currentFace.block && currentFace.face && currentFace.street && streetNumber && !isNaN(streetNumber)) {
-                    currentUrl += `Edificio ${currentFace.street} ${streetNumber} (Territorio ${territoryNumber})\n\nhttps://www.misericordiaweb.com/casa-en-casa/${territoryNumber}/${currentFace.block}/${currentFace.face}/${streetNumber}\n\n`
+                    currentUrl += `Edificio ${currentFace.street} ${streetNumber} (Territorio ${territoryNumber})\n\nhttps://www.misericordiaweb.com/edificio/${territoryNumber}/${currentFace.block}/${currentFace.face}/${streetNumber}\n\n`
                     buildings.push(streetNumber)
                 }
                 checkbox.checked = false

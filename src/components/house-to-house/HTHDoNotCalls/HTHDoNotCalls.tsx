@@ -23,7 +23,7 @@ export const HTHDoNotCalls = (props: any) => {
             <h1 className={'py-3 text-center text-white d-block mx-auto pointer rounded-3'}
                 onClick={() => setShow(x => !x)}
                 style={{
-                    backgroundColor: generalBlue,
+                    backgroundColor: !!currentFace.doNotCalls?.length ? generalBlue : 'gray',
                     marginBottom: '50px',
                     width: isMobile ? '100%' : '90%'
                 }}

@@ -4,7 +4,7 @@ import { Forecast } from './Forecast'
 import { Weather } from './Weather'
 import * as Icons from './WeatherIcons'
 import { getWeatherAndForecastService } from '../../../services'
-import { typeForecast, typeList, typeWeatherIcons } from '../../../models'
+import { typeForecast, typeForecastResponse, typeList, typeWeatherIcons, typeWeatherResponse } from '../../../models'
 
 const weatherIcons: typeWeatherIcons = {
     'broken clouds': <Icons.CloudIcon />,
@@ -41,8 +41,7 @@ export const WeatherAndForecast = (props: any) => {
     }
 
     useEffect(() => {
-        getWeatherAndForecastService().then((response) => {
-            console.log(response)
+        getWeatherAndForecastService().then((response: { weather?: typeWeatherResponse, forecast?: typeForecastResponse }|null) => {
             if (!response) return
             if (response.weather) {
                 setWeatherRightNow({

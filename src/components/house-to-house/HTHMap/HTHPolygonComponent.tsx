@@ -3,6 +3,8 @@ import { InfoWindow, Polygon } from '@react-google-maps/api'
 import { editInfoWindowsStyles } from '../../../services'
 import { generalBlue, generalRed, typeHTHTerritory, typePolygon } from '../../../models'
 
+let lastClick: number = 0
+
 export const HTHPolygonComponent = (props: any) => {
 
     const currentFace: typePolygon = props.currentFace
@@ -16,6 +18,12 @@ export const HTHPolygonComponent = (props: any) => {
     const ref = useRef<google.maps.Polygon>()
     const [polygonColor, setPolygonColor] = useState<string>(generalBlue)
     const [showInfoWindow, setShowInfoWindow] = useState<boolean>(false)
+
+    const setIsFinishedHandler = (): void => {
+        if ((+new Date() - lastClick) < 500) return
+        document.getElementById('setHTHIsFinishedButton')?.click()
+        lastClick = +new Date()
+    }
 
     useEffect(() => {
         editInfoWindowsStyles()
@@ -66,7 +74,10 @@ export const HTHPolygonComponent = (props: any) => {
         <Polygon
             editable={isEditingView || (isAddingPolygon && polygon.id === 0)}
             draggable={isEditingView || (isAddingPolygon && polygon.id === 0)}
-            onClick={() => !isEditingView && !isAddingPolygon ? selectBlockAndFaceHandler(polygon.block, polygon.face) : null}
+            onClick={() => {
+                if (currentFace && currentFace.id === polygon.id) setIsFinishedHandler()
+                else if (!isEditingView && !isAddingPolygon) selectBlockAndFaceHandler(polygon.block, polygon.face)
+            }}
             onLoad={(googlePolygon0: google.maps.Polygon) => ref.current = googlePolygon0}
             onMouseOver={() => {
                 if (isEditingView || isAddingPolygon || !ref.current || currentFace) return
@@ -95,7 +106,10 @@ export const HTHPolygonComponent = (props: any) => {
         />
 
         {polygon.id !== 0 &&
-            <div onClick={() => !isEditingView && !isAddingPolygon ? selectBlockAndFaceHandler(polygon.block, polygon.face) : null}>
+            <div onClick={() => {
+                if (currentFace && currentFace.id === polygon.id) setIsFinishedHandler()
+                else if (!isEditingView && !isAddingPolygon) selectBlockAndFaceHandler(polygon.block, polygon.face)
+            }}>
                 <InfoWindow
                     position={{
                         lat: (polygon.coordsPoint1.lat + polygon.coordsPoint2.lat + polygon.coordsPoint3.lat) / 3 + 0.00005,
