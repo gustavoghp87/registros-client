@@ -25,7 +25,7 @@ export type typeMarker = {
 
 export type typePolygon = {
     block: typeBlock
-    buildings?: typeHTHBuilding[]             // new buildings section
+    buildings?: typeHTHBuilding[]
     coordsPoint1: typeCoords
     coordsPoint2: typeCoords
     coordsPoint3: typeCoords
@@ -38,7 +38,7 @@ export type typePolygon = {
 }
 
 export type typeDoNotCall = {
-    creator: string
+    creatorId: number
     date: string
     doorBell: string
     id: number
@@ -46,7 +46,7 @@ export type typeDoNotCall = {
 }
 
 export type typeObservation = {
-    creator: string
+    creatorId: number
     date: string
     id: number
     text: string
@@ -56,6 +56,7 @@ export type typeObservation = {
 // new buildings section
 
 export type typeHTHBuilding = {
+    creatorId: number
     dateOfLastSharing: number
     hasCharacters: boolean
     hasContinuousNumbers: boolean

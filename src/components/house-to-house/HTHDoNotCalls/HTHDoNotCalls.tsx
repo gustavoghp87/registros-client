@@ -5,9 +5,8 @@ import { generalBlue, typeDoNotCall, typePolygon, typeRootState, typeTerritoryNu
 
 export const HTHDoNotCalls = (props: any) => {
 
-    const { isMobile, user } = useSelector((state: typeRootState) => ({
-        isMobile: state.mobileMode.isMobile,
-        user: state.user
+    const { isMobile } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile
     }))
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
@@ -47,16 +46,14 @@ export const HTHDoNotCalls = (props: any) => {
                         />
                     ))}
 
-                    {user.isAdmin &&
-                        <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
-                            onClick={() => setShowForm(!showForm)}
-                            style={{ marginTop: '50px' }}
-                        >
-                            {showForm ? 'Ocultar' : 'Agregar No Tocar'}
-                        </button>
-                    }
+                    <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
+                        onClick={() => setShowForm(!showForm)}
+                        style={{ marginTop: '50px' }}
+                    >
+                        {showForm ? 'Ocultar' : 'Agregar No Tocar'}
+                    </button>
 
-                    {user.isAdmin && showForm &&
+                    {showForm &&
                         <HTHDoNotCallsForm
                             closeShowFormHandler={closeShowFormHandler}
                             currentFace={currentFace}

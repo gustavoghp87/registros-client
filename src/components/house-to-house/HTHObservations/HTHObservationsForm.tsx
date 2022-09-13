@@ -24,7 +24,7 @@ export const HTHObservationsForm = (props: any) => {
         e.preventDefault()
         if (!text || !text.trim() || !user) return
         const newObservation: typeObservation = {
-            creator: user.email,
+            creatorId: user.id,
             date,
             id: idEdit ? idEdit : +new Date(),
             text: text.trim()

@@ -53,7 +53,9 @@ export const HTHBuildings = (props: any) => {
                                     territoryNumber={territoryNumber}
                                 />
                             )}
+
                             <Hr />
+
                             <HTHShareBuildingButton
                                 currentFace={currentFace}
                                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}

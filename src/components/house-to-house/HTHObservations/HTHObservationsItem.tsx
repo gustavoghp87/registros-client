@@ -55,6 +55,7 @@ export const HTHObservationsItem = (props: any) => {
     return (
         <>
             <HTHItemCard
+                creatorId={observation.creatorId}
                 date={observation.date}
                 deleteHandler={deleteHandler}
                 editHandler={editHandler}
@@ -62,7 +63,7 @@ export const HTHObservationsItem = (props: any) => {
             />
 
             {/* edit observation form */}
-            {user && user.isAdmin && showForm &&
+            {user && (user.isAdmin || observation.creatorId === user.id) && showForm &&
                 <HTHObservationsForm
                     closeShowFormHandler={closeShowFormHandler}
                     currentFace={currentFace}

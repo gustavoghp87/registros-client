@@ -9,6 +9,7 @@ export const HTHItemCard = (props: any) => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
+    const creatorId: number = props.creatorId
     const date: string = props.date
     const deleteHandler: Function = props.deleteHandler
     const editHandler: Function = props.editHandler
@@ -29,7 +30,7 @@ export const HTHItemCard = (props: any) => {
                 {text}
             </h3>
 
-            {user && user.isAdmin && <>
+            {user && (user.isAdmin || creatorId === user.id) && <>
 
                 {editHandler &&
                     <div className={'mt-1 mb-2 py-1 pointer'} style={{ border: '1px solid lightgray', borderRadius: '5px' }}

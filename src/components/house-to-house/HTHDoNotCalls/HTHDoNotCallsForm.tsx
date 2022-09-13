@@ -23,7 +23,7 @@ export const HTHDoNotCallsForm = (props: any) => {
         e.preventDefault()
         if (!user || streetNumber < 1) return
         const newDoNotCall: typeDoNotCall = {
-            creator: user.email,
+            creatorId: user.id,
             date,
             doorBell: doorBell.trim(),
             id: +new Date(),

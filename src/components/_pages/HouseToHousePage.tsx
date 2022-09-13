@@ -44,7 +44,7 @@ export const HouseToHousePage = () => {
         if (currentFace0) setCurrentFace(currentFace0)
     }
 
-    const refreshHTHTerritoryHandler = useCallback((): void => {
+    const refreshHTHTerritoryHandler = useCallback((init?: boolean): void => {
         setIsLoading(true)
         getHTHTerritoryService(territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
             setIsLoading(false)
@@ -65,11 +65,11 @@ export const HouseToHousePage = () => {
                 return currentFace0
             })
         })
-        socket.emit(hthChangeString, territoryNumber, user.email)
+        if (!init) socket.emit(hthChangeString, territoryNumber, user.email)
     }, [dispatch, territoryNumber, user.email])
 
     useEffect(() => {
-        refreshHTHTerritoryHandler()
+        refreshHTHTerritoryHandler(true)
         return () => {
             setCurrentFace(undefined)
             setTerritoryHTH(undefined)
@@ -77,9 +77,9 @@ export const HouseToHousePage = () => {
     }, [refreshHTHTerritoryHandler])
 
     useEffect(() => {
-        socket.on(hthChangeString, (territoryNumber0: typeTerritoryNumber, userEmail: string) => {
-            if (userEmail && territoryNumber && userEmail !== user.email && territoryNumber0 === territoryNumber) {
-                refreshHTHTerritoryHandler()
+        socket.on(hthChangeString, (territoryNumber0: typeTerritoryNumber, userEmail?: string) => {
+            if (userEmail && userEmail !== user.email && territoryNumber && territoryNumber0 === territoryNumber) {
+                refreshHTHTerritoryHandler(true)
                 console.log("Refrescado por uso del usuario", userEmail)
             }
         })
@@ -138,7 +138,7 @@ export const HouseToHousePage = () => {
                 }
             </h1>
             
-            {user && user.isAdmin && currentFace &&
+            {user && currentFace &&
                 <HTHSetIsFinishedButton
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}

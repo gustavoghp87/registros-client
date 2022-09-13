@@ -158,7 +158,7 @@ export const editHTHMapService = async (territoryNumber: typeTerritoryNumber,
 }
 
 export const getHTHTerritoryService = async (territoryNumber: string): Promise<typeHTHTerritory|null> => {
-    if (!getTokenService() || !territoryNumber) return null
+    if (!territoryNumber) return null   // not !getTokenService()
     try {
         const response = await fetch(`${base}/${territoryNumber}`, {
             method: 'GET',
@@ -256,7 +256,7 @@ export const deleteHTHBuildingService = async (
 
 export const modifyHTHHouseholdService = async (territoryNumber: typeTerritoryNumber,
  block: typeBlock, face: typeFace, streetNumber: number, householdId: number, isChecked: boolean): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!territoryNumber) return false   // not !getTokenService()
     try {
         const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
             method: 'PATCH',

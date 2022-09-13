@@ -38,6 +38,7 @@ export const HTHDoNotCallsItem = (props: any) => {
 
     return (
         <HTHItemCard
+            creatorId={doNotCall.creatorId}
             date={doNotCall.date}
             deleteHandler={deleteHandler}
             text={`${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`}

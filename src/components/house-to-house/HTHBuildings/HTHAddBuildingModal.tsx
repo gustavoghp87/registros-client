@@ -38,6 +38,7 @@ export const HTHAddBuildingModal = (props: any) => {
             return
         }
         const building: typeHTHBuilding = {
+            creatorId: 1,
             dateOfLastSharing: 0,
             hasCharacters,
             hasContinuousNumbers,

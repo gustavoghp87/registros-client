@@ -5,9 +5,8 @@ import { generalBlue, typeObservation, typePolygon, typeRootState, typeTerritory
 
 export const HTHObservations = (props: any) => {
 
-    const { isMobile, user } = useSelector((state: typeRootState) => ({
-        isMobile: state.mobileMode.isMobile,
-        user: state.user
+    const { isMobile } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile
     }))
     const currentFace: typePolygon = props.currentFace
     const date: string = props.date
@@ -40,32 +39,30 @@ export const HTHObservations = (props: any) => {
                 <>
                     {!!currentFace.observations?.length && currentFace.observations.map((observation: typeObservation) => (
                         <HTHObservationsItem
-                        closeShowFormHandler={closeShowFormHandler}
-                        currentFace={currentFace}
-                        date={date}
-                        key={observation.id}
-                        observation={observation}
-                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryNumber={territoryNumber}
+                            closeShowFormHandler={closeShowFormHandler}
+                            currentFace={currentFace}
+                            date={date}
+                            key={observation.id}
+                            observation={observation}
+                            refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                            territoryNumber={territoryNumber}
                         />
                     ))}
 
-                    {user.isAdmin &&
-                        <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
-                            onClick={() => setShowForm(!showForm)}
-                            style={{ marginTop: '50px' }}
-                        >
-                            {showForm ? 'Ocultar' : 'Agregar Observación'}
-                        </button>
-                    }
+                    <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
+                        onClick={() => setShowForm(!showForm)}
+                        style={{ marginTop: '50px' }}
+                    >
+                        {showForm ? 'Ocultar' : 'Agregar Observación'}
+                    </button>
 
-                    {user.isAdmin && showForm &&
+                    {showForm &&
                         <HTHObservationsForm
-                        closeShowFormHandler={closeShowFormHandler}
-                        currentFace={currentFace}
-                        date={date}
-                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryNumber={territoryNumber}
+                            closeShowFormHandler={closeShowFormHandler}
+                            currentFace={currentFace}
+                            date={date}
+                            refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                            territoryNumber={territoryNumber}
                         />
                     }
                 </>

@@ -37,7 +37,7 @@ export const HTHBuildingItem = (props: any) => {
                     />
                     <label className={'form-check-label'} htmlFor="inlineCheckbox1"></label>
                 </div>
-                {building.dateOfLastSharing && getCurrentLocalDate() === getCurrentLocalDate(building.dateOfLastSharing) &&
+                {!!building.dateOfLastSharing && getCurrentLocalDate() === getCurrentLocalDate(building.dateOfLastSharing) &&
                     <h6 className={'mb-4'}>
                         (Ya compartido hoy)
                     </h6>

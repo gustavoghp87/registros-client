@@ -68,7 +68,7 @@ export const HTHBuildingModal = (props: any) => {
                         style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
                     >
                         Edificio {currentFace.street} {currentBuilding.streetNumber}
-                        {user.isAdmin && closeBuildingModalHandler &&
+                        {(user.isAdmin || currentBuilding.creatorId === user.id) && closeBuildingModalHandler &&
                             <>
                                 &nbsp; &nbsp;
                                 <BsTrash className={'pointer mb-1'} onClick={() => openDeleteBuildingModal()} />
