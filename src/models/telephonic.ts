@@ -6,6 +6,7 @@ type typeVariant = 'success' | 'dark' | 'primary' | 'danger' | 'warning' | 'ligh
 
 export type typeTelephonicTerritory = {
     households: typeHousehold[]
+    mapId: string
     stateOfTerritory: typeStateOfTelephonicTerritory
     territoryNumber: typeTerritoryNumber
 }

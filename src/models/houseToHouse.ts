@@ -56,6 +56,7 @@ export type typeObservation = {
 // new buildings section
 
 export type typeHTHBuilding = {
+    dateOfLastSharing: number
     hasCharacters: boolean
     hasContinuousNumbers: boolean
     hasLowLevel: boolean

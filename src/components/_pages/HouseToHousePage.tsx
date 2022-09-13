@@ -14,7 +14,7 @@ const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const HouseToHousePage = () => {
     
-    const territoryNumber = useParams<any>().territory as typeTerritoryNumber
+    const territoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
     const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
@@ -131,9 +131,9 @@ export const HouseToHousePage = () => {
                 {currentFace &&
                     <>
                         <br />
-                        <span> MANZANA {currentFace.block} </span>
+                        <span> Manzana {currentFace.block} </span>
                         <br />
-                        <span> CARA {currentFace.face} </span>
+                        <span> Cara {currentFace.face} - {currentFace.street} </span>
                     </>
                 }
             </h1>

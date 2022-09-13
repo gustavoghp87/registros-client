@@ -132,7 +132,7 @@ export const HTHMap = (props: any) => {
             if (success) reloadHandler()
             else dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
-                title: 'Error al editar el mapa',
+                title: "Error al editar el mapa",
                 message: `Algo falló al querer agregar esta cara al mapa del territorio ${territoryHTH.territoryNumber}; refrescar la página e intentar de nuevo`
             }))
         })

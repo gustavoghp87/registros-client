@@ -51,6 +51,7 @@ const ForecastCard = (props: any) => {
 
     return (
         <div
+            className={forecast.temperatures > 29 ? 'animate__animated animate__pulse animate__infinite	infinite' : ''}
             style={{
                 alignItems: 'center',
                 backgroundColor: '#fff',
@@ -83,8 +84,14 @@ const ForecastCard = (props: any) => {
             }
 
             <h6 className={'mt-2 d-block align-items-end'} style={{ order: isMobile ? 4 : undefined }}>
-                {forecast.temperatures}
+                {forecast.temperatures}ºC
             </h6>
+
+            {!!forecast.pop &&
+                <p className={isMobile ? 'my-auto' : undefined} style={{ order: isMobile ? 5 : undefined }}>
+                    Lluvia: {forecast.pop * 100}%
+                </p>
+            }
         </div>
     )
 }

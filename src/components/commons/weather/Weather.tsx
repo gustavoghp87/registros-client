@@ -31,7 +31,7 @@ export const Weather = (props: any) => {
                     <div className={'p-0'} style={{ order: isMobile ? 2 : 1, width: isMobile ? undefined : '22%' }}>
                         <div className={'d-flex align-items-center flex-column'}>
                             <h1 style={{ fontSize: isMobile ? '4rem' : '8rem', fontWeight: 100 }}>
-                                {temperature}
+                                {`${Math.ceil(temperature)}`}
                                 <small>ºC</small>
                             </h1>
                             <p style={{ fontSize: isMobile ? '1.2rem' : '2rem', fontWeight: 500 }}>
@@ -39,7 +39,9 @@ export const Weather = (props: any) => {
                             </p>
                         </div>
                     </div>
-                    <div className={'p-0'} style={{ order: isMobile ? 1 : 2, maxWidth: isMobile ? '100px' : '160px' }} tabIndex={isMobile ? 1 : 2}>
+                    <div className={'p-0'}
+                        style={{ order: isMobile ? 1 : 2, maxWidth: isMobile ? '100px' : '160px' }}
+                    >
                         {icon}
                     </div>
                 </div>

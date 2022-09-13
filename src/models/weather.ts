@@ -9,15 +9,16 @@ export type typeForecastResponse = {
 }
 
 export type typeForecast = {
-    icon: ReactNode
-    list: typeList
-    temperatures: string
     date: {
         dateDay: number,
         day: number,
         hour: number,
         weekday: string
     }
+    icon: ReactNode
+    list: typeList
+    temperatures: number
+    pop: number
 }
 
 export type typeWeatherResponse = {

@@ -13,7 +13,7 @@ const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const TelephonicPage = () => {
 
-    const territoryNumber: typeTerritoryNumber = useParams<any>().territory as typeTerritoryNumber
+    const territoryNumber: typeTerritoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
     const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
@@ -176,8 +176,11 @@ export const TelephonicPage = () => {
 
             {!loaded && <Loading mt={'60px'} mb={'10px'} />}
 
-            {loaded && !isShowingStatistics && 
-                <StaticMap territoryNumber={territoryNumber} />
+            {loaded && !isShowingStatistics && telephonicTerritory &&
+                <StaticMap
+                    mapId={telephonicTerritory.mapId}
+                    territoryNumber={territoryNumber}
+                />
             }
 
             {loaded &&

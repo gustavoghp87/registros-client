@@ -38,13 +38,14 @@ export const SelectorPage = () => {
 
     return (
         <>
-            {user && (user.isAdmin || user.email === 'usuarioprueba@misericordia') && <>
+            {!!user.hthAssignments?.length &&
+                <>
+                    <HouseToHouseSelector />
 
-                <HouseToHouseSelector />
-
-                <Hr />
-                <Hr />
-            </>}
+                    <Hr />
+                    <Hr />
+                </>
+            }
 
             <TelephonicSelector />
 

@@ -13,23 +13,22 @@ export const HTHBuildingCheckbox = (props: any) => {
     const doorNumber: number = props.doorNumber
     // use:
     const block: typeBlock = props.block
-    const closeBuildingModalHandler: () => void = props.closeBuildingModalHandler
+    const closeBuildingModalHandler: Function|undefined = props.closeBuildingModalHandler
     const face: typeFace = props.face
     const id: number = props.id
     const isChecked0: boolean = props.isChecked0
     const refreshHTHTerritoryHandler: () => void = props.refreshHTHTerritoryHandler
+    const setShow: Function|undefined = props.setShow
     const streetNumber: number = props.streetNumber
     const territoryNumber: typeTerritoryNumber = props.territoryNumber
 
     const [isChecked, setIsChecked] = useState<boolean>(isChecked0 ?? isChecked0 === undefined)
 
     const changeCallingState = (): void => {
-        console.log("Cambiando a", !isChecked ? "llamado" : "no llamado", "el", level, doorName)
         modifyHTHHouseholdService(territoryNumber, block, face, streetNumber, id, !isChecked).then((success: boolean) => {
-            console.log({success});
-            
             if (!success) {
-                closeBuildingModalHandler()
+                if (closeBuildingModalHandler) closeBuildingModalHandler()
+                else if (setShow) setShow(false)
                 return dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: "Error",

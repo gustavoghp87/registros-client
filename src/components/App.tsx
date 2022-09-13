@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as Pages from './_pages'
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
 import { changeMobileModeReducer, logoutReducer, refreshUserReducer } from '../store'
-import { breakingPoint, typeAppDispatch, typeRootState, typeUser } from '../models'
 import { getUserByTokenService } from '../services/userServices'
+import { breakingPoint, typeAppDispatch, typeRootState, typeUser } from '../models'
 
 export const App = () => {
-    
+
     const { isDarkMode, isMobile, showingAlertModal, showingLoadingModal, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
@@ -60,6 +60,7 @@ export const App = () => {
                         <Route path={'/privacidad'} element={ <Pages.PrivacyPolicyPage /> } />
                         <Route path={'/recovery/:id'} element={ <Pages.RecoveryPage /> } />
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
+                        <Route path={'/edificio/:territoryNumber/:block/:face/:streetNumber'} element={ <Pages.HTHBuildingPage /> } />
                         {/* <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } /> */}
 
                         {(!user || !user.isAuth) ?
@@ -68,7 +69,7 @@ export const App = () => {
                             <>
                                 <Route path={'/congregacion'} element={<Pages.CongregationPage />} />
                                 <Route path={'/selector'} element={<Pages.SelectorPage />} />
-                                <Route path={'/telefonica/:territory'} element={<Pages.TelephonicPage />} />
+                                <Route path={'/telefonica/:territoryNumber'} element={<Pages.TelephonicPage />} />
                                 <Route path={'/usuario'} element={<Pages.UserPage /> } />
                             </>
                         }
@@ -78,8 +79,8 @@ export const App = () => {
                             <Route path={'/gmail'} element={<Pages.GmailTokensPage />} />
                         </>}
 
-                        {user && (user.isAdmin || user.email === 'usuarioprueba@misericordia') &&
-                            <Route path={'/casa-en-casa/:territory'} element={<Pages.HouseToHousePage />} />
+                        {user && user.hthAssignments?.length &&
+                            <Route path={'/casa-en-casa/:territoryNumber'} element={<Pages.HouseToHousePage />} />
                         }
 
                         <Route path={'/*'} element={ <Navigate to={'/'} replace /> } />

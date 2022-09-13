@@ -72,8 +72,9 @@ export const WeatherAndForecast = (props: any) => {
                             weekday: getWeekday(day)
                         },
                         icon: getWeatherIcon(forecast.weather?.[0]?.description),
-                        temperatures: `${Math.ceil((forecast.main?.temp_max + forecast.main?.temp_min)/2)}ºC`,
-                        list: forecast
+                        list: forecast,
+                        pop: forecast.pop,
+                        temperatures: Math.ceil((forecast.main?.temp_max + forecast.main?.temp_min)/2),
                     })
                 }))
             }

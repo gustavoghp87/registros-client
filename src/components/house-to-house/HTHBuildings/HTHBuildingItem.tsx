@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { HTHBuildingModal } from '..'
+import { getCurrentLocalDate } from '../../../services'
 import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeTerritoryNumber } from '../../../models'
 
 export const HTHBuildingItem = (props: any) => {
@@ -19,14 +20,29 @@ export const HTHBuildingItem = (props: any) => {
 
     return (
         <>
-            <button
-                className={`btn ${getFreeHouseholds(building.households) ? 'btn-general-blue' : 'btn-general-red'} d-block mx-auto my-3`}
-                key={building.streetNumber}
-                onClick={() => setShow(true)}
-                style={{ width: '250px' }}
-            >
-                <div> {currentFace.street} {building.streetNumber} ({getFreeHouseholds(building.households)} libres) </div>
-            </button>
+            <div className={'text-center'}>
+                <button
+                    className={`btn ${getFreeHouseholds(building.households) ? 'btn-general-blue' : 'btn-general-red'} d-inline mx-auto my-2`}
+                    key={building.streetNumber}
+                    onClick={() => setShow(true)}
+                    style={{ width: '220px' }}
+                >
+                    {currentFace.street} {building.streetNumber} ({getFreeHouseholds(building.households)} libres)
+                </button>
+                <div className={'form-check form-check-inline ms-3 me-0'}>
+                    <input className={'form-check-input share-building'}
+                        style={{ height: '20px', width: '20px' }}
+                        type={'checkbox'}
+                        value={building.streetNumber}
+                    />
+                    <label className={'form-check-label'} htmlFor="inlineCheckbox1"></label>
+                </div>
+                {building.dateOfLastSharing && getCurrentLocalDate() === getCurrentLocalDate(building.dateOfLastSharing) &&
+                    <h6 className={'mb-4'}>
+                        (Ya compartido hoy)
+                    </h6>
+                }
+            </div>
 
             {show &&
                 <HTHBuildingModal

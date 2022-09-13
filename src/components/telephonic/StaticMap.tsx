@@ -9,6 +9,7 @@ export const StaticMap = (props: any) => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
+    const mapId: string = props.mapId
     const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [showMap, setShowMap] = useState<boolean>(false)
 
@@ -20,21 +21,18 @@ export const StaticMap = (props: any) => {
             >
                 {showMap ? "Ocultar Mapa" : "Ver Mapa"}
             </Button>
-
-            {showMap &&
-                <img src={`/img/${territoryNumber}.jpg`}
-                    alt={`Mapa del territorio ${territoryNumber}`}
-                    className={'d-block'}
-                    style={{
-                        border: isDarkMode ? '1px solid white' : '1px solid black',
-                        borderRadius: '8px',
-                        height: 'auto',
-                        margin: '30px auto 50px auto',
-                        padding: isMobile ? '10px' : '20px',
-                        width: isMobile ? '99%' : '40%'
-                    }}
-                />
-            }
+            <img src={`https://drive.google.com/uc?export=view&id=${mapId}`}
+                alt={`Mapa del territorio ${territoryNumber}`}
+                className={showMap ? 'd-block' : 'd-none'}
+                style={{
+                    border: isDarkMode ? '1px solid white' : '1px solid black',
+                    borderRadius: '8px',
+                    height: 'auto',
+                    margin: '30px auto 50px auto',
+                    padding: isMobile ? '10px' : '20px',
+                    width: isMobile ? '99%' : '40%'
+                }}
+            />
         </>
     )
 }
