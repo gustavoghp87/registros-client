@@ -48,7 +48,7 @@ export const HTHDoNotCalls = (props: any) => {
 
                     <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
                         onClick={() => setShowForm(!showForm)}
-                        style={{ marginTop: '50px' }}
+                        style={{ marginTop: '50px', width: '250px' }}
                     >
                         {showForm ? 'Ocultar' : 'Agregar No Tocar'}
                     </button>

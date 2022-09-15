@@ -13,7 +13,7 @@ export const HTHAddBuilding = (props: any) => {
 
     return (
         <>
-            <button className={'btn btn-general-red d-block mx-auto py-2'}
+            <button className={'btn btn-general-blue d-block mx-auto py-2'}
                 onClick={() => setShowModal(true)}
                 style={{ width: '250px' }}
             >
