@@ -1,8 +1,8 @@
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 import { getFailingEmailFromLSService } from '../../services'
+import { typeRootState } from '../../models'
 
 export const FormLayout = (props: any) => {
 

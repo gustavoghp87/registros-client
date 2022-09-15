@@ -61,7 +61,7 @@ export const App = () => {
                         <Route path={'/recovery/:id'} element={ <Pages.RecoveryPage /> } />
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
                         <Route path={'/edificio/:territoryNumber/:block/:face/:streetNumber'} element={ <Pages.HTHBuildingPage /> } />
-                        {/* <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } /> */}
+                        <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />
 
                         {(!user || !user.isAuth) ?
                             <Route path={'/acceso'} element={<Pages.LoginPage />} />
