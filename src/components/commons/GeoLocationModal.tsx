@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
 import { useSelector } from 'react-redux'
 import { Modal } from 'react-bootstrap'
 import { Loading } from '../commons'
 import { googleMapsAPIKey, mapId } from '../../config'
-import { getGeocodingFromCoordinatesService } from '../../services'
-import { typeCoords, typeRootState } from '../../models'
+import { editInfoWindowsStyles, getGeocodingFromCoordinatesService, getHTHTerritoriesForMapService } from '../../services'
+import { generalBlue, typeCoords, typeHTHTerritory, typeRootState } from '../../models'
 
 export const GeoLocationModal = (props: any) => {
 
@@ -15,61 +15,48 @@ export const GeoLocationModal = (props: any) => {
         id: mapId
     })
     const setShowGeolocationModalHandler: Function = props.setShowGeolocationModalHandler
-    const map = useRef<google.maps.Map>()
+    const map = useRef<any>()
     const [address, setAddress] = useState<string>('')
     const [centerCoords, setCenterCoords] = useState<typeCoords>()
-    const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>()
-    //const [polygons, setPolygons] = useState<typePolygon[]>()
+    const [hthTerritories, setHTHTerritories] = useState<typeHTHTerritory[]>()
 
     useEffect(() => {
         if (!navigator.geolocation) return
-        let infoWindow0: google.maps.InfoWindow = new google.maps.InfoWindow()
         navigator.geolocation.getCurrentPosition((geoPosition: GeolocationPosition) => {
-            const lat: number = geoPosition.coords.latitude
-            const lng: number = geoPosition.coords.longitude
-            const position: typeCoords = { lat, lng }
-            infoWindow0.setPosition(position)
-            // infoWindow0.setContent("Location found.");
-            setInfoWindow(infoWindow0)
-            setCenterCoords(position)
-
-            getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
-                if (address0) setAddress(address0)
+            getHTHTerritoriesForMapService().then((x: typeHTHTerritory[]|null) => {
+                if (x) {
+                    setHTHTerritories(x)
+                    const interval = setInterval(() => { editInfoWindowsStyles() }, 300)
+                    setTimeout(() => { clearInterval(interval) }, 5000)
+                }
+                // const lat: number = geoPosition.coords.latitude
+                // const lng: number = geoPosition.coords.longitude
+                const position: typeCoords = { lat: -34.6315575, lng: -58.4733431 }
+                setCenterCoords(position)
+                getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
+                    if (address0) setAddress(address0)
+                })
             })
-
-            // Geocode.setApiKey("")
-            // Geocode.setLanguage('es')
-            // Geocode.setRegion('arg')
-            // Geocode.setLocationType('ROOFTOP')    // ROOFTOP, RANGE_INTERPOLATED, GEOMETRIC_CENTER, APPROXIMATE
-            // if (isLocalhost) Geocode.enableDebug()
-            // Geocode.fromLatLng(lat.toString(), lng.toString()).then((response) => {
-            //     const address0 = response.results[0].formatted_address
-            //     setAddress(address0)
-            // }, (error) => {
-            // })
-
         })
-        // for (let i = 1; i < 57; i++) {
-        //     getHTHTerritoryService(i.toString()).then((hthTerritory0: typeHTHTerritory|null) => {
-        //         if (hthTerritory0 && hthTerritory0.map.polygons && hthTerritory0.map.polygons.length)
-        //             hthTerritory0.map.polygons.forEach(x => setPolygons(y => y ? [...y, x] : [x]))
-        //     })
-        // }
+        return () => setHTHTerritories(undefined)
     }, [])
 
     useEffect(() => {
-        if (!map.current) return
-        const locationButton = document.createElement('button')
-        locationButton.textContent = "Pan to Current Location"
-        locationButton.classList.add('d-none')
-        locationButton.classList.add('custom-map-control-button')
-        map.current.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton)
-        locationButton.addEventListener('click', () => {
-            if (centerCoords) map.current?.setCenter(centerCoords)
-        })
-        const interval = setInterval(() => locationButton.click(), 400)
-        setTimeout(() => { clearInterval(interval) }, 4200)
-    }, [map.current])
+        // console.log("sss");
+        // if (!map.current) return
+        // console.log("sss111");
+        
+        // const locationButton = document.createElement('button')
+        // locationButton.textContent = "Pan to Current Location"
+        // locationButton.classList.add('d-none')
+        // locationButton.classList.add('custom-map-control-button')
+        // map.current.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton)
+        // locationButton.addEventListener('click', () => {
+        //     if (centerCoords) map.current.setCenter(centerCoords)
+        // })
+        // const interval = setInterval(() => locationButton.click(), 400)
+        // setTimeout(() => { clearInterval(interval) }, 4200)
+    }, [centerCoords, map])
 
     return (<>
 
@@ -77,7 +64,7 @@ export const GeoLocationModal = (props: any) => {
 
         {loadError && <h3> Falló: {loadError.message} </h3>}
 
-        {centerCoords && infoWindow &&
+        {centerCoords &&
             <Modal
                 fullscreen={'md-down'}
                 onHide={() => setShowGeolocationModalHandler()}
@@ -95,57 +82,65 @@ export const GeoLocationModal = (props: any) => {
                             height: isMobile ? '600px' : '700px',
                             width: '93%'
                         }}
-                        onLoad={(map0: google.maps.Map) => { map.current = map0 } }
+                        onLoad={(map0: google.maps.Map) => { 
+                            console.log(map0);
+                            
+                            map.current = map0
+                        }}
                         options={{ center: centerCoords }}
                         zoom={17.8}
                     >
                         {centerCoords &&
                             <Marker
-                                options={{
-                                    anchorPoint: new google.maps.Point(centerCoords.lat, centerCoords.lng)
-                                }}
+                                options={{ anchorPoint: new google.maps.Point(centerCoords.lat, centerCoords.lng) }}
                                 position={centerCoords}
                                 title={"Tu posición"}
                             />
                         }
-                        {/* {polygons && !!polygons.length && polygons.map(x => (
-                            <div key={x.id}>
-                                <Polygon
-                                    editable={false}
-                                    draggable={false}
-                                    path={[x.coordsPoint1, x.coordsPoint2, x.coordsPoint3]}
-                                    options={{
-                                        clickable: true,
-                                        fillColor: generalBlue,
-                                        fillOpacity: 0.9,
-                                        strokeColor: '',
-                                        strokeOpacity: 0.8,
-                                        strokePosition: google.maps.StrokePosition.INSIDE,
-                                        strokeWeight: 7
-                                    }}
-                                />
-                                <InfoWindow
-                                    position={{
-                                        lat: (x.coordsPoint1.lat + x.coordsPoint2.lat + x.coordsPoint3.lat) / 3 + 0.00005,
-                                        lng: (x.coordsPoint1.lng + x.coordsPoint2.lng + x.coordsPoint3.lng) / 3 - 0.0001
-                                    }}
-                                >
-                                    <div style={{
-                                        border: '3px solid #ffffff',
-                                        borderRadius: '5px',
-                                        color: '#ffffff',
-                                        font: '15px Sans-serif',
-                                        fontWeight: 'bold',
-                                        height: '36px',
-                                        padding: '6px',
-                                        textAlign: 'center',
-                                        width: '56px'
-                                    }}>
-                                        {x.territory}-{x.block}-{x.face}
+                        {!!hthTerritories?.length && hthTerritories.map(currentHTHTerritory => (
+                            <div key={currentHTHTerritory.territoryNumber}>
+                                {currentHTHTerritory.map.polygons.map(currentFace =>
+                                    <div key={currentFace.id}>
+                                        <Polygon
+                                            editable={false}
+                                            draggable={false}
+                                            path={[currentFace.coordsPoint1, currentFace.coordsPoint2, currentFace.coordsPoint3]}
+                                            options={{
+                                                clickable: true,
+                                                fillColor: generalBlue,
+                                                fillOpacity: 0.9,
+                                                strokeColor: '',
+                                                strokeOpacity: 0.8,
+                                                strokePosition: google.maps.StrokePosition.INSIDE,
+                                                strokeWeight: 7
+                                            }}
+                                        />
+                                        {currentFace.face === 'A' &&
+                                            <InfoWindow
+                                                position={{
+                                                    lat: (currentFace.coordsPoint1.lat + currentFace.coordsPoint2.lat + currentFace.coordsPoint3.lat) / 3 + 0.00005,
+                                                    lng: (currentFace.coordsPoint1.lng + currentFace.coordsPoint2.lng + currentFace.coordsPoint3.lng) / 3 - 0.0001
+                                                }}
+                                            >
+                                                <div style={{
+                                                    border: '3px solid #ffffff',
+                                                    borderRadius: '5px',
+                                                    color: 'white',
+                                                    font: '15px Sans-serif',
+                                                    fontWeight: 'bold',
+                                                    height: '36px',
+                                                    padding: '6px',
+                                                    textAlign: 'center',
+                                                    width: '136px'
+                                                }}>
+                                                    Territorio {currentHTHTerritory.territoryNumber}
+                                                </div>
+                                            </InfoWindow>
+                                        }
                                     </div>
-                                </InfoWindow>
+                                )}
                             </div>
-                        ))} */}
+                        ))}
                     </GoogleMap>
                 </Modal.Body>
             </Modal>

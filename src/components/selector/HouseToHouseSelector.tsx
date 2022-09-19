@@ -38,7 +38,7 @@ export const HouseToHouseSelector = () => {
                         <TerritoryNumberBlock
                             classes={'btn-general-blue animate__animated animate__rubberBand'}
                             showForecast={true}
-                            territories={user.hthAssignments}
+                            territories={[...user.hthAssignments].sort((a: number, b: number) => a - b)}
                             url={'/casa-en-casa'}
                         />
                         :

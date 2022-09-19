@@ -62,6 +62,7 @@ export const App = () => {
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
                         <Route path={'/edificio/:territoryNumber/:block/:face/:streetNumber'} element={ <Pages.HTHBuildingPage /> } />
                         <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />
+                        <Route path={'/testing'} element={ <Pages.TestingPage /> } />
 
                         {(!user || !user.isAuth) ?
                             <Route path={'/acceso'} element={<Pages.LoginPage />} />

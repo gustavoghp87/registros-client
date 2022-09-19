@@ -189,6 +189,22 @@ export const getHTHStreetsByTerritoryService = async (territoryNumber: typeTerri
     }
 }
 
+export const getHTHTerritoriesForMapService = async (): Promise<typeHTHTerritory[]|null> => {
+    if (!getTokenService()) return null
+    try {
+        const response = await fetch(`${base}/map/territory`, {
+            method: 'GET',
+            headers: getHeaders()
+        })
+        const data: typeResponseData|null = await response.json()
+        if (!data || !data.success || !data.hthTerritories) return null
+        return data.hthTerritories
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}
+
 export const setHTHIsFinishedService = async (
  territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, polygonId: number, isFinish: boolean): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || !block || !face || isFinish === undefined) return false

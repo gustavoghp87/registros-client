@@ -13,19 +13,24 @@ export const Forecast = (props: any) => {
         display: isMobile ? undefined : 'flex',
         gap: '1rem',
         justifyContent: 'center',
-        margin: isMobile ? undefined : undefined,
-        marginBottom: '1.5rem',
+        marginTop: isMobile ? undefined : '2.1rem',
+        marginBottom: '2.5rem',
         padding: isMobile ? '.2rem' : undefined,
         width: isMobile ? '100%' : undefined
     }
 
     return (
-        <div className={`p-0 animate__animated animate__bounceInDown ${isMobile ? 'mt-0' : 'mt-5'}`}>
+        <div className={`text-center p-0 animate__animated animate__bounceInDown ${isMobile ? 'mt-0' : 'mt-5'}`}>
+
+            <h1> Hoy </h1>
+
             <div style={{ ...divStyles }}>
                 {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() && x.date.hour > 6).map((forecast: typeForecast) => (
                     <ForecastCard key={`${forecast.date?.day}-${forecast.date?.hour}`} forecast={forecast} />
                 ))}
             </div>
+
+            <h1> Mañana </h1>
 
             <div style={{ ...divStyles }}>
                 {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() + 1 && x.date.hour > 6).map((forecast: typeForecast) => (
@@ -33,11 +38,14 @@ export const Forecast = (props: any) => {
                 ))}
             </div>
 
+            <h1> {forecasts.find(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6)?.date.weekday} </h1>
+
             <div style={{ ...divStyles }}>
                 {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6).map((forecast: typeForecast) => (
                     <ForecastCard key={`${forecast.date?.day}-${forecast.date?.hour}`} forecast={forecast} />
                 ))}
             </div>
+
         </div>
     )
 }
@@ -67,13 +75,13 @@ const ForecastCard = (props: any) => {
                 width: isMobile ? '100%' : '200px'
             }}
         >
-            <h6 className={isMobile ? 'my-auto' : undefined} style={{ order: isMobile ? 2 : undefined }}>
+            {/* <h6 className={isMobile ? 'my-auto' : undefined} style={{ order: isMobile ? 2 : undefined }}>
                 {forecast.date?.weekday}
-            </h6>
+            </h6> */}
             
-            <p className={isMobile ? 'my-auto' : undefined} style={{ order: isMobile ? 3 : undefined }}>
+            <h6 className={isMobile ? 'my-auto' : undefined} style={{ order: isMobile ? 3 : undefined }}>
                 {forecast.date?.hour < 12 ? '0' : ''}{forecast.date?.hour}:00 hs{isMobile ? ':' : ''}
-            </p>
+            </h6>
 
             {isMobile ?
                 <div style={{ order: 1, width: isMobile ? '40px' : undefined }}>
@@ -87,11 +95,11 @@ const ForecastCard = (props: any) => {
                 {forecast.temperatures}ºC
             </h6>
 
-            {!!forecast.pop &&
-                <p className={isMobile ? 'my-auto' : undefined} style={{ order: isMobile ? 5 : undefined }}>
-                    Lluvia: {forecast.pop * 100}%
-                </p>
-            }
+            <p className={`${forecast.pop ? '' : 'text-white'} ${isMobile ? 'my-auto' : undefined}`}
+                style={{ order: isMobile ? 5 : undefined }}
+            >
+                {forecast.pop ? '(Lluvia: ' + forecast.pop * 100 + '%)' : '.'}
+            </p>
         </div>
     )
 }

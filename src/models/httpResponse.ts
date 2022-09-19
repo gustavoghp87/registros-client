@@ -21,6 +21,7 @@ export type typeResponseData = {                           //  =>  UPDATE MOCKED
     gmailKeys?: Credentials
     household?: type.typeHousehold
     hthTerritory?: type.typeHTHTerritory
+    hthTerritories?: type.typeHTHTerritory[]
     isDisabled?: boolean
     localStatistics?: type.typeLocalTelephonicStatistic[]
     modifiedCount?: number
