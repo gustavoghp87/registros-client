@@ -32,7 +32,7 @@ export const timeConverter = (UNIX_timestamp: number): string => {
 }
 
 export const getCurrentLocalDate = (timestamp?: number) => {
-    if (timestamp) new Date(timestamp).toLocaleDateString('es-AR')
+    if (timestamp) return new Date(timestamp).toLocaleDateString('es-AR')
     return new Date().toLocaleDateString('es-AR')
 }
 

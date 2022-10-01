@@ -18,9 +18,12 @@ export const HTHBuildingItem = (props: any) => {
 
     const closeBuildingModalHandler = (): void => setShow(false)
 
+    //console.log(building.dateOfLastSharing, getCurrentLocalDate(), getCurrentLocalDate(building.dateOfLastSharing))
+    
+
     return (
         <>
-            <div className={'text-center'}>
+            <div className={'text-center my-3'}>
                 <button
                     className={`btn ${getFreeHouseholds(building.households) ? 'btn-general-blue' : 'btn-general-red'} d-inline mx-auto my-2`}
                     key={building.streetNumber}
@@ -38,8 +41,8 @@ export const HTHBuildingItem = (props: any) => {
                     <label className={'form-check-label'} htmlFor="inlineCheckbox1"></label>
                 </div>
                 {!!building.dateOfLastSharing && getCurrentLocalDate() === getCurrentLocalDate(building.dateOfLastSharing) &&
-                    <h6 className={'mb-4'}>
-                        (Ya compartido hoy)
+                    <h6>
+                        <span className={'bg-info'}> (Ya compartido hoy) </span>
                     </h6>
                 }
             </div>

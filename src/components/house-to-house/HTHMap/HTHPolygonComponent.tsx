@@ -75,8 +75,8 @@ export const HTHPolygonComponent = (props: any) => {
             editable={isEditingView || (isAddingPolygon && polygon.id === 0)}
             draggable={isEditingView || (isAddingPolygon && polygon.id === 0)}
             onClick={() => {
-                if (currentFace && currentFace.id === polygon.id) setIsFinishedHandler()
-                else if (!isEditingView && !isAddingPolygon) selectBlockAndFaceHandler(polygon.block, polygon.face)
+                //if (currentFace && currentFace.id === polygon.id) setIsFinishedHandler()
+                if (!isEditingView && !isAddingPolygon) selectBlockAndFaceHandler(polygon.block, polygon.face)
             }}
             onLoad={(googlePolygon0: google.maps.Polygon) => ref.current = googlePolygon0}
             onMouseOver={() => {

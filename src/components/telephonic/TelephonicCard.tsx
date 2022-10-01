@@ -21,21 +21,21 @@ export const TelephonicCard = (props: any) => {
     const socket: Socket = props.socket
     const territoryNumber: typeTerritoryNumber = props.territoryNumber
 
-    const modifyHouseholdHandler = async (householdId: number,
-     callingState: typeCallingState, notSubscribed: boolean, isAssigned: boolean|undefined): Promise<void> => {
+    const modifyHouseholdHandler = (householdId: number,
+     callingState: typeCallingState, notSubscribed: boolean, isAssigned: boolean|undefined): void => {
         dispatch(showLoadingModalReducer())
         notSubscribed = !!notSubscribed
         isAssigned = !!isAssigned
-        const updatedHousehold: typeHousehold|null =
-            await modifyHouseholdService(territoryNumber, householdId, callingState, notSubscribed, isAssigned)
-        dispatch(hideLoadingModalReducer())
-        if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "", 2)
-        if (!socket || !socket.connected || !user)
-            return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet", 2)
-        socket.emit(telephonicHouseholdChangeString, {
-            territoryNumber,
-            updatedHousehold,
-            userEmail: user.email
+        modifyHouseholdService(territoryNumber, householdId, callingState, notSubscribed, isAssigned).then((updatedHousehold: typeHousehold|null) => {
+            dispatch(hideLoadingModalReducer())
+            if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "", 2)
+            if (!socket || !socket.connected || !user)
+                return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet", 2)
+            socket.emit(telephonicHouseholdChangeString, {
+                territoryNumber,
+                updatedHousehold,
+                userEmail: user.email
+            })
         })
     }
 

@@ -82,11 +82,7 @@ export const GeoLocationModal = (props: any) => {
                             height: isMobile ? '600px' : '700px',
                             width: '93%'
                         }}
-                        onLoad={(map0: google.maps.Map) => { 
-                            console.log(map0);
-                            
-                            map.current = map0
-                        }}
+                        onLoad={(map0: google.maps.Map) => {map.current = map0}}
                         options={{ center: centerCoords }}
                         zoom={17.8}
                     >
@@ -126,6 +122,7 @@ export const GeoLocationModal = (props: any) => {
                                                     border: '3px solid #ffffff',
                                                     borderRadius: '5px',
                                                     color: 'white',
+                                                    display: map.current?.getZoom() > 17 ? '' : 'none',
                                                     font: '15px Sans-serif',
                                                     fontWeight: 'bold',
                                                     height: '36px',
