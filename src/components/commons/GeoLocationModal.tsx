@@ -19,6 +19,7 @@ export const GeoLocationModal = (props: any) => {
     const [address, setAddress] = useState<string>('')
     const [centerCoords, setCenterCoords] = useState<typeCoords>()
     const [hthTerritories, setHTHTerritories] = useState<typeHTHTerritory[]>()
+    const [zoom, setZoom] = useState<number>()
 
     useEffect(() => {
         if (!navigator.geolocation) return
@@ -29,16 +30,19 @@ export const GeoLocationModal = (props: any) => {
                     const interval = setInterval(() => { editInfoWindowsStyles() }, 300)
                     setTimeout(() => { clearInterval(interval) }, 5000)
                 }
-                // const lat: number = geoPosition.coords.latitude
-                // const lng: number = geoPosition.coords.longitude
-                const position: typeCoords = { lat: -34.6315575, lng: -58.4733431 }
+                const lat: number = geoPosition.coords.latitude
+                const lng: number = geoPosition.coords.longitude
+                const position: typeCoords = { lat, lng }
                 setCenterCoords(position)
                 getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
                     if (address0) setAddress(address0)
                 })
             })
         })
-        return () => setHTHTerritories(undefined)
+        return () => {
+            setHTHTerritories(undefined)
+            setZoom(undefined)
+        }
     }, [])
 
     useEffect(() => {
@@ -72,7 +76,7 @@ export const GeoLocationModal = (props: any) => {
                 size={'lg'}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title> {address && `Tu posición: ${address}`} </Modal.Title>
+                    <Modal.Title> {address && `Tu posición: ${address.split(',')[0]}`} </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <GoogleMap
@@ -83,6 +87,7 @@ export const GeoLocationModal = (props: any) => {
                             width: '93%'
                         }}
                         onLoad={(map0: google.maps.Map) => {map.current = map0}}
+                        onZoomChanged={() => setZoom(map.current?.getZoom())}
                         options={{ center: centerCoords }}
                         zoom={17.8}
                     >
@@ -111,29 +116,31 @@ export const GeoLocationModal = (props: any) => {
                                                 strokeWeight: 7
                                             }}
                                         />
-                                        {currentFace.face === 'A' &&
-                                            <InfoWindow
-                                                position={{
-                                                    lat: (currentFace.coordsPoint1.lat + currentFace.coordsPoint2.lat + currentFace.coordsPoint3.lat) / 3 + 0.00005,
-                                                    lng: (currentFace.coordsPoint1.lng + currentFace.coordsPoint2.lng + currentFace.coordsPoint3.lng) / 3 - 0.0001
-                                                }}
-                                            >
-                                                <div style={{
-                                                    border: '3px solid #ffffff',
-                                                    borderRadius: '5px',
-                                                    color: 'white',
-                                                    display: map.current?.getZoom() > 17 ? '' : 'none',
-                                                    font: '15px Sans-serif',
-                                                    fontWeight: 'bold',
-                                                    height: '36px',
-                                                    padding: '6px',
-                                                    textAlign: 'center',
-                                                    width: '136px'
-                                                }}>
-                                                    Territorio {currentHTHTerritory.territoryNumber}
-                                                </div>
-                                            </InfoWindow>
-                                        }
+                                        <InfoWindow
+                                            position={{
+                                                lat: (currentFace.coordsPoint1.lat + currentFace.coordsPoint2.lat + currentFace.coordsPoint3.lat) / 3 + 0.00005,
+                                                lng: (currentFace.coordsPoint1.lng + currentFace.coordsPoint2.lng + currentFace.coordsPoint3.lng) / 3 - 0.0001
+                                            }}
+                                        >
+                                            <div style={{
+                                                border: '3px solid #ffffff',
+                                                borderRadius: '5px',
+                                                color: 'white',
+                                                display: ((zoom && zoom >= 18) || currentFace.face === 'A') ? '' : 'none',
+                                                font: '15px Sans-serif',
+                                                fontWeight: 'bold',
+                                                height: '36px',
+                                                padding: '6px',
+                                                textAlign: 'center',
+                                                width: '136px'
+                                            }}>
+                                                {zoom && zoom >= 18 ?
+                                                    <span> {currentHTHTerritory.territoryNumber} - {currentFace.block} - {currentFace.face} </span>
+                                                    :
+                                                    <span> Territorio {currentHTHTerritory.territoryNumber} </span>
+                                                }
+                                            </div>
+                                        </InfoWindow>
                                     </div>
                                 )}
                             </div>
