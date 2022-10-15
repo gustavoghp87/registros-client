@@ -31,7 +31,7 @@ export const HTHPolygonComponent = (props: any) => {
     }, [polygon])
 
     useEffect(() => {
-        setPolygonColor(currentFace && currentFace.id === polygon.id ? generalRed : polygon.isFinished ? 'black' : generalBlue)
+        setPolygonColor(polygon.isFinished ? 'black' : generalBlue)
     }, [currentFace, polygon.isFinished, polygon.id])
 
     useEffect(() => {
@@ -86,17 +86,17 @@ export const HTHPolygonComponent = (props: any) => {
             }}
             onMouseOut={() => {
                 if (isEditingView || isAddingPolygon || !ref.current) return
-                setPolygonColor(currentFace && currentFace.id === polygon.id ? generalRed : polygon.isFinished ? 'black' : generalBlue)
+                setPolygonColor(polygon.isFinished ? 'black' : generalBlue)
                 setShowInfoWindow(false)
             }}
             options={{
                 clickable: true,
                 fillColor: polygonColor,
-                fillOpacity: 0.9,
+                fillOpacity: currentFace && currentFace.id === polygon.id ? 1 : 0.92,
                 strokeColor: '',
-                strokeOpacity: 0.8,
-                strokePosition: google.maps.StrokePosition.INSIDE,
-                strokeWeight: 5
+                strokeOpacity: 0.9,
+                strokePosition: google.maps.StrokePosition.CENTER,
+                strokeWeight: 10
             }}
             path={[
                 polygon.coordsPoint1,

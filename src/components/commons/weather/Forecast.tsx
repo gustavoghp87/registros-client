@@ -19,16 +19,21 @@ export const Forecast = (props: any) => {
         width: isMobile ? '100%' : undefined
     }
 
+    console.log([...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() && x.date.hour > 6))
+
     return (
         <div className={`text-center p-0 animate__animated animate__bounceInDown ${isMobile ? 'mt-0' : 'mt-5'}`}>
 
-            <h1> Hoy </h1>
-
-            <div style={{ ...divStyles }}>
-                {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() && x.date.hour > 6).map((forecast: typeForecast) => (
-                    <ForecastCard key={`${forecast.date?.day}-${forecast.date?.hour}`} forecast={forecast} />
-                ))}
-            </div>
+            {!![...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() && x.date.hour > 6)?.length &&
+                <>
+                    <h1> Hoy </h1>
+                    <div style={{ ...divStyles }}>
+                        {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() && x.date.hour > 6).map((forecast: typeForecast) => (
+                            <ForecastCard key={`${forecast.date?.day}-${forecast.date?.hour}`} forecast={forecast} />
+                        ))}
+                    </div>
+                </>
+            }
 
             <h1> Mañana </h1>
 
@@ -79,7 +84,7 @@ const ForecastCard = (props: any) => {
                 {forecast.date?.weekday}
             </h6> */}
             
-            <h6 className={isMobile ? 'my-auto' : undefined} style={{ order: isMobile ? 3 : undefined }}>
+            <h6 className={isMobile ? 'my-auto' : ''} style={{ order: isMobile ? 3 : undefined }}>
                 {forecast.date?.hour < 12 ? '0' : ''}{forecast.date?.hour}:00 hs{isMobile ? ':' : ''}
             </h6>
 
@@ -95,10 +100,10 @@ const ForecastCard = (props: any) => {
                 {forecast.temperatures}ºC
             </h6>
 
-            <p className={`${forecast.pop ? '' : 'text-white'} ${isMobile ? 'my-auto' : undefined}`}
+            <p className={`${forecast.pop ? '' : 'text-white'} ${isMobile ? 'my-auto' : ''}`}
                 style={{ order: isMobile ? 5 : undefined }}
             >
-                {forecast.pop ? '(Lluvia: ' + forecast.pop * 100 + '%)' : '.'}
+                {forecast.pop ? `(Lluvia: ${Math.round(forecast.pop * 100)}%)` : ''}
             </p>
         </div>
     )
