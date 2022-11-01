@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Hr } from '../commons'
-import { CampaignSelector, HouseToHouseSelector, TelephonicSelector } from '../selector'
+import { HouseToHouseSelector, TelephonicSelector } from '../selector'
 import { logoutReducer, refreshUserReducer } from '../../store'
 import { getUserByTokenService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser } from '../../models'
@@ -41,10 +41,10 @@ export const SelectorPage = () => {
 
             <TelephonicSelector />
 
-            <Hr />
+            {/* <Hr />
             <Hr />
 
-            <CampaignSelector />
+            <CampaignSelector /> */}
         </>
     )
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { Campaign, Logs, Statistics, Users } from '../admins'
+import { Logs, Statistics, Users } from '../admins'
 import { H2, Hr } from '../commons'
 import { hideLoadingModalReducer, showLoadingModalReducer } from '../../store'
 import { typeAppDispatch } from '../../models'
@@ -38,19 +38,19 @@ export const AdminsPage = () => {
                 {currentSection === 'statistics' ? "Estadísticas de Telefónica" : "Ir a Estadísticas de Telefónica"}
             </button>
 
-            <button className={`btn ${currentSection === 'logs' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-0`}
+            <button className={`btn ${currentSection === 'logs' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-5`}
                 onClick={() => setCurrentSection('logs')}
                 style={{ width: '300px' }}
             >
                 {currentSection === 'logs' ? "Logs de la Aplicación" : "Ir a Logs de la Aplicación"}
             </button>
 
-            <button className={`btn ${currentSection === 'campaign' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-5`}
+            {/* <button className={`btn ${currentSection === 'campaign' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-5`}
                 onClick={() => setCurrentSection('campaign')}
                 style={{ width: '300px' }}
             >
                 {currentSection === 'campaign' ? "Campaña Celulares 2022" : "Ir a Campaña Celulares 2022"}
-            </button>
+            </button> */}
 
 
             <Hr />
@@ -68,9 +68,9 @@ export const AdminsPage = () => {
                 <Logs />
             }
 
-            {currentSection === 'campaign' &&
+            {/* {currentSection === 'campaign' &&
                 <Campaign setIsLoading={setIsLoading} />
-            }
+            } */}
 
         </>
     )

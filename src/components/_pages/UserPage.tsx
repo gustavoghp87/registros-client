@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Card, Form, FloatingLabel } from 'react-bootstrap'
 import { H2, Hr } from '../commons'
 import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
-import { getCampaignAssignmentsByUser } from '../../services'
 import { changePswService, getUserByTokenService, logoutAllService } from '../../services/userServices'
 import { typeAppDispatch, typeRootState, typeUser } from '../../models'
 
@@ -19,7 +18,7 @@ export const UserPage = () => {
     const [newPsw, setNewPsw] = useState('')
     const [psw, setPsw] = useState('')
     const [show, setShow] = useState(false)
-    const [assignedPacks, setAssignedPacks] = useState<number[]>([])
+    // const [assignedPacks, setAssignedPacks] = useState<number[]>([])
 
     const openAlertModalHandler = (title: string, message: string, animation?: number): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -65,9 +64,9 @@ export const UserPage = () => {
             if (user === false) dispatch(logoutReducer())
             navigate('/acceso')
         })
-        getCampaignAssignmentsByUser().then((campaignPacks: number[]|null) => {
-            if (campaignPacks && campaignPacks.length) setAssignedPacks(campaignPacks)
-        })
+        // getCampaignAssignmentsByUser().then((campaignPacks: number[]|null) => {
+        //     if (campaignPacks && campaignPacks.length) setAssignedPacks(campaignPacks)
+        // })
     }, [dispatch, navigate])
 
     return (
@@ -125,7 +124,7 @@ export const UserPage = () => {
                             }
                         </div>
 
-                        {!!assignedPacks?.length &&
+                        {/* {!!assignedPacks?.length &&
                             <>
                                 <Hr />
 
@@ -148,7 +147,7 @@ export const UserPage = () => {
                                     }
                                 </div>
                             </>
-                        }
+                        } */}
 
                         <Hr />
 

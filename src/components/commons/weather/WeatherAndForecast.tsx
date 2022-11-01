@@ -85,7 +85,7 @@ export const WeatherAndForecast = (props: any) => {
             {showWeather && weatherRightNow &&
                 <>
                     <Weather
-                        chance={(forecasts[0]?.list.pop || 0) * 100}
+                        chance={Math.round((forecasts[0]?.list.pop || 0) * 100)}
                         feelsLike={Math.round(weatherRightNow?.main?.feels_like || 0)}
                         icon={getWeatherIcon(weatherRightNow.weather?.[0]?.description)}
                         location={`${weatherRightNow.name}, ${weatherRightNow.sys?.country}`}
