@@ -16,7 +16,7 @@ export const Logs = () => {
         getAllLogsService().then((allLogsObj0: typeAllLogsObj|null) => {
             if (!allLogsObj0) return
             setLogs([
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.campaignLogs.logs)), title: "Campaña 2022" },
+                //{ logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.campaignLogs.logs)), title: "Campaña 2022" },
                 { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.errorLogs.logs)), title: "Errores generales de la App" },
                 { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.loginLogs.logs)), title: "Ingresos a la App" },
                 { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.userLogs.logs)), title: "Cambios en los Usuarios" },
