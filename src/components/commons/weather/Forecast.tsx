@@ -3,7 +3,8 @@ import { typeForecast, typeRootState } from '../../../models'
 
 export const Forecast = (props: any) => {
 
-    const { isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
     const forecasts: typeForecast[] = props.forecasts
@@ -26,7 +27,7 @@ export const Forecast = (props: any) => {
 
             {!![...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() && x.date.hour > 6)?.length &&
                 <>
-                    <h1> Hoy </h1>
+                    <h1 className={isDarkMode ? 'text-white' : ''}> Hoy </h1>
                     <div style={{ ...divStyles }}>
                         {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() && x.date.hour > 6).map((forecast: typeForecast) => (
                             <ForecastCard key={`${forecast.date?.day}-${forecast.date?.hour}`} forecast={forecast} />
@@ -35,7 +36,7 @@ export const Forecast = (props: any) => {
                 </>
             }
 
-            <h1> Mañana </h1>
+            <h1 className={isDarkMode ? 'text-white' : ''}> Mañana </h1>
 
             <div style={{ ...divStyles }}>
                 {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() + 1 && x.date.hour > 6).map((forecast: typeForecast) => (
@@ -43,7 +44,9 @@ export const Forecast = (props: any) => {
                 ))}
             </div>
 
-            <h1> {forecasts.find(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6)?.date.weekday} </h1>
+            <h1 className={isDarkMode ? 'text-white' : ''}>
+                {forecasts.find(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6)?.date.weekday}
+            </h1>
 
             <div style={{ ...divStyles }}>
                 {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6).map((forecast: typeForecast) => (

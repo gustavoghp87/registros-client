@@ -100,12 +100,16 @@ export const HTHMap = (props: any) => {
             id: 0,
             block: selectedBlock,
             doNotCalls: [],
+            completionData: {
+                completionDates: [],
+                isFinished: false
+            },
             coordsPoint1: {
                 lat: territoryHTH.map.centerCoords.lat + 0.001,
                 lng: territoryHTH.map.centerCoords.lng
             },
             coordsPoint2: {
-                lat: territoryHTH.map.centerCoords.lat - 0.0003827,
+                lat: territoryHTH.map.centerCoords.lat   - 0.0003827,
                 lng: territoryHTH.map.centerCoords.lng + 0.0009239
             },
             coordsPoint3: {
@@ -113,7 +117,6 @@ export const HTHMap = (props: any) => {
                 lng: territoryHTH.map.centerCoords.lng - 0.0009239
             },
             face: selectedFace,
-            isFinished: false,
             observations: [],
             street: selectedStreet
         }
@@ -153,13 +156,13 @@ export const HTHMap = (props: any) => {
         ) return
         const modifiedPolygon: typePolygon = {
             block: polygon.block,
+            completionData: polygon.completionData,
             coordsPoint1: { lat: p1y, lng: p1x },
             coordsPoint2: { lat: p2y, lng: p2x },
             coordsPoint3: { lat: p3y, lng: p3x },
             doNotCalls: polygon.doNotCalls,
             face: polygon.face,
             id: polygon.id,
-            isFinished: polygon.isFinished,
             observations: polygon.observations,
             street: polygon.street
         }
@@ -313,45 +316,3 @@ export const HTHMap = (props: any) => {
 
     </>)
 }
-
-
-    // const addFaceHandler = (event: any): void => {
-    //     const lat: number = event.latLng.lat()
-    //     const lng: number = event.latLng.lng()
-    //     if (!isEditing || !isAddingPolygon || !lat || !lng) return
-    //     newPolygonPath = [...(newPolygonPath ?? []), lat, lng]
-    //     const newMarker: typeMarker = {
-    //         id: newPolygonPath ? newPolygonPath.length : 0,
-    //         coords: {
-    //             lat: event.latLng.lat(),
-    //             lng: event.latLng.lng()
-    //         }
-    //     }
-    //     let currentTerritory: typeHTHTerritory = territoryHTH
-    //     currentTerritory.map.markers.push(newMarker)
-    //     setTerritoryHTHHandler(currentTerritory)
-    //     if (newPolygonPath?.length === 6) {
-    //         let newPolygon0: typePolygon = {
-    //             id: +new Date(),
-    //             block: '1',
-    //             face: 'A',
-    //             coordsPoint1: {
-    //                 lat: newPolygonPath[0],
-    //                 lng: newPolygonPath[1]
-    //             },
-    //             coordsPoint2: {
-    //                 lat: newPolygonPath[2],
-    //                 lng: newPolygonPath[3]
-    //             },
-    //             coordsPoint3: {
-    //                 lat: newPolygonPath[4],
-    //                 lng: newPolygonPath[5]
-    //             },
-    //             isFinished: false
-    //         }
-    //         currentTerritory.map.polygons.push(newPolygon0)
-    //         //currentTerritory.map.markers = currentTerritory.map.markers.filter(x => x.id > 9)
-    //         setTerritoryHTHHandler(currentTerritory)
-    //         newPolygonPath = []
-    //     }
-    // }

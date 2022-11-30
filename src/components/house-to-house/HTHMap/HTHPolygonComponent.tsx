@@ -31,8 +31,8 @@ export const HTHPolygonComponent = (props: any) => {
     }, [polygon])
 
     useEffect(() => {
-        setPolygonColor(polygon.isFinished ? 'black' : generalBlue)
-    }, [currentFace, polygon.isFinished, polygon.id])
+        setPolygonColor(polygon.completionData?.isFinished ? 'black' : generalBlue)
+    }, [currentFace, polygon.completionData, polygon.id])
 
     useEffect(() => {
         const interval0: NodeJS.Timer = setInterval(() => {
@@ -50,13 +50,13 @@ export const HTHPolygonComponent = (props: any) => {
             ) return
             const modifiedPolygon: typePolygon = {
                 block: polygon.block,
+                completionData: polygon.completionData,
                 coordsPoint1: { lat: p1y, lng: p1x },
                 coordsPoint2: { lat: p2y, lng: p2x },
                 coordsPoint3: { lat: p3y, lng: p3x },
                 doNotCalls: polygon.doNotCalls,
                 face: polygon.face,
                 id: polygon.id,
-                isFinished: polygon.isFinished,
                 observations: polygon.observations,
                 street: polygon.street
             }
@@ -86,7 +86,7 @@ export const HTHPolygonComponent = (props: any) => {
             }}
             onMouseOut={() => {
                 if (isEditingView || isAddingPolygon || !ref.current) return
-                setPolygonColor(polygon.isFinished ? 'black' : generalBlue)
+                setPolygonColor(polygon.completionData?.isFinished ? 'black' : generalBlue)
                 setShowInfoWindow(false)
             }}
             options={{
