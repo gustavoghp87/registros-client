@@ -65,7 +65,7 @@ export const HouseToHousePage = () => {
                 return currentFace0
             })
             hthTerritory0.map.polygons.forEach(x => {
-                x.completionData.completionDates?.forEach(y => {
+                x.completionData?.completionDates?.forEach(y => {
                     console.log(new Date(y))
                 })
             })
