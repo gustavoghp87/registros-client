@@ -10,6 +10,7 @@ const weatherIcons: typeWeatherIcons = {
     'broken clouds': <Icons.CloudIcon />,
     'clear sky': <Icons.SunIcon />,
     'few clouds': <Icons.SunBehindCloudIcon />,
+    'heavy intensity rain': <Icons.CloudLightningIcon />,
     'light rain': <Icons.SunBehindRainIcon />,
     'mist': <Icons.FogIcon />,
     'overcast clouds': <Icons.CloudIcon />,

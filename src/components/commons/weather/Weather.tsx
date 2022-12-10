@@ -11,7 +11,7 @@ export const Weather = (props: any) => {
     const feelsLike: number = props.feelsLike
     const icon: string = props.icon
     const location: string = props.location
-    const rain: number = props.rain
+    const rain: number = props.rain ? Math.round(props.rain) : props.rain
     const temperature: number = props.temperature
 
     return (

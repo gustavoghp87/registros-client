@@ -66,7 +66,10 @@ export const HouseToHousePage = () => {
             })
             hthTerritory0.map.polygons.forEach(x => {
                 x.completionData?.completionDates?.forEach(y => {
-                    console.log(new Date(y))
+                    console.log("Closed:", new Date(y))
+                })
+                x.completionData?.reopeningDates?.forEach(y => {
+                    console.log("Opened:", new Date(y))
                 })
             })
         })
