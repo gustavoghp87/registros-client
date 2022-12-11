@@ -102,7 +102,8 @@ export const HTHMap = (props: any) => {
             doNotCalls: [],
             completionData: {
                 completionDates: [],
-                isFinished: false
+                isFinished: false,
+                reopeningDates: []
             },
             coordsPoint1: {
                 lat: territoryHTH.map.centerCoords.lat + 0.001,
