@@ -13,6 +13,7 @@ const weatherIcons: typeWeatherIcons = {
     'heavy intensity rain': <Icons.CloudLightningIcon />,
     'light rain': <Icons.SunBehindRainIcon />,
     'mist': <Icons.FogIcon />,
+    'moderate rain': <Icons.SunBehindRainIcon />,
     'overcast clouds': <Icons.CloudIcon />,
     'overcast-clouds': <Icons.CloudIcon />,
     'rain': <Icons.SunBehindRainIcon />,

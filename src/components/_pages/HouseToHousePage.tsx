@@ -3,7 +3,7 @@ import { useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
 import { io, Socket } from 'socket.io-client'
-import { HTHBuildings, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
+import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
 import { H2, Loading, WarningToaster } from '../commons'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
@@ -109,7 +109,10 @@ export const HouseToHousePage = () => {
             </div>
         }
 
-        <h1 className={`text-center mt-3 mb-4 ${isDarkMode ? 'text-white' : ''}`} style={{ fontWeight: 'bolder' }}>
+        <h1
+            className={`text-center mt-3 mb-4 ${isDarkMode ? 'text-white' : ''}`}
+            style={{ fontWeight: 'bolder' }}
+        >
             SELECCIONAR CARA DE MANZANA
         </h1>
 
@@ -121,9 +124,17 @@ export const HouseToHousePage = () => {
                 setTerritoryHTHHandler={setTerritoryHTHHandler}
                 territoryHTH={territoryHTH}
             />
+            
+            <HTHChangeFaceStateButtons
+                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                territoryNumber={territoryHTH.territoryNumber}
+            />
         </>}
 
-        <Container className={isDarkMode ? 'bg-dark text-white' : ''} style={{ paddingBottom: isMobile ? '1px' : '30px' }}>
+        <Container
+            className={isDarkMode ? 'bg-dark text-white' : ''}
+            style={{ paddingBottom: isMobile ? '1px' : '30px' }}
+        >
 
             <h1 className={'text-white py-3 mb-4'}
                 style={{

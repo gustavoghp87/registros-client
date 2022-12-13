@@ -205,14 +205,14 @@ export const getHTHTerritoriesForMapService = async (): Promise<typeHTHTerritory
     }
 }
 
-export const setHTHIsFinishedService = async (
- territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, polygonId: number, isFinish: boolean): Promise<boolean> => {
-    if (!getTokenService() || !territoryNumber || !block || !face || isFinish === undefined) return false
+export const setHTHIsFinishedService = async (territoryNumber: typeTerritoryNumber, block: typeBlock|null,
+ face: typeFace|null, polygonId: number|null, isFinish: boolean, isAll: boolean = false): Promise<boolean> => {
+    if (!getTokenService() || !territoryNumber || isFinish === undefined) return false
     try {
         const response = await fetch(`${base}/state/${territoryNumber}/${block}/${face}`, {
             method: 'PATCH',
             headers: getHeaders(),
-            body: JSON.stringify({ isFinish, polygonId })
+            body: JSON.stringify({ isFinish, polygonId, isAll })
         })
         const data: typeResponseData|null = await response.json()
         return !!data && !!data.success
