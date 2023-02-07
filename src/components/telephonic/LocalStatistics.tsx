@@ -76,6 +76,7 @@ export const LocalStatistics = (props: any) => {
             numberOf_NoLlamar: telephonicTerritory.households.filter(x => x.callingState === 'No llamar' && !x.notSubscribed).length,
             numberOf_NoAbonado: telephonicTerritory.households.filter(x => x.notSubscribed).length,
             numberOf_FreePhones: telephonicTerritory.households.filter(x => x.callingState === 'No predicado' && !x.notSubscribed).length,
+            stateOfTerritory: telephonicTerritory.stateOfTerritory,
             territoryNumber: telephonicTerritory.territoryNumber,
             numberOf_ADejarCarta_relative: 0,
             numberOf_NoLlamar_relative: 0,

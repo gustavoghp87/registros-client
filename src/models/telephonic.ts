@@ -59,5 +59,6 @@ export type typeTelephonicStatistic = {
 
 export interface typeLocalTelephonicStatistic extends typeTelephonicStatistic {
     isFinished: boolean
+    stateOfTerritory: typeStateOfTelephonicTerritory
     territoryNumber: typeTerritoryNumber
 }

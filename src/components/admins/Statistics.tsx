@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { H2, Hr, Loading } from '../commons'
 import { getLocalStatisticsService, getGlobalStatisticsService } from '../../services'
@@ -11,10 +11,12 @@ export const Statistics = () => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
+    const navigate = useNavigate()
     const [globalS, setGlobalStatistics] = useState<typeTelephonicStatistic>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [localS, setLocalStatistics] = useState<typeLocalTelephonicStatistic[]>([])
     const [showBtn, setShowBtn] = useState<boolean>(true)
+    const [showBtn1, setShowBtn1] = useState<boolean>(true)
     
     const retrieveLocalStats = async (): Promise<void> => {
         setIsLoading(true)
@@ -23,6 +25,18 @@ export const Statistics = () => {
         setIsLoading(false)
         if (!allLocalStatistics) return
         setLocalStatistics(allLocalStatistics)
+    }
+
+    const orderLocalStatistics = (): void => {
+        setShowBtn1(false)
+        let orderedLocalS0 = localS.filter(x => x.stateOfTerritory.isFinished)
+        let orderedLocalS1 = localS.filter(x => !x.stateOfTerritory.isFinished)
+        let orderedLocalS2 = orderedLocalS0.filter(x => x.stateOfTerritory.resetDates?.length)
+        let orderedLocalS3 = orderedLocalS0.filter(x => !x.stateOfTerritory.resetDates?.length)
+        orderedLocalS2 = orderedLocalS2.sort((b, a) =>
+            b.stateOfTerritory.resetDates[b.stateOfTerritory.resetDates.length - 1].date - a.stateOfTerritory.resetDates[a.stateOfTerritory.resetDates.length - 1].date
+        )
+        setLocalStatistics(orderedLocalS2.concat(orderedLocalS3.concat(orderedLocalS1)))
     }
 
     useEffect(() => {
@@ -106,11 +120,18 @@ export const Statistics = () => {
             </button>
         }
 
-
-        {localS && !!localS.length && localS.map((territory: typeLocalTelephonicStatistic) =>
-            <Link key={territory.territoryNumber} to={`/telefonica/${territory.territoryNumber}`}>
+        {localS && !!localS.length && <>
+            {showBtn1 &&
+                <button className={'btn btn-general-blue d-block mx-auto my-3'}
+                    onClick={() => orderLocalStatistics()}
+                >
+                    Ver primero los Terminados y ordenados por los reseteados hace más tiempo primero
+                </button>
+            }
+            {localS.map((territory: typeLocalTelephonicStatistic) =>
                 <div
-                    className={`card d-block mx-auto mt-3 ${territory.numberOf_FreePhones < 50 ? 'bg-danger' : (territory.numberOf_FreePhones < 100 ? 'bg-warning': 'bg-success')} ${territory.isFinished ? 'animate__animated animate__flash animate__infinite animate__slower' : ''}`}
+                    key={territory.territoryNumber}
+                    className={`card d-block mx-auto mt-3 pointer ${territory.numberOf_FreePhones < 50 ? 'bg-danger' : (territory.numberOf_FreePhones < 100 ? 'bg-warning': 'bg-success')} ${territory.isFinished ? 'animate__animated animate__flash animate__infinite animate__slower' : ''}`}
                     style = {{
                         color: 'black',
                         marginBottom: '20px',
@@ -118,12 +139,13 @@ export const Statistics = () => {
                         padding: '35px',
                         textAlign: isMobile ? 'center' : undefined
                     }}
+                    onClick={() => navigate(`/telefonica/${territory.territoryNumber}`)}
                 >
                     <h3> Territorio {territory.territoryNumber} {territory.isFinished ? '- TERMINADO' : ''} </h3>
                     <h4> Quedan {territory.numberOf_FreePhones} para predicar </h4>
                 </div>
-            </Link>
-        )}
+            )}
+        </>}
 
         {isLoading && <Loading mt={'40px'} mb={'20px'} />}
 

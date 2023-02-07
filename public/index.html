@@ -32,10 +32,14 @@
         window.location.hostname === '[::1]' ||
         window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
       )
+      function mock() {}
       var developmentKey = "AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594";
       var productionKey = "AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE";
       var script = document.createElement("script");
-      script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=" + (isLocalhost ? developmentKey : productionKey) + "&map_ids=ad09b84d2db0b86d");
+      script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=" +
+        (isLocalhost ? developmentKey : productionKey) + "&map_ids=ad09b84d2db0b86d" +
+        "&callback=mock"
+      );
       document.getElementsByTagName("head")[0].appendChild(script);
     </script>
     <noscript> No se puede ver la aplicación porque está desactivado JavaScript. </noscript>
