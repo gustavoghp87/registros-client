@@ -11,9 +11,9 @@ export const AdminsPage = () => {
     
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [currentSection, setCurrentSection] = useState<adminsSections>('users')
+    const [currentSection, setCurrentSection] = useState<adminsSections>('statistics')
 
-    useEffect(() => window.scrollTo(0, 0), [])
+    // useEffect(() => window.scrollTo(0, 0), [])
 
     useEffect(() => {
         if (isLoading) dispatch(showLoadingModalReducer())
@@ -24,18 +24,18 @@ export const AdminsPage = () => {
         <>
             <H2 title={"ADMINISTRADORES"} />
 
-            <button className={`btn ${currentSection === 'users' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-5 mb-0`}
-                onClick={() => setCurrentSection('users')}
-                style={{ width: '300px' }}
-            >
-                {currentSection === 'users' ? "Usuarios" : "Ir a Usuarios"}
-            </button>
-
-            <button className={`btn ${currentSection === 'statistics' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-0`}
+            <button className={`btn ${currentSection === 'statistics' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-5 mb-0`}
                 onClick={() => setCurrentSection('statistics')}
                 style={{ width: '300px' }}
             >
                 {currentSection === 'statistics' ? "Estadísticas de Telefónica" : "Ir a Estadísticas de Telefónica"}
+            </button>
+
+            <button className={`btn ${currentSection === 'users' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-0`}
+                onClick={() => setCurrentSection('users')}
+                style={{ width: '300px' }}
+            >
+                {currentSection === 'users' ? "Usuarios" : "Ir a Usuarios"}
             </button>
 
             <button className={`btn ${currentSection === 'logs' ? 'btn-general-blue' : 'btn-general-red'} btn-size12 d-block mx-auto mt-4 mb-5`}
@@ -56,12 +56,12 @@ export const AdminsPage = () => {
             <Hr />
 
 
-            {currentSection === 'users' &&
-                <Users setIsLoading={setIsLoading} />
-            }
-
             {currentSection === 'statistics' &&
                 <Statistics />
+            }
+
+            {currentSection === 'users' &&
+                <Users setIsLoading={setIsLoading} />
             }
 
             {currentSection === 'logs' &&

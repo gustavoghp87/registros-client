@@ -1,7 +1,7 @@
 import { pointer } from '../config'
 import { getHeaders } from '.'
 import { getTokenService } from './userServices'
-import { typeHousehold, typeLocalTelephonicStatistic, typeResponseData, typeTelephonicStatistic, typeTelephonicTerritory, typeTerritoryNumber } from '../models'
+import { typeHousehold, typeLocalTelephonicStatistic, typeResponseData, typeTelephonicStatistic, typeTelephonicTerritory, typeTerritoryNumber, typeTerritoryRow } from '../models'
 
 const base: string = pointer.telephonic
 
@@ -36,6 +36,16 @@ export const getGlobalStatisticsService = async (): Promise<typeTelephonicStatis
         console.log(error)
         return null
     }
+}
+
+export const getGlobalStatistics1Service = async (): Promise<typeTerritoryRow[]|null> => {
+    const response = await fetch(`${base}/statistics/table`, {
+        method: 'GET',
+        headers: getHeaders()
+    })
+    const data: typeResponseData = await response.json()
+    if (!data || !data.success || !data.territoriesTableData) return null
+    return data.territoriesTableData
 }
 
 export const getTLPTerritoryService = async (territoryNumber: string): Promise<typeTelephonicTerritory|null> => {

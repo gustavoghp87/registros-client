@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
@@ -9,7 +9,9 @@ import * as serviceWorker from './serviceWorker'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './css/index.css'
 
-ReactDOM.render(
+const container = document.getElementById('root') as Element
+const root = createRoot(container)
+root.render(
     <BrowserRouter>
         <Provider store={store}>
             <GoogleReCaptchaProvider reCaptchaKey={recaptchaPublicKey}>
@@ -17,7 +19,6 @@ ReactDOM.render(
             </GoogleReCaptchaProvider>
         </Provider>
     </BrowserRouter>
-    , document.getElementById('root')
 )
 
 serviceWorker.unregister()
