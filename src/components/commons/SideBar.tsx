@@ -14,19 +14,17 @@ export const SideBar = (props: any) => {
     }
 
     return (
-        <div className={'mt-5'}>
-            <ul className={'list-group mt-5'}>
-                {items && items.map((item: typeCongregationItem, index: number) =>
-                    <li className={`list-group-item pointer ${currentItemNumber === (index + 1) ? 'active' : ''}`}
-                        key={item.title}
-                        onClick={() => setCurrentElementNumberHandler(index + 1)}
-                        onMouseOver={(e: any) => setActiveElement(e.target)}
-                        onMouseLeave={(e: any) => { if (currentItemNumber !== (index + 1)) setInactiveElement(e.target) }}
-                    >
-                        <span style={{ fontWeight: 'bold' }}> {item.title} </span>
-                    </li>
-                )}
-            </ul>
-        </div>
+        <ul className={'list-group mt-3'}>
+            {items && items.map((item: typeCongregationItem, index: number) =>
+                <li className={`list-group-item pointer ${currentItemNumber === (index + 1) ? 'active' : ''}`}
+                    key={item.title}
+                    onClick={() => setCurrentElementNumberHandler(index + 1)}
+                    onMouseOver={(e: any) => setActiveElement(e.target)}
+                    onMouseLeave={(e: any) => currentItemNumber !== (index + 1) ? setInactiveElement(e.target) : undefined}
+                >
+                    <span style={{ fontWeight: 'bold' }}> {item.title} </span>
+                </li>
+            )}
+        </ul>
     )
 }
