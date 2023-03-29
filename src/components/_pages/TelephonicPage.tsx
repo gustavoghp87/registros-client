@@ -75,6 +75,22 @@ export const TelephonicPage = () => {
 
     const hideGoogleMapHandler = (): void => setAddressToShowInGoogleMaps("")
 
+    const updateHouseholdsToShow = useCallback(() => {
+        if (!currentBlock) return setHouseholdsToShow([])
+        if (!telephonicTerritory) return
+        let householdsToShow0: typeHousehold[] =
+            getHouseholdsToShow(telephonicTerritory.households, currentBlock, isShowingAllStates, isShowingAllAvailable)
+        const temp: typeHousehold[] = householdsToShow0
+        if (!isShowingAllAvailable) {
+            householdsToShow0 = householdsToShow0.slice(0, brought)
+        }
+        if (isShowingAllAvailable || householdsToShow0.length === temp.length) {
+            setShowPagination(false)
+        }
+        householdsToShow0 = getHouseholdVariant(householdsToShow0)
+        setHouseholdsToShow(householdsToShow0)
+    }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory])
+
     useEffect(() => {
         if (!territoryNumber) return navigate('/selector')
         window.scrollTo(0, 0)
@@ -93,23 +109,6 @@ export const TelephonicPage = () => {
         }
     }, [navigate, territoryNumber])
 
-    const updateHouseholdsToShow = useCallback(() => {
-        if (!currentBlock) return setHouseholdsToShow([])
-        if (!telephonicTerritory) return
-        
-        let householdsToShow0: typeHousehold[] =
-            getHouseholdsToShow(telephonicTerritory.households, currentBlock, isShowingAllStates, isShowingAllAvailable)
-        const temp: typeHousehold[] = householdsToShow0
-        if (!isShowingAllAvailable) {
-            householdsToShow0 = householdsToShow0.slice(0, brought)
-        }
-        if (isShowingAllAvailable || householdsToShow0.length === temp.length) {
-            setShowPagination(false)
-        }
-        householdsToShow0 = getHouseholdVariant(householdsToShow0)
-        setHouseholdsToShow(householdsToShow0)
-    }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory])
-
     useEffect(() => {
         updateHouseholdsToShow()
     }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory, updateHouseholdsToShow])
@@ -122,14 +121,17 @@ export const TelephonicPage = () => {
                 setUserEmailWarningToaster(userEmail)
             }
             updatedHousehold.doNotMove = true
-            setTelephonicTerritory(x => {
-                if (!x) return x
-                x.households = x.households.map(y => {
-                    if (y.householdId === updatedHousehold.householdId) y = updatedHousehold
-                    return y
+            if (!telephonicTerritory) return
+            const updatedTerritory: typeTelephonicTerritory = {
+                ...telephonicTerritory,
+                households: telephonicTerritory?.households?.map(x => {
+                    if (x.householdId === updatedHousehold.householdId) {
+                        x = updatedHousehold
+                    }
+                    return x
                 })
-                return x
-            })
+            }
+            setTelephonicTerritory(updatedTerritory)
             updateHouseholdsToShow()
         })
         return () => { socket.off(telephonicHouseholdChangeString) }

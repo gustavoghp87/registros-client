@@ -64,9 +64,23 @@ export const HouseToHousePage = () => {
                 }
                 return currentFace0
             })
+            // type typeMonth = {
+            //     month: number
+            //     year: number
+            // }
+            // let monthAndYear: typeMonth
+            // let twoMonths: boolean = false
+            // if (hthTerritory0.map.)
             hthTerritory0.map.polygons.forEach(x => {
                 x.completionData?.completionDates?.forEach(y => {
                     console.log("Closed:", new Date(y))
+                    // const date = new Date(y)
+                    // const month = date.getUTCMonth()
+                    // const year = date.getUTCFullYear()
+                    // console.log("Closed:", date)
+                    // if (monthAndYear && monthAndYear.month === month && monthAndYear.year === year) return
+                    // if (monthAndYear) twoMonths = true
+                    // monthAndYear = { month, year }
                 })
                 x.completionData?.reopeningDates?.forEach(y => {
                     console.log("Opened:", new Date(y))

@@ -10,8 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './css/index.css'
 
 const container = document.getElementById('root') as Element
-const root = createRoot(container)
-root.render(
+createRoot(container).render(
     <BrowserRouter>
         <Provider store={store}>
             <GoogleReCaptchaProvider reCaptchaKey={recaptchaPublicKey}>
