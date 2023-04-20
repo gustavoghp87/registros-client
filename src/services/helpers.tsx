@@ -139,24 +139,25 @@ export const getHouseholdVariant = (households: typeHousehold[]): typeHousehold[
 
 export const getHouseholdsToShow = (households: typeHousehold[],
  currentBlock: typeBlock, isShowingAllStates: boolean, isShowingAllAvailable: boolean): typeHousehold[] => {
+    let householdsToShow = [ ...households ]
     if (isShowingAllStates && isShowingAllAvailable) {
-        households = households.filter(x =>
+        householdsToShow = householdsToShow.filter(x =>
             x.block === currentBlock
         )
     } else if (!isShowingAllStates && isShowingAllAvailable) {
-        households = households.filter(x =>
+        householdsToShow = householdsToShow.filter(x =>
             x.block === currentBlock && ((x.callingState === 'No predicado' && x.notSubscribed !== true) || x.doNotMove)
         )
     } else if (isShowingAllStates && !isShowingAllAvailable) {
-        households = households.filter(x =>
+        householdsToShow = householdsToShow.filter(x =>
             x.block === currentBlock
         )
     } else {
-        households = households.filter(x =>
+        householdsToShow = householdsToShow.filter(x =>
             x.block === currentBlock && ((x.callingState === 'No predicado' && x.notSubscribed !== true) || x.doNotMove)
         )
     }
-    return households
+    return householdsToShow
 }
 
 export const getNumberOfFreePhones = (households: typeHousehold[]): number => {

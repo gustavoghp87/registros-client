@@ -32,7 +32,8 @@ export const App = () => {
         if (location.pathname === '/selector') return
         getUserByTokenService().then((user0: typeUser|false|null) => {
             if (user0) return dispatch(refreshUserReducer(user0))
-            if (user0 === false) dispatch(logoutReducer())
+            if (user0 === false) return dispatch(logoutReducer())
+            alert("No se pudo recuperar el usuario")
         })
     }, [dispatch, location.pathname])
 
