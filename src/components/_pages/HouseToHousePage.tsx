@@ -34,7 +34,7 @@ export const HouseToHousePage = () => {
         if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
         const target: typeHTHTerritory = hthTerritory0 ?? territoryHTH
         let currentFace0: typePolygon|undefined = target.map.polygons.find((x: typePolygon) =>
-            x.block === selectedBlock && x.face === selectedFace
+        x.block === selectedBlock && x.face === selectedFace
         )
         if (!currentFace0) return
         if (currentFace0.doNotCalls)
@@ -114,7 +114,7 @@ export const HouseToHousePage = () => {
 
         {isLoading && <Loading mt={'60px'} />}
 
-        {territoryHTH && (!socket || !socket.connected) &&
+        {!!territoryHTH && (!socket || !socket.connected) &&
             <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
                 <WarningToaster
                     bodyText={"Refrescar la página y verificar que hay internet"}
@@ -130,7 +130,7 @@ export const HouseToHousePage = () => {
             SELECCIONAR CARA DE MANZANA
         </h1>
 
-        {territoryHTH?.map && <>
+        {!!territoryHTH?.map && <>
             <HTHMap
                 currentFace={currentFace}
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}

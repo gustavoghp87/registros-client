@@ -34,7 +34,7 @@ export const HTHMap = (props: any) => {
         const lat: number = map?.getCenter()?.lat() ?? 0
         const lng: number = map?.getCenter()?.lng() ?? 0
         if (!lat || !lng) return
-        if (lat === territoryHTH.map.centerCoords.lat && lat === territoryHTH.map.centerCoords.lng) return
+        if (lat === territoryHTH.map.centerCoords.lat && lng === territoryHTH.map.centerCoords.lng) return
         const currentTerritoryHTH: typeHTHTerritory = territoryHTH
         currentTerritoryHTH.map.centerCoords.lat = lat
         currentTerritoryHTH.map.centerCoords.lng = lng
@@ -190,6 +190,8 @@ export const HTHMap = (props: any) => {
         setRunIntervals(false)
         setShowNewFaceOptions(false)
     }
+
+    if (!isLoaded) return <Loading />
 
     return (<>
         <div className={'position-relative'} style={{ marginBottom: isMobile ? '660px' : '' }}>
