@@ -39,13 +39,19 @@ export const getGlobalStatisticsService = async (): Promise<typeTelephonicStatis
 }
 
 export const getGlobalStatistics1Service = async (): Promise<typeTerritoryRow[]|null> => {
-    const response = await fetch(`${base}/statistics/table`, {
-        method: 'GET',
-        headers: getHeaders()
-    })
-    const data: typeResponseData = await response.json()
-    if (!data || !data.success || !data.territoriesTableData) return null
-    return data.territoriesTableData
+    try {
+        if (!getTokenService()) throw new Error("Sin Token")
+        const response = await fetch(`${base}/statistics/table`, {
+            method: 'GET',
+            headers: getHeaders()
+        })
+        const data: typeResponseData = await response.json()
+        if (!data || !data.success || !data.territoriesTableData) return null
+        return data.territoriesTableData
+    } catch (error) {
+        console.log(error)
+        return null
+    }
 }
 
 export const getTLPTerritoryService = async (territoryNumber: string): Promise<typeTelephonicTerritory|null> => {
