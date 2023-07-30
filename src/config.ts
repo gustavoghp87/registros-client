@@ -7,7 +7,8 @@ const isLocalhost: boolean = Boolean(
 export const SERVER: string = (isLocalhost ?
     "http://localhost:4005"
     :
-    "https://misericordiawebapi-ghp2120.b4a.run" // production server will not respond because cors policies
+    "https://misericordia-web-service-3v5m7nxntq-rj.a.run.app"  // production server will not respond to local because cors policies
+    // "https://misericordiawebapi-ghp2120.b4a.run"
 );
 
 export const pointer = {
