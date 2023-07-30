@@ -1,34 +1,41 @@
-import { useState } from 'react'
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
-import { useDispatch, useSelector } from 'react-redux'
-import { Loading } from '../../commons'
-import { hthMapStyle, HTHMarkerComponent, HTHNewFaceOptions, HTHPolygonComponent } from '../'
-import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { googleMapsAPIKey, mapId } from '../../../config'
 import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
+import { googleMapsAPIKey, mapId } from '../../../config'
+import { hthMapStyle, HTHMarkerComponent, HTHNewFaceOptions, HTHPolygonComponent } from '../'
+import { Loading } from '../../commons'
+import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeAppDispatch, typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState } from '../../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const HTHMap = (props: any) => {
+type propsType = {
+    currentFace?: typePolygon
+    isAddingPolygon: boolean
+    isEditingView: boolean
+    refreshHTHTerritoryHandler: Function
+    selectBlockAndFaceHandler: Function
+    setIsAddingPolygon: Dispatch<SetStateAction<boolean>>
+    setIsEditingView: Dispatch<SetStateAction<boolean>>
+    setShowNewFaceOptions: Dispatch<SetStateAction<boolean>>
+    setTerritoryHTHHandler: Function
+    showNewFaceOptions: boolean
+    territoryHTH: typeHTHTerritory
+}
 
-    const { user } = useSelector((state: typeRootState) => ({
+export const HTHMap = ({
+    currentFace, isAddingPolygon, isEditingView, refreshHTHTerritoryHandler, selectBlockAndFaceHandler, setIsAddingPolygon, setIsEditingView, setShowNewFaceOptions, setTerritoryHTHHandler, showNewFaceOptions, territoryHTH
+}: propsType) => {
+    const { isMobile, user} = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: googleMapsAPIKey,
         id: mapId
     })
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const selectBlockAndFaceHandler: Function = props.selectBlockAndFaceHandler
-    const setTerritoryHTHHandler: Function = props.setTerritoryHTHHandler
-    const territoryHTH: typeHTHTerritory = props.territoryHTH
-    const [isAddingPolygon, setIsAddingPolygon] = useState<boolean>(false)
-    const [isEditingView, setIsEditingView] = useState<boolean>(false)
     const [map, setMap] = useState<google.maps.Map>()
     const [runIntervals, setRunIntervals] = useState<boolean>(false)
-    const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
 
     const onCenterChangedHandler = (): void => {
         const lat: number = map?.getCenter()?.lat() ?? 0
@@ -255,10 +262,11 @@ export const HTHMap = (props: any) => {
             </GoogleMap>
         </div>
         
-        {isAddingPolygon && showNewFaceOptions &&
+        {(isAddingPolygon || showNewFaceOptions) &&
             <HTHNewFaceOptions
-                addFaceHandler={initFaceAddingHandler}
+                initFaceAddingHandler={initFaceAddingHandler}
                 territoryHTH={territoryHTH}
+                show={isAddingPolygon && showNewFaceOptions}
             />
         }
 

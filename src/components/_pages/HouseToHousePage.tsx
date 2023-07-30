@@ -20,10 +20,13 @@ export const HouseToHousePage = () => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [currentFace, setCurrentFace] = useState<typePolygon>()
+    const [isAddingPolygon, setIsAddingPolygon] = useState<boolean>(false)
+    const [isEditingView, setIsEditingView] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
+    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
 
     const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
         setTerritoryHTH(territoryHTH0)
@@ -133,16 +136,24 @@ export const HouseToHousePage = () => {
         {!!territoryHTH?.map && <>
             <HTHMap
                 currentFace={currentFace}
+                isAddingPolygon={isAddingPolygon}
+                isEditingView={isEditingView}
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                 selectBlockAndFaceHandler={selectBlockAndFaceHandler}
+                setIsAddingPolygon={setIsAddingPolygon}
+                setIsEditingView={setIsEditingView}
+                setShowNewFaceOptions={setShowNewFaceOptions}
                 setTerritoryHTHHandler={setTerritoryHTHHandler}
+                showNewFaceOptions={showNewFaceOptions}
                 territoryHTH={territoryHTH}
             />
             
-            <HTHChangeFaceStateButtons
-                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                territoryNumber={territoryHTH.territoryNumber}
-            />
+            {!showNewFaceOptions && !isEditingView && !isAddingPolygon &&
+                <HTHChangeFaceStateButtons
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    territoryNumber={territoryHTH.territoryNumber}
+                />
+            }
         </>}
 
         <Container
