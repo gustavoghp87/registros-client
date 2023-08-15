@@ -231,8 +231,7 @@ const Section3 = (props: any) => {
             setIsLoading(false)
             if (territories0) setTerritories(territories0)
         })
-        console.log(isMobile)
-    }, [isMobile, setIsLoading])
+    }, [])
 
     if (isLoading) return <Loading mt={'60px'} mb={'20px'} />
 

@@ -62,7 +62,7 @@ export const NavBar = () => {
                                     onClick={() => navigateHandler('/congregacion')}
                                     style={{ color, margin: isMobile ? '8px 0' : '0' }}
                                 >
-                                    &nbsp; &nbsp;Congregación&nbsp; &nbsp;
+                                    &nbsp; &nbsp;Tablero&nbsp; &nbsp;
                                 </Nav.Link>
                             </>
                             :
