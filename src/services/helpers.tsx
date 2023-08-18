@@ -222,3 +222,5 @@ export const getHouseholdDoorBell = (doorNumber: number, index: number, index1: 
         return doorNumber.toString()
     }
 }
+
+export const subirAlTop = () => window.scrollTo(0, 0);

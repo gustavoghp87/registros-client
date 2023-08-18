@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
-import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
-import { useSelector } from 'react-redux'
-import { Modal } from 'react-bootstrap'
-import { Loading } from '../commons'
-import { googleMapsAPIKey, mapId } from '../../config'
 import { editInfoWindowsStyles, getGeocodingFromCoordinatesService, getHTHTerritoriesForMapService } from '../../services'
 import { generalBlue, typeCoords, typeHTHTerritory, typeRootState } from '../../models'
+import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
+import { googleMapsAPIKey, mapId } from '../../config'
+import { Loading } from '../commons'
+import { Modal } from 'react-bootstrap'
+import { useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 export const GeoLocationModal = (props: any) => {
 

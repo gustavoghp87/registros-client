@@ -1,5 +1,5 @@
 import { Col, Row } from 'react-bootstrap'
-import { editCampaignPackService, getCampaignPackService, closeCampaignPackService, putHyphens } from '../../services'
+import { editCampaignPackService, getCampaignPackService, closeCampaignPackService, putHyphens, subirAlTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
@@ -101,7 +101,7 @@ export const CampaignPage = () => {
     const closeWarningToaster = (): void => setShowToast(false)
 
     useEffect(() => {
-        window.scrollTo(0, 0)
+        subirAlTop()
         if (!id) return
         dispatch(showLoadingModalReducer())
         getCampaignPackService(id).then((campaignPack0: typeCampaignPack|null) => {

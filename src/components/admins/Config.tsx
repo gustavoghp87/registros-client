@@ -1,6 +1,15 @@
 import { H2 } from "../commons"
+import { subirAlTop } from "../../services"
+import { useEffect } from "react"
+import { useNavigate } from "react-router"
 
 export const Config = () => {
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        subirAlTop()
+    }, [])
 
     return (<>
     
@@ -19,6 +28,12 @@ export const Config = () => {
         </button>
 
         Duración de cookie de acceso: 3 meses
+
+        <button className={'btn btn-general-blue btn-size12 d-block mx-auto mt-5 mb-0'} style={{ width: '350px' }}
+            onClick={() => navigate('/gmail')}
+        >
+            Renovar credenciales de la API de Gmail
+        </button>
     
     </>)
 }

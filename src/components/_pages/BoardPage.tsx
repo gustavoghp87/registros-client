@@ -1,5 +1,6 @@
 import { getBoardItems } from '../../services/boardServices'
 import { H2, Hr, Loading, SideBar } from '../commons'
+import { subirAlTop } from '../../services'
 import { typeBoardItem, typeRootState } from '../../models'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -17,7 +18,7 @@ export const BoardPage = () => {
     const setCurrentElementNumberHandler = (element: number): void => setCurrentItemNumber(element)
 
     useEffect(() => {
-        window.scrollTo(0, 0)
+        subirAlTop()
         getBoardItems().then((boardItems0: typeBoardItem[]|null) => {
             if (boardItems0) setItems(boardItems0)
         })

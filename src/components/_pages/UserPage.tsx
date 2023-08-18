@@ -44,7 +44,7 @@ export const UserPage = () => {
     }
     
     const changePswHandler = async (): Promise<void> => {
-        const response = await changePswService(psw, newPsw, null)
+        const response = await changePswService(user.congregation, psw, newPsw, null)
         setPsw('')
         setNewPsw('')
         if (response && response.newToken) openAlertModalHandler("Clave cambiada con éxito", "", 1)

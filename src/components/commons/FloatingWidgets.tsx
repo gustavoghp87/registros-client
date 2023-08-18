@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { ReturnBtn } from './'
 import { typeRootState } from '../../models'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 export const FloatingWidgets = () => {
 

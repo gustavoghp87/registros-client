@@ -34,7 +34,9 @@ export const RecoveryPage = () => {
         if (!team || !id || !email || !password || !confPassword) return openAlertModalHandler("Faltan datos", "")
         if (password.length < 8) return openAlertModalHandler("La contraseña es demasiado corta (mín 8)", "")
         if (password !== confPassword) return openAlertModalHandler("La contraseña no coincide con su confirmación", "")
-        const response = await changePswService(null, password, id)
+        const congr = parseInt(team)
+        if (isNaN(congr)) return openAlertModalHandler("Hay un error en los datos", "")
+        const response = await changePswService(congr, null, password, id)
         if (response && response.success) {
             openAlertModalHandler("Clave cambiada con éxito", "", 1, () => navigate('/'))
         } else if (response && response.expired) {

@@ -1,15 +1,15 @@
 import { Button, Container, FloatingLabel, Form } from 'react-bootstrap'
 import { Credentials } from 'google-auth-library'
-import { getGmailRequestService, getGmailUrlService, saveNewGmailAPITokenToDBService } from '../../services'
-import { useState } from 'react'
+import { getGmailRequestService, getGmailUrlService, saveNewGmailAPITokenToDBService, subirAlTop } from '../../services'
 import { H2 } from '../commons'
+import { useEffect, useState } from 'react'
 
 export const GmailTokensPage = () => {
 
-    const [url, setUrl] = useState<string>('')
     const [code, setCode] = useState<string>('')
     const [credentials, setCredentials] = useState<Credentials>()
     const [success, setSuccess] = useState<boolean>()
+    const [url, setUrl] = useState<string>('')
 
     const step1Handler = async (): Promise<void> => {
         const url: string|null = await getGmailUrlService()
@@ -27,6 +27,10 @@ export const GmailTokensPage = () => {
         const success0: boolean = await saveNewGmailAPITokenToDBService(credentials.access_token, credentials.refresh_token)
         if (success0) setSuccess(true)
     }
+
+    useEffect(() => {
+        subirAlTop()
+    }, [])
 
     return (<>
 
@@ -67,6 +71,9 @@ export const GmailTokensPage = () => {
 
             {credentials &&
                 <>
+                    <h1> La siguiente información se guardará en la base de datos para su uso por la aplicación si se acepta abajo: </h1>
+                    <br/>
+                    <br/>
                     <p className={'mb-0'}>
                         <span style={{ fontWeight: 'bolder' }}>access_token:</span>
                     </p>
@@ -91,14 +98,17 @@ export const GmailTokensPage = () => {
                 </>
             }
 
-            {credentials && success === undefined &&
-                <Button  className={'d-block mx-auto mb-4'} onClick={() => step3Handler()}> Save </Button>
-            }
+            {credentials && success === undefined && <>
+                <span>Al guardar, estas credenciales se van a guardar en la base de datos y van a permitir el uso de la API</span>
+                <Button  className={'d-block mx-auto mb-4'} onClick={() => step3Handler()}> Guardar </Button>
+            </>}
 
             <br/><br/><br/>
 
             {success &&
-                <h1 className={'btn-general-blue text-center pt-3 mt-3'} style={{ height: '60px' }}> Successful </h1>
+                <div style={{ height: '60px' }}>
+                    <h1 className={'btn-general-blue text-center py-3 my-3'}> GUARDADO EXITOSO </h1>
+                </div>
             }
 
         </Container>

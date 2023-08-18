@@ -5,15 +5,13 @@ import { typeAppDispatch } from '../../models'
 import { useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 
-type adminsSections = 'users' | 'statistics' | 'logs' | 'campaign' | 'config'
+type adminsSections = '' | 'users' | 'statistics' | 'logs' | 'campaign' | 'config'
 
 export const AdminsPage = () => {
     
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [currentSection, setCurrentSection] = useState<adminsSections>('statistics')
-
-    // useEffect(() => window.scrollTo(0, 0), [])
+    const [currentSection, setCurrentSection] = useState<adminsSections>('')
 
     useEffect(() => {
         if (isLoading) dispatch(showLoadingModalReducer())

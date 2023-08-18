@@ -1,3 +1,4 @@
+import { subirAlTop } from '../../services'
 import { typeRootState } from '../../models'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -6,7 +7,7 @@ export const TermsOfServicePage = () => {
 
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
 
-    useEffect(() => window.scrollTo(0, 0), [])
+    useEffect(() => subirAlTop(), [])
 
     return (
         <div className={isDarkMode ? 'text-white' : ''} style={{ marginTop: '80px' }}>

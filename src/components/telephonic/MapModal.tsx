@@ -1,11 +1,11 @@
+import { getGeocodingFromAddressService } from '../../services'
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import { googleMapsAPIKey, mapId } from '../../config'
+import { Loading } from '../commons'
+import { Modal } from 'react-bootstrap'
+import { typeCoords, typeRootState } from '../../models'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
-import { Modal } from 'react-bootstrap'
-import { Loading } from '../commons'
-import { googleMapsAPIKey, mapId } from '../../config'
-import { getGeocodingFromAddressService } from '../../services'
-import { typeCoords, typeRootState } from '../../models'
 
 export const MapModal = (props: any) => {
 
