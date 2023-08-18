@@ -80,7 +80,7 @@ export const HTHBuildingCheckbox: FC<propsType> =
                     borderRadius: '7px',
                     marginInline: '10px',
                     minHeight: '50px',
-                    width: isManager === null ? '115px' : '98px'
+                    width: isManager ? '115px' : '98px'
                 }}
             >
                 {level !== undefined && doorName !== undefined &&

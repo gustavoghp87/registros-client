@@ -59,7 +59,7 @@ export const App = () => {
                         <Route path={'/'} element={ <Pages.HomePage /> } />
                         <Route path={'/celulares/:id'} element={ <Pages.CampaignPage /> } />
                         <Route path={'/privacidad'} element={ <Pages.PrivacyPolicyPage /> } />
-                        <Route path={'/recovery/:id'} element={ <Pages.RecoveryPage /> } />
+                        <Route path={'/recovery'} element={ <Pages.RecoveryPage /> } />
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
                         <Route path={'/edificio/:territoryNumber/:block/:face/:streetNumber'} element={ <Pages.HTHBuildingPage /> } />
                         <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />

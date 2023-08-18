@@ -2,6 +2,7 @@ import { Button, Container, FloatingLabel, Form } from 'react-bootstrap'
 import { Credentials } from 'google-auth-library'
 import { getGmailRequestService, getGmailUrlService, saveNewGmailAPITokenToDBService } from '../../services'
 import { useState } from 'react'
+import { H2 } from '../commons'
 
 export const GmailTokensPage = () => {
 
@@ -27,22 +28,42 @@ export const GmailTokensPage = () => {
         if (success0) setSuccess(true)
     }
 
-    return (
+    return (<>
+
+        <H2 title='RENOVAR CREDENCIALES DE LA API DE GMAIL' />
+        
         <Container style={{ maxWidth: '500px', marginTop: '150px'}}>
 
-            <Button className={'d-block mx-auto mb-4'} onClick={() => step1Handler()}> Get Gmail URL </Button>
+            {!url &&
+                <Button className={'d-block mx-auto mb-4'} onClick={() => step1Handler()}>
+                    Obtener URL de Gmail
+                </Button>
+            }
 
-            <Form.Control className={'mb-4'} type={'text'} placeholder={"Gmail URL"} value={url} disabled />
+            {!!url && <span>Copiar esta URL y abrirla en otra pestaña de Chrome. Seleccionar la cuenta Gmail de la app.</span>}
 
-            <br/><br/><br/>
+            <br/><br/>
 
-            <Form>
-                <FloatingLabel label={"Gmail Code"} className={'mb-3'}>
-                    <Form.Control type={'text'} placeholder={"Gmail Code"} onChange={(e: any) => setCode(e.target.value)} />
-                </FloatingLabel>
+            <Form.Control className={'mb-4'} type={'text'} placeholder={"Gmail URL"} value={url} readOnly />
 
-                <Button className={'d-block mx-auto mb-4'} onClick={() => step2Handler()}> Send </Button>
-            </Form>
+            <br/><br/>
+            
+            {!!url && <>
+                <span>De la URL resultante, copiar el código que está después de "code=" y antes de "&scope=" y pegarlo abajo:</span>
+                
+                <br/><br/><br/>
+
+                <Form>
+                    <FloatingLabel label={"Gmail Code"} className={'mb-3'}>
+                        <Form.Control type={'text'} placeholder={"Gmail Code"} onChange={(e: any) => setCode(e.target.value)} />
+                    </FloatingLabel>
+
+                    <Button className={'d-block mx-auto mb-4'} onClick={() => step2Handler()} disabled={!code}>
+                        Mandar
+                    </Button>
+                </Form>
+            </>}
+
 
             {credentials &&
                 <>
@@ -81,5 +102,5 @@ export const GmailTokensPage = () => {
             }
 
         </Container>
-    )
+    </>)
 }
