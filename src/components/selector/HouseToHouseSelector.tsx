@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { GeoLocationModal, H2 } from '../commons'
 import { TerritoryNumberBlock } from '.'
 import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
 
 export const HouseToHouseSelector = () => {
 
@@ -28,11 +28,13 @@ export const HouseToHouseSelector = () => {
 
             {show &&
                 <>
-                    <button className={`btn btn-general-blue d-block mx-auto my-4 ${isMobile ? 'w-75' : 'w-25'}`}
-                        onClick={() => setShowGeolocationModal(true)}
-                    >
-                        Dónde Estoy
-                    </button>
+                    {false &&
+                        <button className={`btn btn-general-blue d-block mx-auto my-4 ${isMobile ? 'w-75' : 'w-25'}`}
+                            onClick={() => setShowGeolocationModal(true)}
+                        >
+                            Dónde Estoy
+                        </button>
+                    }
                     
                     {!!user.hthAssignments.length ?
                         <TerritoryNumberBlock

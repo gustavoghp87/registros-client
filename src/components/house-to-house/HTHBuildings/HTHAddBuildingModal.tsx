@@ -16,14 +16,15 @@ export const HTHAddBuildingModal = (props: any) => {
     const currentFace: typePolygon = props.currentFace
     const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
     const territoryNumber: typeTerritoryNumber = props.territoryNumber
-    const [numberOfLevels, setNumberOfLevels] = useState<number>(4)
-    const [numberPerLevel, setNumberPerLevel] = useState<number>(2)
+    const [hasNn, setHasNn] = useState(false)
     const [hasCharacters, setHasCharacters] = useState<boolean>(true)
     const [hasContinuousNumbers, setHasContinuousNumbers] = useState<boolean>(false)
     const [hasLowLevel, setHasLowLevel] = useState<boolean>(true)
+    const [numberOfLevels, setNumberOfLevels] = useState<number>(4)
+    const [numberPerLevel, setNumberPerLevel] = useState<number>(2)
     const [streetNumber, setStreetNumber] = useState<number>(0)
-    const levels: number[] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
     const doorNames: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    const levels: number[] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
 
     const submitHandler = (event: any): void => {
         event.preventDefault()
@@ -153,11 +154,22 @@ export const HTHAddBuildingModal = (props: any) => {
                                     type={'checkbox'}
                                 />
                             </Form.Group>
+                            {hasCharacters &&
+                                <Form.Group className={'mb-2'} onClick={() => setHasNn(x => !x)}>
+                                    <Form.Check
+                                        checked={hasNn}
+                                        className={'checkbox-3'}
+                                        label={'Usar la Ñ'}
+                                        onChange={() => {}}
+                                        type={'checkbox'}
+                                    />
+                                </Form.Group>
+                            }
                             <Form.Group className={'mb-2'} onClick={() => setHasContinuousNumbers(x => !x)}>
                                 <Form.Check
                                     checked={hasContinuousNumbers}
                                     className={'checkbox-3'}
-                                    label={'Numeración de corrido'}
+                                    label={isMobile ? 'Num. de corrido' : 'Numeración de corrido'}
                                     onChange={() => {}}
                                     type={'checkbox'}
                                 />
@@ -189,7 +201,7 @@ export const HTHAddBuildingModal = (props: any) => {
                                 <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                                     {[...doorNames].slice(0, numberPerLevel).map((doorNumber: number, index1: number) =>
                                         <HTHBuildingCheckbox
-                                            doorName={getHouseholdDoorBell(doorNumber, index, index1, hasContinuousNumbers, hasCharacters, numberPerLevel)}
+                                            doorName={getHouseholdDoorBell(doorNumber, index, index1, hasContinuousNumbers, hasCharacters, numberPerLevel, hasNn)}
                                             doorNumber={doorNumber}
                                             key={doorNumber}
                                             level={level}
