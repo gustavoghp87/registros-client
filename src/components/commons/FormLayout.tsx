@@ -1,38 +1,50 @@
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { FC } from 'react'
 import { getFailingEmailFromLSService } from '../../services'
+import { Link } from 'react-router-dom'
 import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const FormLayout = (props: any) => {
+type propsType = {
+    acceptButtonLabel: string;
+    action: Function;
+    confPassword: string;
+    email: string;
+    group?: number;
+    isRecovery: boolean;
+    isRegister?: boolean;
+    password: string;
+    recoverAccountHandler?: Function;
+    setConfPassword: React.Dispatch<React.SetStateAction<string>>;
+    setEmail: React.Dispatch<React.SetStateAction<string>>;
+    setGroup?: React.Dispatch<React.SetStateAction<number>>;
+    setIsRegister?: React.Dispatch<React.SetStateAction<boolean>>;
+    setPassword: React.Dispatch<React.SetStateAction<string>>;
+    setTeam?: React.Dispatch<React.SetStateAction<number>>;
+    team?: number;
+    title: string;
+}
+
+export const FormLayout: FC<propsType> =
+    ({
+        acceptButtonLabel, action, confPassword, email, group, isRecovery, isRegister, password, recoverAccountHandler,
+        setConfPassword, setEmail, setGroup, setIsRegister, setPassword, setTeam, team, title
+    }) =>
+{
 
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const action: Function = props.action
-    const acceptButtonLabel: string = props.acceptButtonLabel
-    const confPassword: string = props.confPassword
-    const email: string = props.email
-    const isRegister: boolean = props.isRegister
-    const group: number = props.group
-    const isRecovery: boolean = props.isRecovery
-    const password: string = props.password
-    const recoverAccountHandler: Function = props.recoverAccountHandler
-    const setConfPassword: React.Dispatch<React.SetStateAction<string>> = props.setConfPassword
-    const setEmail: React.Dispatch<React.SetStateAction<string>> = props.setEmail
-    const setGroup: React.Dispatch<React.SetStateAction<number>> = props.setGroup
-    const setIsRegister: React.Dispatch<React.SetStateAction<boolean>> = props.setIsRegister
-    const setPassword: React.Dispatch<React.SetStateAction<string>> = props.setPassword
-    const title: string = props.title
+    
 
     const clearInputs = (): void => {
         if (isRegister) setEmail(getFailingEmailFromLSService() ?? "")
         else setEmail('')
-        setIsRegister(x => !x)
+        if (setIsRegister) setIsRegister(x => !x)
         setPassword('')
         setConfPassword('')
-        setGroup(0)
+        if (setGroup) setGroup(0)
         if (email && isRegister) document.getElementById('passwordInput')?.focus()
         else document.getElementById('emailInput')?.focus()
     }
@@ -111,7 +123,22 @@ export const FormLayout = (props: any) => {
                     </FloatingLabel>
                 }
 
-                {isRegister && <>
+                {isRegister && setTeam && setGroup && <>
+                    <FloatingLabel
+                        label={"Número de Equipo de Trabajo"}
+                        className={'mb-3 text-dark'}
+                    >
+                        <Form.Control
+                            className={'form-control'}
+                            type={'number'}
+                            value={team ? team : ''}
+                            min={'1'}
+                            placeholder={"Número de Equipo de Trabajo"}
+                            onChange={(e: any) => setTeam((e.target as any).value)}
+                            onKeyDown={(e: any) => e.key === 'Enter' ? action() : null }
+                        />
+                    </FloatingLabel>
+
                     <FloatingLabel
                         label={"Número de Grupo de Predicación"}
                         className={'mb-3 text-dark'}
@@ -157,18 +184,20 @@ export const FormLayout = (props: any) => {
                             </span>
                         </p>
                         
-                        <p className={'text-end'}
-                            style={{
-                                color: '#0000cd',
-                                fontSize: '1rem',
-                                margin: '0 0 22px',
-                                textDecoration: 'underline'
-                            }}
-                        >
-                            <span className={'pointer'} onClick={() => recoverAccountHandler()}>
-                                Olvidé mi contraseña
-                            </span>
-                        </p>
+                        {recoverAccountHandler &&
+                            <p className={'text-end'}
+                                style={{
+                                    color: '#0000cd',
+                                    fontSize: '1rem',
+                                    margin: '0 0 22px',
+                                    textDecoration: 'underline'
+                                }}
+                            >
+                                <span className={'pointer'} onClick={() => recoverAccountHandler()}>
+                                    Olvidé mi contraseña
+                                </span>
+                            </p>
+                        }
                     </>
                 }
 

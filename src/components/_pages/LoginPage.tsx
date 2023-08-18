@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { FormLayout, Loading } from '../commons'
-import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { getFailingEmailFromLSService, setFailingEmailToLSService } from '../../services'
 import { getUserByTokenService1, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
+import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { typeAppDispatch, typeResponseData, typeRootState, typeUser } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 
 export const LoginPage = () => {
 
@@ -19,6 +19,7 @@ export const LoginPage = () => {
     const [confPassword, setConfPassword] = useState<string>('')
     const [email, setEmail] = useState<string>("")
     const [group, setGroup] = useState<number>(0)
+    const [team, setTeam] = useState<number>(0)
     const [isRegister, setIsRegister] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [password, setPassword] = useState<string>("")
@@ -80,7 +81,7 @@ export const LoginPage = () => {
 
     const registerHandler = async (): Promise<void> => {
         setLoading(true)
-        if (!email || !password || !confPassword || !group)
+        if (!email || !password || !confPassword || !team || !group)
             return openAlertModalHandler("Problemas", "Faltan datos", 2)
         if (password.length < 8)
             return openAlertModalHandler("Problemas", "La contraseña es demasiado corta (mínimo 8)", 2)
@@ -91,7 +92,7 @@ export const LoginPage = () => {
         executeRecaptcha().then(async (recaptchaToken: string) => {
             if (!recaptchaToken)
                 return openAlertModalHandler("Problemas", "Se refrescará la página por un problema", 2, () => window.location.reload())
-            const data: typeResponseData|null = await registerUserService(email, password, group, recaptchaToken)
+            const data: typeResponseData|null = await registerUserService(email, group, password, recaptchaToken, team)
             if (!data) {
                 openAlertModalHandler("Problemas", "Algo salió mal", 2, () => window.location.reload())
             } else if (data.recaptchaFails) {
@@ -126,9 +127,12 @@ export const LoginPage = () => {
             recoverAccountHandler={recoverAccountHandler}
             setConfPassword={setConfPassword}
             setEmail={setEmail}
+            setTeam={setTeam}
             setGroup={setGroup}
             setIsRegister={setIsRegister}
             setPassword={setPassword}
+            team={team}
+            isRecovery={false}
             title={isRegister ? "REGISTRARSE" : "INGRESAR"}
         />
 

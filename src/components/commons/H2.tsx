@@ -1,7 +1,14 @@
-import { useSelector } from 'react-redux'
+import { FC } from 'react';
 import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const H2 = (props: any) => {
+type propsType = {
+    mb?: string;
+    mt?: string;
+    title: string;
+}
+
+export const H2: FC<propsType> = ({ mb, mt, title}) => {
 
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
@@ -13,11 +20,11 @@ export const H2 = (props: any) => {
             style={{
                 fontSize: isMobile ? '2.4rem' : '3.5rem',
                 fontWeight: 'bolder',
-                marginTop: props.mt ?? '80px',
-                marginBottom: props.mb ?? ''
+                marginTop: mt ?? '80px',
+                marginBottom: mb ?? ''
             }}
         >
-            {props.title}
+            {title}
         </h2>
     )
 }

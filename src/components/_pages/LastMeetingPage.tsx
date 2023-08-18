@@ -1,9 +1,9 @@
-import { HTMLAttributeReferrerPolicy } from 'react'
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { FloatingLabel, Form } from 'react-bootstrap'
-import { typeRootState } from '../../models'
 import { Hr } from '../commons'
+import { HTMLAttributeReferrerPolicy } from 'react'
+import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
 
 const id: string = 'hCFC6OJkkt8'
 const referrerPolicy: HTMLAttributeReferrerPolicy = 'unsafe-url'

@@ -13,8 +13,9 @@ const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const Users = (props: any) => {
 
-    const { isDarkMode } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode
+    const { isDarkMode, user } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        user: state.user
     }))
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const setIsLoading: Function = props.setIsLoading
@@ -41,7 +42,7 @@ export const Users = (props: any) => {
 
     useEffect(() => {
         socket.on(userChangeString, (updatedUser: typeUser) => {
-            if (!updatedUser) return
+            if (!updatedUser || updatedUser.congregation !== user.congregation) return
             setIsLoading(true)
             getUsersService().then((users: typeUser[]|null) => {
                 setIsLoading(false)
@@ -49,7 +50,7 @@ export const Users = (props: any) => {
             })
         })
         return () => { socket.off(userChangeString) }
-    }, [setIsLoading])
+    }, [setIsLoading, user.congregation])
 
     useEffect(() => {
         (!users || !users.length || (!emailSearchInputText && !selectedGroup)) ?

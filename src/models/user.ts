@@ -1,4 +1,5 @@
 export type typeUser = {
+    congregation: number;
     email: string
     group: number
     hthAssignments: number[]

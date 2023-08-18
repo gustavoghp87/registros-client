@@ -1,6 +1,6 @@
-import { pointer } from '../config'
 import { getHeaders } from '.'
 import { getTokenService } from './userServices'
+import { pointer } from '../config'
 import { typeAllLogsObj, typeResponseData } from '../models'
 
 const base: string = pointer.log

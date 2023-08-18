@@ -68,6 +68,7 @@ export const LocalStatistics = (props: any) => {
     useEffect(() => {
         if (!telephonicTerritory.households.length) return
         const statistics0: typeLocalTelephonicStatistic = {
+            congregation: telephonicTerritory.congregation,
             isFinished: telephonicTerritory.stateOfTerritory.isFinished,
             numberOfHouseholds: telephonicTerritory.households.length,
             numberOf_Contesto: telephonicTerritory.households.filter(x => x.callingState === 'Contestó' && !x.notSubscribed).length,

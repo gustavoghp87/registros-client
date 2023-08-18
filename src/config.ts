@@ -12,8 +12,8 @@ export const SERVER: string = (isLocalhost ?
 );
 
 export const pointer = {
+    board: `${SERVER}/api/board`,
     campaign: `${SERVER}/api/campaign`,
-    congregation: `${SERVER}/api/congregation`,
     email: `${SERVER}/api/email`,
     houseToHouse: `${SERVER}/api/house-to-house`,
     geocoding: `${SERVER}/api/geocoding`,
@@ -42,18 +42,29 @@ type service = {
     response: { data: any }
 }
 
+type pointerItem = {
+    path: string,
+    services: service[]
+}
+
 type typePointer = {
-    campaign: { path: string, services: service[] }
-    congregation: { path: string, services: service[] }
-    email: { path: string, services: service[] }
-    houseToHouse: { path: string, services: service[] }
-    geocoding: { path: string, services: service[] }
-    log: { path: string, services: service[] }
-    telephonic: { path: string, services: service[] }
-    user: { path: string, services: service[] }
+    board: pointerItem
+    campaign: pointerItem
+    email: pointerItem
+    houseToHouse: pointerItem
+    geocoding: pointerItem
+    log: pointerItem
+    telephonic: pointerItem
+    user: pointerItem
 }
 
 export const pointer1: typePointer = {
+    board: {
+        path: `${SERVER}/api/board`,
+        services: [
+
+        ],
+    },
     campaign: {
         path: `${SERVER}/api/campaign`,
         services: [
@@ -72,12 +83,6 @@ export const pointer1: typePointer = {
                 response: { data: { success: true } }
             }
         ]
-    },
-    congregation: {
-        path: `${SERVER}/api/congregation`,
-        services: [
-
-        ],
     },
     email: {
         path: `${SERVER}/api/email`,
@@ -115,5 +120,5 @@ export const pointer1: typePointer = {
         services: [
 
         ],
-    },
+    }
 }

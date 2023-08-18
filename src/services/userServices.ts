@@ -1,5 +1,5 @@
-import { pointer } from '../config'
 import { getDarkModeFromLSService, getHeaders, getTokenFromLSService, removeTokenFromLSService, setDarkModeToLSService, setTokenToLSService, setUserToLSService } from '.'
+import { pointer } from '../config'
 import { typeResponseData, typeUser } from '../models'
 
 const base: string = pointer.user
@@ -114,9 +114,9 @@ export const editUserService = async (email: string, isActive: boolean, role: nu
     }
 }
 
-export const getEmailByEmailLink = async (id: string): Promise<string|null> => {
+export const getEmailByEmailLink = async (congregation: string, id: string): Promise<string|null> => {
     try {
-        const response = await fetch(`${base}/recovery/${id}`, {
+        const response = await fetch(`${base}/recovery?id=${id}&team=${congregation}`, {
             method: 'GET',
             headers: getHeaders()
         })
@@ -226,12 +226,12 @@ export const logoutService = (): void => {
     removeTokenService()
 }
 
-export const registerUserService = async (email: string, password: string, group: number, recaptchaToken: string): Promise<typeResponseData|null> => {
+export const registerUserService = async (email: string, group: number, password: string, recaptchaToken: string, team: number): Promise<typeResponseData|null> => {
     try {
         const response = await fetch(base, {
             method: 'POST',
             headers: getHeaders(),
-            body: JSON.stringify({ email, password, group, recaptchaToken })
+            body: JSON.stringify({ email, group, password, recaptchaToken, team })
         })
         const data: typeResponseData = await response.json()
         if (!data) return null

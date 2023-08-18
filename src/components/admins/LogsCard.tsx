@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { Card, ListGroup } from 'react-bootstrap'
 import { typeLogObj, typeLogsAndTitle, typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
 
-export const LogCard = (props: any) => {
+export const LogsCard = (props: any) => {
 
     const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode

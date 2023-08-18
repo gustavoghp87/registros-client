@@ -1,7 +1,7 @@
 import { Credentials } from 'google-auth-library'
-import { pointer } from '../config'
 import { getHeaders } from '.'
 import { getTokenService } from './userServices'
+import { pointer } from '../config'
 import { typeResponseData } from '../models'
 
 const base: string = pointer.email

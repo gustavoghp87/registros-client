@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
 import { Card, Form, FloatingLabel } from 'react-bootstrap'
+import { changePswService, getUserByTokenService, logoutAllService } from '../../services/userServices'
 import { H2, Hr } from '../commons'
 import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
-import { changePswService, getUserByTokenService, logoutAllService } from '../../services/userServices'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { typeAppDispatch, typeRootState, typeUser } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 
 export const UserPage = () => {
     

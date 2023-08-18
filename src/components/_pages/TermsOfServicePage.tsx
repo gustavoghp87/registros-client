@@ -1,6 +1,6 @@
+import { typeRootState } from '../../models'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { typeRootState } from '../../models'
 
 export const TermsOfServicePage = () => {
 

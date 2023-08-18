@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { breakingPoint } from '../models'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type typeMobileModeState = {
     isMobile: boolean

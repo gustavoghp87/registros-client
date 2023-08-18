@@ -1,5 +1,5 @@
-import { configureStore } from '@reduxjs/toolkit'
 import { alertModalSlice, darkModeSlice, loadingModalSlice, mobileModeSlice, userSlice } from './'
+import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({
     reducer: {

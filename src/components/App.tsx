@@ -69,7 +69,7 @@ export const App = () => {
                             <Route path={'/acceso'} element={<Pages.LoginPage />} />
                             :
                             <>
-                                <Route path={'/congregacion'} element={<Pages.CongregationPage />} />
+                                <Route path={'/tablero'} element={<Pages.BoardPage />} />
                                 <Route path={'/selector'} element={<Pages.SelectorPage />} />
                                 <Route path={'/telefonica/:territoryNumber'} element={<Pages.TelephonicPage />} />
                                 <Route path={'/usuario'} element={<Pages.UserPage /> } />

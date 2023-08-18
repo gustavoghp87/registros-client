@@ -1,10 +1,10 @@
-import { ReactNode, useEffect, useState } from 'react'
-import { Hr, Loading } from '..'
 import { Forecast } from './Forecast'
+import { getWeatherAndForecastService } from '../../../services'
+import { Hr, Loading } from '..'
+import { ReactNode, useEffect, useState } from 'react'
+import { typeForecast, typeForecastResponse, typeList, typeWeatherIcons, typeWeatherResponse } from '../../../models'
 import { Weather } from './Weather'
 import * as Icons from './WeatherIcons'
-import { getWeatherAndForecastService } from '../../../services'
-import { typeForecast, typeForecastResponse, typeList, typeWeatherIcons, typeWeatherResponse } from '../../../models'
 
 const weatherIcons: typeWeatherIcons = {
     'broken clouds': <Icons.CloudIcon />,
@@ -20,8 +20,10 @@ const weatherIcons: typeWeatherIcons = {
     'scattered clouds': <Icons.SunBehindLargeCloudIcon />,
     'shower rain': <Icons.RainIcon />,
     'snow': <Icons.SnowIcon />,
-    'thunderstorm': <Icons.CloudLightningIcon />,
-    'thunderstorm with light rain': <Icons.CloudLightningIcon />
+    'thunderstorm with heavy rain': <Icons.CloudLightningIcon />,
+    'thunderstorm with light rain': <Icons.CloudLightningIcon />,
+    'thunderstorm with rain': <Icons.CloudLightningIcon />,
+    'thunderstorm': <Icons.CloudLightningIcon />
 }
 
 const getWeatherIcon = (key: string): ReactNode => weatherIcons?.[key] || key

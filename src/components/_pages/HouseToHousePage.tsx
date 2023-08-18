@@ -1,14 +1,14 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useParams } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
-import { io, Socket } from 'socket.io-client'
-import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
+import { generalBlue, hthChangeString, typeAppDispatch, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
+import { getHTHTerritoryService } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
+import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
+import { io, Socket } from 'socket.io-client'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { getHTHTerritoryService } from '../../services'
-import { generalBlue, hthChangeString, typeAppDispatch, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router'
+import { useState, useEffect, useCallback } from 'react'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
@@ -90,8 +90,8 @@ export const HouseToHousePage = () => {
                 })
             })
         })
-        if (!init) socket.emit(hthChangeString, territoryNumber, user.email)
-    }, [dispatch, territoryNumber, user.email])
+        if (!init) socket.emit(hthChangeString, user.congregation, territoryNumber, user.email)
+    }, [dispatch, territoryNumber, user.congregation, user.email])
 
     useEffect(() => {
         refreshHTHTerritoryHandler(true)
@@ -102,14 +102,14 @@ export const HouseToHousePage = () => {
     }, [refreshHTHTerritoryHandler])
 
     useEffect(() => {
-        socket.on(hthChangeString, (territoryNumber0: typeTerritoryNumber, userEmail?: string) => {
-            if (userEmail && userEmail !== user.email && territoryNumber && territoryNumber0 === territoryNumber) {
+        socket.on(hthChangeString, (congregation: number, territoryNumber0: typeTerritoryNumber, userEmail?: string) => {
+            if (congregation && congregation === user.congregation && userEmail && userEmail !== user.email && territoryNumber && territoryNumber0 === territoryNumber) {
                 refreshHTHTerritoryHandler(true)
                 console.log("Refrescado por uso del usuario", userEmail)
             }
         })
         return () => { socket.off(hthChangeString) }
-    }, [refreshHTHTerritoryHandler, territoryNumber, user.email])
+    }, [refreshHTHTerritoryHandler, territoryNumber, user.congregation, user.email])
 
     return (
     <>

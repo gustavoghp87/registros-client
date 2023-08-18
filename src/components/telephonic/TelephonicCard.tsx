@@ -32,6 +32,7 @@ export const TelephonicCard = (props: any) => {
             if (!socket || !socket.connected || !user)
                 return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet", 2)
             socket.emit(telephonicHouseholdChangeString, {
+                congregation: user.congregation,
                 territoryNumber,
                 updatedHousehold,
                 userEmail: user.email

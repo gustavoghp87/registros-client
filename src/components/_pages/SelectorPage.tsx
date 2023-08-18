@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
-import { Hr } from '../commons'
-import { HouseToHouseSelector, TelephonicSelector } from '../selector'
-import { logoutReducer, refreshUserReducer } from '../../store'
 import { getUserByTokenService } from '../../services/userServices'
+import { HouseToHouseSelector, TelephonicSelector } from '../selector'
+import { Hr } from '../commons'
+import { logoutReducer, refreshUserReducer } from '../../store'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { typeAppDispatch, typeRootState, typeUser } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
 
 export const SelectorPage = () => {
 

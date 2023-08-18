@@ -7,10 +7,10 @@ export type typeResponseData = {                           //  =>  UPDATE MOCKED
     address?: string
     allLogsObj?: type.typeAllLogsObj
     alreadyExists?: boolean
+    boardItems?: type.typeBoardItem[]
     campaignAssignments?: number[]
     campaignPack?: type.typeCampaignPack
     campaignPacks?: type.typeCampaignPack[]
-    congregationItems?: type.typeCongregationItem[]
     coordinates?: type.typeCoords
     dataError?: boolean
     email?: string

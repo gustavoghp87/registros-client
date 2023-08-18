@@ -1,8 +1,8 @@
+import { generalBlue, typeRootState } from '../../models'
+import { H2, WeatherAndForecast } from '../commons'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { NavigateFunction, useNavigate } from 'react-router'
-import { H2, WeatherAndForecast } from '../commons'
-import { generalBlue, typeRootState } from '../../models'
 
 export const HomePage = () => {
 

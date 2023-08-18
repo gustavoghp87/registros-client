@@ -1,14 +1,19 @@
-import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { FormLayout } from '../commons'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { changePswService, getEmailByEmailLink } from '../../services/userServices'
+import { FormLayout } from '../commons'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { typeAppDispatch } from '../../models'
+import { useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react'
 
 export const RecoveryPage = () => {
 
-    const { id } = useParams<string>()
+    // const { id } = useParams<string>()
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const queryParams = Object.fromEntries(urlSearchParams.entries());
+    const id = queryParams.id;
+    const team = queryParams.team;
+
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
     const navigate: NavigateFunction = useNavigate()
     const [confPassword, setConfPassword] = useState<string>('')
@@ -26,7 +31,7 @@ export const RecoveryPage = () => {
     }
     
     const recoverAccountHandler = async (): Promise<void> => {
-        if (!id || !email || !password || !confPassword) return openAlertModalHandler("Faltan datos", "")
+        if (!team || !id || !email || !password || !confPassword) return openAlertModalHandler("Faltan datos", "")
         if (password.length < 8) return openAlertModalHandler("La contraseña es demasiado corta (mín 8)", "")
         if (password !== confPassword) return openAlertModalHandler("La contraseña no coincide con su confirmación", "")
         const response = await changePswService(null, password, id)
@@ -40,7 +45,7 @@ export const RecoveryPage = () => {
     }
     
     useEffect(() => {
-        if (id && !email) getEmailByEmailLink(id).then((email: string|null) => {
+        if (id && team && !email) getEmailByEmailLink(team, id).then((email: string|null) => {
             if (email) setEmail(email)
             else {
                 dispatch(setValuesAndOpenAlertModalReducer({
@@ -52,7 +57,7 @@ export const RecoveryPage = () => {
                 }))
             }
         })
-    }, [dispatch, email, id, navigate])
+    }, [dispatch, email, id, navigate, team])
 
     return (
         <FormLayout

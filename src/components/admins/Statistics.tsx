@@ -238,6 +238,7 @@ const Section3 = (props: any) => {
     return (<>
         <div className={'my-4'}>
             <div className={'row'}>
+                {!!territories?.length &&
                 <div className={'mx-auto'} style={{ width: '300px' }}>
                     <div className={'form-check'}>
                         <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd1'}>
@@ -292,6 +293,7 @@ const Section3 = (props: any) => {
                         </label>
                     </div>
                 </div>
+                }
             </div>
         </div>
 
@@ -308,27 +310,33 @@ const Section3 = (props: any) => {
                 </tr>
             </thead>
             <tbody>
-                {!!territories?.length && territories.map(territory =>
-                    <tr key={territory.territoryNumber}
-                        className={territory.opened && !showOpened ? 'd-none' : ''}
-                        onClick={() => navigate(`/telefonica/${territory.territoryNumber}`)}
-                    >
-                        <th scope={'row'}> {territory.territoryNumber} </th>
-                        
-                        <td style={{ maxWidth: '350px' }}>
-                            {territory.assigned?.length ? territory.assigned.join(', ') : "-"}
-                        </td>
-                        
-                        <td className={` ${territory.opened ? 'bg-success' : 'bg-danger'} `}>
-                            {territory.opened ? 'ABIERTO' : 'CERRADO'}
-                        </td>
-                        
-                        <td>{territory.left}</td>
-                        <td>{territory.total}</td>
-                        <td>{territory.leftRel}</td>
-                        <td>{territory.last}</td>
+                {!!territories?.length ?
+                    territories.map(territory =>
+                        <tr key={territory.territoryNumber}
+                            className={territory.opened && !showOpened ? 'd-none' : ''}
+                            onClick={() => navigate(`/telefonica/${territory.territoryNumber}`)}
+                        >
+                            <th scope={'row'}> {territory.territoryNumber} </th>
+                            
+                            <td style={{ maxWidth: '350px' }}>
+                                {territory.assigned?.length ? territory.assigned.join(', ') : "-"}
+                            </td>
+                            
+                            <td className={` ${territory.opened ? 'bg-success' : 'bg-danger'} `}>
+                                {territory.opened ? 'ABIERTO' : 'CERRADO'}
+                            </td>
+                            
+                            <td>{territory.left}</td>
+                            <td>{territory.total}</td>
+                            <td>{territory.leftRel}</td>
+                            <td>{territory.last}</td>
+                        </tr>
+                    )
+                    :
+                    <tr>
+                        <td colSpan={7}> No hay datos </td>
                     </tr>
-                )}
+                }
             </tbody>
         </table>
     </>)

@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
-import { io, Socket } from 'socket.io-client'
 import { Col0a, Col0b, FewHouseholdsWarning, FreePhonesMessage, LocalStatistics, MapModal, PhonesToShowPagination, StateOfTerritoryBtn, StaticMap, TelephonicCard } from '../telephonic'
+import { getBlocks, getTLPTerritoryService, getHouseholdsToShow, getHouseholdVariant } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
+import { io, Socket } from 'socket.io-client'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { getBlocks, getTLPTerritoryService, getHouseholdsToShow, getHouseholdVariant } from '../../services'
 import { telephonicHouseholdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeTelephonicTerritory, typeTerritoryNumber } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
+import { useState, useEffect, useCallback } from 'react'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
@@ -114,8 +114,8 @@ export const TelephonicPage = () => {
     }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory, updateHouseholdsToShow])
     
     useEffect(() => {
-        socket.on(telephonicHouseholdChangeString, (territoryNumber0: typeTerritoryNumber, updatedHousehold: typeHousehold, userEmail: string) => {
-            if (!updatedHousehold || territoryNumber0 !== territoryNumber) return
+        socket.on(telephonicHouseholdChangeString, (congregation: number, territoryNumber0: typeTerritoryNumber, updatedHousehold: typeHousehold, userEmail: string) => {
+            if (!congregation || !updatedHousehold || congregation !== user.congregation || territoryNumber0 !== territoryNumber) return
             if (userEmail !== user.email) {
                 setShowWarningToaster(true)
                 setUserEmailWarningToaster(userEmail)
@@ -135,7 +135,7 @@ export const TelephonicPage = () => {
             updateHouseholdsToShow()
         })
         return () => { socket.off(telephonicHouseholdChangeString) }
-    }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory, territoryNumber, updateHouseholdsToShow, user.email])
+    }, [brought, currentBlock, isShowingAllAvailable, isShowingAllStates, telephonicTerritory, territoryNumber, updateHouseholdsToShow, user.congregation, user.email])
 
     return (
         <>

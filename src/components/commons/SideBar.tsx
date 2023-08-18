@@ -1,9 +1,9 @@
-import { typeCongregationItem } from '../../models'
+import { typeBoardItem } from '../../models'
 
 export const SideBar = (props: any) => {
 
     const currentItemNumber: number = props.currentItemNumber
-    const items: typeCongregationItem[] = props.items
+    const items: typeBoardItem[] = props.items
     const setCurrentElementNumberHandler: Function = props.setCurrentElementNumberHandler
 
     const setActiveElement = (element: HTMLElement) => element.classList.add('active')
@@ -15,7 +15,7 @@ export const SideBar = (props: any) => {
 
     return (
         <ul className={'list-group mt-3'}>
-            {items && items.map((item: typeCongregationItem, index: number) =>
+            {items && items.map((item: typeBoardItem, index: number) =>
                 <li className={`list-group-item pointer ${currentItemNumber === (index + 1) ? 'active' : ''}`}
                     key={item.title}
                     onClick={() => setCurrentElementNumberHandler(index + 1)}

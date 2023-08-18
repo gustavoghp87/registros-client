@@ -1,12 +1,12 @@
-import { pointer } from '../config'
 import { getHeaders } from '.'
 import { getTokenService } from './userServices'
-import { typeBlock, typeDoNotCall, typeFace, typeHTHBuilding, typeHTHMap, typeHTHTerritory, typeObservation, typePolygon, typeResponseData, typeTerritoryNumber } from '../models'
+import { pointer } from '../config'
+import * as types from '../models'
 
 const base: string = pointer.houseToHouse
 
-export const addHTHDoNotCallService = async (territory: typeTerritoryNumber,
- block: typeBlock, face: typeFace, polygonId: number, doNotCall: typeDoNotCall): Promise<boolean> => {
+export const addHTHDoNotCallService = async (territory: types.typeTerritoryNumber,
+ block: types.typeBlock, face: types.typeFace, polygonId: number, doNotCall: types.typeDoNotCall): Promise<boolean> => {
     if (!getTokenService() || !territory || !block || !face || !polygonId || !doNotCall) return false
     try {
         const response = await fetch(`${base}/do-not-call/${territory}/${block}/${face}`, {
@@ -14,7 +14,7 @@ export const addHTHDoNotCallService = async (territory: typeTerritoryNumber,
             headers: getHeaders(),
             body: JSON.stringify({ doNotCall, polygonId })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         if (!data || !data.success) return false
         return true
     } catch (error) {
@@ -23,8 +23,8 @@ export const addHTHDoNotCallService = async (territory: typeTerritoryNumber,
     }
 }
 
-export const addHTHObservationService = async (territoryNumber: typeTerritoryNumber,
- block: typeBlock, face:typeFace, polygonId: number, observation: typeObservation): Promise<boolean> => {
+export const addHTHObservationService = async (territoryNumber: types.typeTerritoryNumber,
+ block: types.typeBlock, face:types.typeFace, polygonId: number, observation: types.typeObservation): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || !block || !face || !polygonId || !observation) return false
     try {
         const response = await fetch(`${base}/observation/${territoryNumber}/${block}/${face}`, {
@@ -32,7 +32,7 @@ export const addHTHObservationService = async (territoryNumber: typeTerritoryNum
             headers: getHeaders(),
             body: JSON.stringify({ observation, polygonId })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -40,7 +40,7 @@ export const addHTHObservationService = async (territoryNumber: typeTerritoryNum
     }
 }
 
-export const addHTHPolygonFaceService = async (territoryNumber: typeTerritoryNumber, polygon: typePolygon): Promise<boolean> => {
+export const addHTHPolygonFaceService = async (territoryNumber: types.typeTerritoryNumber, polygon: types.typePolygon): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || !polygon) return false
     try {
         const response = await fetch(`${base}/map/${territoryNumber}`, {
@@ -48,7 +48,7 @@ export const addHTHPolygonFaceService = async (territoryNumber: typeTerritoryNum
             headers: getHeaders(),
             body: JSON.stringify({ polygon })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -63,7 +63,7 @@ export const createHTHTerritoriesService = async (): Promise<boolean> => {
             method: 'POST',
             headers: getHeaders()
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -72,7 +72,7 @@ export const createHTHTerritoriesService = async (): Promise<boolean> => {
 }
 
 export const deleteHTHPolygonFaceService = async (
- territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, faceId: number): Promise<boolean> => {
+ territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face: types.typeFace, faceId: number): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || !block || !face || !faceId) return false
     try {
         const response = await fetch(`${base}/map/${territoryNumber}/${block}/${face}`, {
@@ -80,7 +80,7 @@ export const deleteHTHPolygonFaceService = async (
             headers: getHeaders(),
             body: JSON.stringify({ faceId })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -89,7 +89,7 @@ export const deleteHTHPolygonFaceService = async (
 }
 
 export const deleteHTHDoNotCallService = async (
- territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, doNotCallId: number): Promise<boolean> => {
+ territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face: types.typeFace, doNotCallId: number): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || !block || !face || !doNotCallId) return false
     try {
         const response = await fetch(`${base}/do-not-call/${territoryNumber}/${block}/${face}`, {
@@ -97,7 +97,7 @@ export const deleteHTHDoNotCallService = async (
             headers: getHeaders(),
             body: JSON.stringify({ doNotCallId })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -106,7 +106,7 @@ export const deleteHTHDoNotCallService = async (
 }
 
 export const deleteHTHObservationService = async (
- territoryNumber: typeTerritoryNumber, block: typeBlock, face:typeFace, observationId: number): Promise<boolean> => {
+ territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face:types.typeFace, observationId: number): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || !block || !face || !observationId) return false
     try {
         const response = await fetch(`${base}/observation/${territoryNumber}/${block}/${face}`, {
@@ -114,7 +114,7 @@ export const deleteHTHObservationService = async (
             headers: getHeaders(),
             body: JSON.stringify({ observationId })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         if (!data || !data.success) return false
         return true
     } catch (error) {
@@ -124,7 +124,7 @@ export const deleteHTHObservationService = async (
 }
 
 export const editHTHObservationService = async (
-    territoryNumber: typeTerritoryNumber, block: typeBlock, face:typeFace, observation: typeObservation): Promise<boolean> => {
+    territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face:types.typeFace, observation: types.typeObservation): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || !block || !face || !observation) return false
     try {
         const response = await fetch(`${base}/observation/${territoryNumber}/${block}/${face}`, {
@@ -132,7 +132,7 @@ export const editHTHObservationService = async (
             headers: getHeaders(),
             body: JSON.stringify({ observation })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -140,8 +140,8 @@ export const editHTHObservationService = async (
     }
 }
 
-export const editHTHMapService = async (territoryNumber: typeTerritoryNumber,
-    editedHTHMap: typeHTHMap, editedHTHPolygons: typePolygon[]): Promise<boolean> => {
+export const editHTHMapService = async (territoryNumber: types.typeTerritoryNumber,
+    editedHTHMap: types.typeHTHMap, editedHTHPolygons: types.typePolygon[]): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
         const response = await fetch(`${base}/map/${territoryNumber}`, {
@@ -149,7 +149,7 @@ export const editHTHMapService = async (territoryNumber: typeTerritoryNumber,
             headers: getHeaders(),
             body: JSON.stringify({ editedHTHMap, editedHTHPolygons })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -157,14 +157,14 @@ export const editHTHMapService = async (territoryNumber: typeTerritoryNumber,
     }
 }
 
-export const getHTHTerritoryService = async (territoryNumber: string): Promise<typeHTHTerritory|null> => {
+export const getHTHTerritoryService = async (territoryNumber: string): Promise<types.typeHTHTerritory|null> => {
     if (!territoryNumber) return null   // not !getTokenService()
     try {
         const response = await fetch(`${base}/${territoryNumber}`, {
             method: 'GET',
             headers: getHeaders()
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         if (!data || !data.success || !data.hthTerritory) return null
         return data.hthTerritory
     } catch (error) {
@@ -173,14 +173,14 @@ export const getHTHTerritoryService = async (territoryNumber: string): Promise<t
     }
 }
 
-export const getHTHStreetsByTerritoryService = async (territoryNumber: typeTerritoryNumber): Promise<string[]|null> => {
+export const getHTHStreetsByTerritoryService = async (territoryNumber: types.typeTerritoryNumber): Promise<string[]|null> => {
     if (!getTokenService() || !territoryNumber) return null
     try {
         const response = await fetch(`${base}/street/${territoryNumber}`, {
             method: 'GET',
             headers: getHeaders()
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         if (!data || !data.success || !data.streets) return null
         return data.streets
     } catch (error) {
@@ -189,14 +189,14 @@ export const getHTHStreetsByTerritoryService = async (territoryNumber: typeTerri
     }
 }
 
-export const getHTHTerritoriesForMapService = async (): Promise<typeHTHTerritory[]|null> => {
+export const getHTHTerritoriesForMapService = async (): Promise<types.typeHTHTerritory[]|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/map/territory`, {
             method: 'GET',
             headers: getHeaders()
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         if (!data || !data.success || !data.hthTerritories) return null
         return data.hthTerritories
     } catch (error) {
@@ -205,8 +205,8 @@ export const getHTHTerritoriesForMapService = async (): Promise<typeHTHTerritory
     }
 }
 
-export const setHTHIsFinishedService = async (territoryNumber: typeTerritoryNumber, block: typeBlock|null,
- face: typeFace|null, polygonId: number|null, isFinish: boolean, isAll: boolean = false): Promise<boolean> => {
+export const setHTHIsFinishedService = async (territoryNumber: types.typeTerritoryNumber, block: types.typeBlock|null,
+ face: types.typeFace|null, polygonId: number|null, isFinish: boolean, isAll: boolean = false): Promise<boolean> => {
     if (!getTokenService() || !territoryNumber || isFinish === undefined) return false
     try {
         const response = await fetch(`${base}/state/${territoryNumber}/${block}/${face}`, {
@@ -214,7 +214,7 @@ export const setHTHIsFinishedService = async (territoryNumber: typeTerritoryNumb
             headers: getHeaders(),
             body: JSON.stringify({ isFinish, polygonId, isAll })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -231,8 +231,8 @@ type addBuildingServiceResponse = {
     alreadyExists: boolean
 }
 
-export const addBuildingService = async (
- territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, newBuilding: typeHTHBuilding): Promise<addBuildingServiceResponse|null> => {
+export const addBuildingService = async (territoryNumber: types.typeTerritoryNumber, block: types.typeBlock,
+ face: types.typeFace, newBuilding: types.typeHTHBuilding): Promise<addBuildingServiceResponse|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
@@ -240,7 +240,7 @@ export const addBuildingService = async (
             headers: getHeaders(),
             body: JSON.stringify({ newBuilding })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         if (!data) return null
         return {
             success: !!data.success,
@@ -254,7 +254,7 @@ export const addBuildingService = async (
 }
 
 export const deleteHTHBuildingService = async (
- territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, streetNumber: number): Promise<boolean> => {
+ territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face: types.typeFace, streetNumber: number): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
         const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
@@ -262,7 +262,7 @@ export const deleteHTHBuildingService = async (
             headers: getHeaders(),
             body: JSON.stringify({ streetNumber })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -270,16 +270,16 @@ export const deleteHTHBuildingService = async (
     }
 }
 
-export const modifyHTHHouseholdService = async (territoryNumber: typeTerritoryNumber,
- block: typeBlock, face: typeFace, streetNumber: number, householdId: number, isChecked: boolean): Promise<boolean> => {
+export const modifyHTHHouseholdService = async (territoryNumber: types.typeTerritoryNumber, block: types.typeBlock,
+ face: types.typeFace, streetNumber: number, householdId: number, isChecked: boolean, isManager: boolean): Promise<boolean> => {
     if (!territoryNumber) return false   // not !getTokenService()
     try {
         const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
             method: 'PATCH',
             headers: getHeaders(),
-            body: JSON.stringify({ householdId, isChecked, streetNumber })
+            body: JSON.stringify({ householdId, isChecked, streetNumber, isManager })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)
@@ -287,8 +287,8 @@ export const modifyHTHHouseholdService = async (territoryNumber: typeTerritoryNu
     }
 }
 
-export const setHTHIsSharedBuildingsService = async (territoryNumber: typeTerritoryNumber,
- block: typeBlock, face: typeFace, polygonId: number, streetNumbers: number[]): Promise<boolean> => {
+export const setHTHIsSharedBuildingsService = async (territoryNumber: types.typeTerritoryNumber,
+ block: types.typeBlock, face: types.typeFace, polygonId: number, streetNumbers: number[]): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
         const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
@@ -296,7 +296,7 @@ export const setHTHIsSharedBuildingsService = async (territoryNumber: typeTerrit
             headers: getHeaders(),
             body: JSON.stringify({ polygonId, streetNumbers })
         })
-        const data: typeResponseData|null = await response.json()
+        const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success
     } catch (error) {
         console.log(error)

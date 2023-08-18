@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
-import { useDispatch } from 'react-redux'
+import { getCurrentLocalDate, getHTHTerritoryService } from '../../services'
 import { HTHBuildingModal } from '../house-to-house'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { getCurrentLocalDate, getHTHTerritoryService } from '../../services'
 import { typeAppDispatch, typeHTHBuilding, typeHTHTerritory, typePolygon } from '../../models'
+import { useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router'
 
 export const HTHBuildingPage = () => {
 

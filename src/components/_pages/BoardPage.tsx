@@ -1,25 +1,25 @@
+import { getBoardItems } from '../../services/boardServices'
+import { H2, Hr, Loading, SideBar } from '../commons'
+import { typeBoardItem, typeRootState } from '../../models'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { H2, Hr, Loading, SideBar } from '../commons'
-import { getCongregationItems } from '../../services/congregationServices'
-import { typeCongregationItem, typeRootState } from '../../models'
 
-export const CongregationPage = () => {
+export const BoardPage = () => {
 
     const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))
-    const [currentItem, setCurrentItem] = useState<typeCongregationItem>({ title: "", ids: [] })
+    const [currentItem, setCurrentItem] = useState<typeBoardItem>({ title: "", ids: [] })
     const [currentItemNumber, setCurrentItemNumber] = useState<number>(1)
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [items, setItems] = useState<typeCongregationItem[]>([])
+    const [items, setItems] = useState<typeBoardItem[]>([])
 
     const setCurrentElementNumberHandler = (element: number): void => setCurrentItemNumber(element)
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        getCongregationItems().then((congregationItems0: typeCongregationItem[]|null) => {
-            if (congregationItems0) setItems(congregationItems0)
+        getBoardItems().then((boardItems0: typeBoardItem[]|null) => {
+            if (boardItems0) setItems(boardItems0)
         })
     }, [])
 
@@ -47,7 +47,7 @@ export const CongregationPage = () => {
             {isMobile && <Hr classes={'mt-3 mb-0'} />}
 
             <div className={'col-lg-10'}>
-                {currentItem && !!items?.length && items.map((item: typeCongregationItem) =>
+                {currentItem && !!items?.length && items.map((item: typeBoardItem) =>
                     <div className={item.title === currentItem.title ? '' : 'd-none'} key={item.title}>
 
                         {!isMobile && <Hr styles={{ marginTop: '80px' }} />}

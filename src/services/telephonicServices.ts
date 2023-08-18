@@ -1,7 +1,7 @@
-import { pointer } from '../config'
 import { getHeaders } from '.'
 import { getTokenService } from './userServices'
-import { typeHousehold, typeLocalTelephonicStatistic, typeResponseData, typeTelephonicStatistic, typeTelephonicTerritory, typeTerritoryNumber, typeTerritoryRow } from '../models'
+import { pointer } from '../config'
+import * as types from '../models'
 
 const base: string = pointer.telephonic
 
@@ -13,7 +13,7 @@ export const changeStateOfTerritoryService = async (territoryNumber: string, isF
             headers: getHeaders(),
             body: JSON.stringify({ territoryNumber, isFinished })
         })
-        const data: typeResponseData = await response.json()
+        const data: types.typeResponseData = await response.json()
         if (!data || !data.success) return false
         return true
     } catch (error) {
@@ -22,14 +22,14 @@ export const changeStateOfTerritoryService = async (territoryNumber: string, isF
     }
 }
 
-export const getGlobalStatisticsService = async (): Promise<typeTelephonicStatistic|null> => {
+export const getGlobalStatisticsService = async (): Promise<types.typeTelephonicStatistic|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/statistic/global`, {
             method: 'GET',
             headers: getHeaders()
         })
-        const data: typeResponseData = await response.json()
+        const data: types.typeResponseData = await response.json()
         if (!data || !data.success || !data.globalStatistics) return null
         return data.globalStatistics
     } catch (error) {
@@ -38,14 +38,14 @@ export const getGlobalStatisticsService = async (): Promise<typeTelephonicStatis
     }
 }
 
-export const getGlobalStatistics1Service = async (): Promise<typeTerritoryRow[]|null> => {
+export const getGlobalStatistics1Service = async (): Promise<types.typeTerritoryRow[]|null> => {
     try {
         if (!getTokenService()) throw new Error("Sin Token")
         const response = await fetch(`${base}/statistics/table`, {
             method: 'GET',
             headers: getHeaders()
         })
-        const data: typeResponseData = await response.json()
+        const data: types.typeResponseData = await response.json()
         if (!data || !data.success || !data.territoriesTableData) return null
         return data.territoriesTableData
     } catch (error) {
@@ -54,14 +54,14 @@ export const getGlobalStatistics1Service = async (): Promise<typeTerritoryRow[]|
     }
 }
 
-export const getTLPTerritoryService = async (territoryNumber: string): Promise<typeTelephonicTerritory|null> => {
+export const getTLPTerritoryService = async (territoryNumber: string): Promise<types.typeTelephonicTerritory|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/${territoryNumber}`, {
             method: 'GET',
             headers: getHeaders()
         })
-        const data: typeResponseData = await response.json()
+        const data: types.typeResponseData = await response.json()
         if (!data || !data.success || !data.telephonicTerritory) return null
         return data.telephonicTerritory
     } catch (error) {
@@ -70,14 +70,14 @@ export const getTLPTerritoryService = async (territoryNumber: string): Promise<t
     }
 }
 
-export const getLocalStatisticsService = async (): Promise<typeLocalTelephonicStatistic[]|null> => {
+export const getLocalStatisticsService = async (): Promise<types.typeLocalTelephonicStatistic[]|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/statistic/local`, {
             method: 'GET',
             headers: getHeaders()
         })
-        const data: typeResponseData = await response.json()
+        const data: types.typeResponseData = await response.json()
         if (!data || !data.success || !data.localStatistics) return null
         return data.localStatistics
     } catch (error) {
@@ -86,8 +86,8 @@ export const getLocalStatisticsService = async (): Promise<typeLocalTelephonicSt
     }
 }
 
-export const modifyHouseholdService = async (territoryNumber: typeTerritoryNumber,
- householdId: number, callingState: string, notSubscribed: boolean, isAssigned: boolean): Promise<typeHousehold|null> => {
+export const modifyHouseholdService = async (territoryNumber: types.typeTerritoryNumber,
+ householdId: number, callingState: string, notSubscribed: boolean, isAssigned: boolean): Promise<types.typeHousehold|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/${territoryNumber}`, {
@@ -95,7 +95,7 @@ export const modifyHouseholdService = async (territoryNumber: typeTerritoryNumbe
             headers: getHeaders(),
             body: JSON.stringify({ householdId, callingState, notSubscribed, isAssigned })
         })
-        const data: typeResponseData = await response.json()
+        const data: types.typeResponseData = await response.json()
         if (!data || !data.success || !data.household) return null
         return data.household
     } catch (error) {
@@ -112,7 +112,7 @@ export const resetTerritoryService = async (territoryNumber: string, option: num
             headers: getHeaders(),
             body: JSON.stringify({ territoryNumber, option })
         })
-        const data: typeResponseData = await response.json()
+        const data: types.typeResponseData = await response.json()
         if (!data || !data.success || data.modifiedCount === null || data.modifiedCount === undefined) return null
         return data.modifiedCount
     } catch (error) {

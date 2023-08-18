@@ -1,6 +1,6 @@
 export { AdminsPage } from './AdminsPage'
+export { BoardPage } from './BoardPage'
 export { CampaignPage } from './CampaignPage'
-export { CongregationPage } from './CongregationPage'
 export { GmailTokensPage } from './GmailTokensPage'
 export { HomePage } from './HomePage'
 export { HouseToHousePage } from './HouseToHousePage'
