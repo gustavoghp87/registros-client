@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
-import { InfoWindow, Polygon } from '@react-google-maps/api'
 import { editInfoWindowsStyles } from '../../../services'
 import { generalBlue, generalRed, typeHTHTerritory, typePolygon } from '../../../models'
+import { InfoWindow, Polygon } from '@react-google-maps/api'
+import { useEffect, useRef, useState } from 'react'
 
 let lastClick: number = 0
 
@@ -35,7 +35,7 @@ export const HTHPolygonComponent = (props: any) => {
     }, [currentFace, polygon.completionData, polygon.id])
 
     useEffect(() => {
-        const interval0: NodeJS.Timer = setInterval(() => {
+        const interval0 = setInterval(() => {
             if (!ref.current) return
             const path: any[] = ref.current.getPath().getArray()
             const p1y: number = path[0].lat()

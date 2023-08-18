@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { HTHBuildingModal } from '..'
 import { getCurrentLocalDate } from '../../../services'
-import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeTerritoryNumber } from '../../../models'
+import { HTHBuildingModal } from '..'
+import { typeHTHBuilding, typePolygon, typeTerritoryNumber } from '../../../models'
+import { useState } from 'react'
 
 export const HTHBuildingItem = (props: any) => {
 
@@ -11,26 +11,29 @@ export const HTHBuildingItem = (props: any) => {
     const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [show, setShow] = useState<boolean>(false)
 
-    const getFreeHouseholds = (households: typeHTHHousehold[]): number => {
-        if (!households || !households.length) return 0
-        return households.filter(x => !x.isChecked).length
+    const getFreeHouseholds = (building: typeHTHBuilding): number => {
+        if (!building.households?.length) return 0
+        const rest = building.households.filter(x => !x.isChecked).length
+        if (!!building.manager) {
+            return !!building.manager.isChecked ? rest : rest + 1
+        }
+        return rest
     }
 
     const closeBuildingModalHandler = (): void => setShow(false)
 
     //console.log(building.dateOfLastSharing, getCurrentLocalDate(), getCurrentLocalDate(building.dateOfLastSharing))
-    
 
     return (
         <>
             <div className={'text-center my-3'}>
                 <button
-                    className={`btn ${getFreeHouseholds(building.households) ? 'btn-general-blue' : 'btn-general-red'} d-inline mx-auto my-2`}
+                    className={`btn ${!!getFreeHouseholds(building) ? 'btn-general-blue' : 'btn-general-red'} d-inline mx-auto my-2`}
                     key={building.streetNumber}
                     onClick={() => setShow(true)}
                     style={{ width: '220px' }}
                 >
-                    {currentFace.street} {building.streetNumber} ({getFreeHouseholds(building.households)} libres)
+                    {currentFace.street} {building.streetNumber} ({getFreeHouseholds(building)} libres)
                 </button>
                 <div className={'form-check form-check-inline ms-3 me-0'}>
                     <input className={'form-check-input share-building'}

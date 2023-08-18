@@ -7,7 +7,7 @@ import { Hr } from '../../commons'
 import { HTHBuildingCheckbox } from '..'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { deleteHTHBuildingService } from '../../../services'
-import { typeAppDispatch, typeHTHBuilding, typeHTHHousehold, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typeAppDispatch, typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 
 export const HTHBuildingModal = (props: any) => {
 
@@ -87,20 +87,20 @@ export const HTHBuildingModal = (props: any) => {
                                 {[...doorNames]
                                  .slice(0, currentBuilding.numberPerLevel)
                                  .map((doorNumber: number) => {
-
-                                    const currentHousehold: typeHTHHousehold|undefined = currentBuilding.households.find(x => x.level === level && x.doorNumber === doorNumber)
+                                    const currentHousehold = currentBuilding.households.find(x => x.level === level && x.doorNumber === doorNumber)
+                                    if (!currentHousehold) return <></>
                                     return (
                                         <HTHBuildingCheckbox
-                                            doorName={currentHousehold?.doorName}
-                                            doorNumber={currentHousehold?.doorNumber}
+                                            doorName={currentHousehold.doorName}
+                                            doorNumber={currentHousehold.doorNumber}
                                             key={doorNumber}
-                                            level={currentHousehold?.level}
+                                            level={currentHousehold.level}
                                             
                                             block={currentFace.block}
                                             closeBuildingModalHandler={closeBuildingModalHandler}
                                             face={currentFace.face}
-                                            id={currentHousehold?.id}
-                                            isChecked0={currentHousehold?.isChecked}
+                                            id={currentHousehold.id}
+                                            isChecked0={currentHousehold.isChecked}
                                             refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                                             setShow={setShow}  // building page
                                             streetNumber={currentBuilding.streetNumber}
@@ -114,6 +114,26 @@ export const HTHBuildingModal = (props: any) => {
 
                         </div>
                     )}
+                    {!!currentBuilding.manager &&
+                        <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
+                            <HTHBuildingCheckbox
+                                doorName={''}
+                                doorNumber={0}
+                                level={null}
+                                
+                                block={currentFace.block}
+                                closeBuildingModalHandler={closeBuildingModalHandler}
+                                face={currentFace.face}
+                                id={currentBuilding.manager.id}
+                                isChecked0={currentBuilding.manager.isChecked}
+                                isManager={true}
+                                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                                setShow={setShow}  // building page
+                                streetNumber={currentBuilding.streetNumber}
+                                territoryNumber={territoryNumber}
+                            />
+                        </div>
+                    }
 
                     <button className={'btn btn-general-blue btn-size12 w-100 mx-auto mt-1 mb-3'}
                         onClick={() => closeBuildingModalHandler ? closeBuildingModalHandler() : navigate('/')}

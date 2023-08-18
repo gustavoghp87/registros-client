@@ -1,6 +1,7 @@
 import { typeBlock, typeFace, typeTerritoryNumber } from '.'
 
 export type typeHTHTerritory = {
+    // congregation: number;
     map: typeHTHMap
     territoryNumber: typeTerritoryNumber
 }
@@ -66,6 +67,7 @@ export type typeHTHBuilding = {
     hasContinuousNumbers: boolean
     hasLowLevel: boolean
     households: typeHTHHousehold[]
+    manager?: typeHTHHousehold
     numberOfLevels: number
     numberPerLevel: number
     streetNumber: number
@@ -77,7 +79,7 @@ export type typeHTHHousehold = {
     doorNumber: number
     id: number
     isChecked: boolean
-    level: number
+    level: number|null
     // callingHTHState: typeCallingHTHState
 }
 

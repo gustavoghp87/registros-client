@@ -1,31 +1,40 @@
-import { useMemo, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { FC, useMemo, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { modifyHTHHouseholdService } from '../../../services'
-import { typeAppDispatch, typeBlock, typeFace, typeHTHHousehold, typeTerritoryNumber } from '../../../models'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
+import { typeAppDispatch, typeBlock, typeFace, typeHTHHousehold, typeTerritoryNumber } from '../../../models'
+import { useDispatch } from 'react-redux'
 
-export const HTHBuildingCheckbox = (props: any) => {
+type propsType = {
+// add and use:
+    level: number|null
+    doorName: string
+    doorNumber: number
+// use:
+    block?: typeBlock
+    closeBuildingModalHandler?: Function|undefined
+    face?: typeFace
+    id?: number
+    isManager?: boolean
+    isChecked0?: boolean
+    refreshHTHTerritoryHandler?: () => void
+    setShow?: Function|undefined
+    streetNumber?: number
+    territoryNumber?: typeTerritoryNumber
+}
+
+export const HTHBuildingCheckbox: FC<propsType> =
+    ({
+        block, closeBuildingModalHandler, doorName, doorNumber, face, id, isChecked0,
+        isManager, level, refreshHTHTerritoryHandler, setShow, streetNumber, territoryNumber
+    }) =>
+{
     const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    // add and use:
-    const level: number = props.level
-    const doorName: string = props.doorName
-    const doorNumber: number = props.doorNumber
-    // use:
-    const block: typeBlock = props.block
-    const closeBuildingModalHandler: Function|undefined = props.closeBuildingModalHandler
-    const face: typeFace = props.face
-    const id: number = props.id
-    const isChecked0: boolean = props.isChecked0
-    const refreshHTHTerritoryHandler: () => void = props.refreshHTHTerritoryHandler
-    const setShow: Function|undefined = props.setShow
-    const streetNumber: number = props.streetNumber
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
-
     const [isChecked, setIsChecked] = useState<boolean>(isChecked0 ?? isChecked0 === undefined)
 
     const changeCallingState = (): void => {
-        modifyHTHHouseholdService(territoryNumber, block, face, streetNumber, id, !isChecked).then((success: boolean) => {
+        if (!territoryNumber || !block || !face || !streetNumber || !id || !refreshHTHTerritoryHandler) return
+        modifyHTHHouseholdService(territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager).then((success: boolean) => {
             if (!success) {
                 if (closeBuildingModalHandler) closeBuildingModalHandler()
                 else if (setShow) setShow(false)
@@ -59,7 +68,7 @@ export const HTHBuildingCheckbox = (props: any) => {
     return (
         <>
             <input
-                className={'hthBuildingCheckboxInput'}
+                className={isManager ? '' : 'hthBuildingCheckboxInput'}
                 type={'hidden'}
                 value={JSON.stringify(inputValue)}
             />
@@ -71,14 +80,14 @@ export const HTHBuildingCheckbox = (props: any) => {
                     borderRadius: '7px',
                     marginInline: '10px',
                     minHeight: '50px',
-                    width: '98px'
+                    width: isManager === null ? '115px' : '98px'
                 }}
             >
                 {level !== undefined && doorName !== undefined &&
                     <Form.Check
                         checked={isChecked}
-                        className={'ml-1 checkbox-3 d-flex align-items-center'}
-                        label={level === 0 ? `PB ${doorName}` : `${level}° ${doorName}`}
+                        className={'checkbox-3 d-flex align-items-center'}
+                        label={isManager ? 'Portería' : level === 0 ? `PB ${doorName}` : `${level}° ${doorName}`}
                         onChange={() => isAddingModal ? null : changeCallingState()}
                         type={'checkbox'}
                     />

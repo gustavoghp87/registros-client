@@ -20,6 +20,7 @@ export const HTHAddBuildingModal = (props: any) => {
     const [hasCharacters, setHasCharacters] = useState<boolean>(true)
     const [hasContinuousNumbers, setHasContinuousNumbers] = useState<boolean>(false)
     const [hasLowLevel, setHasLowLevel] = useState<boolean>(true)
+    const [hasManager, setHasManager] = useState<boolean>(false)
     const [numberOfLevels, setNumberOfLevels] = useState<number>(4)
     const [numberPerLevel, setNumberPerLevel] = useState<number>(2)
     const [streetNumber, setStreetNumber] = useState<number>(0)
@@ -48,6 +49,14 @@ export const HTHAddBuildingModal = (props: any) => {
             numberOfLevels,
             numberPerLevel,
             streetNumber
+        }
+        if (hasManager) building.manager = {
+            dateOfLastCall: 0,
+            doorName: '',
+            doorNumber: 0,
+            id: +new Date(),
+            isChecked: false,
+            level: null
         }
         addBuildingService(territoryNumber, currentFace.block, currentFace.face, building).then(response => {
             if (!response) return alert("Error: Falló algo")
@@ -183,6 +192,15 @@ export const HTHAddBuildingModal = (props: any) => {
                                     type={'checkbox'}
                                 />
                             </Form.Group>
+                            <Form.Group className={'mb-2'} onClick={() => setHasManager(x => !x)}>
+                                <Form.Check
+                                    checked={hasManager}
+                                    className={'checkbox-3'}
+                                    label={'Agregar un Portería'}
+                                    onChange={() => {}}
+                                    type={'checkbox'}
+                                />
+                            </Form.Group>
                         </div>
                     </div>
 
@@ -211,6 +229,17 @@ export const HTHAddBuildingModal = (props: any) => {
                                 <Hr />
                             </div>
                         )}
+
+                        {hasManager &&
+                            <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
+                                <HTHBuildingCheckbox
+                                    doorName={'Portería'}
+                                    doorNumber={0}
+                                    level={null}
+                                    isManager={true}
+                                />
+                            </div>
+                        }
                     </div>
                     
                     <Modal.Footer className={'justify-content-center align-items-center'}>

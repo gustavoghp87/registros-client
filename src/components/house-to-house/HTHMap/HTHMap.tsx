@@ -224,7 +224,7 @@ export const HTHMap = ({
                     panControl: true,
                     streetViewControl: !isEditingView,
                     styles: hthMapStyle,
-                    zoom: isEditingView ? undefined : territoryHTH.map.zoom,
+                    zoom: isEditingView ? undefined : isMobile ? territoryHTH.map.zoom - 1 : territoryHTH.map.zoom,
                     zoomControl: isEditingView,
                     zoomControlOptions: { position: google.maps.ControlPosition.LEFT_BOTTOM }
                 }}
