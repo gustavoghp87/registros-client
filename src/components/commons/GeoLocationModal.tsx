@@ -48,10 +48,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
     }, [])
 
     useEffect(() => {
-        // console.log("sss");
         // if (!map.current) return
-        // console.log("sss111");
-        
         // const locationButton = document.createElement('button')
         // locationButton.textContent = "Pan to Current Location"
         // locationButton.classList.add('d-none')

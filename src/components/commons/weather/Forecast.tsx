@@ -23,8 +23,6 @@ export const Forecast: FC<propsType> = ({ forecasts }) => {
         width: isMobile ? '100%' : undefined
     }
 
-    console.log([...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() && x.date.hour > 6))
-
     return (
         <div className={`text-center p-0 animate__animated animate__bounceInDown ${isMobile ? 'mt-0' : 'mt-5'}`}>
 

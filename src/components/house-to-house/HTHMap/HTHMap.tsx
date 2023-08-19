@@ -119,7 +119,7 @@ export const HTHMap: FC<propsType> = ({
                 lng: territoryHTH.map.centerCoords.lng
             },
             coordsPoint2: {
-                lat: territoryHTH.map.centerCoords.lat   - 0.0003827,
+                lat: territoryHTH.map.centerCoords.lat - 0.0003827,
                 lng: territoryHTH.map.centerCoords.lng + 0.0009239
             },
             coordsPoint3: {
@@ -239,7 +239,7 @@ export const HTHMap: FC<propsType> = ({
                         <div key={polygon.id}>
                             <HTHPolygonComponent
                                 currentFace={currentFace}
-                                // intervalExecution={intervalExecution}
+                                intervalExecution={intervalExecution}
                                 isAddingPolygon={isAddingPolygon}
                                 isEditingView={isEditingView}
                                 polygon={polygon}

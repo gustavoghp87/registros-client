@@ -1,6 +1,6 @@
 import { Container } from 'react-bootstrap'
 import { generalBlue, hthChangeString, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
-import { getHTHTerritoryService } from '../../services'
+import { getHTHTerritoryService, subirAlTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
 import { io, Socket } from 'socket.io-client'
@@ -36,7 +36,7 @@ export const HouseToHousePage = () => {
         if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
         const target: typeHTHTerritory = hthTerritory0 ?? territoryHTH
         let currentFace0: typePolygon|undefined = target.map.polygons.find((x: typePolygon) =>
-        x.block === selectedBlock && x.face === selectedFace
+            x.block === selectedBlock && x.face === selectedFace
         )
         if (!currentFace0) return
         if (currentFace0.doNotCalls)
@@ -91,6 +91,8 @@ export const HouseToHousePage = () => {
         })
         if (!init) socket.emit(hthChangeString, user.congregation, territoryNumber, user.email)
     }, [dispatch, territoryNumber, user.congregation, user.email])
+
+    useEffect(() => subirAlTop(), [])
 
     useEffect(() => {
         refreshHTHTerritoryHandler(true)
