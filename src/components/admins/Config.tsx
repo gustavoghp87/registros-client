@@ -15,7 +15,7 @@ export const Config = () => {
 
     return (<>
     
-        <H2 title="Configuración de la Aplicación" />
+        <H2 title="Configuración de la Aplicación (en construcción)" />
         
         <button className={'btn btn-general-blue btn-size12 d-block mx-auto mt-5 mb-0'} style={{ width: '350px' }}>
             Cargar cantidad de Territorios
@@ -26,7 +26,7 @@ export const Config = () => {
         </button>
 
         <button className={'btn btn-general-blue btn-size12 d-block mx-auto mt-5 mb-0'} style={{ width: '350px' }}>
-            Cargar dirección de Tablero
+            Cargar dirección de Tablero Google
         </button>
 
         <button className={'btn btn-general-blue btn-size12 d-block mx-auto mt-5 mb-0'} style={{ width: '350px' }}
@@ -36,6 +36,8 @@ export const Config = () => {
         </button>
 
         <h2 className={isDarkMode ? 'text-white' : ''}> Establecer localidad </h2>
+
+        <h2 className={isDarkMode ? 'text-white' : ''}> Establecer punto central del territorio </h2>
 
         <h2 className={isDarkMode ? 'text-white' : ''}> Duración de cookie de acceso: 3 meses </h2>
 

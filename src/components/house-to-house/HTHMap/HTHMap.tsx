@@ -151,37 +151,37 @@ export const HTHMap: FC<propsType> = ({
         })
     }
 
-    const intervalExecution = (googlePolygon0: google.maps.Polygon, polygon: typePolygon) => {
-        const path: any[] = googlePolygon0.getPath().getArray()
-        const p1y: number = path[0].lat()
-        const p1x: number = path[0].lng()
-        const p2y: number = path[1].lat()
-        const p2x: number = path[1].lng()
-        const p3y: number = path[2].lat()
-        const p3x: number = path[2].lng()
-        if (polygon
-            && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
-            && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
-            && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
-        ) return
-        const modifiedPolygon: typePolygon = {
-            block: polygon.block,
-            completionData: polygon.completionData,
-            coordsPoint1: { lat: p1y, lng: p1x },
-            coordsPoint2: { lat: p2y, lng: p2x },
-            coordsPoint3: { lat: p3y, lng: p3x },
-            doNotCalls: polygon.doNotCalls,
-            face: polygon.face,
-            id: polygon.id,
-            observations: polygon.observations,
-            street: polygon.street
-        }
-        const currentTerritoryHTH: typeHTHTerritory = territoryHTH
-        currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
-            polygon0.id === polygon.id ? modifiedPolygon : polygon0
-        )
-        setTerritoryHTHHandler(currentTerritoryHTH)
-    }
+    // const intervalExecution = (googlePolygon0: google.maps.Polygon, polygon: typePolygon) => {
+    //     const path: any[] = googlePolygon0.getPath().getArray()
+    //     const p1y: number = path[0].lat()
+    //     const p1x: number = path[0].lng()
+    //     const p2y: number = path[1].lat()
+    //     const p2x: number = path[1].lng()
+    //     const p3y: number = path[2].lat()
+    //     const p3x: number = path[2].lng()
+    //     if (polygon
+    //         && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
+    //         && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
+    //         && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
+    //     ) return
+    //     const modifiedPolygon: typePolygon = {
+    //         block: polygon.block,
+    //         completionData: polygon.completionData,
+    //         coordsPoint1: { lat: p1y, lng: p1x },
+    //         coordsPoint2: { lat: p2y, lng: p2x },
+    //         coordsPoint3: { lat: p3y, lng: p3x },
+    //         doNotCalls: polygon.doNotCalls,
+    //         face: polygon.face,
+    //         id: polygon.id,
+    //         observations: polygon.observations,
+    //         street: polygon.street
+    //     }
+    //     const currentTerritoryHTH: typeHTHTerritory = territoryHTH
+    //     currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
+    //         polygon0.id === polygon.id ? modifiedPolygon : polygon0
+    //     )
+    //     setTerritoryHTHHandler(currentTerritoryHTH)
+    // }
     
     const cancelChangesHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -226,7 +226,7 @@ export const HTHMap: FC<propsType> = ({
                     panControl: true,
                     streetViewControl: !isEditingView,
                     styles: hthMapStyle,
-                    zoom: isEditingView ? undefined : isMobile ? territoryHTH.map.zoom - 1 : territoryHTH.map.zoom,
+                    zoom: isEditingView ? undefined : territoryHTH.map.zoom,
                     zoomControl: isEditingView,
                     zoomControlOptions: { position: google.maps.ControlPosition.LEFT_BOTTOM }
                 }}
@@ -239,7 +239,7 @@ export const HTHMap: FC<propsType> = ({
                         <div key={polygon.id}>
                             <HTHPolygonComponent
                                 currentFace={currentFace}
-                                intervalExecution={intervalExecution}
+                                // intervalExecution={intervalExecution}
                                 isAddingPolygon={isAddingPolygon}
                                 isEditingView={isEditingView}
                                 polygon={polygon}

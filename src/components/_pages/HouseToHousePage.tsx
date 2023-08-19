@@ -34,16 +34,20 @@ export const HouseToHousePage = () => {
     const selectBlockAndFaceHandler = (selectedBlock?: typeBlock, selectedFace?: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
         if (selectedBlock === undefined && selectedFace === undefined) setCurrentFace(undefined)
         if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
-        const target: typeHTHTerritory = hthTerritory0 ?? territoryHTH
-        let currentFace0: typePolygon|undefined = target.map.polygons.find((x: typePolygon) =>
-            x.block === selectedBlock && x.face === selectedFace
-        )
-        if (!currentFace0) return
-        if (currentFace0.doNotCalls)
-            currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
-        if (currentFace0.observations)
+        const target = hthTerritory0 ?? territoryHTH
+        let currentFace0 = target.map.polygons.find((x: typePolygon) => x.block === selectedBlock && x.face === selectedFace)
+        if (!currentFace0) {
+            return
+        }
+        if (currentFace0.doNotCalls) {
+            currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a, b) => a.streetNumber - b.streetNumber)
+        }
+        if (currentFace0.observations) {
             currentFace0.observations = currentFace0.observations.reverse()
-        if (currentFace0) setCurrentFace(currentFace0)
+        }
+        if (currentFace0) {
+            setCurrentFace(currentFace0)
+        }
     }
 
     const refreshHTHTerritoryHandler = useCallback((init?: boolean): void => {

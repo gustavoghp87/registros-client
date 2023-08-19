@@ -7,7 +7,7 @@ let lastClick: number = 0
 
 type propsType = {
     currentFace?: typePolygon
-    intervalExecution: (googlePolygon0: google.maps.Polygon, polygon: typePolygon) => void
+    // intervalExecution: (googlePolygon0: google.maps.Polygon, polygon: typePolygon) => void
     isAddingPolygon: boolean
     isEditingView: boolean
     polygon: typePolygon
