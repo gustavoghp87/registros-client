@@ -1,14 +1,13 @@
-import { useDispatch, useSelector } from 'react-redux'
 import { changeDarkModeReducer } from '../../store'
-import { generalBlue, typeAppDispatch, typeRootState } from '../../models'
+import { generalBlue, typeRootState } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
 export const DarkModeButton = () => {
-
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     
     return (
         <div className={'form-check form-switch'} style={{ position: 'fixed', bottom: '20px' }}>

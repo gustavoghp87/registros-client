@@ -25,18 +25,14 @@ type propsType = {
     title: string;
 }
 
-export const FormLayout: FC<propsType> =
-    ({
-        acceptButtonLabel, action, confPassword, email, group, isRecovery, isRegister, password, recoverAccountHandler,
-        setConfPassword, setEmail, setGroup, setIsRegister, setPassword, setTeam, team, title
-    }) =>
-{
-
+export const FormLayout: FC<propsType> = ({
+    acceptButtonLabel, action, confPassword, email, group, isRecovery, isRegister, password, recoverAccountHandler,
+    setConfPassword, setEmail, setGroup, setIsRegister, setPassword, setTeam, team, title
+}) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    
 
     const clearInputs = (): void => {
         if (isRegister) setEmail(getFailingEmailFromLSService() ?? "")

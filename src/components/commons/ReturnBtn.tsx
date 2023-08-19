@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react'
+import { BsBackspace } from 'react-icons/bs'
+import { Button } from 'react-bootstrap'
+import { generalBlue, typeRootState } from '../../models'
 import { Location, useLocation } from 'react-router'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Button } from 'react-bootstrap'
-import { BsBackspace } from 'react-icons/bs'
-import { generalBlue, typeRootState } from '../../models'
 
 export const ReturnBtn = () => {
-
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const location: Location = useLocation()
     const navigate: NavigateFunction = useNavigate()

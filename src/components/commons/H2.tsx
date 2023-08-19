@@ -9,7 +9,6 @@ type propsType = {
 }
 
 export const H2: FC<propsType> = ({ mb, mt, title}) => {
-
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile

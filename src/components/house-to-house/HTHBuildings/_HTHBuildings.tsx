@@ -1,18 +1,20 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { FC, useState } from 'react'
+import { generalBlue, typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { Hr } from '../../commons'
 import { HTHAddBuilding, HTHBuildingItem, HTHShareBuildingButton } from '..'
-import { generalBlue, typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { useSelector } from 'react-redux'
 
-export const HTHBuildings = (props: any) => {
+type propsType = {
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const { isMobile, user } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: () => void = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [show, setShow] = useState<boolean>(false)
 
     return (

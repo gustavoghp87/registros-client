@@ -1,14 +1,16 @@
 import { Card, ListGroup } from 'react-bootstrap'
+import { FC, useState } from 'react'
 import { typeLogObj, typeLogsAndTitle, typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
-import { useState } from 'react'
 
-export const LogsCard = (props: any) => {
+type propsType = {
+    log: typeLogsAndTitle
+}
 
+export const LogsCard: FC<propsType> = ({ log }) => {
     const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode
     }))
-    const log: typeLogsAndTitle = props.log
     const [showLogs, setShowLogs] = useState<boolean>(false)
 
     if (!log || !log.logs?.length) return (<></>)

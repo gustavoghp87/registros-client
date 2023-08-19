@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 export const FloatingWidgets = () => {
-
     const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,

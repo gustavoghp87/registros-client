@@ -4,16 +4,15 @@ import { Hr } from '../commons'
 import { logoutReducer, refreshUserReducer } from '../../store'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { subirAlTop } from '../../services'
-import { typeAppDispatch, typeRootState, typeUser } from '../../models'
+import { typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 
 export const SelectorPage = () => {
-
     const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
     
     useEffect(() => {

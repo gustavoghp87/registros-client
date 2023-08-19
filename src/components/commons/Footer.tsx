@@ -1,9 +1,8 @@
-import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { generalBlue, typeRootState } from '../../models'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 export const Footer = () => {
-
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     
     return (

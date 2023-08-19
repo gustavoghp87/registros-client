@@ -2,19 +2,17 @@ import { changePswService, getEmailByEmailLink } from '../../services/userServic
 import { FormLayout } from '../commons'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { typeAppDispatch } from '../../models'
 import { useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 
 export const RecoveryPage = () => {
-
     // const { id } = useParams<string>()
     const urlSearchParams = new URLSearchParams(window.location.search);
     const queryParams = Object.fromEntries(urlSearchParams.entries());
     const id = queryParams.id;
     const team = queryParams.team;
 
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
     const [confPassword, setConfPassword] = useState<string>('')
     const [email, setEmail] = useState<string>('')

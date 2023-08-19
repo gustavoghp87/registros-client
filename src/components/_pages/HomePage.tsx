@@ -6,7 +6,6 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 export const HomePage = () => {
-
     const { isMobile, user } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile,
         user: state.user
@@ -19,7 +18,7 @@ export const HomePage = () => {
 
     return (
         <>
-            <WeatherAndForecast showWeather={true} />
+            <WeatherAndForecast showWeather={true} showForecast0={false} />
 
             <H2 title={"BIENVENIDOS"} mt={'50px'} />
 
@@ -30,8 +29,8 @@ export const HomePage = () => {
             <div className={'my-5'}>
                 <h3 className={'pointer rounded-3'}
                     onClick={() => navigate(user && user.isAuth ? '/selector' : '/acceso')}
-                    onMouseOver={(e) => (e.target as HTMLElement).style.backgroundColor = '#25457d'}
-                    onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = generalBlue}
+                    onMouseOver={e => (e.target as HTMLElement).style.backgroundColor = '#25457d'}
+                    onMouseLeave={e => (e.target as HTMLElement).style.backgroundColor = generalBlue}
                     style={{
                         backgroundColor: generalBlue,
                         color: 'white',

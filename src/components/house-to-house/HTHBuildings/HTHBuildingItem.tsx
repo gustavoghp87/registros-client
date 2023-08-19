@@ -1,14 +1,16 @@
+import { FC, useState } from 'react'
 import { getCurrentLocalDate } from '../../../services'
 import { HTHBuildingModal } from '..'
 import { typeHTHBuilding, typePolygon, typeTerritoryNumber } from '../../../models'
-import { useState } from 'react'
 
-export const HTHBuildingItem = (props: any) => {
+type propsType = {
+    building: typeHTHBuilding
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
-    const building: typeHTHBuilding = props.building
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: () => void = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
+export const HTHBuildingItem: FC<propsType> = ({ building, currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const [show, setShow] = useState<boolean>(false)
 
     const getFreeHouseholds = (building: typeHTHBuilding): number => {
@@ -21,8 +23,6 @@ export const HTHBuildingItem = (props: any) => {
     }
 
     const closeBuildingModalHandler = (): void => setShow(false)
-
-    //console.log(building.dateOfLastSharing, getCurrentLocalDate(), getCurrentLocalDate(building.dateOfLastSharing))
 
     return (
         <>

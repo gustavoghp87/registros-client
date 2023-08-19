@@ -1,5 +1,5 @@
 import { Container } from 'react-bootstrap'
-import { generalBlue, hthChangeString, typeAppDispatch, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
+import { generalBlue, hthChangeString, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { getHTHTerritoryService } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
@@ -13,7 +13,6 @@ import { useState, useEffect, useCallback } from 'react'
 const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const HouseToHousePage = () => {
-    
     const territoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
     const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
@@ -26,13 +25,13 @@ export const HouseToHousePage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
 
     const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
         setTerritoryHTH(territoryHTH0)
     }
 
-    const selectBlockAndFaceHandler = (selectedBlock: typeBlock, selectedFace: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
+    const selectBlockAndFaceHandler = (selectedBlock?: typeBlock, selectedFace?: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
         if (selectedBlock === undefined && selectedFace === undefined) setCurrentFace(undefined)
         if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
         const target: typeHTHTerritory = hthTerritory0 ?? territoryHTH
@@ -182,7 +181,7 @@ export const HouseToHousePage = () => {
                 }
             </h1>
             
-            {user && currentFace &&
+            {user && currentFace && !!territoryHTH &&
                 <HTHSetIsFinishedButton
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
@@ -190,7 +189,7 @@ export const HouseToHousePage = () => {
                 />
             }
 
-            {territoryHTH && currentFace && <>
+            {!!territoryHTH && !!currentFace && <>
                 <HTHBuildings
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
@@ -208,7 +207,7 @@ export const HouseToHousePage = () => {
                 />
             </>}
 
-            {user && user.isAdmin && currentFace && !isMobile &&
+            {!!user.isAdmin && !!currentFace && !isMobile && !!territoryHTH &&
                 <HTHDeleteFaceButton
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}

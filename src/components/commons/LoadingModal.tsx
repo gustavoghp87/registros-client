@@ -1,9 +1,8 @@
-import { useSelector } from 'react-redux'
 import { Loading } from './'
 import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
 export const LoadingModal = () => {
-
     const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))

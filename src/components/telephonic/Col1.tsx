@@ -1,13 +1,16 @@
 import { Col } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { FC } from 'react'
 import { typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const Col1 = (props: any) => {
+type propsType = {
+    household: typeHousehold
+    setAddressToShowInGoogleMaps: (address: string) => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const Col1: FC<propsType> = ({ household, setAddressToShowInGoogleMaps, territoryNumber }) => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const household: typeHousehold = props.household
-    const setAddressToShowInGoogleMaps: Function = props.setAddressToShowInGoogleMaps
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
 
     return (
 

@@ -1,14 +1,17 @@
+import { FC } from 'react'
 import { Spinner } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
 import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const Loading = (props: any) => {
+type propsType = {
+    mb?: string
+    mt?: string
+    white?: boolean
+    big?: boolean
+}
 
+export const Loading: FC<propsType> = ({ big, mb, mt, white }) => {
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
-    const mb: string = props.mb
-    const mt: string = props.mt
-    const white: boolean = props.white
-    const big: boolean = props.big
 
     return (
         <div className={`text-center ${(isDarkMode || !!white) ? 'text-white' : ''}`}

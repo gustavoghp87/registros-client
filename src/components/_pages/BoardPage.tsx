@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 export const BoardPage = () => {
-
     const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))

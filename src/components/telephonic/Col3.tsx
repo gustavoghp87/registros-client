@@ -1,7 +1,8 @@
 import { Col, Row, Dropdown } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { FC } from 'react'
 import { timeConverter } from '../../services'
 import { typeCallingState, typeHousehold, typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
 const aDejarCarta: typeCallingState = 'A dejar carta'
 const contesto: typeCallingState = 'Contestó'
@@ -9,14 +10,16 @@ const noContesto: typeCallingState = 'No contestó'
 const noLlamar: typeCallingState = 'No llamar'
 const noPredicado: typeCallingState = 'No predicado'
 
-export const Col3 = (props: any) => {
+type propsType = {
+    household: typeHousehold
+    modifyHouseholdHandler: (householdId: number, callingState: typeCallingState, notSubscribed: boolean, isAssigned: boolean|undefined) => void
+}
 
+export const Col3: FC<propsType> = ({ household, modifyHouseholdHandler }) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const household: typeHousehold = props.household
-    const modifyHouseholdHandler: Function = props.modifyHouseholdHandler
 
     return (
         <Col xs={12} md={3} style={{ margin: isMobile ? 'auto' : '0 30px' }}>

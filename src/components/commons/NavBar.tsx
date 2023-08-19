@@ -1,20 +1,20 @@
+import { generalBlue, typeRootState } from '../../models'
+import { logoutReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { logoutReducer, setValuesAndOpenAlertModalReducer } from '../../store'
-import { generalBlue, typeAppDispatch, typeRootState } from '../../models'
 import { useState } from 'react'
 
-export const NavBar = () => {
+const color = '#fbfbfb'
 
+export const NavBar = () => {
     const { isMobile, user } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
     const [expanded, setExpanded] = useState(false)
-    const color = '#fbfbfb'
     
     const openLogoutConfirmModal = (): void => {
         setExpanded(false)

@@ -1,25 +1,27 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { addHTHDoNotCallService } from '../../../services'
+import { FC, FormEvent, useState } from 'react'
 import { HTHForm } from '..'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { addHTHDoNotCallService } from '../../../services'
-import { typeAppDispatch, typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const HTHDoNotCallsForm = (props: any) => {
+type propsType = {
+    closeShowFormHandler: () => void
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const HTHDoNotCallsForm: FC<propsType> = ({ closeShowFormHandler, currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const closeShowFormHandler: Function = props.closeShowFormHandler
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
-    const [streetNumber, setStreetNumber] = useState<number>(0)
+    const dispatch = useDispatch()
     const [doorBell, setDoorBell] = useState<string>("")
+    const [streetNumber, setStreetNumber] = useState<number>(0)
     const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
 
-    const submitHandler = (e: Event): void => {
+    const submitHandler = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
         if (!user || streetNumber < 1) return
         const newDoNotCall: typeDoNotCall = {

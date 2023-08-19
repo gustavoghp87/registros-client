@@ -1,19 +1,22 @@
-import { NavigateFunction, useNavigate } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
-import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 import { changeStateOfTerritoryService } from '../../services'
-import { typeAppDispatch, typeRootState, typeTerritoryNumber } from '../../models'
+import { FC } from 'react'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
+import { NavigateFunction, useNavigate } from 'react-router'
+import { typeRootState, typeTerritoryNumber } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const StateOfTerritoryBtn = (props: any) => {
+type propsType = {
+    isFinished: boolean
+    openAlertModalHandler: (title: string, message: string, animation: number) => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const StateOfTerritoryBtn: FC<propsType> = ({ isFinished, openAlertModalHandler, territoryNumber }) => {
     const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
-    const isFinished: boolean = props.isFinished
-    const openAlertModalHandler: Function = props.openAlertModalHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     
     const openConfirmModalHandler = (modal: number) => {
         dispatch(setValuesAndOpenAlertModalReducer({

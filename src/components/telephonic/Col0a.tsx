@@ -1,19 +1,21 @@
-import { useEffect, useState } from 'react'
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { FC, useEffect, useState } from 'react'
 import { generalRed, typeBlock, typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
 type radioObj = {
     name: string
     value: string
 }
 
-export const Col0a = (props: any) => {
+type propsType = {
+    blocks?: typeBlock[]
+    currentBlock?: typeBlock
+    setCurrentBlockHandler: (value: typeBlock) => void
+}
 
+export const Col0a: FC<propsType> = ({ blocks, currentBlock, setCurrentBlockHandler }) => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const blocks: typeBlock[] = props.blocks
-    const currentBlock: string = props.currentBlock
-    const setCurrentBlockHandler: Function = props.setCurrentBlockHandler
 
     let radiosCurrentBlock: radioObj[] = []
     blocks?.forEach((block: string) => {
@@ -43,10 +45,13 @@ export const Col0a = (props: any) => {
     )
 }
 
-const BlockToggleButton = (props: any) => {
-    const currentBlock: typeBlock = props.currentBlock
-    const radio: radioObj = props.radio
-    const setCurrentBlockHandler: Function = props.setCurrentBlockHandler
+type propsType1 = {
+    currentBlock?: typeBlock
+    radio: radioObj
+    setCurrentBlockHandler: (value: typeBlock) => void
+}
+
+const BlockToggleButton: FC<propsType1> = ({ currentBlock, radio, setCurrentBlockHandler }) => {
     const [isChecked, setIsChecked] = useState<boolean>(false)
 
     useEffect(() => {
@@ -70,7 +75,7 @@ const BlockToggleButton = (props: any) => {
                 }}
                 >
                 <div className={'text-white'}
-                    onClick={() => setCurrentBlockHandler(radio.value)}
+                    onClick={() => setCurrentBlockHandler(radio.value as typeBlock)}
                     style={{ height: '40px', lineHeight: '40px', width: '120px' }}
                 >
                     {radio?.name}

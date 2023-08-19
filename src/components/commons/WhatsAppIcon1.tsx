@@ -1,4 +1,10 @@
-export const WhatsAppIcon1 = (props: any) => {
+import { FC } from "react"
+
+type propsType = {
+    styles: object
+}
+
+export const WhatsAppIcon1: FC<propsType> = ({ styles }) => {
     return (
         <svg
         version="1.1"
@@ -10,7 +16,7 @@ export const WhatsAppIcon1 = (props: any) => {
         viewBox="0 0 1280 1280"
         //style={{ enableBackground: "new 0 0 1280 1280" }}
         xmlSpace="preserve"
-        style={{ ...props.style }}
+        style={{ ...styles }}
         >
             <style
                 type="text/css"

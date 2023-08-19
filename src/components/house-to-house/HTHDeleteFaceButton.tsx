@@ -1,15 +1,17 @@
-import { useMemo } from 'react'
-import { useDispatch } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { deleteHTHPolygonFaceService } from '../../services'
-import { typeAppDispatch, typeHTHTerritory, typePolygon } from '../../models'
+import { FC, useMemo } from 'react'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { typeHTHTerritory, typePolygon } from '../../models'
+import { useDispatch } from 'react-redux'
 
-export const HTHDeleteFaceButton = (props: any) => {
+type propsType = {
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryHTH: typeHTHTerritory
+}
 
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryHTH: typeHTHTerritory = props.territoryHTH
+export const HTHDeleteFaceButton: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryHTH }) => {
+    const dispatch = useDispatch()
 
     const openConfirmModalHTHDeleteFaceHandler = (): void => {
         if (!currentFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return

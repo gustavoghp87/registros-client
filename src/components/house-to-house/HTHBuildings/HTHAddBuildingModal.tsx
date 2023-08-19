@@ -1,21 +1,23 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { addBuildingService, getHouseholdDoorBell } from '../../../services'
 import { Button, Form, Modal } from 'react-bootstrap'
+import { FC, useState } from 'react'
 import { Hr } from '../../commons'
 import { HTHBuildingCheckbox } from '..'
-import { addBuildingService, getHouseholdDoorBell } from '../../../services'
 import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { useSelector } from 'react-redux'
 
-export const HTHAddBuildingModal = (props: any) => {
+type propsType = {
+    closeHTHModalHandler: () => void
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const closeHTHModalHandler: any = props.closeHTHModalHandler
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [hasNn, setHasNn] = useState(false)
     const [hasCharacters, setHasCharacters] = useState<boolean>(true)
     const [hasContinuousNumbers, setHasContinuousNumbers] = useState<boolean>(false)

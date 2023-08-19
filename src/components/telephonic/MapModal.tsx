@@ -1,30 +1,43 @@
+import { FC, useEffect, useState } from 'react'
 import { getGeocodingFromAddressService } from '../../services'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsAPIKey, mapId } from '../../config'
+import { googleMapsApiKey, mapId } from '../../config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { typeCoords, typeRootState } from '../../models'
-import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const MapModal = (props: any) => {
+type propsType = {
+    address: string
+    hideGoogleMapHandler: () => void
+}
 
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+export const MapModal: FC<propsType> = ({ address, hideGoogleMapHandler }) => {
+    const [centerCoords, setCenterCoords] = useState<typeCoords>()
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: googleMapsAPIKey,
+        googleMapsApiKey,
         id: mapId
     })
-    const address: string = props.address
-    const hideGoogleMapHandler: Function = props.hideGoogleMapHandler
-    const [centerCoords, setCenterCoords] = useState<typeCoords>()
+    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const dispatch = useDispatch()
     
     useEffect(() => {
         let target: string = address + " CABA"
         getGeocodingFromAddressService(target).then((coordinates: typeCoords|null) => {
-            if (coordinates && coordinates.lat && coordinates.lng) setCenterCoords({ lat: coordinates.lat, lng: coordinates.lng })
+            if (!coordinates?.lat || !coordinates?.lng) {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    title: 'Error',
+                    message: "Falló el servicio de geolocalización",
+                    mode: 'alert',
+                    animation: 2
+                }))
+                return
+            }
+            setCenterCoords({ lat: coordinates.lat, lng: coordinates.lng })
         })
         return () => setCenterCoords(undefined)
-    }, [address])
+    }, [address, dispatch])
 
     return (<>
 
@@ -32,7 +45,8 @@ export const MapModal = (props: any) => {
 
         {loadError && <h3> Falló: {loadError.message} </h3>}
 
-        {centerCoords &&
+        {centerCoords && <>
+            <h1>HAAA</h1>
             <Modal
                 fullscreen={'md-down'}
                 onHide={() => hideGoogleMapHandler()}
@@ -62,7 +76,7 @@ export const MapModal = (props: any) => {
                     </GoogleMap>
                 </Modal.Body>
             </Modal>
-        }
+        </>}
     </>)
 }
 

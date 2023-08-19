@@ -3,17 +3,16 @@ import { changePswService, getUserByTokenService, logoutAllService } from '../..
 import { H2, Hr } from '../commons'
 import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { NavigateFunction, useNavigate } from 'react-router'
-import { typeAppDispatch, typeRootState, typeUser } from '../../models'
+import { typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 
 export const UserPage = () => {
-    
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
     const [newPsw, setNewPsw] = useState('')
     const [psw, setPsw] = useState('')

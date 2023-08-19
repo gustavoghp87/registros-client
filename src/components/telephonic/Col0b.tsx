@@ -1,17 +1,20 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { FC } from 'react'
 import { generalRed, typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const Col0b = (props: any) => {
- 
+type propsType = {
+    isShowingAll: boolean
+    isShowingStatistics: boolean
+    setIsShowingAllStatesHandler: (value: boolean) => void
+    setIsShowingStatisticsHandler: () => void
+}
+
+export const Col0b: FC<propsType> = ({ isShowingAll, isShowingStatistics, setIsShowingAllStatesHandler, setIsShowingStatisticsHandler }) => {
     const { isMobile, user } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const isShowingAll: boolean = props.isShowingAll
-    const isShowingStatistics: boolean = props.isShowingStatistics
-    const setIsShowingAllStatesHandler = props.setIsShowingAllStatesHandler
-    const setIsShowingStatisticsHandler = props.setIsShowingStatisticsHandler
     let radios: any[] = []
 
     if (isMobile)

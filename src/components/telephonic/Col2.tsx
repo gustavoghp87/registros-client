@@ -1,13 +1,16 @@
-import { useSelector } from 'react-redux'
 import { Col, Row } from 'react-bootstrap'
+import { FC } from 'react'
 import { getReducedPhoneNumber } from '../../services'
 import { typeHousehold, typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const Col2 = (props: any) => {
+type propsType = {
+    card: React.MutableRefObject<any>
+    household: typeHousehold
+}
 
+export const Col2: FC<propsType> = ({ card, household }) => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const card: any = props.card
-    const household: typeHousehold = props.household
 
     const setCardMarginBottom = (): void => {(card.current as HTMLElement).style.marginBottom = '160px'}
 

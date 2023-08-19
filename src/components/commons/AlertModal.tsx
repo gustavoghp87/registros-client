@@ -1,15 +1,14 @@
-import { useEffect } from 'react'
-import { confirmAlert } from 'react-confirm-alert'
-import { useDispatch, useSelector } from 'react-redux'
-import { closeAlertModalReducer } from '../../store'
-import { adjustModalStyles, insertAnimationForAlertModal } from '../../services'
-import { typeAppDispatch, typeRootState } from '../../models'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import { adjustModalStyles, insertAnimationForAlertModal } from '../../services'
+import { closeAlertModalReducer } from '../../store'
+import { confirmAlert } from 'react-confirm-alert'
+import { typeRootState } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
 
 export const AlertModal = () => {
-
     const { mode, title, message, execution, animation } = useSelector((state: typeRootState) => state.alertModal)
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     
     useEffect(() => {
         const closeModalHandler = () => dispatch(closeAlertModalReducer())

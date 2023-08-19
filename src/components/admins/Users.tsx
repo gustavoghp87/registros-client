@@ -1,24 +1,26 @@
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { Card, DropdownButton, ButtonGroup, Dropdown, Form } from 'react-bootstrap'
-import { io, Socket } from 'socket.io-client'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { getUsersService } from '../../services/userServices'
 import { H2, Loading, WarningToaster } from '../commons'
-import { UsersCard } from './'
+import { io, Socket } from 'socket.io-client'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { getUsersService } from '../../services/userServices'
-import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
+import { typeRootState, typeUser, userChangeString } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
+import { UsersCard } from './'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
-export const Users = (props: any) => {
+type propsType = {
+    setIsLoading: Dispatch<SetStateAction<boolean>>
+}
 
+export const Users: FC<propsType> = ({ setIsLoading }) => {
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const setIsLoading: Function = props.setIsLoading
+    const dispatch = useDispatch()
     const [emailSearchInputText, setEmailSearchInputText] = useState<string>("")
     const [selectedGroup, setSelectedGroup] = useState<number>(0)
     const [users, setUsers] = useState<typeUser[]>()
@@ -130,9 +132,9 @@ export const Users = (props: any) => {
         {usersToShow?.map((user: typeUser) => (
             <UsersCard
                 key={user.id}
+                currentUser={user}
                 setIsLoading={setIsLoading}
                 socket={socket}
-                user={user}
             />
         ))}
     </>)

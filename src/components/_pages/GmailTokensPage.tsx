@@ -5,7 +5,6 @@ import { H2 } from '../commons'
 import { useEffect, useState } from 'react'
 
 export const GmailTokensPage = () => {
-
     const [code, setCode] = useState<string>('')
     const [credentials, setCredentials] = useState<Credentials>()
     const [success, setSuccess] = useState<boolean>()

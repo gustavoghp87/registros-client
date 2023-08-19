@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { Button } from 'react-bootstrap'
+import { FC, useState } from 'react'
 import { typeRootState, typeTerritoryNumber } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const StaticMap = (props: any) => {
+type propsType = {
+    mapId: string
+    territoryNumber: typeTerritoryNumber
+}
 
+export const StaticMap: FC<propsType> = ({ mapId, territoryNumber }) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const mapId: string = props.mapId
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [showMap, setShowMap] = useState<boolean>(false)
 
     return (

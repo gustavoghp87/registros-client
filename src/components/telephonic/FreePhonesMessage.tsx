@@ -1,17 +1,19 @@
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { FC, useMemo } from 'react'
 import { generalBlue, typeBlock, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const FreePhonesMessage = (props: any) => {
+type propsType = {
+    currentBlock?: typeBlock
+    households: typeHousehold[]
+    loaded: boolean
+    territoryNumber: typeTerritoryNumber
+}
 
+export const FreePhonesMessage: FC<propsType> = ({ currentBlock, households, loaded, territoryNumber }) => {
     const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const currentBlock: typeBlock = props.currentBlock
-    const households: typeHousehold[] = props.households
-    const loaded: boolean = props.loaded
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
 
     const freePhones: number|undefined = useMemo(() => {
         let currentHouseholds: typeHousehold[] = households

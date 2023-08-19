@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 export const TermsOfServicePage = () => {
-
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
 
     useEffect(() => subirAlTop(), [])

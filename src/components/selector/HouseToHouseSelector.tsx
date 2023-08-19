@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import { useState } from 'react'
 
 export const HouseToHouseSelector = () => {
-
     const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,

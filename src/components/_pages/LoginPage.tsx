@@ -3,18 +3,17 @@ import { getFailingEmailFromLSService, setFailingEmailToLSService } from '../../
 import { getUserByTokenService1, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
 import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { NavigateFunction, useNavigate } from 'react-router'
-import { typeAppDispatch, typeResponseData, typeRootState, typeUser } from '../../models'
+import { typeResponseData, typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 
 export const LoginPage = () => {
-
     const { executeRecaptcha } = useGoogleReCaptcha()
     const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
     const [confPassword, setConfPassword] = useState<string>('')
     const [email, setEmail] = useState<string>("")

@@ -1,13 +1,16 @@
 import { Col, Row } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { FC } from 'react'
 import { Hr } from '../commons'
-import { typeHousehold, typeRootState } from '../../models'
+import { typeCallingState, typeHousehold, typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const Col4 = (props: any) => {
+type propsType = {
+    household: typeHousehold
+    modifyHouseholdHandler: (householdId: number, callingState: typeCallingState, notSubscribed: boolean, isAssigned: boolean|undefined) => void
+}
 
+export const Col4: FC<propsType> = ({ household, modifyHouseholdHandler }) => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const household: typeHousehold = props.household
-    const modifyHouseholdHandler = props.modifyHouseholdHandler
 
     return (
         <Col xs={12} md={2}>

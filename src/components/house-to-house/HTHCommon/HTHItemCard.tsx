@@ -1,19 +1,22 @@
-import { useSelector } from 'react-redux'
+import { FC } from 'react'
 import { MdDelete, MdEdit } from 'react-icons/md'
 import { typeRootState } from '../../../models'
+import { useSelector } from 'react-redux'
 
-export const HTHItemCard = (props: any) => {
+type propsType = {
+    creatorId: number
+    date: string
+    deleteHandler: () => void
+    editHandler?: () => void
+    text: string
+}
 
+export const HTHItemCard: FC<propsType> = ({ creatorId, date, deleteHandler, editHandler, text }) => {
     const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const creatorId: number = props.creatorId
-    const date: string = props.date
-    const deleteHandler: Function = props.deleteHandler
-    const editHandler: Function = props.editHandler
-    const text: string = props.text
 
     return (
         <div className={`my-4 text-center bg-dark text-white d-block mx-auto`}

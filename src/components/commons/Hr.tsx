@@ -1,13 +1,18 @@
-import { useSelector } from 'react-redux'
+import { FC } from 'react'
 import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const Hr = (props: any) => {
+type propsType = {
+    classes?: string
+    styles?: object
+}
 
+export const Hr: FC<propsType> = ({ classes, styles }) => {
     const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
 
     return (
-        <hr className={`${isDarkMode ? 'text-white ' : ''}${props.classes ? props.classes : ''}`}
-            style={{ ...props.styles }}
+        <hr className={`${isDarkMode ? 'text-white ' : ''}${classes ? classes : ''}`}
+            style={{ ...styles }}
         />
     )
 }

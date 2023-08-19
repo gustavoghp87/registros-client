@@ -1,30 +1,32 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { NavigateFunction, useNavigate } from 'react-router'
-import { Modal } from 'react-bootstrap'
 import { BsTrash } from 'react-icons/bs'
+import { deleteHTHBuildingService } from '../../../services'
+import { FC, useState } from 'react'
 import { Hr } from '../../commons'
 import { HTHBuildingCheckbox } from '..'
+import { Modal } from 'react-bootstrap'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { deleteHTHBuildingService } from '../../../services'
-import { typeAppDispatch, typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const HTHBuildingModal = (props: any) => {
+type propsType = {
+    closeBuildingModalHandler?: () => void
+    currentBuilding: typeHTHBuilding
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const HTHBuildingModal: FC<propsType> = ({ currentBuilding, currentFace, refreshHTHTerritoryHandler, territoryNumber, closeBuildingModalHandler }) => {
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const [show, setShow] = useState<boolean>(true)
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
-    const closeBuildingModalHandler: Function|undefined = props.closeBuildingModalHandler
-    const currentBuilding: typeHTHBuilding = props.currentBuilding
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: () => void = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const levels: number[] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
     const doorNames: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-    const [show, setShow] = useState<boolean>(true)
 
     const openDeleteBuildingModal = (): void => {
         if (!closeBuildingModalHandler) return

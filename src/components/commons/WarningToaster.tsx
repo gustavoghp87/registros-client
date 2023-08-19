@@ -1,16 +1,18 @@
-import { useEffect, useRef } from 'react'
-import { Toast } from 'react-bootstrap'
 import { AiOutlineWarning } from 'react-icons/ai'
-import { useSelector } from 'react-redux'
+import { FC, ReactNode, useEffect, useRef } from 'react'
+import { Toast } from 'react-bootstrap'
 import { typeRootState } from '../../models'
+import { useSelector } from 'react-redux'
 
-export const WarningToaster = (props: any) => {
+type propsType = {
+    bodyText: ReactNode
+    closeWarningToaster?: () => void
+    headerText: ReactNode
+    isCentered?: boolean
+}
 
+export const WarningToaster: FC<propsType> = ({ bodyText, closeWarningToaster, headerText, isCentered }) => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
-    const bodyText: string = props.bodyText
-    const closeWarningToaster: Function = props.closeWarningToaster
-    const headerText: string = props.headerText
-    const isCentered: boolean = props.isCentered
     const ref = useRef<any>()
 
     useEffect(() => {
@@ -25,7 +27,7 @@ export const WarningToaster = (props: any) => {
             <Toast show={true}
                 bg={'danger'}
                 className={'my-2'}
-                onClose={() => closeWarningToaster()}
+                onClose={() => closeWarningToaster ? closeWarningToaster() : null}
                 ref={ref}
                 style={{
                     marginLeft: isMobile ? '10px' : '0',
@@ -49,7 +51,7 @@ export const WarningToaster = (props: any) => {
 
             <Toast show={true}
                 className={'d-block m-auto'}
-                onClose={() => closeWarningToaster()}
+                onClose={() => closeWarningToaster ? closeWarningToaster() : undefined}
                 style={{ border: '1px solid lightgray', marginBottom: '50px' }}
             >
                 <Toast.Header style={{ border: '1px solid lightgray' }}>

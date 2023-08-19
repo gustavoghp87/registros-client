@@ -5,7 +5,6 @@ import { typeAllLogsObj, typeLogObj, typeLogsAndTitle } from '../../models'
 import { useState, useEffect } from 'react'
 
 export const Logs = () => {
-
     const [isLoading, setIsLoading] = useState(true)
     const [logs, setLogs] = useState<typeLogsAndTitle[]>()
 

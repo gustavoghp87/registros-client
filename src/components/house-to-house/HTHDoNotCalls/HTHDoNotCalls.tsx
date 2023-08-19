@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { HTHDoNotCallsForm, HTHDoNotCallsItem } from '../'
+import { FC, useState } from 'react'
 import { generalBlue, typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { HTHDoNotCallsForm, HTHDoNotCallsItem } from '../'
+import { useSelector } from 'react-redux'
 
-export const HTHDoNotCalls = (props: any) => {
+type propsType = {
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const HTHDoNotCalls: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [show, setShow] = useState<boolean>(false)
     const [showForm, setShowForm] = useState<boolean>(false)
     

@@ -1,22 +1,23 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { deleteHTHObservationService } from '../../../services'
+import { FC, useState } from 'react'
 import { HTHItemCard, HTHObservationsForm } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { deleteHTHObservationService } from '../../../services'
-import { typeAppDispatch, typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const HTHObservationsItem = (props: any) => {
+type propsType = {
+    closeShowAddFormHandler: () => void
+    currentFace: typePolygon
+    observation: typeObservation
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const HTHObservationsItem: FC<propsType> = ({ closeShowAddFormHandler, currentFace, observation, refreshHTHTerritoryHandler, territoryNumber }) => {
     const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const closeShowAddFormHandler: Function = props.closeShowFormHandler
-    const currentFace: typePolygon = props.currentFace
-    const date: string = props.date
-    const observation: typeObservation = props.observation
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
+    const dispatch = useDispatch()
     const [showForm, setShowForm] = useState<boolean>(false)
 
     const editHandler = (): void => {
@@ -67,7 +68,6 @@ export const HTHObservationsItem = (props: any) => {
                 <HTHObservationsForm
                     closeShowFormHandler={closeShowFormHandler}
                     currentFace={currentFace}
-                    date={date}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryNumber}
                     // specific

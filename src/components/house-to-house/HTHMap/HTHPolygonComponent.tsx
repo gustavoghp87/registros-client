@@ -1,20 +1,22 @@
 import { editInfoWindowsStyles } from '../../../services'
-import { generalBlue, generalRed, typeHTHTerritory, typePolygon } from '../../../models'
+import { FC, useEffect, useRef, useState } from 'react'
+import { generalBlue, generalRed, typeBlock, typeFace, typeHTHTerritory, typePolygon } from '../../../models'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
-import { useEffect, useRef, useState } from 'react'
 
 let lastClick: number = 0
 
-export const HTHPolygonComponent = (props: any) => {
+type propsType = {
+    currentFace?: typePolygon
+    isAddingPolygon: boolean
+    isEditingView: boolean
+    polygon: typePolygon
+    runIntervals: boolean
+    selectBlockAndFaceHandler: (block?: typeBlock, face?: typeFace, hthTerritory0?: typeHTHTerritory|null) => void
+    setTerritoryHTHHandler: (territory: typeHTHTerritory) => void
+    territoryHTH: typeHTHTerritory
+}
 
-    const currentFace: typePolygon = props.currentFace
-    const isAddingPolygon: boolean = props.isAddingPolygon
-    const isEditingView: boolean = props.isEditingView
-    const polygon: typePolygon = props.polygon
-    const runIntervals: boolean = props.runIntervals
-    const selectBlockAndFaceHandler: Function = props.selectBlockAndFaceHandler
-    const setTerritoryHTHHandler: Function = props.setTerritoryHTHHandler
-    const territoryHTH: typeHTHTerritory = props.territoryHTH
+export const HTHPolygonComponent: FC<propsType> = ({ currentFace, isAddingPolygon, isEditingView, polygon, runIntervals, selectBlockAndFaceHandler, setTerritoryHTHHandler, territoryHTH }) => {
     const ref = useRef<google.maps.Polygon>()
     const [polygonColor, setPolygonColor] = useState<string>(generalBlue)
     const [showInfoWindow, setShowInfoWindow] = useState<boolean>(false)
@@ -27,7 +29,6 @@ export const HTHPolygonComponent = (props: any) => {
 
     useEffect(() => {
         editInfoWindowsStyles()
-        return () => { }
     }, [polygon])
 
     useEffect(() => {
@@ -64,7 +65,7 @@ export const HTHPolygonComponent = (props: any) => {
             currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
                 polygon0.id === polygon.id ? modifiedPolygon : polygon0
             )
-            setTerritoryHTHHandler(currentTerritoryHTH, true)
+            setTerritoryHTHHandler(currentTerritoryHTH)
         }, 1000)
         if (!runIntervals) clearInterval(interval0)
         return () => clearInterval(interval0)
@@ -76,7 +77,9 @@ export const HTHPolygonComponent = (props: any) => {
             draggable={isEditingView || (isAddingPolygon && polygon.id === 0)}
             onClick={() => {
                 //if (currentFace && currentFace.id === polygon.id) setIsFinishedHandler()
-                if (!isEditingView && !isAddingPolygon) selectBlockAndFaceHandler(polygon.block, polygon.face)
+                if (!isEditingView && !isAddingPolygon) {
+                    selectBlockAndFaceHandler(polygon.block, polygon.face)
+                }
             }}
             onLoad={(googlePolygon0: google.maps.Polygon) => ref.current = googlePolygon0}
             onMouseOver={() => {

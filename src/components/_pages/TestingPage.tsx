@@ -33,7 +33,6 @@ type droppableType = {
 }
 
 export const TestingPage = () => {
-
     const [tasks, setTasks] = useState(initialTasks)
 
     const getItems = (count: number, offset = 0): droppableType[] =>

@@ -1,15 +1,13 @@
 import { Config, Logs, Statistics, Users } from '../admins'
 import { H2, Hr } from '../commons'
 import { hideLoadingModalReducer, showLoadingModalReducer } from '../../store'
-import { typeAppDispatch } from '../../models'
 import { useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 
 type adminsSections = '' | 'users' | 'statistics' | 'logs' | 'campaign' | 'config'
 
 export const AdminsPage = () => {
-    
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [currentSection, setCurrentSection] = useState<adminsSections>('')
 

@@ -1,21 +1,22 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { HTHObservationsForm, HTHObservationsItem } from '../'
+import { FC, useState } from 'react'
 import { generalBlue, typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { HTHObservationsForm, HTHObservationsItem } from '../'
+import { useSelector } from 'react-redux'
 
-export const HTHObservations = (props: any) => {
+type propsType = {
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const HTHObservations: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))
-    const currentFace: typePolygon = props.currentFace
-    const date: string = props.date
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
     const [show, setShow] = useState<boolean>(false)
     const [showForm, setShowForm] = useState<boolean>(false)
 
-    const closeShowFormHandler = (): void => setShowForm(false)
+    const closeShowFormHandler = () => setShowForm(false)
 
     return (
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>
@@ -39,9 +40,8 @@ export const HTHObservations = (props: any) => {
                 <>
                     {!!currentFace.observations?.length && currentFace.observations.map((observation: typeObservation) => (
                         <HTHObservationsItem
-                            closeShowFormHandler={closeShowFormHandler}
+                            closeShowAddFormHandler={closeShowFormHandler}
                             currentFace={currentFace}
-                            date={date}
                             key={observation.id}
                             observation={observation}
                             refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
@@ -60,9 +60,10 @@ export const HTHObservations = (props: any) => {
                         <HTHObservationsForm
                             closeShowFormHandler={closeShowFormHandler}
                             currentFace={currentFace}
-                            date={date}
                             refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                             territoryNumber={territoryNumber}
+                            editText={''}
+                            idEdit={0}
                         />
                     }
                 </>

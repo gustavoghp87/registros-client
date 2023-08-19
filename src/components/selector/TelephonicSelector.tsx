@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { H2 } from '../commons'
 import { TerritoryNumberBlock } from '.'
 import { typeRootState } from '../../models'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 export const TelephonicSelector = () => {
-
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
@@ -33,6 +32,7 @@ export const TelephonicSelector = () => {
                             classes={'btn-general-red animate__animated animate__bounce'}
                             territories={[...user.phoneAssignments].sort((a: number, b: number) => a - b)}
                             url={'/telefonica'}
+                            showForecast={false}
                         />
                         :
                         <h3 className={`text-center my-5 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>

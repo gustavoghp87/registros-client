@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { H2, Loading } from '../commons'
-import { TerritoryNumberBlock } from '.'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { askForANewCampaignPackService, getCampaignAssignmentsByUser } from '../../services'
-import { typeAppDispatch, typeRootState } from '../../models'
+import { H2, Loading } from '../commons'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { TerritoryNumberBlock } from '.'
+import { typeRootState } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 
 export const CampaignSelector = () => {
-
     const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const [assignedPacks, setAssignedPacks] = useState<number[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [show, setShow] = useState<boolean>(true)
@@ -66,6 +65,7 @@ export const CampaignSelector = () => {
                                     classes={'btn-success'}
                                     territories={assignedPacks}
                                     url={'/celulares'}
+                                    showForecast={false}
                                 />
                                 :
                                 <div style={{ marginTop: '60px' }}>

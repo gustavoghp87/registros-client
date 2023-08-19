@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { HTHAddBuildingModal } from './HTHAddBuildingModal'
 import { typePolygon, typeTerritoryNumber } from '../../../models'
 
-export const HTHAddBuilding = (props: any) => {
+type propsType = {
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
+export const HTHAddBuilding: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const [showModal, setShowModal] = useState<boolean>(false)
 
     const closeHTHModalHandler = (): void => setShowModal(false)

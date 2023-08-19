@@ -1,25 +1,27 @@
-import { useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Container, Row } from 'react-bootstrap'
-import { Socket } from 'socket.io-client'
 import { Col1, Col2, Col3, Col4 } from '.'
-import { telephonicHouseholdChangeString, typeAppDispatch, typeCallingState, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
+import { Container, Row } from 'react-bootstrap'
+import { Dispatch, FC, SetStateAction, useRef } from 'react'
 import { hideLoadingModalReducer, showLoadingModalReducer } from '../../store'
 import { modifyHouseholdService } from '../../services'
+import { Socket } from 'socket.io-client'
+import { telephonicHouseholdChangeString, typeCallingState, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const TelephonicCard = (props: any) => {
+type propsType = {
+    household: typeHousehold
+    setAddressToShowInGoogleMaps: Dispatch<SetStateAction<string>>
+    openAlertModalHandler: (title: string, message: string, animation: number) => void
+    socket: Socket
+    territoryNumber: typeTerritoryNumber
+}
 
+export const TelephonicCard: FC<propsType> = ({ household, openAlertModalHandler, setAddressToShowInGoogleMaps, socket, territoryNumber }) => {
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const householdCard = useRef<any>()
-    const household: typeHousehold = props.household
-    const setAddressToShowInGoogleMaps: Function = props.setAddressToShowInGoogleMaps
-    const openAlertModalHandler: Function = props.openAlertModalHandler
-    const socket: Socket = props.socket
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
 
     const modifyHouseholdHandler = (householdId: number,
      callingState: typeCallingState, notSubscribed: boolean, isAssigned: boolean|undefined): void => {
@@ -28,7 +30,8 @@ export const TelephonicCard = (props: any) => {
         isAssigned = !!isAssigned
         modifyHouseholdService(territoryNumber, householdId, callingState, notSubscribed, isAssigned).then((updatedHousehold: typeHousehold|null) => {
             dispatch(hideLoadingModalReducer())
-            if (!updatedHousehold) return openAlertModalHandler("Algo falló al modificar", "", 2)
+            if (!updatedHousehold)
+                return openAlertModalHandler("Algo falló al modificar", "", 2)
             if (!socket || !socket.connected || !user)
                 return openAlertModalHandler("Problema de conexión", "Refrescar y ver si hay internet", 2)
             socket.emit(telephonicHouseholdChangeString, {
@@ -58,6 +61,7 @@ export const TelephonicCard = (props: any) => {
                     <Col1
                         household={household}
                         setAddressToShowInGoogleMaps={setAddressToShowInGoogleMaps}
+                        territoryNumber={territoryNumber}
                     />
 
                     <Col2

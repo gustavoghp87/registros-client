@@ -1,13 +1,16 @@
-import { useDispatch } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { FC } from 'react'
 import { setHTHIsFinishedService } from '../../services'
-import { typeAppDispatch, typeTerritoryNumber } from '../../models'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { typeTerritoryNumber } from '../../models'
+import { useDispatch } from 'react-redux'
 
-export const HTHChangeFaceStateButtons = (props: any) => {
+type propsType = {
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+export const HTHChangeFaceStateButtons: FC<propsType> = ({ refreshHTHTerritoryHandler, territoryNumber }) => {
+    const dispatch = useDispatch()
 
     const closeEveryFaceHandler = () => {
         dispatch(setValuesAndOpenAlertModalReducer({

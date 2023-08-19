@@ -1,13 +1,16 @@
-import { useSelector } from 'react-redux'
+import { FC } from 'react'
 import { typeForecast, typeRootState } from '../../../models'
+import { useSelector } from 'react-redux'
 
-export const Forecast = (props: any) => {
+type propsType = {
+    forecasts: typeForecast[]
+}
 
+export const Forecast: FC<propsType> = ({ forecasts }) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const forecasts: typeForecast[] = props.forecasts
     // chance={(forecast.pop || 0) * 100}
 
     const divStyles = {
@@ -58,12 +61,15 @@ export const Forecast = (props: any) => {
     )
 }
 
-const ForecastCard = (props: any) => {
+type propsType1 = {
+    forecast: typeForecast
+}
+
+const ForecastCard: FC<propsType1> = ({ forecast }) => {
 
     const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))
-    const forecast: typeForecast = props.forecast
 
     return (
         <div

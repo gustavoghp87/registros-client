@@ -1,14 +1,13 @@
-import { Suspense, useEffect } from 'react'
-import { Location, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import * as Pages from './_pages'
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
+import { breakingPoint, typeRootState, typeUser } from '../models'
 import { changeMobileModeReducer, logoutReducer, refreshUserReducer } from '../store'
 import { getUserByTokenService } from '../services/userServices'
-import { breakingPoint, typeAppDispatch, typeRootState, typeUser } from '../models'
+import { Location, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Suspense, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import * as Pages from './_pages'
 
 export const App = () => {
-
     const { isDarkMode, isMobile, showingAlertModal, showingLoadingModal, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
@@ -16,7 +15,7 @@ export const App = () => {
         showingAlertModal: state.alertModal.showingAlertModal,
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const location: Location = useLocation()
     
     useEffect(() => {

@@ -1,39 +1,41 @@
 import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsAPIKey, mapId } from '../../../config'
+import { googleMapsApiKey, mapId } from '../../../config'
 import { hthMapStyle, HTHMarkerComponent, HTHNewFaceOptions, HTHPolygonComponent } from '../'
 import { Loading } from '../../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { typeAppDispatch, typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState } from '../../../models'
+import { typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 
 type propsType = {
     currentFace?: typePolygon
     isAddingPolygon: boolean
     isEditingView: boolean
-    refreshHTHTerritoryHandler: Function
-    selectBlockAndFaceHandler: Function
+    refreshHTHTerritoryHandler: () => void
+    selectBlockAndFaceHandler: (block?: typeBlock, face?: typeFace, hthTerritory0?: typeHTHTerritory|null) => void
     setIsAddingPolygon: Dispatch<SetStateAction<boolean>>
     setIsEditingView: Dispatch<SetStateAction<boolean>>
     setShowNewFaceOptions: Dispatch<SetStateAction<boolean>>
-    setTerritoryHTHHandler: Function
+    setTerritoryHTHHandler: (hthTerritory: typeHTHTerritory) => void
     showNewFaceOptions: boolean
     territoryHTH: typeHTHTerritory
 }
 
-export const HTHMap = ({
-    currentFace, isAddingPolygon, isEditingView, refreshHTHTerritoryHandler, selectBlockAndFaceHandler, setIsAddingPolygon, setIsEditingView, setShowNewFaceOptions, setTerritoryHTHHandler, showNewFaceOptions, territoryHTH
-}: propsType) => {
+export const HTHMap: FC<propsType> = ({
+    currentFace, isAddingPolygon, isEditingView, refreshHTHTerritoryHandler,
+    selectBlockAndFaceHandler, setIsAddingPolygon, setIsEditingView, setShowNewFaceOptions,
+    setTerritoryHTHHandler, showNewFaceOptions, territoryHTH
+}) => {
     const { isMobile, user} = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: googleMapsAPIKey,
+        googleMapsApiKey: googleMapsApiKey,
         id: mapId
     })
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const [map, setMap] = useState<google.maps.Map>()
     const [runIntervals, setRunIntervals] = useState<boolean>(false)
 
@@ -178,7 +180,7 @@ export const HTHMap = ({
         currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
             polygon0.id === polygon.id ? modifiedPolygon : polygon0
         )
-        setTerritoryHTHHandler(currentTerritoryHTH, true)
+        setTerritoryHTHHandler(currentTerritoryHTH)
     }
     
     const cancelChangesHandler = (): void => {
@@ -237,7 +239,7 @@ export const HTHMap = ({
                         <div key={polygon.id}>
                             <HTHPolygonComponent
                                 currentFace={currentFace}
-                                intervalExecution={intervalExecution}
+                                // intervalExecution={intervalExecution}
                                 isAddingPolygon={isAddingPolygon}
                                 isEditingView={isEditingView}
                                 polygon={polygon}

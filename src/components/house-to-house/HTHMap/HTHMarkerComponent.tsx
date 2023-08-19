@@ -1,9 +1,12 @@
+import { FC } from 'react'
 import { Marker } from '@react-google-maps/api'
 import { typeMarker } from '../../../models'
 
-export const HTHMarkerComponent = (props: any) => {
+type propsType = {
+    marker: typeMarker
+}
 
-    const marker: typeMarker = props.marker
+export const HTHMarkerComponent: FC<propsType> = ({ marker }) => {
 
     return (
         <Marker

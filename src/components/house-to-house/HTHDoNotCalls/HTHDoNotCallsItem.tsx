@@ -1,16 +1,19 @@
-import { useDispatch } from 'react-redux'
+import { deleteHTHDoNotCallService } from '../../../services'
+import { FC } from 'react'
 import { HTHItemCard } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { deleteHTHDoNotCallService } from '../../../services'
-import { typeAppDispatch, typeDoNotCall, typePolygon, typeTerritoryNumber } from '../../../models'
+import { typeDoNotCall, typePolygon, typeTerritoryNumber } from '../../../models'
+import { useDispatch } from 'react-redux'
 
-export const HTHDoNotCallsItem = (props: any) => {
+type propsType = {
+    currentFace: typePolygon
+    doNotCall: typeDoNotCall
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const currentFace: typePolygon = props.currentFace
-    const doNotCall: typeDoNotCall = props.doNotCall
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
+export const HTHDoNotCallsItem: FC<propsType> = ({ currentFace, doNotCall, refreshHTHTerritoryHandler, territoryNumber }) => {
+    const dispatch = useDispatch()
 
     const deleteHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({

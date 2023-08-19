@@ -1,26 +1,28 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { addHTHObservationService, editHTHObservationService } from '../../../services'
+import { FC, FormEvent, useState } from 'react'
 import { HTHForm } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { addHTHObservationService, editHTHObservationService } from '../../../services'
-import { typeAppDispatch, typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typeObservation, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const HTHObservationsForm = (props: any) => {
+type propsType = {
+    closeShowFormHandler: () => void
+    currentFace: typePolygon
+    editText: string
+    idEdit: number
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
+export const HTHObservationsForm: FC<propsType> = ({ closeShowFormHandler, currentFace, editText, idEdit, refreshHTHTerritoryHandler, territoryNumber }) => {
     const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const closeShowFormHandler: Function = props.closeShowFormHandler
-    const currentFace: typePolygon = props.currentFace
-    const editText: string = props.editText || ''
-    const idEdit: number = props.idEdit || 0
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
+    const dispatch = useDispatch()
     const [text, setText] = useState<string>(editText)
     const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
     
-    const submitHandler = (e: Event) => {
+    const submitHandler = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!text || !text.trim() || !user) return
         const newObservation: typeObservation = {

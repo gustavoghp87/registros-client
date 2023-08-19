@@ -1,29 +1,34 @@
 import { Button, Container, Form, Row } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { FC, FormEvent } from 'react'
 import { typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { useSelector } from 'react-redux'
 
-export const HTHForm = (props: any) => {
+type propsType = {
+    cancelFormHandler: () => void
+    currentFace: typePolygon
+    date: string
+    isDoNotCallForm: boolean
+    submitHandler: (e: FormEvent<HTMLFormElement>) => void
+    territoryNumber: typeTerritoryNumber
+    // do not call
+    doorBell?: string
+    setDoorBellHandler?: (doorBell: string) => void
+    setStreetNumberHandler?: (streetNumber: number) => void
+    streetNumber?: number
+    // observations
+    text?: string
+    setTextHandler?: (text: string) => void
+}
 
+export const HTHForm: FC<propsType> = ({
+    cancelFormHandler, currentFace, date, doorBell, isDoNotCallForm,
+    setDoorBellHandler, setStreetNumberHandler, setTextHandler,
+    streetNumber, submitHandler, territoryNumber, text
+}) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const cancelFormHandler: Function = props.cancelFormHandler
-    const currentFace: typePolygon = props.currentFace
-    const date: string = props.date
-    const isDoNotCallForm: boolean = props.isDoNotCallForm
-    const submitHandler: Function = props.submitHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
-    
-    // do not call
-    const doorBell: string = props.doorBell
-    const setDoorBellHandler: Function = props.setDoorBellHandler
-    const setStreetNumberHandler: Function = props.setStreetNumberHandler
-    const streetNumber: number = props.streetNumber
-    
-    // observations
-    const text: string = props.text
-    const setTextHandler: Function = props.setTextHandler
 
     return (
         <Container className={'my-4'}
@@ -33,7 +38,7 @@ export const HTHForm = (props: any) => {
                 maxWidth: '600px'
             }}
         >
-            <Form onSubmit={(e: any) => submitHandler(e)} className={`p-3 ${isDarkMode ? 'text-white' : ''}`}>
+            <Form onSubmit={e => submitHandler(e)} className={`p-3 ${isDarkMode ? 'text-white' : ''}`}>
 
                 <Form.Group
                     className={'mb-3 w-50'}
@@ -53,7 +58,7 @@ export const HTHForm = (props: any) => {
                                 type={'number'}
                                 min={0}
                                 value={streetNumber ? streetNumber : ''}
-                                onChange={(e: any) => setStreetNumberHandler(e.target.value)}
+                                onChange={e => setStreetNumberHandler ? setStreetNumberHandler(parseInt(e.target.value)) : null}
                                 autoFocus
                             />
                         </Form.Group>
@@ -62,21 +67,21 @@ export const HTHForm = (props: any) => {
                             <Form.Label> Timbre </Form.Label>
                             <Form.Control
                                 value={doorBell ?? ''}
-                                onChange={(e: any) => setDoorBellHandler(e.target.value)}
+                                onChange={e => setDoorBellHandler ? setDoorBellHandler(e.target.value) : null}
                             />
                         </Form.Group>
                     </Row>
                     :
                     <Form.Group className={'mb-3'}>
                         <Form.Label>
-                            Observación ({(160 - text?.length + 1 || 161) - 1})
+                            Observación ({(160 - (text ?? '').length + 1 || 161) - 1})
                         </Form.Label>
                         <Form.Control
                             as={'textarea'} 
                             autoFocus
                             maxLength={160}
-                            onChange={(e: any) => setTextHandler(e.target.value)}
-                            onFocus={(e) => {
+                            onChange={e => setTextHandler ? setTextHandler(e.target.value) : null}
+                            onFocus={e => {
                                 const val: string = e.target.value
                                 e.target.value = ''
                                 e.target.value = val

@@ -1,20 +1,22 @@
 import { editInfoWindowsStyles, getGeocodingFromCoordinatesService, getHTHTerritoriesForMapService } from '../../services'
+import { FC, useEffect, useRef, useState } from 'react'
 import { generalBlue, typeCoords, typeHTHTerritory, typeRootState } from '../../models'
 import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsAPIKey, mapId } from '../../config'
+import { googleMapsApiKey, mapId } from '../../config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
-import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-export const GeoLocationModal = (props: any) => {
+type propsType = {
+    setShowGeolocationModalHandler: () => void
+}
 
+export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler }) => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: googleMapsAPIKey,
+        googleMapsApiKey: googleMapsApiKey,
         id: mapId
     })
-    const setShowGeolocationModalHandler: Function = props.setShowGeolocationModalHandler
     const map = useRef<any>()
     const [address, setAddress] = useState<string>('')
     const [centerCoords, setCenterCoords] = useState<typeCoords>()

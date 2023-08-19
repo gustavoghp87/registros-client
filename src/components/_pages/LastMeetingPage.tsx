@@ -9,7 +9,6 @@ const id: string = 'hCFC6OJkkt8'
 const referrerPolicy: HTMLAttributeReferrerPolicy = 'unsafe-url'
 
 export const LastMeetingPage = () => {
-
     const { isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode,

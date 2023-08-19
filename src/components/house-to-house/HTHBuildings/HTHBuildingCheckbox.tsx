@@ -1,35 +1,33 @@
-import { FC, useMemo, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useMemo, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { modifyHTHHouseholdService } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { typeAppDispatch, typeBlock, typeFace, typeHTHHousehold, typeTerritoryNumber } from '../../../models'
+import { typeBlock, typeFace, typeHTHHousehold, typeTerritoryNumber } from '../../../models'
 import { useDispatch } from 'react-redux'
 
 type propsType = {
-// add and use:
+    // add and use:
     level: number|null
     doorName: string
     doorNumber: number
-// use:
+    // use:
     block?: typeBlock
-    closeBuildingModalHandler?: Function|undefined
+    closeBuildingModalHandler?: () => void
     face?: typeFace
     id?: number
     isManager?: boolean
     isChecked0?: boolean
     refreshHTHTerritoryHandler?: () => void
-    setShow?: Function|undefined
+    setShow?: Dispatch<SetStateAction<boolean>>
     streetNumber?: number
     territoryNumber?: typeTerritoryNumber
 }
 
-export const HTHBuildingCheckbox: FC<propsType> =
-    ({
-        block, closeBuildingModalHandler, doorName, doorNumber, face, id, isChecked0,
-        isManager, level, refreshHTHTerritoryHandler, setShow, streetNumber, territoryNumber
-    }) =>
-{
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+export const HTHBuildingCheckbox: FC<propsType> = ({
+    block, closeBuildingModalHandler, doorName, doorNumber, face, id, isChecked0,
+    isManager, level, refreshHTHTerritoryHandler, setShow, streetNumber, territoryNumber
+}) => {
+    const dispatch = useDispatch()
     const [isChecked, setIsChecked] = useState<boolean>(isChecked0 ?? isChecked0 === undefined)
 
     const changeCallingState = (): void => {

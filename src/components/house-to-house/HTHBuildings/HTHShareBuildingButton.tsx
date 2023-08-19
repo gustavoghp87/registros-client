@@ -1,20 +1,22 @@
-import { useEffect, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { WhatsappShareButton } from 'react-share'
-import { WhatsAppIcon1 } from '../../commons/WhatsAppIcon1'
-import { setValuesAndOpenAlertModalReducer } from '../../../store'
+import { FC, useEffect, useRef, useState } from 'react'
 import { setHTHIsSharedBuildingsService } from '../../../services'
-import { typeAppDispatch, typePolygon, typeTerritoryNumber } from '../../../models'
+import { setValuesAndOpenAlertModalReducer } from '../../../store'
+import { typePolygon, typeTerritoryNumber } from '../../../models'
+import { useDispatch } from 'react-redux'
+import { WhatsAppIcon1 } from '../../commons/WhatsAppIcon1'
+import { WhatsappShareButton } from 'react-share'
 
-export const HTHShareBuildingButton = (props: any) => {
+type propsType = {
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryNumber: typeTerritoryNumber
+}
 
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryNumber: typeTerritoryNumber = props.territoryNumber
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const shareButton = useRef<any>()
+export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const [isShareButtonDisabled, setIsShareButtonDisabled] = useState<boolean>(true)
     const [url, setUrl] = useState<string>('')
+    const dispatch = useDispatch()
+    const shareButton = useRef<any>()
 
     const shareBuildingHandler = (): void => {
         let currentUrl: string = '\n\n'
@@ -71,7 +73,7 @@ export const HTHShareBuildingButton = (props: any) => {
                 disabled={isShareButtonDisabled}
                 onClick={() => shareBuildingHandler()}
             >
-                &nbsp; Compartir por WhatsApp &nbsp; <WhatsAppIcon1 style={{ width: '40px' }} round />
+                &nbsp; Compartir por WhatsApp &nbsp; <WhatsAppIcon1 styles={{ width: '40px' }} />
             </button>
             <WhatsappShareButton
                 className={'d-none'}

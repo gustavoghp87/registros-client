@@ -1,18 +1,21 @@
-import { useSelector } from 'react-redux'
+import { FC, ReactNode } from 'react'
 import { typeRootState } from '../../../models'
+import { useSelector } from 'react-redux'
 
-export const Weather = (props: any) => {
+type propsType = {
+    chance: number
+    feelsLike: number
+    icon: ReactNode
+    location: string
+    rain: number
+    temperature: number
+}
 
+export const Weather: FC<propsType> = ({ chance, feelsLike, icon, location, rain, temperature }) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const chance: number = props.chance
-    const feelsLike: number = props.feelsLike
-    const icon: string = props.icon
-    const location: string = props.location
-    const rain: number = props.rain ? Math.round(props.rain) : props.rain
-    const temperature: number = props.temperature
 
     return (
         <div className={`animate__animated animate__bounceInDown ${isDarkMode ? 'text-white' : ''}`}>

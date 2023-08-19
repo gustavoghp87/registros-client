@@ -1,14 +1,17 @@
-import { useDispatch } from 'react-redux'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { FC } from 'react'
 import { setHTHIsFinishedService } from '../../services'
-import { typeAppDispatch, typeHTHTerritory, typePolygon } from '../../models'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { typeHTHTerritory, typePolygon } from '../../models'
+import { useDispatch } from 'react-redux'
 
-export const HTHSetIsFinishedButton = (props: any) => {
+type propsType = {
+    currentFace: typePolygon
+    refreshHTHTerritoryHandler: () => void
+    territoryHTH: typeHTHTerritory
+}
 
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const currentFace: typePolygon = props.currentFace
-    const refreshHTHTerritoryHandler: Function = props.refreshHTHTerritoryHandler
-    const territoryHTH: typeHTHTerritory = props.territoryHTH
+export const HTHSetIsFinishedButton: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryHTH }) => {
+    const dispatch = useDispatch()
 
     const openConfirmModalHTHIsFinishedHandler = (): void => {
         if (!currentFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
@@ -21,7 +24,7 @@ export const HTHSetIsFinishedButton = (props: any) => {
     }
 
     const setHTHIsFinishedHandler = async (): Promise<void> => {
-        if (!currentFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
+        if (!currentFace || !territoryHTH?.map?.polygons) return
         setHTHIsFinishedService(territoryHTH.territoryNumber, currentFace.block, currentFace.face, currentFace.id, !currentFace.completionData?.isFinished).then((success: boolean) => {
             if (!success) return dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',

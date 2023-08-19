@@ -1,15 +1,15 @@
 import { getCurrentLocalDate, getHTHTerritoryService } from '../../services'
 import { HTHBuildingModal } from '../house-to-house'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { typeAppDispatch, typeHTHBuilding, typeHTHTerritory, typePolygon } from '../../models'
+import { typeHTHBuilding, typeHTHTerritory, typePolygon, typeTerritoryNumber } from '../../models'
 import { useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 
 export const HTHBuildingPage = () => {
-
-    const { territoryNumber, block, face, streetNumber } = useParams()
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const territoryNumber = useParams().territoryNumber as typeTerritoryNumber
+    const { block, face, streetNumber } = useParams()
+    const dispatch = useDispatch()
     const [currentFace, setCurrentFace] = useState<typePolygon>()
     const [currentBuilding, setCurrentBuilding] = useState<typeHTHBuilding>()
 
@@ -55,7 +55,7 @@ export const HTHBuildingPage = () => {
 
     return (
         <>
-            {currentBuilding && currentFace &&
+            {!!currentBuilding && !!currentFace && !!territoryNumber &&
                 <HTHBuildingModal
                     // closeBuildingModalHandler={closeBuildingModalHandler}
                     currentBuilding={currentBuilding}

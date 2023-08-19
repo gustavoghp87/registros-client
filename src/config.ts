@@ -27,7 +27,7 @@ export const recaptchaPublicKey = "6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9"
 
 export const mapId: string = "ad09b84d2db0b86d"
 
-export const googleMapsAPIKey: string = isLocalhost ? "AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594" : "AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE"
+export const googleMapsApiKey: string = isLocalhost ? "AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594" : "AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE"
 
 
 ///////// NEW PROJECT:

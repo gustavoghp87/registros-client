@@ -1,18 +1,18 @@
 import { Container, Dropdown, FloatingLabel, Form } from 'react-bootstrap'
 import { getHTHStreetsByTerritoryService, getStreetsByHTHTerritory } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { typeAppDispatch, typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
+import { typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
+
+const blockOptions: typeBlock[] = ['1', '2', '3', '4', '5', '6']
+const facesOptions: typeFace[] = ['A', 'B', 'C', 'D', 'E', 'F']
 
 type propsType = {
     initFaceAddingHandler: (selectedBlock: typeBlock|null, selectedFace: typeFace|null, selectedStreet: string|null) => void
     show: boolean
     territoryHTH: typeHTHTerritory
 }
-
-const blockOptions: typeBlock[] = ['1', '2', '3', '4', '5', '6']
-const facesOptions: typeFace[] = ['A', 'B', 'C', 'D', 'E', 'F']
 
 export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }: propsType) => {
     const [blocks, setBlocks] = useState<typeBlock[]>(blockOptions)
@@ -25,7 +25,7 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
     const [showFaceMenu, setShowFaceMenu] = useState<boolean>(false)
     const [showStreetMenu, setShowStreetMenu] = useState<boolean>(false)
     const [streets, setStreets] = useState<string[]>()
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
 
     const selectBlockHandler = (block: typeBlock): void => {
@@ -79,7 +79,7 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
             message: `Se va a agregar la Cara ${selectedFace} en la calle ${selectedStreet} de la Manzana ${selectedBlock} del territorio ${territoryHTH.territoryNumber}. Si hay un error, cancelar abajo.`
         }))
         initFaceAddingHandler(selectedBlock, selectedFace, selectedStreet)
-    }, [selectedBlock, selectedFace, selectedStreet, territoryHTH.territoryNumber])
+    }, [dispatch, selectedBlock, selectedFace, selectedStreet, territoryHTH.territoryNumber])
 
     return (<>
         <br/>

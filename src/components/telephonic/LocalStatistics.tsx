@@ -1,20 +1,22 @@
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { FC, useEffect, useState } from 'react'
 import { H2, Hr, Loading } from '../commons'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { resetTerritoryService, timeConverter } from '../../services'
-import { typeAppDispatch, typeLocalTelephonicStatistic, typeResetDate, typeRootState, typeTelephonicTerritory } from '../../models'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { typeLocalTelephonicStatistic, typeResetDate, typeRootState, typeTelephonicTerritory } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
 type typeOption = 1 | 2 | 3 | 4
 
-export const LocalStatistics = (props: any) => {
+type propsType = {
+    telephonicTerritory: typeTelephonicTerritory
+}
 
+export const LocalStatistics: FC<propsType> = ({ telephonicTerritory }) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const telephonicTerritory: typeTelephonicTerritory = props.telephonicTerritory
+    const dispatch = useDispatch()
     const [localS, setLocalStatistics] = useState<typeLocalTelephonicStatistic>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     let option: typeOption = 1

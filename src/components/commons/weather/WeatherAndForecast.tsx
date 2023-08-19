@@ -1,7 +1,7 @@
+import { FC, ReactNode, useEffect, useState } from 'react'
 import { Forecast } from './Forecast'
 import { getWeatherAndForecastService } from '../../../services'
 import { Hr, Loading } from '..'
-import { ReactNode, useEffect, useState } from 'react'
 import { typeForecast, typeForecastResponse, typeList, typeWeatherIcons, typeWeatherResponse } from '../../../models'
 import { Weather } from './Weather'
 import * as Icons from './WeatherIcons'
@@ -28,13 +28,15 @@ const weatherIcons: typeWeatherIcons = {
 
 const getWeatherIcon = (key: string): ReactNode => weatherIcons?.[key] || key
 
-export const WeatherAndForecast = (props: any) => {
+type propsType = {
+    showForecast0: boolean
+    showWeather: boolean
+}
 
-    const showForecast0: boolean = props.showForecast || false
-    const showWeather: boolean = props.showWeather || false
-    const [weatherRightNow, setWeatherRightNow] = useState<typeList>()
+export const WeatherAndForecast: FC<propsType> = ({ showForecast0, showWeather }) => {
     const [forecasts, setForecasts] = useState<typeForecast[]>([])
     const [showForecast, setShowForecast] = useState<boolean>(showForecast0)
+    const [weatherRightNow, setWeatherRightNow] = useState<typeList>()
 
     const getWeekday = (i: number) => {
         const weekdays: string[] = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
@@ -93,7 +95,7 @@ export const WeatherAndForecast = (props: any) => {
                         feelsLike={Math.round(weatherRightNow?.main?.feels_like || 0)}
                         icon={getWeatherIcon(weatherRightNow.weather?.[0]?.description)}
                         location={`${weatherRightNow.name}, ${weatherRightNow.sys?.country}`}
-                        rain={(weatherRightNow?.rain?.['1h'] || 0) * 100}
+                        rain={Math.round((weatherRightNow?.rain?.['1h'] || 0) * 100)}
                         temperature={Math.round(weatherRightNow?.main?.temp || 0)}
                     />
                     <button className={'btn btn-general-blue d-block mx-auto mt-2 mb-4'}

@@ -1,10 +1,13 @@
+import { Dispatch, FC, SetStateAction } from 'react'
 import { Pagination } from 'react-bootstrap'
 
-export const PhonesToShowPagination = (props: any) => {
+type propsType = {
+    isShowingAllStates: boolean
+    setBrought: Dispatch<SetStateAction<number>>
+    setBroughtAllHandler: () => void
+}
 
-    const isShowingAllStates: boolean = props.isShowingAllStates
-    const setBrought: Function = props.setBrought
-    const setBroughtAllHandler: Function = props.setBroughtAllHandler
+export const PhonesToShowPagination: FC<propsType> = ({ isShowingAllStates, setBrought, setBroughtAllHandler }) => {
 
     return (
         <Pagination size={'lg'}

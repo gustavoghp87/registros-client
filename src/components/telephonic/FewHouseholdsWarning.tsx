@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
-import { WarningToaster } from '../commons'
-import { typeHousehold } from '../../models'
+import { FC, useEffect, useState } from 'react'
 import { getNumberOfFreePhones } from '../../services'
+import { typeHousehold } from '../../models'
+import { WarningToaster } from '../commons'
 
-export const FewHouseholdsWarning = (props: any) => {
+type propsType = {
+    households?: typeHousehold[]
+}
 
-    const households: typeHousehold[] = props.households
+export const FewHouseholdsWarning: FC<propsType> = ({ households }) => {
     const [numberOfFreePhones, setNumberOfFreePhones] = useState<number>()
     const [showToaster, setShowToaster] = useState<boolean>(true)
 

@@ -1,11 +1,13 @@
+import { FC } from 'react'
 import { typeBoardItem } from '../../models'
 
-export const SideBar = (props: any) => {
+type propsType = {
+    currentItemNumber: number
+    items: typeBoardItem[]
+    setCurrentElementNumberHandler: (currentItemNumber: number) => void
+}
 
-    const currentItemNumber: number = props.currentItemNumber
-    const items: typeBoardItem[] = props.items
-    const setCurrentElementNumberHandler: Function = props.setCurrentElementNumberHandler
-
+export const SideBar: FC<propsType> = ({ currentItemNumber, items, setCurrentElementNumberHandler }) => {
     const setActiveElement = (element: HTMLElement) => element.classList.add('active')
 
     const setInactiveElement = (element: HTMLElement) =>{

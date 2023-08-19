@@ -1,19 +1,21 @@
-import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
-import { H2, Loading } from '../commons'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService, putHyphens } from '../../services'
 import { getUsersService } from '../../services/userServices'
-import { noAsignado, typeAppDispatch, typeCampaignPack, typeRootState, typeUser } from '../../models'
+import { H2, Loading } from '../commons'
+import { noAsignado, typeCampaignPack, typeRootState, typeUser } from '../../models'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { useDispatch, useSelector } from 'react-redux'
+import { useState, useEffect, FC, Dispatch, SetStateAction } from 'react'
 
-export const Campaign = (props: any) => {
-    
+type propsType = {
+    setIsLoading: Dispatch<SetStateAction<boolean>>
+}
+
+export const Campaign: FC<propsType> = ({ setIsLoading }) => {
     const { isMobile } = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const setIsLoading: Function = props.setIsLoading
+    const dispatch = useDispatch()
     const [campaignPacks, setCampaignPacks] = useState<typeCampaignPack[]>()
     const [showFiltered, setShowFiltered] = useState(false)
     const [users, setUsers] = useState<typeUser[]>()
@@ -88,8 +90,8 @@ export const Campaign = (props: any) => {
         })
     }, [])
 
-    return (
-    <>
+    return (<>
+
         <H2 title={"CAMPAÑA CELULARES 2022"} />
 
         {(!users || !users.length || !campaignPacks || !campaignPacks.length) &&
@@ -188,6 +190,5 @@ export const Campaign = (props: any) => {
                 )
             })}
         </div>
-    </>
-    )
+    </>)
 }

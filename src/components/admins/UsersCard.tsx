@@ -1,24 +1,27 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Card, Pagination } from 'react-bootstrap'
+import { assignHTHTerritoryService, assignTLPTerritoryService, changePswOtherUserService, deleteUserService, editUserService } from '../../services/userServices'
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs'
-import { Socket } from 'socket.io-client'
+import { Card, Pagination } from 'react-bootstrap'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Hr } from '../commons'
 import { setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
-import { assignHTHTerritoryService, assignTLPTerritoryService, changePswOtherUserService, deleteUserService, editUserService } from '../../services/userServices'
-import { typeAppDispatch, typeRootState, typeUser, userChangeString } from '../../models'
+import { Socket } from 'socket.io-client'
+import { typeRootState, typeUser, userChangeString } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
-export const UsersCard = (props: any) => {
+type propsType = {
+    currentUser: typeUser
+    setIsLoading: Dispatch<SetStateAction<boolean>>
+    socket: Socket
+}
+
+export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) => {
 
     const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
-    const currentUser: typeUser = props.user
-    const setIsLoading: Function = props.setIsLoading
-    const socket: Socket = props.socket
+    const dispatch = useDispatch()
     const [assignHTHValue, setAssignHTHValue] = useState<number>(0)
     const [assignTLPValue, setAssignTLPValue] = useState<number>(0)
     const [unassignHTHValue, setUnassignHTHValue] = useState<number>(0)

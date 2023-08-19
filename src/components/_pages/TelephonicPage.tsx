@@ -5,19 +5,18 @@ import { io, Socket } from 'socket.io-client'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { SERVER } from '../../config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { telephonicHouseholdChangeString, typeAppDispatch, typeBlock, typeHousehold, typeRootState, typeTelephonicTerritory, typeTerritoryNumber } from '../../models'
+import { telephonicHouseholdChangeString, typeBlock, typeHousehold, typeRootState, typeTelephonicTerritory, typeTerritoryNumber } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useState, useEffect, useCallback } from 'react'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const TelephonicPage = () => {
-
     const territoryNumber: typeTerritoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
     const { user } = useSelector((state: typeRootState) => ({
         user: state.user
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
     const [addressToShowInGoogleMaps, setAddressToShowInGoogleMaps] = useState<string>("")
     const [blocks, setBlocks] = useState<typeBlock[]>()
@@ -139,11 +138,13 @@ export const TelephonicPage = () => {
 
     return (
         <>
-            {addressToShowInGoogleMaps &&
+            {addressToShowInGoogleMaps && <>
+                <h1>{addressToShowInGoogleMaps}</h1>
                 <MapModal
                     address={addressToShowInGoogleMaps}
                     hideGoogleMapHandler={hideGoogleMapHandler}
                 />
+                </>
             }
 
             {loaded &&
@@ -194,7 +195,6 @@ export const TelephonicPage = () => {
                     />
 
                     <Col0b
-                        currentBlock={currentBlock}
                         isShowingAll={isShowingAllStates}
                         isShowingStatistics={isShowingStatistics}
                         setIsShowingAllStatesHandler={setIsShowingAllStatesHandler}
@@ -203,7 +203,17 @@ export const TelephonicPage = () => {
                 </>
             }
 
-            {!isShowingStatistics ?
+            {isShowingStatistics ?
+                <>
+                    {!!telephonicTerritory ?
+                        <LocalStatistics
+                            telephonicTerritory={telephonicTerritory}
+                        />
+                        :
+                        <>Error en datos de Estadísticas Locales</>
+                    }
+                </>
+                :
                 <>
                     {telephonicTerritory &&
                         <>
@@ -240,10 +250,6 @@ export const TelephonicPage = () => {
                         />
                     }
                 </>
-                :
-                <LocalStatistics
-                    telephonicTerritory={telephonicTerritory}
-                />
             }
         </>
     )

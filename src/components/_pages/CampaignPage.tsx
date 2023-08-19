@@ -3,18 +3,17 @@ import { editCampaignPackService, getCampaignPackService, closeCampaignPackServi
 import { H2, Loading, WarningToaster } from '../commons'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
-import { typeAppDispatch, typeCampaignPack, typeRootState } from '../../models'
+import { typeCampaignPack, typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, FC } from 'react'
 
 export const CampaignPage = () => {
-
     const idString: string|undefined = useParams<string>()?.id
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const dispatch: typeAppDispatch = useDispatch<typeAppDispatch>()
+    const dispatch = useDispatch()
     const navigate: NavigateFunction = useNavigate()
     const [campaignPack, setCampaignPack] = useState<typeCampaignPack>()
     const [phoneNumbers, setPhoneNumbers] = useState<number[]>()
@@ -81,8 +80,11 @@ export const CampaignPage = () => {
         })
     }
 
-    const PhoneChecker = (props: any): any => {
-        const phoneNumber: number = parseInt(props.phoneNumber)
+    type propsType1 = {
+        phoneNumber: number
+    }
+
+    const PhoneChecker: FC<propsType1> = ({ phoneNumber }) => {
         return (
             <div className={'p-3 my-3 border border-primary rounded text-center'}>
                 <h5 style={{ display: 'inline', fontSize: '2rem' }}>
