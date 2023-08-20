@@ -14,9 +14,10 @@ type propsType = {
 }
 
 export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
     }))
     const [hasNn, setHasNn] = useState(false)
     const [hasCharacters, setHasCharacters] = useState<boolean>(true)
@@ -221,6 +222,7 @@ export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, curre
                                 <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                                     {[...doorNames].slice(0, numberPerLevel).map((doorNumber: number, index1: number) =>
                                         <HTHBuildingCheckbox
+                                            congregation={user.congregation}
                                             doorName={getHouseholdDoorBell(doorNumber, index, index1, hasContinuousNumbers, hasCharacters, numberPerLevel, hasNn)}
                                             doorNumber={doorNumber}
                                             key={doorNumber}
@@ -235,10 +237,11 @@ export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, curre
                         {hasManager &&
                             <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                                 <HTHBuildingCheckbox
+                                    congregation={user.congregation}
                                     doorName={'Portería'}
                                     doorNumber={0}
-                                    level={null}
                                     isManager={true}
+                                    level={null}
                                 />
                             </div>
                         }

@@ -11,13 +11,14 @@ import { useDispatch, useSelector } from 'react-redux'
 
 type propsType = {
     closeBuildingModalHandler?: () => void
+    congregation: number
     currentBuilding: typeHTHBuilding
     currentFace: typePolygon
     refreshHTHTerritoryHandler: () => void
     territoryNumber: typeTerritoryNumber
 }
 
-export const HTHBuildingModal: FC<propsType> = ({ currentBuilding, currentFace, refreshHTHTerritoryHandler, territoryNumber, closeBuildingModalHandler }) => {
+export const HTHBuildingModal: FC<propsType> = ({ closeBuildingModalHandler, congregation, currentBuilding, currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
@@ -93,6 +94,7 @@ export const HTHBuildingModal: FC<propsType> = ({ currentBuilding, currentFace, 
                                     if (!currentHousehold) return <></>
                                     return (
                                         <HTHBuildingCheckbox
+                                            congregation={congregation}
                                             doorName={currentHousehold.doorName}
                                             doorNumber={currentHousehold.doorNumber}
                                             key={doorNumber}
@@ -119,6 +121,7 @@ export const HTHBuildingModal: FC<propsType> = ({ currentBuilding, currentFace, 
                     {!!currentBuilding.manager &&
                         <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                             <HTHBuildingCheckbox
+                                congregation={congregation}
                                 doorName={''}
                                 doorNumber={0}
                                 level={null}

@@ -52,7 +52,7 @@ export const HouseToHousePage = () => {
 
     const refreshHTHTerritoryHandler = useCallback((init?: boolean): void => {
         setIsLoading(true)
-        getHTHTerritoryService(territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
+        getHTHTerritoryService(user.congregation, territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
             setIsLoading(false)
             if (!hthTerritory0) return dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',

@@ -70,7 +70,7 @@ export const HTHMap: FC<propsType> = ({
 
     const editMapViewHandler = async (): Promise<void> => {
         const editedHTHMap: typeHTHMap = territoryHTH.map
-        const unmodifiedHTHTerritory: typeHTHTerritory|null = await getHTHTerritoryService(territoryHTH.territoryNumber)
+        const unmodifiedHTHTerritory: typeHTHTerritory|null = await getHTHTerritoryService(user.congregation, territoryHTH.territoryNumber)
         if (!unmodifiedHTHTerritory) return
         const editedHTHPolygons: typePolygon[] = []
         editedHTHMap.polygons.forEach((x, index) => {

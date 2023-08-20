@@ -157,10 +157,29 @@ export const editHTHMapService = async (territoryNumber: types.typeTerritoryNumb
     }
 }
 
-export const getHTHTerritoryService = async (territoryNumber: string): Promise<types.typeHTHTerritory|null> => {
-    if (!territoryNumber) return null   // not !getTokenService()
+export const getHTHBuildingService = async (congregation: number, territoryNumber: string,
+ block: types.typeBlock, face: types.typeFace, streetNumber: number): Promise<types.typeHTHTerritory|null> => {
+    if (!congregation || !territoryNumber) return null   // not !getTokenService()
     try {
-        const response = await fetch(`${base}/${territoryNumber}`, {
+        const response = await fetch(`${base}/building/${congregation}/${territoryNumber}/${block}/${face}/${streetNumber}`, {
+            method: 'GET',
+            headers: getHeaders()
+        })
+        const data: types.typeResponseData|null = await response.json()
+        console.log(data);
+        
+        if (!data || !data.success || !data.hthTerritory) return null
+        return data.hthTerritory
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}
+
+export const getHTHTerritoryService = async (congregation: number, territoryNumber: string): Promise<types.typeHTHTerritory|null> => {
+    if (!getTokenService() || !congregation || !territoryNumber) return null
+    try {
+        const response = await fetch(`${base}/${congregation}/${territoryNumber}`, {
             method: 'GET',
             headers: getHeaders()
         })
@@ -270,11 +289,11 @@ export const deleteHTHBuildingService = async (
     }
 }
 
-export const modifyHTHHouseholdService = async (territoryNumber: types.typeTerritoryNumber, block: types.typeBlock,
+export const modifyHTHHouseholdService = async (congregation: number, territoryNumber: types.typeTerritoryNumber, block: types.typeBlock,
  face: types.typeFace, streetNumber: number, householdId: number, isChecked: boolean, isManager: boolean): Promise<boolean> => {
     if (!territoryNumber) return false   // not !getTokenService()
     try {
-        const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
+        const response = await fetch(`${base}/building/${congregation}/${territoryNumber}/${block}/${face}`, {
             method: 'PATCH',
             headers: getHeaders(),
             body: JSON.stringify({ householdId, isChecked, streetNumber, isManager })

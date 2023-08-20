@@ -1,10 +1,11 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import { setHTHIsSharedBuildingsService } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { typePolygon, typeTerritoryNumber } from '../../../models'
+import { typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useDispatch } from 'react-redux'
 import { WhatsAppIcon1 } from '../../commons/WhatsAppIcon1'
 import { WhatsappShareButton } from 'react-share'
+import { useSelector } from 'react-redux'
 
 type propsType = {
     currentFace: typePolygon
@@ -17,6 +18,7 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
     const [url, setUrl] = useState<string>('')
     const dispatch = useDispatch()
     const shareButton = useRef<any>()
+    const user = useSelector((state: typeRootState) => state.user)
 
     const shareBuildingHandler = (): void => {
         let currentUrl: string = '\n\n'
@@ -27,7 +29,7 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
             if (checkbox.checked) {
                 const streetNumber: number = parseInt(checkbox.value)
                 if (territoryNumber && currentFace && currentFace.block && currentFace.face && currentFace.street && streetNumber && !isNaN(streetNumber)) {
-                    currentUrl += `Edificio ${currentFace.street} ${streetNumber} (Territorio ${territoryNumber})\n\nhttps://www.misericordiaweb.com/edificio/${territoryNumber}/${currentFace.block}/${currentFace.face}/${streetNumber}\n\n`
+                    currentUrl += `Edificio ${currentFace.street} ${streetNumber} (Territorio ${territoryNumber})\n\nhttps://www.misericordiaweb.com/edificio/${user.congregation}/${territoryNumber}/${currentFace.block}/${currentFace.face}/${streetNumber}\n\n`
                     buildings.push(streetNumber)
                 }
                 checkbox.checked = false

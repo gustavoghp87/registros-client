@@ -7,16 +7,17 @@ import { useDispatch } from 'react-redux'
 
 type propsType = {
     // add and use:
-    level: number|null
+    congregation: number
     doorName: string
     doorNumber: number
+    level: number|null
     // use:
     block?: typeBlock
     closeBuildingModalHandler?: () => void
     face?: typeFace
     id?: number
-    isManager?: boolean
     isChecked0?: boolean
+    isManager?: boolean
     refreshHTHTerritoryHandler?: () => void
     setShow?: Dispatch<SetStateAction<boolean>>
     streetNumber?: number
@@ -24,7 +25,7 @@ type propsType = {
 }
 
 export const HTHBuildingCheckbox: FC<propsType> = ({
-    block, closeBuildingModalHandler, doorName, doorNumber, face, id, isChecked0,
+    block, closeBuildingModalHandler, congregation, doorName, doorNumber, face, id, isChecked0,
     isManager, level, refreshHTHTerritoryHandler, setShow, streetNumber, territoryNumber
 }) => {
     const dispatch = useDispatch()
@@ -32,7 +33,7 @@ export const HTHBuildingCheckbox: FC<propsType> = ({
 
     const changeCallingState = (): void => {
         if (!territoryNumber || !block || !face || !streetNumber || !id || !refreshHTHTerritoryHandler) return
-        modifyHTHHouseholdService(territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager).then((success: boolean) => {
+        modifyHTHHouseholdService(congregation, territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager).then((success: boolean) => {
             if (!success) {
                 if (closeBuildingModalHandler) closeBuildingModalHandler()
                 else if (setShow) setShow(false)

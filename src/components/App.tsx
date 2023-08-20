@@ -60,7 +60,7 @@ export const App = () => {
                         <Route path={'/privacidad'} element={ <Pages.PrivacyPolicyPage /> } />
                         <Route path={'/recovery'} element={ <Pages.RecoveryPage /> } />
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
-                        <Route path={'/edificio/:territoryNumber/:block/:face/:streetNumber'} element={ <Pages.HTHBuildingPage /> } />
+                        <Route path={'/edificio/:congregation/:territoryNumber/:block/:face/:streetNumber'} element={ <Pages.HTHBuildingPage /> } />
                         <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />
                         <Route path={'/testing'} element={ <Pages.TestingPage /> } />
 
