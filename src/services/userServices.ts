@@ -46,6 +46,22 @@ export const assignTLPTerritoryService = async (email: string, toAssign: number|
     }
 }
 
+export const changeEmailService = async (newEmail: string): Promise<typeResponseData|null> => {
+    if (!getTokenService() && !newEmail) return null
+    try {
+        const response = await fetch(`${base}/token`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify({ newEmail })
+        })
+        const data: typeResponseData = await response.json()
+        return data
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}
+
 export const changePswService = async (team: number, psw: string|null, newPsw: string, id: string|null): Promise<typeResponseData|null> => {
     if (!getTokenService() && !id) return null
     try {

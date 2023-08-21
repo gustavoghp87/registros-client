@@ -1,7 +1,7 @@
 import { generalBlue, typeRootState } from '../../models'
 import { H2, WeatherAndForecast } from '../commons'
 import { NavigateFunction, useNavigate } from 'react-router'
-import { subirAlTop } from '../../services'
+import { goToTop } from '../../services'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -13,7 +13,7 @@ export const HomePage = () => {
     const navigate: NavigateFunction = useNavigate()
 
     useEffect(() => {
-        subirAlTop()
+        goToTop()
     }, [])
 
     return (

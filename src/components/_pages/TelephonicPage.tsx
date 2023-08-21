@@ -1,5 +1,5 @@
 import { Col0a, Col0b, FewHouseholdsWarning, FreePhonesMessage, LocalStatistics, MapModal, PhonesToShowPagination, StateOfTerritoryBtn, StaticMap, TelephonicCard } from '../telephonic'
-import { getBlocks, getTLPTerritoryService, getHouseholdsToShow, getHouseholdVariant, subirAlTop } from '../../services'
+import { getBlocks, getTLPTerritoryService, getHouseholdsToShow, getHouseholdVariant, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { io, Socket } from 'socket.io-client'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
@@ -92,7 +92,7 @@ export const TelephonicPage = () => {
 
     useEffect(() => {
         if (!territoryNumber) return navigate('/selector')
-        subirAlTop()
+        goToTop()
         getTLPTerritoryService(territoryNumber).then((telephonicTerritory0: typeTelephonicTerritory|null) => {
             setLoaded(true)
             if (!telephonicTerritory0) return navigate('/selector')

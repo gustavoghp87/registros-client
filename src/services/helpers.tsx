@@ -223,4 +223,4 @@ export const getHouseholdDoorBell = (doorNumber: number, index: number, index1: 
     }
 }
 
-export const subirAlTop = () => window.scrollTo(0, 0);
+export const goToTop = () => window.scrollTo(0, 0);

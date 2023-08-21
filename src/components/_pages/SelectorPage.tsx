@@ -3,7 +3,7 @@ import { HouseToHouseSelector, TelephonicSelector } from '../selector'
 import { Hr } from '../commons'
 import { logoutReducer, refreshUserReducer } from '../../store'
 import { NavigateFunction, useNavigate } from 'react-router'
-import { subirAlTop } from '../../services'
+import { goToTop } from '../../services'
 import { typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
@@ -16,7 +16,7 @@ export const SelectorPage = () => {
     const navigate: NavigateFunction = useNavigate()
     
     useEffect(() => {
-        subirAlTop()
+        goToTop()
         getUserByTokenService().then((user: typeUser|false|null) => {
             if (user) {
                 dispatch(refreshUserReducer(user))

@@ -79,7 +79,7 @@ export const FormLayout: FC<propsType> = ({
                         className={'form-control'}
                         disabled={!!isRecovery}
                         id={"emailInput"}
-                        onChange={(e: any) => setEmail((e.target as HTMLInputElement).value)}
+                        onChange={e => setEmail((e.target as HTMLInputElement).value)}
                         placeholder={isRecovery ? "Cargando..." : "Correo electrónico"}
                         //style={{ backgroundColor: 'lightgray' }}
                         type={'email'}
@@ -94,8 +94,8 @@ export const FormLayout: FC<propsType> = ({
                     <Form.Control
                         className={'form-control'}
                         id={"passwordInput"}
-                        onChange={(e: any) => setPassword((e.target as HTMLInputElement).value)}
-                        onKeyDown={(e: any) => e.key === 'Enter' && !isRegister && !isRecovery ? action() : null }
+                        onChange={e => setPassword((e.target as HTMLInputElement).value)}
+                        onKeyDown={e => e.key === 'Enter' && !isRegister && !isRecovery ? action() : null }
                         placeholder={"Contraseña"}
                         type={'password'}
                         value={password}
@@ -113,8 +113,8 @@ export const FormLayout: FC<propsType> = ({
                             type={'password'}
                             value={confPassword}
                             placeholder={"Confirmar Contraseña"}
-                            onChange={(e: any) => setConfPassword((e.target as HTMLInputElement).value)}
-                            onKeyDown={(e: any) => e.key === 'Enter' ? action() : null }
+                            onChange={e => setConfPassword((e.target as HTMLInputElement).value)}
+                            onKeyDown={e => e.key === 'Enter' ? action() : null }
                         />
                     </FloatingLabel>
                 }
@@ -130,13 +130,13 @@ export const FormLayout: FC<propsType> = ({
                             value={team ? team : ''}
                             min={'1'}
                             placeholder={"Número de Equipo de Trabajo"}
-                            onChange={(e: any) => setTeam((e.target as any).value)}
-                            onKeyDown={(e: any) => e.key === 'Enter' ? action() : null }
+                            onChange={e => setTeam(parseInt(e.target.value))}
+                            onKeyDown={e => e.key === 'Enter' ? action() : null }
                         />
                     </FloatingLabel>
 
                     <FloatingLabel
-                        label={"Número de Grupo de Predicación"}
+                        label={"Número de Grupo"}
                         className={'mb-3 text-dark'}
                     >
                         <Form.Control
@@ -144,9 +144,9 @@ export const FormLayout: FC<propsType> = ({
                             type={'number'}
                             value={group ? group : ''}
                             min={'1'}
-                            placeholder={"Número de Grupo de Predicación"}
-                            onChange={(e: any) => setGroup((e.target as any).value)}
-                            onKeyDown={(e: any) => e.key === 'Enter' ? action() : null }
+                            placeholder={"Número de Grupo"}
+                            onChange={e => setGroup(parseInt(e.target.value))}
+                            onKeyDown={e => e.key === 'Enter' ? action() : null }
                         />
                     </FloatingLabel>
                 </>}

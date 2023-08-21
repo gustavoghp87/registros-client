@@ -1,6 +1,6 @@
 import { Container } from 'react-bootstrap'
 import { generalBlue, hthChangeString, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
-import { getHTHTerritoryService, subirAlTop } from '../../services'
+import { getHTHTerritoryService, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
 import { io, Socket } from 'socket.io-client'
@@ -96,7 +96,7 @@ export const HouseToHousePage = () => {
         if (!init) socket.emit(hthChangeString, user.congregation, territoryNumber, user.email)
     }, [dispatch, territoryNumber, user.congregation, user.email])
 
-    useEffect(() => subirAlTop(), [])
+    useEffect(() => goToTop(), [])
 
     useEffect(() => {
         refreshHTHTerritoryHandler(true)

@@ -1,4 +1,4 @@
-import { subirAlTop } from '../../services'
+import { goToTop } from '../../services'
 import { typeRootState } from '../../models'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 export const PrivacyPolicyPage = () => {
     const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
 
-    useEffect(() => subirAlTop(), [])
+    useEffect(() => goToTop(), [])
 
     return (
         <div className={isDarkMode ? 'text-white' : ''} style={{ marginTop: '80px' }}>

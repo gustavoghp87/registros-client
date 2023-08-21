@@ -1,5 +1,5 @@
 import { H2 } from "../commons"
-import { subirAlTop } from "../../services"
+import { goToTop } from "../../services"
 import { typeRootState } from "../../models"
 import { useEffect } from "react"
 import { useNavigate } from "react-router"
@@ -10,7 +10,7 @@ export const Config = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        subirAlTop()
+        goToTop()
     }, [])
 
     return (<>

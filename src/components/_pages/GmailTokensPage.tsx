@@ -1,6 +1,6 @@
 import { Button, Container, FloatingLabel, Form } from 'react-bootstrap'
 import { Credentials } from 'google-auth-library'
-import { getGmailRequestService, getGmailUrlService, saveNewGmailAPITokenToDBService, subirAlTop } from '../../services'
+import { getGmailRequestService, getGmailUrlService, saveNewGmailAPITokenToDBService, goToTop } from '../../services'
 import { H2 } from '../commons'
 import { useEffect, useState } from 'react'
 
@@ -28,7 +28,7 @@ export const GmailTokensPage = () => {
     }
 
     useEffect(() => {
-        subirAlTop()
+        goToTop()
     }, [])
 
     return (<>
