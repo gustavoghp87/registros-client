@@ -64,7 +64,7 @@ export const HTHObservationsItem: FC<propsType> = ({ closeShowAddFormHandler, cu
             />
 
             {/* edit observation form */}
-            {user && (user.isAdmin || observation.creatorId === user.id) && showForm &&
+            {(user.isAdmin || observation.creatorId === user.id) && showForm &&
                 <HTHObservationsForm
                     closeShowFormHandler={closeShowFormHandler}
                     currentFace={currentFace}

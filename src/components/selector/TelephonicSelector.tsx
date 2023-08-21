@@ -12,7 +12,7 @@ export const TelephonicSelector = () => {
     const [show, setShow] = useState<boolean>(true)
 
     useEffect(() => {
-        if (user && !user.phoneAssignments.length) setShow(false)
+        if (!user.phoneAssignments?.length) setShow(false)
     }, [user])
     
     return (

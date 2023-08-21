@@ -64,7 +64,7 @@ export const App = () => {
                         <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />
                         <Route path={'/testing'} element={ <Pages.TestingPage /> } />
 
-                        {(!user || !user.isAuth) ?
+                        {!user.isAuth ?
                             <Route path={'/acceso'} element={<Pages.LoginPage />} />
                             :
                             <>
@@ -75,12 +75,12 @@ export const App = () => {
                             </>
                         }
 
-                        {user && user.isAdmin && <>
+                        {user.isAdmin && <>
                             <Route path={'/admins'} element={<Pages.AdminsPage />} />
                             <Route path={'/gmail'} element={<Pages.GmailTokensPage />} />
                         </>}
 
-                        {user && user.hthAssignments?.length &&
+                        {user.hthAssignments?.length &&
                             <Route path={'/casa-en-casa/:territoryNumber'} element={<Pages.HouseToHousePage />} />
                         }
 

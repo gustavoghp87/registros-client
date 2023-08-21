@@ -138,13 +138,11 @@ export const TelephonicPage = () => {
 
     return (
         <>
-            {addressToShowInGoogleMaps && <>
-                <h1>{addressToShowInGoogleMaps}</h1>
+            {addressToShowInGoogleMaps &&
                 <MapModal
                     address={addressToShowInGoogleMaps}
                     hideGoogleMapHandler={hideGoogleMapHandler}
                 />
-                </>
             }
 
             {loaded &&

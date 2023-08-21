@@ -72,7 +72,7 @@ export const UserPage = () => {
 
                     <h3> Territorios de Casa en Casa asignados: </h3>
 
-                    {user && !!user.hthAssignments?.length ?
+                    {!!user.hthAssignments?.length ?
                         ([...user.hthAssignments]).sort((a: number, b: number) => a - b).map((territoryNumber: number) => (
                             <button key={territoryNumber}
                                 className={'btn btn-general-blue d-inline-block text-center mt-3 mx-1 px-0'}
@@ -93,7 +93,7 @@ export const UserPage = () => {
 
                     <h3> Territorios de Telefónica asignados: </h3>
 
-                    {user && !!user.phoneAssignments?.length ?
+                    {!!user.phoneAssignments?.length ?
                         [...user.phoneAssignments].sort((a: number, b: number) => a - b).map((territoryNumber: number) => (
                             <button key={territoryNumber}
                                 className={'btn btn-general-red d-inline-block text-center mt-3 mx-1 px-0'}

@@ -1,4 +1,4 @@
-import { Container } from 'react-bootstrap'
+import { Card, Container, FloatingLabel, Form } from 'react-bootstrap'
 import { generalBlue, hthChangeString, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { getHTHTerritoryService, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
@@ -25,6 +25,7 @@ export const HouseToHousePage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
+    const [buildingAddress, setBuildingAddress] = useState('')
     const dispatch = useDispatch()
 
     const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
@@ -52,7 +53,7 @@ export const HouseToHousePage = () => {
 
     const refreshHTHTerritoryHandler = useCallback((init?: boolean): void => {
         setIsLoading(true)
-        getHTHTerritoryService(user.congregation, territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
+        getHTHTerritoryService(territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
             setIsLoading(false)
             if (!hthTerritory0) return dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
@@ -187,15 +188,12 @@ export const HouseToHousePage = () => {
                 }
             </h1>
             
-            {user && currentFace && !!territoryHTH &&
+            {!!territoryHTH && !!currentFace && <>
                 <HTHSetIsFinishedButton
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryHTH={territoryHTH}
                 />
-            }
-
-            {!!territoryHTH && !!currentFace && <>
                 <HTHBuildings
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
@@ -211,14 +209,43 @@ export const HouseToHousePage = () => {
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryHTH.territoryNumber}
                 />
+
+                {user.isAdmin && !isMobile &&
+                    <HTHDeleteFaceButton
+                        currentFace={currentFace}
+                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                        territoryHTH={territoryHTH}
+                    />
+                }
             </>}
 
-            {!!user.isAdmin && !!currentFace && !isMobile && !!territoryHTH &&
-                <HTHDeleteFaceButton
-                    currentFace={currentFace}
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territoryHTH={territoryHTH}
-                />
+            {!!territoryHTH && !currentFace &&
+                <>
+                    <h1>Buscar edificio</h1>
+                    <FloatingLabel
+                        className={'mb-3 text-dark'}
+                        label={"Dirección"}
+                    >
+                        <Form.Control
+                            className={'form-control'}
+                            type={'text'}
+                            placeholder={"Dirección..."}
+                            value={buildingAddress}
+                            onChange={e => setBuildingAddress((e.target as HTMLInputElement).value)}
+                            autoFocus
+                        />
+                    </FloatingLabel>
+                    {territoryHTH.map.polygons.map(p =>
+                        <Card>
+                            {p.buildings?.map(b => <>
+                                {`${p.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) &&
+                                    <span>{p.street} {b.streetNumber}</span>
+                                }
+                            </>
+                            )}
+                        </Card>
+                    )}
+                </>
             }
 
         </Container>

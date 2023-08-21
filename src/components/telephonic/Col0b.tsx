@@ -18,7 +18,7 @@ export const Col0b: FC<propsType> = ({ isShowingAll, isShowingStatistics, setIsS
     let radios: any[] = []
 
     if (isMobile)
-        radios = user && user.isAdmin ? 
+        radios = user.isAdmin ? 
             [
                 { name: isShowingAll ? 'Ver no pred' : 'Viendo no pred', value: '1' },
                 { name: isShowingAll ? 'Viendo todos' : 'Ver todos', value: '2' },
@@ -30,7 +30,7 @@ export const Col0b: FC<propsType> = ({ isShowingAll, isShowingStatistics, setIsS
                 { name: isShowingAll ? 'Viendo todos' : 'Ver todos', value: '2' }
             ]
     else
-        radios = user && user.isAdmin ?
+        radios = user.isAdmin ?
             [
                 { name: (isShowingAll || isShowingStatistics) ? 'Ver no predicados' : 'Viendo no predicados', value: '1' },
                 { name: isShowingAll ? 'Viendo todos' : 'Ver todos', value: '2' },

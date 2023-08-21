@@ -176,15 +176,15 @@ export const getHTHBuildingService = async (congregation: number, territoryNumbe
     }
 }
 
-export const getHTHTerritoryService = async (congregation: number, territoryNumber: string): Promise<types.typeHTHTerritory|null> => {
-    if (!getTokenService() || !congregation || !territoryNumber) return null
+export const getHTHTerritoryService = async (territoryNumber: string): Promise<types.typeHTHTerritory|null> => {
+    if (!getTokenService() || !territoryNumber) return null
     try {
-        const response = await fetch(`${base}/${congregation}/${territoryNumber}`, {
+        const response = await fetch(`${base}/${territoryNumber}`, {
             method: 'GET',
             headers: getHeaders()
         })
         const data: types.typeResponseData|null = await response.json()
-        if (!data || !data.success || !data.hthTerritory) return null
+        if (!data?.success || !data?.hthTerritory) return null
         return data.hthTerritory
     } catch (error) {
         console.log(error)

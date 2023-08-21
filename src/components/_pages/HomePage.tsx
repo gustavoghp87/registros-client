@@ -28,7 +28,7 @@ export const HomePage = () => {
 
             <div className={'my-5'}>
                 <h3 className={'pointer rounded-3'}
-                    onClick={() => navigate(user && user.isAuth ? '/selector' : '/acceso')}
+                    onClick={() => navigate(user.isAuth ? '/selector' : '/acceso')}
                     onMouseOver={e => (e.target as HTMLElement).style.backgroundColor = '#25457d'}
                     onMouseLeave={e => (e.target as HTMLElement).style.backgroundColor = generalBlue}
                     style={{

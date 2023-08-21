@@ -70,7 +70,7 @@ export const HTHMap: FC<propsType> = ({
 
     const editMapViewHandler = async (): Promise<void> => {
         const editedHTHMap: typeHTHMap = territoryHTH.map
-        const unmodifiedHTHTerritory: typeHTHTerritory|null = await getHTHTerritoryService(user.congregation, territoryHTH.territoryNumber)
+        const unmodifiedHTHTerritory: typeHTHTerritory|null = await getHTHTerritoryService(territoryHTH.territoryNumber)
         if (!unmodifiedHTHTerritory) return
         const editedHTHPolygons: typePolygon[] = []
         editedHTHMap.polygons.forEach((x, index) => {
@@ -272,7 +272,7 @@ export const HTHMap: FC<propsType> = ({
             />
         }
 
-        {user && user.isAdmin && !isMobile &&
+        {user.isAdmin && !isMobile &&
             <div className={'d-flex justify-content-center'}>
                 {!isAddingPolygon &&
                     <button className={`mt-4 me-4 btn ${isEditingView ? 'btn-danger btn-size12' : 'btn-general-blue'}`}

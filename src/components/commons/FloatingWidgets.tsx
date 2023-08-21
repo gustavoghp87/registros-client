@@ -40,7 +40,7 @@ export const FloatingWidgets = () => {
                     </div>
                 }
 
-                {user && user.isAuth && ((isMobile && !scrollDown) || !isMobile) &&
+                {user.isAuth && ((isMobile && !scrollDown) || !isMobile) &&
                     <div className={`col-4 ${isDarkMode ? 'text-white' : ''}`}
                         style={{
                             fontSize: isMobile ? '.9rem' : '',

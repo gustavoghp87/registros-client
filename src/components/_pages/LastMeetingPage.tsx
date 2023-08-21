@@ -89,7 +89,7 @@ export const LastMeetingPage = () => {
                                     className={'form-control'}
                                     disabled={false}
                                     id={"emailInput"}
-                                    onChange={(e: any) => console.log(e.target.value)}
+                                    onChange={e => console.log(e.target.value)}
                                     placeholder={"URL de Youtube"}
                                     //style={{ backgroundColor: 'lightgray' }}
                                     type={'text'}

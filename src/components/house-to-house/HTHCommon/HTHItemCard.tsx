@@ -33,7 +33,7 @@ export const HTHItemCard: FC<propsType> = ({ creatorId, date, deleteHandler, edi
                 {text}
             </h3>
 
-            {user && (user.isAdmin || creatorId === user.id) && <>
+            {(user.isAdmin || creatorId === user.id) && <>
 
                 {editHandler &&
                     <div className={'mt-1 mb-2 py-1 pointer'} style={{ border: '1px solid lightgray', borderRadius: '5px' }}

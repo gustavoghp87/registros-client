@@ -49,7 +49,7 @@ export const NavBar = () => {
                 
                 <Navbar.Collapse>
                     <Nav className={'me-auto'}>
-                        {user && user.isAuth ?
+                        {user.isAuth ?
                             <>
                                 <Nav.Link
                                     onClick={() => navigateHandler('/selector')}
@@ -74,7 +74,7 @@ export const NavBar = () => {
                                 </Nav.Link>
                         }
 
-                        {user && user.isAdmin &&
+                        {user.isAdmin &&
                             <Nav.Link
                                 onClick={() => navigateHandler('/admins')}
                                 style={{ color, margin: isMobile ? '8px 0' : '0' }}
@@ -84,7 +84,7 @@ export const NavBar = () => {
                         }
                     </Nav>
 
-                    {user && user.isAuth &&
+                    {user.isAuth &&
                         <Nav >
                             <Nav.Link className={''}
                                 onClick={() => navigateHandler('/usuario')}

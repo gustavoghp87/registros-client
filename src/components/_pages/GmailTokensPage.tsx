@@ -58,7 +58,7 @@ export const GmailTokensPage = () => {
 
                 <Form>
                     <FloatingLabel label={"Gmail Code"} className={'mb-3'}>
-                        <Form.Control type={'text'} placeholder={"Gmail Code"} onChange={(e: any) => setCode(e.target.value)} />
+                        <Form.Control type={'text'} placeholder={"Gmail Code"} onChange={e => setCode(e.target.value)} />
                     </FloatingLabel>
 
                     <Button className={'d-block mx-auto mb-4'} onClick={() => step2Handler()} disabled={!code}>
