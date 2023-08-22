@@ -3,10 +3,11 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { getUsersService } from '../../services/userServices'
 import { H2, Loading, WarningToaster } from '../commons'
 import { io, Socket } from 'socket.io-client'
-import { SERVER } from '../../config'
+import { SERVER } from '../../app-config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { typeRootState, typeUser, userChangeString } from '../../models'
+import { typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
+import { userChangeString } from '../../constants'
 import { UsersCard } from './'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
@@ -21,8 +22,8 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
         user: state.user
     }))
     const dispatch = useDispatch()
-    const [emailSearchInputText, setEmailSearchInputText] = useState<string>("")
-    const [selectedGroup, setSelectedGroup] = useState<number>(0)
+    const [emailSearchInputText, setEmailSearchInputText] = useState("")
+    const [selectedGroup, setSelectedGroup] = useState(0)
     const [users, setUsers] = useState<typeUser[]>()
     const [usersToShow, setUsersToShow] = useState<typeUser[]>()
     

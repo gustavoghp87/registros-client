@@ -11,7 +11,7 @@ export const BoardPage = () => {
     }))
     const [currentItem, setCurrentItem] = useState<typeBoardItem>({ title: "", ids: [] })
     const [currentItemNumber, setCurrentItemNumber] = useState<number>(1)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [isLoading, setIsLoading] = useState(true)
     const [items, setItems] = useState<typeBoardItem[]>([])
 
     const setCurrentElementNumberHandler = (element: number): void => setCurrentItemNumber(element)

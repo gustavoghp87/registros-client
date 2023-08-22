@@ -9,7 +9,7 @@ type propsType = {
 
 export const FewHouseholdsWarning: FC<propsType> = ({ households }) => {
     const [numberOfFreePhones, setNumberOfFreePhones] = useState<number>()
-    const [showToaster, setShowToaster] = useState<boolean>(true)
+    const [showToaster, setShowToaster] = useState(true)
 
     const closeWarningToaster = (): void => setShowToaster(false)
     

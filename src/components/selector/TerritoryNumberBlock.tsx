@@ -1,7 +1,7 @@
 import { FC } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
 import { Row } from 'react-bootstrap'
 import { typeRootState } from '../../models'
+import { useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 import { WeatherAndForecast } from '../commons'
 
@@ -17,7 +17,7 @@ export const TerritoryNumberBlock: FC<propsType> = ({ classes, showForecast, ter
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const navigate: NavigateFunction = useNavigate()
+    const navigate = useNavigate()
 
     return (
         <div className={`card card-body mt-4 ${isDarkMode ? 'bg-dark' : ''}`}>

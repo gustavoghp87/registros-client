@@ -5,11 +5,13 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 export const TelephonicSelector = () => {
-    const { isDarkMode, user } = useSelector((state: typeRootState) => ({
+    const { config, isDarkMode, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const [show, setShow] = useState<boolean>(true)
+    const [show, setShow] = useState(true)
+    const [showAll, setShowAll] = useState(false)
 
     useEffect(() => {
         if (!user.phoneAssignments?.length) setShow(false)
@@ -27,17 +29,36 @@ export const TelephonicSelector = () => {
 
             {show &&
                 <>
-                    {!!user.phoneAssignments?.length ?
+                    {user.isAdmin &&
+                        <button className={`btn btn-general-red pointer mt-4`}
+                            onClick={() => setShowAll(x => !x)}
+                        >
+                            {showAll ? 'Ver solo los asignados' : 'Ver todos los territorios'}
+                        </button>
+                    }
+                    
+                    {showAll ?
                         <TerritoryNumberBlock
                             classes={'btn-general-red animate__animated animate__bounce'}
-                            territories={[...user.phoneAssignments].sort((a: number, b: number) => a - b)}
+                            territories={Array.from({ length: config.numberOfTerritories }, (_: any, index: number) => index + 1)}
                             url={'/telefonica'}
                             showForecast={false}
                         />
                         :
-                        <h3 className={`text-center my-5 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>
-                            No hay territorios de la Telefónica asignados <br/> Hablar con el grupo de territorios
-                        </h3>
+                        <>
+                            {!!user.phoneAssignments?.length ?
+                                <TerritoryNumberBlock
+                                    classes={'btn-general-red animate__animated animate__bounce'}
+                                    territories={[...user.phoneAssignments].sort((a: number, b: number) => a - b)}
+                                    url={'/telefonica'}
+                                    showForecast={false}
+                                />
+                                :
+                                <h3 className={`text-center my-5 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>
+                                    No hay territorios de la Telefónica asignados <br/> Hablar con el grupo de territorios
+                                </h3>
+                            }
+                        </>
                     }
                 </>
             }

@@ -1,5 +1,6 @@
 import { FC, useMemo } from 'react'
-import { generalBlue, typeBlock, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
+import { generalBlue } from '../../constants'
+import { typeBlock, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
 import { useSelector } from 'react-redux'
 
 type propsType = {

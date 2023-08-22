@@ -1,5 +1,6 @@
-import { generalBlue, typeRootState } from '../../models'
+import { generalBlue } from '../../constants'
 import { Link } from 'react-router-dom'
+import { typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
 
 export const Footer = () => {
@@ -38,6 +39,8 @@ export const Footer = () => {
                     {isMobile && <br/>}
                     
                     <Link to={'/servicio'} className={`${isMobile ? '' : 'ms-2'} text-white`}> Términos de Uso </Link>
+
+                    <span className={'text-white'} style={{ fontSize: '1rem' }}>&nbsp;&nbsp;Versión 5.2</span>
 
                 </div>
             </div>

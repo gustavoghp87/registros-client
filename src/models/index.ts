@@ -1,6 +1,6 @@
 export * from './board'
 export * from './campaign'
-export * from './constants'
+export * from './config'
 export * from './houseToHouse'
 export * from './httpResponse'
 export * from './log'

@@ -8,7 +8,7 @@ type adminsSections = '' | 'users' | 'statistics' | 'logs' | 'campaign' | 'confi
 
 export const AdminsPage = () => {
     const dispatch = useDispatch()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [currentSection, setCurrentSection] = useState<adminsSections>('')
 
     useEffect(() => {

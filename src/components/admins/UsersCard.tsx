@@ -5,8 +5,9 @@ import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Hr } from '../commons'
 import { setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
 import { Socket } from 'socket.io-client'
-import { typeRootState, typeUser, userChangeString } from '../../models'
+import { typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
+import { userChangeString } from '../../constants'
 
 type propsType = {
     currentUser: typeUser
@@ -22,14 +23,14 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
         user: state.user
     }))
     const dispatch = useDispatch()
-    const [assignHTHValue, setAssignHTHValue] = useState<number>(0)
-    const [assignTLPValue, setAssignTLPValue] = useState<number>(0)
-    const [unassignHTHValue, setUnassignHTHValue] = useState<number>(0)
-    const [unassignTLPValue, setUnassignTLPValue] = useState<number>(0)
-    const [changeHTHAssignmentsVisible, setChangeHTHAssignmentsVisible] = useState<boolean>(false)
-    const [changeTLPAssignmentsVisible, setChangeTLPAssignmentsVisible] = useState<boolean>(false)
-    const [groupVisible, setGroupVisible] = useState<boolean>(false)
-    const [showCardBody, setShowCardBody] = useState<boolean>(false)
+    const [assignHTHValue, setAssignHTHValue] = useState(0)
+    const [assignTLPValue, setAssignTLPValue] = useState(0)
+    const [unassignHTHValue, setUnassignHTHValue] = useState(0)
+    const [unassignTLPValue, setUnassignTLPValue] = useState(0)
+    const [changeHTHAssignmentsVisible, setChangeHTHAssignmentsVisible] = useState(false)
+    const [changeTLPAssignmentsVisible, setChangeTLPAssignmentsVisible] = useState(false)
+    const [groupVisible, setGroupVisible] = useState(false)
+    const [showCardBody, setShowCardBody] = useState(false)
     const groups: number[] = [1,2,3,4,5,6]
 
     const openAlertModalHandler = (mode: typeMode, title: string, message: string, animation?: number, execution?: Function): void => {

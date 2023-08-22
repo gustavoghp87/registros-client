@@ -1,9 +1,9 @@
 import { changePswService, getEmailByEmailLink } from '../../services/userServices'
 import { FormLayout } from '../commons'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const RecoveryPage = () => {
     // const { id } = useParams<string>()
@@ -13,10 +13,10 @@ export const RecoveryPage = () => {
     const team = queryParams.team;
 
     const dispatch = useDispatch()
-    const navigate: NavigateFunction = useNavigate()
-    const [confPassword, setConfPassword] = useState<string>('')
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
+    const navigate = useNavigate()
+    const [confPassword, setConfPassword] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
     const openAlertModalHandler = (title: string, message: string, animation?: number, execution?: Function): void => {
         dispatch(setValuesAndOpenAlertModalReducer({

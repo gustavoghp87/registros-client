@@ -1,8 +1,9 @@
-import { generalBlue, typeRootState } from '../../models'
+import { generalBlue } from '../../constants'
 import { logoutReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
-import { NavigateFunction, useNavigate } from 'react-router'
+import { typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router'
 import { useState } from 'react'
 
 const color = '#fbfbfb'
@@ -13,7 +14,7 @@ export const NavBar = () => {
         user: state.user
     }))
     const dispatch = useDispatch()
-    const navigate: NavigateFunction = useNavigate()
+    const navigate = useNavigate()
     const [expanded, setExpanded] = useState(false)
     
     const openLogoutConfirmModal = (): void => {

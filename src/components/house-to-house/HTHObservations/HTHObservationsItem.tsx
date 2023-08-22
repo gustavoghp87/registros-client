@@ -18,7 +18,7 @@ export const HTHObservationsItem: FC<propsType> = ({ closeShowAddFormHandler, cu
         user: state.user
     }))
     const dispatch = useDispatch()
-    const [showForm, setShowForm] = useState<boolean>(false)
+    const [showForm, setShowForm] = useState(false)
 
     const editHandler = (): void => {
         closeShowAddFormHandler()

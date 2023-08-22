@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 export const FloatingWidgets = () => {
-    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
+    const { config, isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const [scrollDown, setScrollDown] = useState<boolean>(false)
+    const [scrollDown, setScrollDown] = useState(false)
 
     useEffect(() => {
         document.addEventListener('scroll', () => {
@@ -55,11 +56,13 @@ export const FloatingWidgets = () => {
                             {isMobile ? user.email.split('@')[0] : user.email}
                         </p>
                         <p className={'text-end mb-0'}>
-                            Grupo {user.group}
+                            {config.name} - Grupo {user.group}
                         </p>
-                        <p className={'text-end'}>
-                            {user.role ? isMobile ? "Admin" : "Administrador" : ""}
-                        </p>
+                        {user.isAdmin &&
+                            <p className={'text-end'}>
+                                {isMobile ? "Admin" : "Administrador"}
+                            </p>
+                        }
                     </div>
                 }
             </div>

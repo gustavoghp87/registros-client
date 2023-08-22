@@ -13,7 +13,7 @@ type propsType = {
 
 export const HTHBuildingItem: FC<propsType> = ({ building, currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const user = useSelector((state: typeRootState) => state.user)
-    const [show, setShow] = useState<boolean>(false)
+    const [show, setShow] = useState(false)
 
     const getFreeHouseholds = (building: typeHTHBuilding): number => {
         if (!building.households?.length) return 0

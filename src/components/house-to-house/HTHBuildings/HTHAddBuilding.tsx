@@ -9,7 +9,7 @@ type propsType = {
 }
 
 export const HTHAddBuilding: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const [showModal, setShowModal] = useState<boolean>(false)
+    const [showModal, setShowModal] = useState(false)
 
     const closeHTHModalHandler = (): void => setShowModal(false)
 

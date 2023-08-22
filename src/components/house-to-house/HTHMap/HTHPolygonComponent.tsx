@@ -1,7 +1,8 @@
 import { editInfoWindowsStyles } from '../../../services'
 import { FC, useEffect, useRef, useState } from 'react'
-import { generalBlue, generalRed, typeBlock, typeFace, typeHTHTerritory, typePolygon } from '../../../models'
+import { generalBlue, generalRed } from '../../../constants'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
+import { typeBlock, typeFace, typeHTHTerritory, typePolygon } from '../../../models'
 
 let lastClick: number = 0
 
@@ -19,8 +20,8 @@ type propsType = {
 
 export const HTHPolygonComponent: FC<propsType> = ({ currentFace, isAddingPolygon, isEditingView, polygon, runIntervals, selectBlockAndFaceHandler, setTerritoryHTHHandler, territoryHTH }) => {
     const ref = useRef<google.maps.Polygon>()
-    const [polygonColor, setPolygonColor] = useState<string>(generalBlue)
-    const [showInfoWindow, setShowInfoWindow] = useState<boolean>(false)
+    const [polygonColor, setPolygonColor] = useState(generalBlue)
+    const [showInfoWindow, setShowInfoWindow] = useState(false)
 
     const setIsFinishedHandler = (): void => {
         if ((+new Date() - lastClick) < 500) return

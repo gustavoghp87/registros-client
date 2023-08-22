@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { createRoot } from 'react-dom/client';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import { Provider } from 'react-redux'
-import { recaptchaPublicKey } from './config'
+import { recaptchaPublicKey } from './app-config'
 import { store } from './store'
 import * as serviceWorker from './serviceWorker'
 

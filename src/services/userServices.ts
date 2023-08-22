@@ -1,6 +1,6 @@
 import { getDarkModeFromLSService, getHeaders, getTokenFromLSService, removeTokenFromLSService, setDarkModeToLSService, setTokenToLSService, setUserToLSService } from '.'
-import { pointer } from '../config'
-import { typeResponseData, typeUser } from '../models'
+import { pointer } from '../app-config'
+import { typeConfig, typeResponseData, typeUser } from '../models'
 
 const base: string = pointer.user
 
@@ -145,25 +145,28 @@ export const getEmailByEmailLink = async (congregation: string, id: string): Pro
     }
 }
 
-export const getUserByTokenService = async (): Promise<typeUser|false|null> => {
-    if (!getTokenService()) return null
+export const getUserByTokenService = async (): Promise<{ user: typeUser|false|null, config: typeConfig|null }> => {
+    if (!getTokenService()) return { user: false, config: null }
     try {
         const response = await fetch(base, {
             method: 'GET',
             headers: getHeaders()
         })
         const data: typeResponseData = await response.json()
-        if (!data || !data.success || !data.user) {
+        if (!data?.success || !data?.user || !data?.config) {
             if (data && !data.success) removeTokenService()
-            return false
+            return { user: false, config: null }
         }
         data.user.isAuth = true
         data.user.isAdmin = data.user.role === 1
         setUserToLSService(JSON.stringify(data.user))
-        return data.user
+        return {
+            user: data.user,
+            config: data.config
+        }
     } catch (error) {
         console.log(error)
-        return null
+        return { user: null, config: null }
     }
 }
 

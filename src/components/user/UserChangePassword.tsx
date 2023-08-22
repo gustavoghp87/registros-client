@@ -15,8 +15,8 @@ export const UserChangePassword: FC<propsType> = ({ openAlertModalHandler, openC
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const [newPsw, setNewPsw] = useState('')
-    const [psw, setPsw] = useState('')
+    const [newPsw, setNewPsw] = useState("")
+    const [psw, setPsw] = useState("")
 
     const changePsw = async (): Promise<void> => {
         const response = await changePswService(user.congregation, psw, newPsw, null)

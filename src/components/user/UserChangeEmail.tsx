@@ -15,7 +15,7 @@ export const UserChangeEmail: FC<propsType> = ({ openAlertModalHandler, openConf
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const [newEmail, setNewEmail] = useState('')
+    const [newEmail, setNewEmail] = useState("")
 
     const changeEmail = async (): Promise<void> => {
         const response = await changeEmailService(newEmail)

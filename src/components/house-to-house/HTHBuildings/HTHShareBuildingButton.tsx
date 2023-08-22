@@ -14,8 +14,8 @@ type propsType = {
 }
 
 export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const [isShareButtonDisabled, setIsShareButtonDisabled] = useState<boolean>(true)
-    const [url, setUrl] = useState<string>('')
+    const [isShareButtonDisabled, setIsShareButtonDisabled] = useState(true)
+    const [url, setUrl] = useState("")
     const dispatch = useDispatch()
     const shareButton = useRef<any>()
     const user = useSelector((state: typeRootState) => state.user)

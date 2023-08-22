@@ -1,4 +1,5 @@
 export * from './AlertModalSlice'
+export * from './ConfigurationSlice'
 export * from './DarkModeSlice'
 export * from './LoadingModalSlice'
 export * from './MobileModeSlice'

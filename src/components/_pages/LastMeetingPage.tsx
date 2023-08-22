@@ -14,7 +14,7 @@ export const LastMeetingPage = () => {
         isMobile: state.mobileMode,
         user: state.user
     }))
-    const [showVideo, setShowVideo] = useState<boolean>(false)
+    const [showVideo, setShowVideo] = useState(false)
     const [pollValue, setPollValue] = useState<boolean>()
 
     return (

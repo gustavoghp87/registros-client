@@ -13,7 +13,7 @@ export const StaticMap: FC<propsType> = ({ mapId, territoryNumber }) => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const [showMap, setShowMap] = useState<boolean>(false)
+    const [showMap, setShowMap] = useState(false)
 
     return (
         <>

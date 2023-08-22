@@ -1,10 +1,11 @@
 import { editInfoWindowsStyles, getGeocodingFromCoordinatesService, getHTHTerritoriesForMapService } from '../../services'
 import { FC, useEffect, useRef, useState } from 'react'
-import { generalBlue, typeCoords, typeHTHTerritory, typeRootState } from '../../models'
+import { generalBlue } from '../../constants'
 import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsApiKey, mapId } from '../../config'
+import { googleMapsApiKey, mapId } from '../../app-config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
+import { typeCoords, typeHTHTerritory, typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
 
 type propsType = {
@@ -18,7 +19,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
         id: mapId
     })
     const map = useRef<any>()
-    const [address, setAddress] = useState<string>('')
+    const [address, setAddress] = useState("")
     const [centerCoords, setCenterCoords] = useState<typeCoords>()
     const [hthTerritories, setHTHTerritories] = useState<typeHTHTerritory[]>()
     const [zoom, setZoom] = useState<number>()
@@ -47,7 +48,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
         }
     }, [])
 
-    useEffect(() => {
+    // useEffect(() => {
         // if (!map.current) return
         // const locationButton = document.createElement('button')
         // locationButton.textContent = "Pan to Current Location"
@@ -59,7 +60,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
         // })
         // const interval = setInterval(() => locationButton.click(), 400)
         // setTimeout(() => { clearInterval(interval) }, 4200)
-    }, [centerCoords, map])
+    // }, [centerCoords, map])
 
     return (<>
 

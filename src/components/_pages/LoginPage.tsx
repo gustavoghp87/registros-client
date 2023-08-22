@@ -2,11 +2,11 @@ import { FormLayout, Loading } from '../commons'
 import { getFailingEmailFromLSService, setFailingEmailToLSService } from '../../services'
 import { getUserByTokenService1, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
 import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
-import { NavigateFunction, useNavigate } from 'react-router'
 import { typeResponseData, typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { useNavigate } from 'react-router'
 
 export const LoginPage = () => {
     const { executeRecaptcha } = useGoogleReCaptcha()
@@ -14,14 +14,14 @@ export const LoginPage = () => {
         isDarkMode: state.darkMode.isDarkMode
     }))
     const dispatch = useDispatch()
-    const navigate: NavigateFunction = useNavigate()
-    const [confPassword, setConfPassword] = useState<string>('')
-    const [email, setEmail] = useState<string>("")
-    const [group, setGroup] = useState<number>(0)
-    const [team, setTeam] = useState<number>(0)
-    const [isRegister, setIsRegister] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [password, setPassword] = useState<string>("")
+    const navigate = useNavigate()
+    const [confPassword, setConfPassword] = useState("")
+    const [email, setEmail] = useState("")
+    const [group, setGroup] = useState(0)
+    const [team, setTeam] = useState(0)
+    const [isRegister, setIsRegister] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [password, setPassword] = useState("")
 
     const openAlertModalHandler = (title: string, message: string, animation: number, execution?: Function): void => {
         dispatch(setValuesAndOpenAlertModalReducer({

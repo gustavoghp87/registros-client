@@ -1,9 +1,10 @@
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
-import { breakingPoint, typeRootState, typeUser } from '../models'
-import { changeMobileModeReducer, logoutReducer, refreshUserReducer } from '../store'
+import { breakingPoint } from '../constants'
+import { changeMobileModeReducer, logoutReducer, refreshUserReducer, setConfigurationReducer, setValuesAndOpenAlertModalReducer } from '../store'
 import { getUserByTokenService } from '../services/userServices'
-import { Location, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Suspense, useEffect } from 'react'
+import { typeRootState } from '../models'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Pages from './_pages'
 
@@ -16,7 +17,7 @@ export const App = () => {
         user: state.user
     }))
     const dispatch = useDispatch()
-    const location: Location = useLocation()
+    const location = useLocation()
     
     useEffect(() => {
         window.addEventListener('resize', (event: any) => {
@@ -29,10 +30,22 @@ export const App = () => {
 
     useEffect(() => {
         if (location.pathname === '/selector') return
-        getUserByTokenService().then((user0: typeUser|false|null) => {
-            if (user0) return dispatch(refreshUserReducer(user0))
-            if (user0 === false) return dispatch(logoutReducer())
-            // alert("No se pudo recuperar el usuario")
+        getUserByTokenService().then(response => {
+            if (!response.user || !response.config) {
+                if (response.user === false) {
+                    dispatch(logoutReducer())
+                    return
+                }
+                // dispatch(setValuesAndOpenAlertModalReducer({
+                //     title: "No se pudo recuperar el usuario",
+                //     message: "",
+                //     mode: 'alert',
+                //     animation: 2
+                // }))
+                return
+            }
+            dispatch(refreshUserReducer(response.user))
+            dispatch(setConfigurationReducer(response.config))
         })
     }, [dispatch, location.pathname])
 

@@ -18,7 +18,7 @@ export const LocalStatistics: FC<propsType> = ({ telephonicTerritory }) => {
     }))
     const dispatch = useDispatch()
     const [localS, setLocalStatistics] = useState<typeLocalTelephonicStatistic>()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState(false)
     let option: typeOption = 1
 
     const resetHandler = async (selectedOption: typeOption): Promise<void> => {

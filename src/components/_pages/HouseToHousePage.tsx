@@ -1,11 +1,12 @@
 import { Card, Container, FloatingLabel, Form } from 'react-bootstrap'
-import { generalBlue, hthChangeString, typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
+import { generalBlue, hthChangeString } from '../../constants'
 import { getHTHTerritoryService, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
 import { io, Socket } from 'socket.io-client'
-import { SERVER } from '../../config'
+import { SERVER } from '../../app-config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { useState, useEffect, useCallback } from 'react'
@@ -20,12 +21,12 @@ export const HouseToHousePage = () => {
         user: state.user
     }))
     const [currentFace, setCurrentFace] = useState<typePolygon>()
-    const [isAddingPolygon, setIsAddingPolygon] = useState<boolean>(false)
-    const [isEditingView, setIsEditingView] = useState<boolean>(false)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [showNewFaceOptions, setShowNewFaceOptions] = useState<boolean>(false)
+    const [isAddingPolygon, setIsAddingPolygon] = useState(false)
+    const [isEditingView, setIsEditingView] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+    const [showNewFaceOptions, setShowNewFaceOptions] = useState(false)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
-    const [buildingAddress, setBuildingAddress] = useState('')
+    const [buildingAddress, setBuildingAddress] = useState("")
     const dispatch = useDispatch()
 
     const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {

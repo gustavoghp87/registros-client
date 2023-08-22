@@ -2,11 +2,12 @@ import { Col0a, Col0b, FewHouseholdsWarning, FreePhonesMessage, LocalStatistics,
 import { getBlocks, getTLPTerritoryService, getHouseholdsToShow, getHouseholdVariant, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { io, Socket } from 'socket.io-client'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
-import { SERVER } from '../../config'
+import { SERVER } from '../../app-config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { telephonicHouseholdChangeString, typeBlock, typeHousehold, typeRootState, typeTelephonicTerritory, typeTerritoryNumber } from '../../models'
+import { telephonicHouseholdChangeString } from '../../constants'
+import { typeBlock, typeHousehold, typeRootState, typeTelephonicTerritory, typeTerritoryNumber } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router'
 import { useState, useEffect, useCallback } from 'react'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
@@ -17,19 +18,19 @@ export const TelephonicPage = () => {
         user: state.user
     }))
     const dispatch = useDispatch()
-    const navigate: NavigateFunction = useNavigate()
-    const [addressToShowInGoogleMaps, setAddressToShowInGoogleMaps] = useState<string>("")
+    const navigate = useNavigate()
+    const [addressToShowInGoogleMaps, setAddressToShowInGoogleMaps] = useState("")
     const [blocks, setBlocks] = useState<typeBlock[]>()
-    const [brought, setBrought] = useState<number>(10)
+    const [brought, setBrought] = useState(10)
     const [currentBlock, setCurrentBlock] = useState<typeBlock>()
     const [telephonicTerritory, setTelephonicTerritory] = useState<typeTelephonicTerritory>()
     const [householdsToShow, setHouseholdsToShow] = useState<typeHousehold[]>()
-    const [loaded, setLoaded] = useState<boolean>(false)
-    const [isShowingAllStates, setIsShowingAllStates] = useState<boolean>(false)
-    const [isShowingAllAvailable, setIsShowingAllAvailable] = useState<boolean>(false)
-    const [isShowingStatistics, setIsShowingStatistics] = useState<boolean>(false)
-    const [showPagination, setShowPagination] = useState<boolean>(true)
-    const [showWarningToaster, setShowWarningToaster] = useState<boolean>(false)
+    const [loaded, setLoaded] = useState(false)
+    const [isShowingAllStates, setIsShowingAllStates] = useState(false)
+    const [isShowingAllAvailable, setIsShowingAllAvailable] = useState(false)
+    const [isShowingStatistics, setIsShowingStatistics] = useState(false)
+    const [showPagination, setShowPagination] = useState(true)
+    const [showWarningToaster, setShowWarningToaster] = useState(false)
     const [userEmailWarningToaster, setUserEmailWarningToaster] = useState<string>()
 
     const openAlertModalHandler = (title: string, message: string, animation?: number): void => {

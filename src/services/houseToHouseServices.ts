@@ -1,6 +1,6 @@
 import { getHeaders } from '.'
 import { getTokenService } from './userServices'
-import { pointer } from '../config'
+import { pointer } from '../app-config'
 import * as types from '../models'
 
 const base: string = pointer.houseToHouse
@@ -216,7 +216,7 @@ export const getHTHTerritoriesForMapService = async (): Promise<types.typeHTHTer
             headers: getHeaders()
         })
         const data: types.typeResponseData|null = await response.json()
-        if (!data || !data.success || !data.hthTerritories) return null
+        if (!data?.success || !data?.hthTerritories) return null
         return data.hthTerritories
     } catch (error) {
         console.log(error)

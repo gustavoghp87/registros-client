@@ -1,7 +1,8 @@
 import { FC, useState } from 'react'
-import { generalBlue, typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { generalBlue } from '../../../constants'
 import { Hr } from '../../commons'
 import { HTHAddBuilding, HTHBuildingItem, HTHShareBuildingButton } from '..'
+import { typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useSelector } from 'react-redux'
 
 type propsType = {
@@ -15,7 +16,7 @@ export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHa
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const [show, setShow] = useState<boolean>(false)
+    const [show, setShow] = useState(false)
 
     return (
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>

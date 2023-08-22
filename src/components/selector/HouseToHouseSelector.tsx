@@ -10,8 +10,8 @@ export const HouseToHouseSelector = () => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const [show, setShow] = useState<boolean>(false)
-    const [showGeolocationModal, setShowGeolocationModal] = useState<boolean>(false)
+    const [show, setShow] = useState(false)
+    const [showGeolocationModal, setShowGeolocationModal] = useState(false)
 
     const setShowGeolocationModalHandler = (): void => setShowGeolocationModal(false)
     
@@ -35,7 +35,7 @@ export const HouseToHouseSelector = () => {
                         </button>
                     }
                     
-                    {!!user.hthAssignments.length ?
+                    {!!user.hthAssignments?.length ?
                         <TerritoryNumberBlock
                             classes={'btn-general-blue animate__animated animate__rubberBand'}
                             showForecast={true}

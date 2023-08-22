@@ -2,9 +2,9 @@ import { Col, Row } from 'react-bootstrap'
 import { editCampaignPackService, getCampaignPackService, closeCampaignPackService, putHyphens, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { typeCampaignPack, typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router'
 import { useState, useEffect, useCallback, FC } from 'react'
 
 export const CampaignPage = () => {
@@ -14,7 +14,7 @@ export const CampaignPage = () => {
         isMobile: state.mobileMode.isMobile
     }))
     const dispatch = useDispatch()
-    const navigate: NavigateFunction = useNavigate()
+    const navigate = useNavigate()
     const [campaignPack, setCampaignPack] = useState<typeCampaignPack>()
     const [phoneNumbers, setPhoneNumbers] = useState<number[]>()
     const [showToast, setShowToast] = useState(true)

@@ -1,6 +1,7 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { FC, useEffect, useState } from 'react'
-import { generalRed, typeBlock, typeRootState } from '../../models'
+import { generalRed } from '../../constants'
+import { typeBlock, typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
 
 type radioObj = {
@@ -52,7 +53,7 @@ type propsType1 = {
 }
 
 const BlockToggleButton: FC<propsType1> = ({ currentBlock, radio, setCurrentBlockHandler }) => {
-    const [isChecked, setIsChecked] = useState<boolean>(false)
+    const [isChecked, setIsChecked] = useState(false)
 
     useEffect(() => {
         setIsChecked(currentBlock === radio?.value)

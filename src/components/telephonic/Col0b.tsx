@@ -1,6 +1,7 @@
 import { Col, ButtonGroup, ToggleButton } from 'react-bootstrap'
 import { FC } from 'react'
-import { generalRed, typeRootState } from '../../models'
+import { generalRed } from '../../constants'
+import { typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
 
 type propsType = {

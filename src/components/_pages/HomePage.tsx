@@ -1,8 +1,9 @@
-import { generalBlue, typeRootState } from '../../models'
-import { H2, WeatherAndForecast } from '../commons'
-import { NavigateFunction, useNavigate } from 'react-router'
+import { generalBlue } from '../../constants'
 import { goToTop } from '../../services'
+import { H2, WeatherAndForecast } from '../commons'
+import { typeRootState } from '../../models'
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 
 export const HomePage = () => {
@@ -10,7 +11,7 @@ export const HomePage = () => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const navigate: NavigateFunction = useNavigate()
+    const navigate = useNavigate()
 
     useEffect(() => {
         goToTop()

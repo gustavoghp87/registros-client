@@ -1,4 +1,4 @@
-import { breakingPoint } from '../models'
+import { breakingPoint } from '../constants'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type typeMobileModeState = {

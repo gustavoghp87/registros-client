@@ -11,7 +11,7 @@ export const LogsCard: FC<propsType> = ({ log }) => {
     const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode
     }))
-    const [showLogs, setShowLogs] = useState<boolean>(false)
+    const [showLogs, setShowLogs] = useState(false)
 
     if (!log || !log.logs?.length) return (<></>)
 

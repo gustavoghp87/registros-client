@@ -1,5 +1,6 @@
 import { changeDarkModeReducer } from '../../store'
-import { generalBlue, typeRootState } from '../../models'
+import { generalBlue } from '../../constants'
+import { typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 
 export const DarkModeButton = () => {

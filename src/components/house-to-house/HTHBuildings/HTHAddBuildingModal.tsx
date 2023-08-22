@@ -20,13 +20,13 @@ export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, curre
         user: state.user
     }))
     const [hasNn, setHasNn] = useState(false)
-    const [hasCharacters, setHasCharacters] = useState<boolean>(true)
-    const [hasContinuousNumbers, setHasContinuousNumbers] = useState<boolean>(false)
-    const [hasLowLevel, setHasLowLevel] = useState<boolean>(true)
-    const [hasManager, setHasManager] = useState<boolean>(false)
+    const [hasCharacters, setHasCharacters] = useState(true)
+    const [hasContinuousNumbers, setHasContinuousNumbers] = useState(false)
+    const [hasLowLevel, setHasLowLevel] = useState(true)
+    const [hasManager, setHasManager] = useState(false)
     const [numberOfLevels, setNumberOfLevels] = useState<number>(4)
     const [numberPerLevel, setNumberPerLevel] = useState<number>(2)
-    const [streetNumber, setStreetNumber] = useState<number>(0)
+    const [streetNumber, setStreetNumber] = useState(0)
     const doorNames: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
     const levels: number[] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
 

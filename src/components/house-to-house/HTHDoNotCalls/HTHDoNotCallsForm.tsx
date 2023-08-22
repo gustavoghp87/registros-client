@@ -17,8 +17,8 @@ export const HTHDoNotCallsForm: FC<propsType> = ({ closeShowFormHandler, current
         user: state.user
     }))
     const dispatch = useDispatch()
-    const [doorBell, setDoorBell] = useState<string>("")
-    const [streetNumber, setStreetNumber] = useState<number>(0)
+    const [doorBell, setDoorBell] = useState("")
+    const [streetNumber, setStreetNumber] = useState(0)
     const date: string = new Date(new Date().getTime()-(new Date().getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
 
     const submitHandler = (e: FormEvent<HTMLFormElement>): void => {

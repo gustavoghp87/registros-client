@@ -12,8 +12,8 @@ export const CampaignSelector = () => {
     }))
     const dispatch = useDispatch()
     const [assignedPacks, setAssignedPacks] = useState<number[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [show, setShow] = useState<boolean>(true)
+    const [isLoading, setIsLoading] = useState(true)
+    const [show, setShow] = useState(true)
 
     const openConfirmModalHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({

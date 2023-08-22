@@ -1,10 +1,10 @@
 import { getUserByTokenService, logoutAllService } from '../../services/userServices'
 import { H2, Hr } from '../commons'
-import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
-import { NavigateFunction, useNavigate } from 'react-router'
-import { typeRootState, typeUser } from '../../models'
+import { logoutReducer, refreshUserReducer, setConfigurationReducer, setValuesAndOpenAlertModalReducer } from '../../store'
+import { typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { UserChangeEmail } from '../user/UserChangeEmail'
 import { UserChangePassword } from '../user/UserChangePassword'
 
@@ -14,7 +14,7 @@ export const UserPage = () => {
         user: state.user
     }))
     const dispatch = useDispatch()
-    const navigate: NavigateFunction = useNavigate()
+    const navigate = useNavigate()
     const [showChangeEmail, setShowChangeEmail] = useState(false)
     const [showChangePsw, setShowChangePsw] = useState(false)
     // const [assignedPacks, setAssignedPacks] = useState<number[]>([])
@@ -45,10 +45,15 @@ export const UserPage = () => {
     }
 
     useEffect(() => {
-        getUserByTokenService().then((user: typeUser|false|null) => {
-            if (user) return dispatch(refreshUserReducer(user))
-            if (user === false) dispatch(logoutReducer())
-            navigate('/acceso')
+        getUserByTokenService().then(response => {
+            if (!response.user || !response.config) {
+                if (response.user === false)
+                    dispatch(logoutReducer())
+                navigate('/acceso')
+                return
+            }
+            dispatch(refreshUserReducer(response.user))
+            dispatch(setConfigurationReducer(response.config))
         })
         // getCampaignAssignmentsByUser().then((campaignPacks: number[]|null) => {
         //     if (campaignPacks && campaignPacks.length) setAssignedPacks(campaignPacks)

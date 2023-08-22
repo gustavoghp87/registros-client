@@ -1,7 +1,7 @@
 import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsApiKey, mapId } from '../../../config'
+import { googleMapsApiKey, mapId } from '../../../app-config'
 import { hthMapStyle, HTHMarkerComponent, HTHNewFaceOptions, HTHPolygonComponent } from '../'
 import { Loading } from '../../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
@@ -37,7 +37,7 @@ export const HTHMap: FC<propsType> = ({
     })
     const dispatch = useDispatch()
     const [map, setMap] = useState<google.maps.Map>()
-    const [runIntervals, setRunIntervals] = useState<boolean>(false)
+    const [runIntervals, setRunIntervals] = useState(false)
 
     const onCenterChangedHandler = (): void => {
         const lat: number = map?.getCenter()?.lat() ?? 0

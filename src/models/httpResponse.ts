@@ -11,6 +11,7 @@ export type typeResponseData = {                           //  =>  UPDATE MOCKED
     campaignAssignments?: number[]
     campaignPack?: type.typeCampaignPack
     campaignPacks?: type.typeCampaignPack[]
+    config?: type.typeConfig
     coordinates?: type.typeCoords
     dataError?: boolean
     email?: string

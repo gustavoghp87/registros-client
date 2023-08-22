@@ -4,7 +4,8 @@ import { Dispatch, FC, SetStateAction, useRef } from 'react'
 import { hideLoadingModalReducer, showLoadingModalReducer } from '../../store'
 import { modifyHouseholdService } from '../../services'
 import { Socket } from 'socket.io-client'
-import { telephonicHouseholdChangeString, typeCallingState, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
+import { telephonicHouseholdChangeString } from '../../constants'
+import { typeCallingState, typeHousehold, typeRootState, typeTerritoryNumber } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 
 type propsType = {

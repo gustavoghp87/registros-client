@@ -1,9 +1,9 @@
 import { changeStateOfTerritoryService } from '../../services'
 import { FC } from 'react'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
-import { NavigateFunction, useNavigate } from 'react-router'
 import { typeRootState, typeTerritoryNumber } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router'
 
 type propsType = {
     isFinished: boolean
@@ -16,7 +16,7 @@ export const StateOfTerritoryBtn: FC<propsType> = ({ isFinished, openAlertModalH
         user: state.user
     }))
     const dispatch = useDispatch()
-    const navigate: NavigateFunction = useNavigate()
+    const navigate = useNavigate()
     
     const openConfirmModalHandler = (modal: number) => {
         dispatch(setValuesAndOpenAlertModalReducer({

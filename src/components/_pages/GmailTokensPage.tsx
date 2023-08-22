@@ -5,10 +5,10 @@ import { H2 } from '../commons'
 import { useEffect, useState } from 'react'
 
 export const GmailTokensPage = () => {
-    const [code, setCode] = useState<string>('')
+    const [code, setCode] = useState("")
     const [credentials, setCredentials] = useState<Credentials>()
     const [success, setSuccess] = useState<boolean>()
-    const [url, setUrl] = useState<string>('')
+    const [url, setUrl] = useState("")
 
     const step1Handler = async (): Promise<void> => {
         const url: string|null = await getGmailUrlService()

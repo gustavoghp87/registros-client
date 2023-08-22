@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import { getGeocodingFromAddressService } from '../../services'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsApiKey, mapId } from '../../config'
+import { googleMapsApiKey, mapId } from '../../app-config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
@@ -14,14 +14,14 @@ type propsType = {
 }
 
 export const MapModal: FC<propsType> = ({ address, hideGoogleMapHandler }) => {
-    const [centerCoords, setCenterCoords] = useState<typeCoords>()
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey,
         id: mapId
     })
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
+    const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
+    const [centerCoords, setCenterCoords] = useState<typeCoords>()
     const dispatch = useDispatch()
-    
+
     useEffect(() => {
         let target: string = address + " CABA"
         getGeocodingFromAddressService(target).then((coordinates: typeCoords|null) => {
