@@ -9,7 +9,7 @@ import { typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePoly
 import { useDispatch, useSelector } from 'react-redux'
 
 type propsType = {
-    currentFace?: typePolygon
+    currentFace: typePolygon|null
     isAddingPolygon: boolean
     isEditingView: boolean
     refreshHTHTerritoryHandler: () => void
@@ -32,8 +32,11 @@ export const HTHMap: FC<propsType> = ({
         user: state.user
     }))
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: googleMapsApiKey,
-        id: mapId
+        googleMapsApiKey,
+        id: mapId,
+        libraries: ['maps', 'places'],
+        region: 'AR',
+        language: 'es',
     })
     const dispatch = useDispatch()
     const [map, setMap] = useState<google.maps.Map>()

@@ -132,18 +132,22 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
         setIsLoading(true)
         deleteUserService(currentUser.id).then((success: boolean) => {
             setIsLoading(false)
-            if (success) openAlertModalHandler(
+            if (!success) {
+                openAlertModalHandler(
+                    'alert',
+                    "Algo falló",
+                    `No se pudo eliminar al usuario ${currentUser.email}`,
+                    2
+                )
+                return
+            }
+            openAlertModalHandler(
                 'alert',
                 "Usuario eliminado",
                 `Se eliminó al usuario ${currentUser.email}`,
                 1
             )
-            else openAlertModalHandler(
-                'alert',
-                "Algo falló",
-                `No se pudo eliminar al usuario ${currentUser.email}`,
-                2
-            )
+            window.location.reload()
         })
     }
 

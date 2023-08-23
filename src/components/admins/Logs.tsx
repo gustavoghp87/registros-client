@@ -24,7 +24,8 @@ export const Logs = () => {
                 { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.telephonicStateLogs?.logs)), title: "Cambios en estados de Territorios de la Telefónica" },
                 { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.telephonicLogs?.logs)), title: "Llamados de Telefónica" },
                 { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseAdminLogs?.logs)), title: "Casa en casa - Admins" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseLogs?.logs)), title: "Casa en casa" }
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseLogs?.logs)), title: "Casa en casa" },
+                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.configLogs?.logs)), title: "Cambios en la configuración" },
             ])
         })
         return () => setLogs(undefined)

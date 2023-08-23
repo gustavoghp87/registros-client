@@ -7,7 +7,7 @@ import { typeBlock, typeFace, typeHTHTerritory, typePolygon } from '../../../mod
 let lastClick: number = 0
 
 type propsType = {
-    currentFace?: typePolygon
+    currentFace: typePolygon|null
     // intervalExecution: (googlePolygon0: google.maps.Polygon, polygon: typePolygon) => void
     isAddingPolygon: boolean
     isEditingView: boolean
@@ -18,7 +18,10 @@ type propsType = {
     territoryHTH: typeHTHTerritory
 }
 
-export const HTHPolygonComponent: FC<propsType> = ({ currentFace, isAddingPolygon, isEditingView, polygon, runIntervals, selectBlockAndFaceHandler, setTerritoryHTHHandler, territoryHTH }) => {
+export const HTHPolygonComponent: FC<propsType> = ({
+    currentFace, isAddingPolygon, isEditingView, polygon, runIntervals,
+    selectBlockAndFaceHandler, setTerritoryHTHHandler, territoryHTH
+}) => {
     const ref = useRef<google.maps.Polygon>()
     const [polygonColor, setPolygonColor] = useState(generalBlue)
     const [showInfoWindow, setShowInfoWindow] = useState(false)

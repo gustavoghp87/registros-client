@@ -16,8 +16,9 @@ export const ReturnBtn = () => {
     useEffect(() => {
         if (
             location.pathname === '/selector' ||
-            location.pathname === 'admins' ||
-            location.pathname === 'usuario' ||
+            location.pathname === '/admins' ||
+            location.pathname === '/gmail' ||
+            location.pathname === '/usuario' ||
             location.pathname.split('/')[1] === 'casa-en-casa' ||
             location.pathname.split('/')[1] === 'celulares' ||
             location.pathname.split('/')[1] === 'telefonica'

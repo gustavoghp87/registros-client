@@ -145,17 +145,26 @@ export const getEmailByEmailLink = async (congregation: string, id: string): Pro
     }
 }
 
-export const getUserByTokenService = async (): Promise<{ user: typeUser|false|null, config: typeConfig|null }> => {
+export const getUserByTokenService = async (token: string = ''): Promise<{ user: typeUser|false|null, config: typeConfig|null }> => {
     if (!getTokenService()) return { user: false, config: null }
     try {
         const response = await fetch(base, {
             method: 'GET',
-            headers: getHeaders()
+            headers: !!token ? { ...getHeaders(), 'x-Authorization': token } : getHeaders()
         })
         const data: typeResponseData = await response.json()
-        if (!data?.success || !data?.user || !data?.config) {
+        if (!data) return { user: false, config: null }
+        if (!data.config) {
+            data.config = {
+                congregation: 0,
+                googleBoardUrl: '',
+                name: "",
+                numberOfTerritories: 0
+            }
+        }
+        if (!data?.success || !data?.user) {
             if (data && !data.success) removeTokenService()
-            return { user: false, config: null }
+            return { user: false, config: data.config }
         }
         data.user.isAuth = true
         data.user.isAdmin = data.user.role === 1
@@ -167,28 +176,6 @@ export const getUserByTokenService = async (): Promise<{ user: typeUser|false|nu
     } catch (error) {
         console.log(error)
         return { user: null, config: null }
-    }
-}
-
-export const getUserByTokenService1 = async (token: string): Promise<typeUser|false|null> => {
-    if (!token) return null
-    try {
-        const response = await fetch(base, {
-            method: 'GET',
-            headers: { ...getHeaders(), 'x-Authorization': token }
-        })
-        const data: typeResponseData = await response.json()
-        if (!data || !data.success || !data.user) {
-            if (data && !data.success) removeTokenService()
-            return false
-        }
-        data.user.isAuth = true
-        data.user.isAdmin = data.user.role === 1
-        setUserToLSService(JSON.stringify(data.user))
-        return data.user
-    } catch (error) {
-        console.log(error)
-        return null
     }
 }
 
@@ -216,7 +203,7 @@ export const loginService = async (email: string, password: string, recaptchaTok
             body: JSON.stringify({ email, password, recaptchaToken })
         })
         const data: typeResponseData = await response.json()
-        if (data && data.success && data.newToken) setTokenService(data.newToken)
+        if (!!data?.success && !!data?.newToken) setTokenService(data.newToken)
         return data
     } catch (error) {
         console.log(error)

@@ -13,8 +13,6 @@ export const LogsCard: FC<propsType> = ({ log }) => {
     }))
     const [showLogs, setShowLogs] = useState(false)
 
-    if (!log || !log.logs?.length) return (<></>)
-
     return (
         <Card
             className={`mb-4 p-4 ${isDarkMode ? 'bg-dark text-white' : ''}`}
@@ -23,10 +21,11 @@ export const LogsCard: FC<propsType> = ({ log }) => {
             <Card.Header className={'text-center h1 py-4'}>
                 <div className={'mb-3'}> {log.title} </div>
                 <button className={'btn btn-general-blue'}
-                    onClick={() => setShowLogs(x => !x)}
+                    onClick={() => !!log?.logs?.length ? setShowLogs(x => !x) : null}
                     style={{ width: '200px' }}
+                    disabled={!log?.logs?.length}
                 >
-                    {showLogs ? "Ocultar" : "Ver"}
+                    {!!log?.logs?.length ? showLogs ? "Ocultar" : "Ver" : "No hay"}
                 </button>
             </Card.Header>
             <br />

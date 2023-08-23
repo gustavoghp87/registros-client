@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 export const TelephonicSelector = () => {
-    const { config, isDarkMode, user } = useSelector((state: typeRootState) => ({
+    const { config, isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         config: state.config,
         isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
     const [show, setShow] = useState(true)
@@ -30,7 +31,7 @@ export const TelephonicSelector = () => {
             {show &&
                 <>
                     {user.isAdmin &&
-                        <button className={`btn btn-general-red pointer mt-4`}
+                        <button className={`btn btn-general-red d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}
                             onClick={() => setShowAll(x => !x)}
                         >
                             {showAll ? 'Ver solo los asignados' : 'Ver todos los territorios'}

@@ -56,12 +56,13 @@ export const addHTHPolygonFaceService = async (territoryNumber: types.typeTerrit
     }
 }
 
-export const createHTHTerritoriesService = async (): Promise<boolean> => {
-    if (!getTokenService()) return false
+export const createHTHTerritoriesService = async (numberOfTerritories: number, lat: number, lng: number): Promise<boolean> => {
+    if (!getTokenService() || !numberOfTerritories || !lat || !lng) return false
     try {
         const response = await fetch(`${base}/genesys`, {
             method: 'POST',
-            headers: getHeaders()
+            headers: getHeaders(),
+            body: JSON.stringify({ numberOfTerritories, lat, lng })
         })
         const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success

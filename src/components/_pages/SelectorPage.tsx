@@ -31,7 +31,7 @@ export const SelectorPage = () => {
 
     return (
         <>
-            {!!user.hthAssignments?.length &&
+            {(user.isAdmin || !!user.hthAssignments?.length) &&
                 <>
                     <HouseToHouseSelector />
 

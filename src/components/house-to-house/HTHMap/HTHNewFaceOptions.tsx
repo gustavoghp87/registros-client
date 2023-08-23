@@ -4,6 +4,7 @@ import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
+import { HTHNewFaceOptionsStreet } from './HTHNewFaceOptionsStreet'
 
 const blockOptions: typeBlock[] = ['1', '2', '3', '4', '5', '6']
 const facesOptions: typeFace[] = ['A', 'B', 'C', 'D', 'E', 'F']
@@ -19,8 +20,7 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
     const [faces, setFaces] = useState<typeFace[]>(facesOptions)
     const [selectedBlock, setSelectedBlock] = useState<typeBlock>()
     const [selectedFace, setSelectedFace] = useState<typeFace>()
-    const [selectedStreet, setSelectedStreet] = useState<string>()
-    const [selectedStreetPrev, setSelectedStreetPrev] = useState<string>()
+    const [selectedStreet, setSelectedStreet] = useState('')
     const [showBlockMenu, setShowBlockMenu] = useState(true)
     const [showFaceMenu, setShowFaceMenu] = useState(false)
     const [showStreetMenu, setShowStreetMenu] = useState(false)
@@ -43,7 +43,6 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
         setFaces(facesOptions)
         setSelectedBlock(undefined)
         setSelectedFace(undefined)
-        setSelectedStreet(undefined)
         setShowBlockMenu(showBlock)
         setShowFaceMenu(false)
         setShowStreetMenu(false)
@@ -141,22 +140,9 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
         }
         
         {selectedStreet?.trim() === 'other' &&
-            <Container style={{ width: '300px', marginTop: '50px' }}>
-                <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
-                    Nombre de la calle:
-                </h3>
-                <FloatingLabel
-                    label={"Nombre de la calle"}
-                    className={'mb-3'}
-                >
-                    <Form.Control type={'text'} placeholder={" "} onChange={(event: any) => setSelectedStreetPrev(event.target.value)} />
-                </FloatingLabel>
-                <button className={'btn btn-general-red btn-size12 w-100'}
-                    onClick={() => setSelectedStreet(selectedStreetPrev)}
-                >
-                    Aceptar
-                </button>
-            </Container>
+            <HTHNewFaceOptionsStreet
+                setSelectedStreet={setSelectedStreet}
+            />
         }
 
         {!!selectedBlock && !!selectedFace && !!selectedStreet && selectedStreet !== 'other' &&

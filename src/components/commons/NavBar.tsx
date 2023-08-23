@@ -9,7 +9,8 @@ import { useState } from 'react'
 const color = '#fbfbfb'
 
 export const NavBar = () => {
-    const { isMobile, user } = useSelector((state: typeRootState) => ({
+    const { config, isMobile, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
@@ -59,12 +60,14 @@ export const NavBar = () => {
                                     &nbsp; &nbsp;Territorios&nbsp; &nbsp;
                                 </Nav.Link>
                                 
-                                <Nav.Link
-                                    onClick={() => navigateHandler('/tablero')}
-                                    style={{ color, margin: isMobile ? '8px 0' : '0' }}
-                                >
-                                    &nbsp; &nbsp;Tablero&nbsp; &nbsp;
-                                </Nav.Link>
+                                {!!config.googleBoardUrl &&
+                                    <Nav.Link
+                                        onClick={() => navigateHandler('/tablero')}
+                                        style={{ color, margin: isMobile ? '8px 0' : '0' }}
+                                    >
+                                        &nbsp; &nbsp;Tablero&nbsp; &nbsp;
+                                    </Nav.Link>
+                                }
                             </>
                             :
                                 <Nav.Link

@@ -5,12 +5,14 @@ import { useSelector } from 'react-redux'
 import { useState } from 'react'
 
 export const HouseToHouseSelector = () => {
-    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
+    const { config, isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
     const [show, setShow] = useState(false)
+    const [showAll, setShowAll] = useState(false)
     const [showGeolocationModal, setShowGeolocationModal] = useState(false)
 
     const setShowGeolocationModalHandler = (): void => setShowGeolocationModal(false)
@@ -34,18 +36,37 @@ export const HouseToHouseSelector = () => {
                             Dónde Estoy
                         </button>
                     }
-                    
-                    {!!user.hthAssignments?.length ?
+
+                    {user.isAdmin &&
+                        <button className={`btn btn-general-blue d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}
+                            onClick={() => setShowAll(x => !x)}
+                        >
+                            {showAll ? 'Ver solo los asignados' : 'Ver todos los territorios'}
+                        </button>
+                    }
+
+                    {showAll ?
                         <TerritoryNumberBlock
                             classes={'btn-general-blue animate__animated animate__rubberBand'}
-                            showForecast={true}
-                            territories={[...user.hthAssignments].sort((a: number, b: number) => a - b)}
+                            territories={Array.from({ length: config.numberOfTerritories }, (_: any, index: number) => index + 1)}
                             url={'/casa-en-casa'}
+                            showForecast={true}
                         />
                         :
-                        <h3 className={`text-center my-5 ${isDarkMode ? 'text-white' : ''}`} style={{ }}>
-                            No hay territorios de Casa en Casa asignados <br /> Hablar con el grupo de territorios
-                        </h3>
+                        <>
+                            {!!user.hthAssignments?.length ?
+                                <TerritoryNumberBlock
+                                    classes={'btn-general-blue animate__animated animate__rubberBand'}
+                                    showForecast={true}
+                                    territories={[...user.hthAssignments].sort((a: number, b: number) => a - b)}
+                                    url={'/casa-en-casa'}
+                                />
+                                :
+                                <h3 className={`text-center my-5 ${isDarkMode ? 'text-white' : ''}`}>
+                                    No hay territorios de Casa en Casa asignados <br /> Hablar con el grupo de territorios
+                                </h3>
+                            }
+                        </>
                     }
                 </>
             }

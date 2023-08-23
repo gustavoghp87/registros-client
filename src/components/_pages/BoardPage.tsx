@@ -1,4 +1,4 @@
-import { getBoardItems } from '../../services/boardServices'
+import { getBoardItemsService } from '../../services/boardServices'
 import { H2, Hr, Loading, SideBar } from '../commons'
 import { goToTop } from '../../services'
 import { typeBoardItem, typeRootState } from '../../models'
@@ -18,7 +18,7 @@ export const BoardPage = () => {
 
     useEffect(() => {
         goToTop()
-        getBoardItems().then((boardItems0: typeBoardItem[]|null) => {
+        getBoardItemsService().then((boardItems0: typeBoardItem[]|null) => {
             if (boardItems0) setItems(boardItems0)
         })
     }, [])

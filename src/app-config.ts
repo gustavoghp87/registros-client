@@ -14,9 +14,10 @@ export const SERVER: string = (isLocalhost ?
 export const pointer = {
     board: `${SERVER}/api/board`,
     campaign: `${SERVER}/api/campaign`,
+    config: `${SERVER}/api/config`,
     email: `${SERVER}/api/email`,
-    houseToHouse: `${SERVER}/api/house-to-house`,
     geocoding: `${SERVER}/api/geocoding`,
+    houseToHouse: `${SERVER}/api/house-to-house`,
     log: `${SERVER}/api/log`,
     telephonic: `${SERVER}/api/telephonic`,
     user: `${SERVER}/api/user`,
@@ -30,95 +31,97 @@ export const mapId: string = "ad09b84d2db0b86d"
 export const googleMapsApiKey: string = isLocalhost ? "AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594" : "AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE"
 
 
+
+
 ///////// NEW PROJECT:
 
 // GET: () => { success: boolean, allLogsObj: typeAllLogsObj }
 
-type service = {
-    name: string
-    url: string
-    method: RequestInit["method"]
-    body: any
-    response: { data: any }
-}
+// type service = {
+//     name: string
+//     url: string
+//     method: RequestInit["method"]
+//     body: any
+//     response: { data: any }
+// }
 
-type pointerItem = {
-    path: string,
-    services: service[]
-}
+// type pointerItem = {
+//     path: string,
+//     services: service[]
+// }
 
-type typePointer = {
-    board: pointerItem
-    campaign: pointerItem
-    email: pointerItem
-    houseToHouse: pointerItem
-    geocoding: pointerItem
-    log: pointerItem
-    telephonic: pointerItem
-    user: pointerItem
-}
+// type typePointer = {
+//     board: pointerItem
+//     campaign: pointerItem
+//     email: pointerItem
+//     houseToHouse: pointerItem
+//     geocoding: pointerItem
+//     log: pointerItem
+//     telephonic: pointerItem
+//     user: pointerItem
+// }
 
-export const pointer1: typePointer = {
-    board: {
-        path: `${SERVER}/api/board`,
-        services: [
+// export const pointer1: typePointer = {
+//     board: {
+//         path: `${SERVER}/api/board`,
+//         services: [
 
-        ],
-    },
-    campaign: {
-        path: `${SERVER}/api/campaign`,
-        services: [
-            {
-                name: 'askForANewCampaignPackService',
-                url: '/new-pack',
-                method: 'POST',
-                body: {},
-                response: { data: { success: false } }
-            },
-            {
-                name: 'assignCampaignPackByEmailService',
-                url: '/:id',
-                method: 'PUT',
-                body: { email: '' },
-                response: { data: { success: true } }
-            }
-        ]
-    },
-    email: {
-        path: `${SERVER}/api/email`,
-        services: [
+//         ],
+//     },
+//     campaign: {
+//         path: `${SERVER}/api/campaign`,
+//         services: [
+//             {
+//                 name: 'askForANewCampaignPackService',
+//                 url: '/new-pack',
+//                 method: 'POST',
+//                 body: {},
+//                 response: { data: { success: false } }
+//             },
+//             {
+//                 name: 'assignCampaignPackByEmailService',
+//                 url: '/:id',
+//                 method: 'PUT',
+//                 body: { email: '' },
+//                 response: { data: { success: true } }
+//             }
+//         ]
+//     },
+//     email: {
+//         path: `${SERVER}/api/email`,
+//         services: [
 
-        ],
-    },
-    houseToHouse: {
-        path: `${SERVER}/api/house-to-house`,
-        services: [
+//         ],
+//     },
+//     houseToHouse: {
+//         path: `${SERVER}/api/house-to-house`,
+//         services: [
 
-        ],
-    },
-    geocoding: {
-        path: `${SERVER}/api/geocoding`,
-        services: [
+//         ],
+//     },
+//     geocoding: {
+//         path: `${SERVER}/api/geocoding`,
+//         services: [
 
-        ],
-    },
-    log: {
-        path: `${SERVER}/api/log`,
-        services: [
+//         ],
+//     },
+//     log: {
+//         path: `${SERVER}/api/log`,
+//         services: [
 
-        ],
-    },
-        // GET: () => { success: boolean, allLogsObj: typeAllLogsObj }
-    telephonic: {
-        path: `${SERVER}/api/telephonic`,
-        services: [
+//         ],
+//     },
+//         // GET: () => { success: boolean, allLogsObj: typeAllLogsObj }
+//     telephonic: {
+//         path: `${SERVER}/api/telephonic`,
+//         services: [
 
-        ],
-    },
-    user: {
-        path: `${SERVER}/api/user`,
-        services: [
+//         ],
+//     },
+//     user: {
+//         path: `${SERVER}/api/user`,
+//         services: [
 
-        ],
-    }
-}
+//         ],
+//     }
+// }

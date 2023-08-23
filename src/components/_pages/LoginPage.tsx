@@ -1,8 +1,8 @@
 import { FormLayout, Loading } from '../commons'
 import { getFailingEmailFromLSService, setFailingEmailToLSService } from '../../services'
-import { getUserByTokenService1, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
-import { logoutReducer, refreshUserReducer, setValuesAndOpenAlertModalReducer } from '../../store'
-import { typeResponseData, typeRootState, typeUser } from '../../models'
+import { getUserByTokenService, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
+import { logoutReducer, refreshUserReducer, setConfigurationReducer, setValuesAndOpenAlertModalReducer } from '../../store'
+import { typeResponseData, typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
@@ -63,10 +63,14 @@ export const LoginPage = () => {
         const response: typeResponseData|null = await loginService(email, password, recaptchaToken)
         setLoading(false)
         if (response && response.success && response.newToken) {
-            const user0: typeUser|false|null = await getUserByTokenService1(response.newToken)
-            if (user0 === false) dispatch(logoutReducer())
-            if (!user0) return openAlertModalHandler("Problemas (2)", "Refrescar la página; ver si hay internet", 2)
-            dispatch(refreshUserReducer(user0))
+            const { user, config } = await getUserByTokenService(response.newToken)
+            if (user === false) {
+                dispatch(logoutReducer())
+            }
+            if (!user || !config)
+                return openAlertModalHandler("Problemas (2)", "Refrescar la página; ver si hay internet", 2)
+            dispatch(refreshUserReducer(user))
+            dispatch(setConfigurationReducer(config))
         } else if (!response || response.recaptchaFails) {
             setFailingEmailToLSService(email)
             openAlertModalHandler("Problemas (3)", "Refrescar la página", 2)

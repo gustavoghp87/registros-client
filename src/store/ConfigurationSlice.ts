@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { typeConfig } from '../models'
 
-type typeConfigurationState = {
-    name: string
-    numberOfTerritories: number
+const initialState: typeConfig = {
+    congregation: 0,
+    googleBoardUrl: '',
+    name: "",
+    numberOfTerritories: 0
 }
 
 export const configurationSlice = createSlice({
     name: 'configuration',
-    initialState: {
-        name: "",
-        numberOfTerritories: 0
-    },
+    initialState,
     reducers: {
-        setConfigurationReducer: (state, action: PayloadAction<typeConfigurationState>) => {
+        setConfigurationReducer: (state, action: PayloadAction<typeConfig>) => {
             if (Number.isInteger(action.payload.numberOfTerritories)) {
                 state = action.payload
             }

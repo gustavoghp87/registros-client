@@ -20,12 +20,12 @@ export const HouseToHousePage = () => {
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const [currentFace, setCurrentFace] = useState<typePolygon>()
+    const [currentFace, setCurrentFace] = useState<typePolygon|null>(null)
     const [isAddingPolygon, setIsAddingPolygon] = useState(false)
     const [isEditingView, setIsEditingView] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [showNewFaceOptions, setShowNewFaceOptions] = useState(false)
-    const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory>()
+    const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory|null>(null)
     const [buildingAddress, setBuildingAddress] = useState("")
     const dispatch = useDispatch()
 
@@ -34,8 +34,10 @@ export const HouseToHousePage = () => {
     }
 
     const selectBlockAndFaceHandler = (selectedBlock?: typeBlock, selectedFace?: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
-        if (selectedBlock === undefined && selectedFace === undefined) setCurrentFace(undefined)
-        if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons) return
+        if (selectedBlock === undefined && selectedFace === undefined)
+            setCurrentFace(null)
+        if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons)
+            return
         const target = hthTerritory0 ?? territoryHTH
         let currentFace0 = target.map.polygons.find((x: typePolygon) => x.block === selectedBlock && x.face === selectedFace)
         if (!currentFace0) {
@@ -65,7 +67,7 @@ export const HouseToHousePage = () => {
             setTerritoryHTH(hthTerritory0)
             setCurrentFace(x => {
                 if (!x) return x
-                const currentFace0: typePolygon|undefined = hthTerritory0.map.polygons.find((y: typePolygon) => y.block === x.block && y.face === x.face)
+                const currentFace0: typePolygon|null = hthTerritory0.map.polygons.find((y: typePolygon) => y.block === x.block && y.face === x.face) ?? null
                 if (currentFace0) {
                     if (currentFace0.doNotCalls) currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
                     if (currentFace0.observations) currentFace0.observations = currentFace0.observations.reverse()
@@ -102,10 +104,6 @@ export const HouseToHousePage = () => {
 
     useEffect(() => {
         refreshHTHTerritoryHandler(true)
-        return () => {
-            setCurrentFace(undefined)
-            setTerritoryHTH(undefined)
-        }
     }, [refreshHTHTerritoryHandler])
 
     useEffect(() => {
@@ -133,94 +131,104 @@ export const HouseToHousePage = () => {
             </div>
         }
 
-        <h1
-            className={`text-center mt-3 mb-4 ${isDarkMode ? 'text-white' : ''}`}
-            style={{ fontWeight: 'bolder' }}
-        >
-            SELECCIONAR CARA DE MANZANA
-        </h1>
+        {/* <MapSection /> */}
 
-        {!!territoryHTH?.map && <>
-            <HTHMap
-                currentFace={currentFace}
-                isAddingPolygon={isAddingPolygon}
-                isEditingView={isEditingView}
-                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                selectBlockAndFaceHandler={selectBlockAndFaceHandler}
-                setIsAddingPolygon={setIsAddingPolygon}
-                setIsEditingView={setIsEditingView}
-                setShowNewFaceOptions={setShowNewFaceOptions}
-                setTerritoryHTHHandler={setTerritoryHTHHandler}
-                showNewFaceOptions={showNewFaceOptions}
-                territoryHTH={territoryHTH}
-            />
-            
-            {!showNewFaceOptions && !isEditingView && !isAddingPolygon &&
-                <HTHChangeFaceStateButtons
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territoryNumber={territoryHTH.territoryNumber}
-                />
-            }
-        </>}
-
-        <Container
-            className={isDarkMode ? 'bg-dark text-white' : ''}
-            style={{ paddingBottom: isMobile ? '1px' : '30px' }}
-        >
-
-            <h1 className={'text-white py-3 mb-4'}
-                style={{
-                    backgroundColor: generalBlue,
-                    fontSize: isMobile ? '2.3rem' : '2.8rem',
-                    fontWeight: 'bolder',
-                    margin: isMobile ? '30px auto 20px auto' : '60px auto 40px auto',
-                    textAlign: 'center'
-                }}
+        {(user.isAdmin || !!user.hthAssignments?.includes(parseInt(territoryNumber))) && <>
+            <h1
+                className={`text-center mt-3 mb-4 ${isDarkMode ? 'text-white' : ''}`}
+                style={{ fontWeight: 'bolder' }}
             >
-                <span> TERRITORIO {territoryNumber} </span>
-                
-                {currentFace &&
-                    <>
-                        <br />
-                        <span> Manzana {currentFace.block} </span>
-                        <br />
-                        <span> Cara {currentFace.face} - {currentFace.street} </span>
-                    </>
-                }
+                SELECCIONAR CARA DE MANZANA
             </h1>
-            
-            {!!territoryHTH && !!currentFace && <>
-                <HTHSetIsFinishedButton
+
+            {!!territoryHTH?.map && <>
+                <HTHMap
                     currentFace={currentFace}
+                    isAddingPolygon={isAddingPolygon}
+                    isEditingView={isEditingView}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    selectBlockAndFaceHandler={selectBlockAndFaceHandler}
+                    setIsAddingPolygon={setIsAddingPolygon}
+                    setIsEditingView={setIsEditingView}
+                    setShowNewFaceOptions={setShowNewFaceOptions}
+                    setTerritoryHTHHandler={setTerritoryHTHHandler}
+                    showNewFaceOptions={showNewFaceOptions}
                     territoryHTH={territoryHTH}
                 />
-                <HTHBuildings
-                    currentFace={currentFace}
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territoryNumber={territoryHTH.territoryNumber}
-                />
-                <HTHObservations
-                    currentFace={currentFace}
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territoryNumber={territoryHTH.territoryNumber}
-                />
-                <HTHDoNotCalls
-                    currentFace={currentFace}
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territoryNumber={territoryHTH.territoryNumber}
-                />
-
-                {user.isAdmin && !isMobile &&
-                    <HTHDeleteFaceButton
-                        currentFace={currentFace}
+                
+                {!showNewFaceOptions && !isEditingView && !isAddingPolygon &&
+                    <HTHChangeFaceStateButtons
                         refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryHTH={territoryHTH}
+                        territoryNumber={territoryHTH.territoryNumber}
                     />
                 }
             </>}
 
-            {!!territoryHTH && !currentFace &&
+            <Container
+                className={isDarkMode ? 'bg-dark text-white' : ''}
+                style={{ paddingBottom: isMobile ? '1px' : '30px' }}
+            >
+
+                <h1 className={'text-white py-3 mb-4'}
+                    style={{
+                        backgroundColor: generalBlue,
+                        fontSize: isMobile ? '2.3rem' : '2.8rem',
+                        fontWeight: 'bolder',
+                        margin: isMobile ? '30px auto 20px auto' : '60px auto 40px auto',
+                        textAlign: 'center'
+                    }}
+                >
+                    <span> TERRITORIO {territoryNumber} </span>
+                    
+                    {currentFace &&
+                        <>
+                            <br />
+                            <span> Manzana {currentFace.block} </span>
+                            <br />
+                            <span> Cara {currentFace.face} - {currentFace.street} </span>
+                        </>
+                    }
+                </h1>
+                
+                {!!territoryHTH && !!currentFace && <>
+                    <HTHSetIsFinishedButton
+                        currentFace={currentFace}
+                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                        territoryHTH={territoryHTH}
+                    />
+                    <HTHBuildings
+                        currentFace={currentFace}
+                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                        territoryNumber={territoryHTH.territoryNumber}
+                    />
+                    <HTHObservations
+                        currentFace={currentFace}
+                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                        territoryNumber={territoryHTH.territoryNumber}
+                    />
+                    <HTHDoNotCalls
+                        currentFace={currentFace}
+                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                        territoryNumber={territoryHTH.territoryNumber}
+                    />
+
+                    {user.isAdmin && !isMobile &&
+                        <HTHDeleteFaceButton
+                            currentFace={currentFace}
+                            refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                            territoryHTH={territoryHTH}
+                        />
+                    }
+                </>}
+
+            </Container>
+        </>}
+
+
+        {/* <BuildingSearcherSection /> */}
+
+        {!currentFace && <>
+            {!!territoryHTH?.map.polygons?.some(x => !!x.buildings?.length) ?
                 <>
                     <h1>Buscar edificio</h1>
                     <FloatingLabel
@@ -230,26 +238,24 @@ export const HouseToHousePage = () => {
                         <Form.Control
                             className={'form-control'}
                             type={'text'}
-                            placeholder={"Dirección..."}
                             value={buildingAddress}
                             onChange={e => setBuildingAddress((e.target as HTMLInputElement).value)}
                             autoFocus
                         />
                     </FloatingLabel>
                     {territoryHTH.map.polygons.map(p =>
-                        <Card>
+                        <Card key={p.id}>
                             {p.buildings?.map(b => <>
                                 {`${p.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) &&
                                     <span>{p.street} {b.streetNumber}</span>
                                 }
-                            </>
-                            )}
+                            </>)}
                         </Card>
                     )}
                 </>
+                :
+                <h4> No hay edificios cargados en este territorio </h4>
             }
-
-        </Container>
-        
+        </>}
     </>)
 }

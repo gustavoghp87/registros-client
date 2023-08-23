@@ -1,10 +1,11 @@
-import { H2 } from "../commons"
-import { goToTop } from "../../services"
-import { typeRootState } from "../../models"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router"
-import { useSelector } from "react-redux"
-import { Container, FloatingLabel, Form } from "react-bootstrap"
+import { ConfigCreateHTHTerritories, ConfigSetCongregationName, ConfigSetGoogleBoardUrl } from '../config'
+import { Container } from 'react-bootstrap'
+import { goToTop } from '../../services'
+import { H2 } from '../commons'
+import { typeRootState } from '../../models'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
+import { useSelector } from 'react-redux'
 
 const btnClasses = 'btn btn-general-blue btn-size12 d-block mx-auto mt-5 mb-0'
 
@@ -15,80 +16,63 @@ export const Config = () => {
         config: state.config,
         isDarkMode: state.darkMode.isDarkMode
     }))
-    const [showSetNumberOfTerritories, setShowSetNumberOfTerritories] = useState(false)
+    const [showCreateHthTerritories, setShowCreateHthTerritories] = useState(false)
+    const [showSetCongregationName, setShowSetCongregationName] = useState(false)
+    const [showSetGoogleBoardUrl, setShowSetGoogleBoardUrl] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => goToTop(), [])
 
     return (<>
     
-        <H2 title="Configuración de la Aplicación (en construcción)" />
+        <H2 title={'CONFIGURACIÓN DE LA APLICACIÓN'} mb={'80px'} />
 
-        {!showSetNumberOfTerritories && <>
-            {!config.numberOfTerritories &&
-                <button className={btnClasses} style={btnStyles} onClick={() => setShowSetNumberOfTerritories(true)}>
-                    Cargar cantidad de Territorios
+        {!showCreateHthTerritories && !showSetCongregationName && !showSetGoogleBoardUrl && <>
+
+            <button className={btnClasses} style={btnStyles} onClick={() => setShowSetCongregationName(true)}>
+                {!!config.name ? "Cambiar el nombre de la Congregación" : "Cargar el nombre de la Congregación"}
+            </button>
+
+            {!!config.name && !config.numberOfTerritories &&
+                <button className={btnClasses} style={btnStyles} onClick={() => setShowCreateHthTerritories(true)}>
+                    Crear Territorios de Casa en Casa
                 </button>
             }
 
-            <button className={btnClasses} style={btnStyles}>
-                Cargar Excel de Telefónica
+            <button className={btnClasses} style={btnStyles} onClick={() => setShowSetGoogleBoardUrl(true)}>
+                {!!config.googleBoardUrl ? "Modificar dirección de Tablero Google" : "Cargar dirección de Tablero Google"}
             </button>
 
-            <button className={btnClasses} style={btnStyles}>
-                Cargar dirección de Tablero Google
+            <button className={btnClasses} style={btnStyles} onClick={() => navigate('/gmail')}>
+                Renovar credenciales de Gmail
             </button>
 
-            <button className={btnClasses} style={btnStyles}
-                onClick={() => navigate('/gmail')}
-            >
-                Renovar credenciales de la API de Gmail
-            </button>
+            <Container className='text-center mt-5'>
+                <h1>En desarrollo:</h1>
 
-            <h2 className={isDarkMode ? 'text-white' : ''}> Establecer localidad </h2>
+                <h5 className={isDarkMode ? 'text-white' : ''}> Establecer localidad </h5>
 
-            <h2 className={isDarkMode ? 'text-white' : ''}> Establecer punto central del territorio </h2>
-
-            <h2 className={isDarkMode ? 'text-white' : ''}> Duración de cookie de acceso: 3 meses </h2>
+                <h5 className={isDarkMode ? 'text-white' : ''}> Duración de cookie de acceso: 3 meses </h5>
+            </Container>
         </>}
-        
-        {showSetNumberOfTerritories &&
-            <SetNumberOfTerritories />
+
+        {showCreateHthTerritories &&
+            <ConfigCreateHTHTerritories
+                setShowCreateHthTerritories={setShowCreateHthTerritories}
+            />
+        }
+
+        {showSetCongregationName &&
+            <ConfigSetCongregationName
+                setShowSetCongregationName={setShowSetCongregationName}
+            />
+        }
+
+        {showSetGoogleBoardUrl &&
+            <ConfigSetGoogleBoardUrl
+                setShowSetGoogleBoardUrl={setShowSetGoogleBoardUrl}
+            />
         }
 
     </>)
-}
-
-const SetNumberOfTerritories = () => {
-    const [numberOfTerritories, setNumberOfTerritories] = useState(0)
-
-    const setNumberOfTerritoriesHandler = () => {
-
-    }
-
-    return (
-        <Container>
-            <FloatingLabel
-                className={'mb-3 text-dark'}
-                label={"Elegir la cantidad de territorios"}
-            >
-                <Form.Control
-                    className={'form-control'}
-                    type={'number'}
-                    value={numberOfTerritories ? numberOfTerritories : ''}
-                    placeholder={"Elegir la cantidad de territorios"}
-                    onChange={e => setNumberOfTerritories(parseInt((e.target as HTMLInputElement).value))}
-                    onKeyDown={e => e.key === 'Enter' ? setNumberOfTerritoriesHandler() : null }
-                />
-            </FloatingLabel>
-
-            <button
-                className={`btn btn-general-blue d-block w-100 mt-3`}
-                style={{ fontWeight: 'bolder', height: '50px' }}
-                onClick={setNumberOfTerritoriesHandler}
-            >
-                Aceptar
-            </button>
-        </Container>
-    )
 }

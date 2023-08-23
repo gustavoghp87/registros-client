@@ -1,7 +1,7 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { getGlobalStatistics1Service } from '../../services'
 import { H2, Loading } from '../commons'
 import { typeRootState, typeTerritoryRow } from '../../models'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -11,32 +11,10 @@ export const Statistics = () => {
         isMobile: state.mobileMode.isMobile
     }))
     const [isLoading, setIsLoading] = useState(true)
-
-    return (
-    <>
-        <H2 title={"ESTADÍSTICAS DE LA TELEFÓNICA"} />
-
-        <Section3
-            isDarkMode={isDarkMode}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-        />
-    </>
-    )
-}
-
-
-type propsType = {
-    isLoading: boolean
-    setIsLoading: Dispatch<SetStateAction<boolean>>
-    isDarkMode: boolean
-}
-
-const Section3: FC<propsType> = ({ isDarkMode, isLoading, setIsLoading }) => {
-    const navigate = useNavigate()
-    const [territories, setTerritories] = useState<typeTerritoryRow[]>()
-    const [showOpened, setShowOpened] = useState(true)
     const [selectedOption, setSelectedOption] = useState(1)
+    const [showOpened, setShowOpened] = useState(true)
+    const [territories, setTerritories] = useState<typeTerritoryRow[]>()
+    const navigate = useNavigate()
 
     const setSelectedOptionHandler = (value: number): void => {
         setSelectedOption(value)
@@ -82,64 +60,71 @@ const Section3: FC<propsType> = ({ isDarkMode, isLoading, setIsLoading }) => {
 
     if (isLoading) return <Loading mt={'60px'} mb={'20px'} />
 
-    return (<>
+    return (
+    <>
+        <H2 title={"ESTADÍSTICAS DE LA TELEFÓNICA"} />
+
+        {isMobile && <p className={'text-center mt-3'}> Versión resumida para celulares </p>}
+
         <div className={'my-4'}>
             <div className={'row'}>
                 {!!territories?.length &&
-                <div className={'mx-auto'} style={{ width: '300px' }}>
-                    <div className={'form-check'}>
-                        <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd1'}>
-                            Ordenar por territorio
-                        </label>
-                        <input className={'form-check-input ms-0 me-2'}
-                            type={'radio'} name={'frd'} id={'frd1'} value={1}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setSelectedOptionHandler(parseInt(e.target.value))}
-                            checked={selectedOption === 1}
-                        />
+                    <div className={'mx-auto'} style={{ width: '300px' }}>
+                        <div className={'form-check'}>
+                            <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd1'}>
+                                Ordenar por territorio
+                            </label>
+                            <input className={'form-check-input ms-0 me-2'}
+                                type={'radio'} name={'frd'} id={'frd1'} value={1}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setSelectedOptionHandler(parseInt(e.target.value))}
+                                checked={selectedOption === 1}
+                            />
+                        </div>
+                        <div className={'form-check'}>
+                            <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd2'}>
+                                Ordenar por última vez
+                            </label>
+                            <input className={'form-check-input ms-0 me-2'}
+                                type={'radio'} name={'frd'} id={'frd2'} value={2}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setSelectedOptionHandler(parseInt(e.target.value))}
+                                checked={selectedOption === 2}
+                            />
+                        </div>
+                        {!isMobile && <>
+                            <div className={'form-check'}>
+                                <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd3'}>
+                                    Ordenar por % de completado
+                                </label>
+                                <input className={'form-check-input ms-0 me-2'}
+                                    type={'radio'} name={'frd'} id={'frd3'} value={3}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                        setSelectedOptionHandler(parseInt(e.target.value))}
+                                    checked={selectedOption === 3}
+                                />
+                            </div>
+                            <div className={'form-check'}>
+                                <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd4'}>
+                                    Ordenar por tamaño
+                                </label>
+                                <input className={'form-check-input ms-0 me-2'}
+                                    type={'radio'} name={'frd'} id={'frd4'} value={4}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                        setSelectedOptionHandler(parseInt(e.target.value))}
+                                    checked={selectedOption === 4}
+                                />
+                            </div>
+                            <div className={'form-check mt-2'}>
+                                <input className={'form-check-input ms-0 me-2'} type={'checkbox'} id={'fcc1'}
+                                    value={''} checked={showOpened} onChange={() => setShowOpened(x => !x)}
+                                />
+                                <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'fcc1'}>
+                                    Ver Abiertos
+                                </label>
+                            </div>
+                        </>}
                     </div>
-                    <div className={'form-check'}>
-                        <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd2'}>
-                            Ordenar por última vez
-                        </label>
-                        <input className={'form-check-input ms-0 me-2'}
-                            type={'radio'} name={'frd'} id={'frd2'} value={2}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setSelectedOptionHandler(parseInt(e.target.value))}
-                            checked={selectedOption === 2}
-                        />
-                    </div>
-                    <div className={'form-check'}>
-                        <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd3'}>
-                            Ordenar por % de completado
-                        </label>
-                        <input className={'form-check-input ms-0 me-2'}
-                            type={'radio'} name={'frd'} id={'frd3'} value={3}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setSelectedOptionHandler(parseInt(e.target.value))}
-                            checked={selectedOption === 3}
-                        />
-                    </div>
-                    <div className={'form-check'}>
-                        <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'frd4'}>
-                            Ordenar por tamaño
-                        </label>
-                        <input className={'form-check-input ms-0 me-2'}
-                            type={'radio'} name={'frd'} id={'frd4'} value={4}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setSelectedOptionHandler(parseInt(e.target.value))}
-                            checked={selectedOption === 4}
-                        />
-                    </div>
-                    <div className={'form-check mt-2'}>
-                        <input className={'form-check-input ms-0 me-2'} type={'checkbox'} id={'fcc1'}
-                            value={''} checked={showOpened} onChange={() => setShowOpened(x => !x)}
-                        />
-                        <label className={`form-check-label ${isDarkMode ? 'text-white' : ''}`} htmlFor={'fcc1'}>
-                            Ver Abiertos
-                        </label>
-                    </div>
-                </div>
                 }
             </div>
         </div>
@@ -149,10 +134,12 @@ const Section3: FC<propsType> = ({ isDarkMode, isLoading, setIsLoading }) => {
                 <tr>
                     <th scope={'col'}>TERR</th>
                     <th scope={'col'}>ASIGNADO A</th>
-                    <th scope={'col'}>ESTADO</th>
-                    <th scope={'col'}>QUEDAN</th>
-                    <th scope={'col'}>TOTAL</th>
-                    <th scope={'col'}>QUEDAN</th>
+                    {!isMobile && <>
+                        <th scope={'col'}>ESTADO</th>
+                        <th scope={'col'}>QUEDAN</th>
+                        <th scope={'col'}>TOTAL</th>
+                        <th scope={'col'}>QUEDAN</th>
+                    </>}
                     <th scope={'col'}>ULT. VEZ</th>
                 </tr>
             </thead>
@@ -166,22 +153,30 @@ const Section3: FC<propsType> = ({ isDarkMode, isLoading, setIsLoading }) => {
                             <th scope={'row'}> {territory.territoryNumber} </th>
                             
                             <td style={{ maxWidth: '350px' }}>
-                                {territory.assigned?.length ? territory.assigned.join(', ') : "-"}
+                                {!!territory.assigned?.length ?
+                                    territory.assigned.map(a =>
+                                        <p key={a}>{a}</p>
+                                    )
+                                    :
+                                    "-"
+                                }
                             </td>
                             
-                            <td className={` ${territory.opened ? 'bg-success' : 'bg-danger'} `}>
-                                {territory.opened ? 'ABIERTO' : 'CERRADO'}
-                            </td>
-                            
-                            <td>{territory.left}</td>
-                            <td>{territory.total}</td>
-                            <td>{territory.leftRel}</td>
+                            {!isMobile && <>
+                                <td className={` ${territory.opened ? 'bg-success' : 'bg-danger'} `}>
+                                    {territory.opened ? 'ABIERTO' : 'CERRADO'}
+                                </td>
+                                
+                                <td>{territory.left}</td>
+                                <td>{territory.total}</td>
+                                <td>{territory.leftRel}</td>
+                            </>}
                             <td>{territory.last}</td>
                         </tr>
                     )
                     :
                     <tr>
-                        <td colSpan={7}> No hay datos </td>
+                        <td colSpan={isMobile ? 3 : 7}> No hay datos </td>
                     </tr>
                 }
             </tbody>
