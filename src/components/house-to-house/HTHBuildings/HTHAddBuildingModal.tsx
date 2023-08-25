@@ -54,12 +54,13 @@ export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, curre
             streetNumber
         }
         if (hasManager) building.manager = {
-            dateOfLastCall: 0,
             doorName: '',
             doorNumber: 0,
             id: +new Date(),
             isChecked: false,
-            level: null
+            level: null,
+            offDates: [],
+            onDates: []
         }
         addBuildingService(territoryNumber, currentFace.block, currentFace.face, building).then(response => {
             if (!response) return alert("Error: Falló algo")

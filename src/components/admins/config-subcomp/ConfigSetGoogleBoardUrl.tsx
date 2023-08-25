@@ -1,9 +1,9 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../../store'
+import { setGoogleBoardUrlService } from '../../../services/configServices'
+import { typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
-import { typeRootState } from '../../models'
-import { setGoogleBoardUrlService } from '../../services/configServices'
-import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 
 type propsType = {
     setShowSetGoogleBoardUrl: Dispatch<SetStateAction<boolean>>
@@ -11,7 +11,7 @@ type propsType = {
 
 export const ConfigSetGoogleBoardUrl: FC<propsType> = ({ setShowSetGoogleBoardUrl }) => {
     const config = useSelector((state: typeRootState) => state.config)
-    const [url, setUrl] = useState(config.googleBoardUrl)
+    const [url, setUrl] = useState(`https://sites.google.com${config.googleBoardUrl}`)
     const dispatch = useDispatch()
 
     const setGoogleSiteUrlHandler = async () => {
@@ -53,7 +53,7 @@ export const ConfigSetGoogleBoardUrl: FC<propsType> = ({ setShowSetGoogleBoardUr
                 className={`btn btn-general-blue d-block w-100 mt-3`}
                 style={{ fontWeight: 'bolder', height: '50px' }}
                 onClick={setGoogleSiteUrlHandler}
-                disabled={!url || url.length < 6 || !url.includes('sites.google.com')}
+                disabled={!url || url.length < 6 || !url.includes('sites.google.com') || url === `https://sites.google.com${config.googleBoardUrl}`}
             >
                 Aceptar
             </button>

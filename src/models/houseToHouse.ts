@@ -57,8 +57,18 @@ export type typeObservation = {
     text: string
 }
 
+// export type typeCallingHTHState = 'Atendido' | 'No atendido' | 'No tocado' | 'Carta dejada'
 
-// new buildings section
+export type typeHTHHousehold = {
+    doorName: string
+    doorNumber: number
+    id: number
+    isChecked: boolean
+    level: number|null
+    offDates: number[]
+    onDates: number[]
+    // callingHTHState: typeCallingHTHState
+}
 
 export type typeHTHBuilding = {
     creatorId: number
@@ -72,15 +82,3 @@ export type typeHTHBuilding = {
     numberPerLevel: number
     streetNumber: number
 }
-
-export type typeHTHHousehold = {
-    dateOfLastCall: number
-    doorName: string
-    doorNumber: number
-    id: number
-    isChecked: boolean
-    level: number|null
-    // callingHTHState: typeCallingHTHState
-}
-
-// export type typeCallingHTHState = 'Atendido' | 'No atendido' | 'No tocado' | 'Carta dejada'

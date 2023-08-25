@@ -18,7 +18,10 @@ type propsType = {
     territoryNumber: typeTerritoryNumber
 }
 
-export const HTHBuildingModal: FC<propsType> = ({ closeBuildingModalHandler, congregation, currentBuilding, currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
+export const HTHBuildingModal: FC<propsType> = ({
+    closeBuildingModalHandler, congregation, currentBuilding,
+    currentFace, refreshHTHTerritoryHandler, territoryNumber
+}) => {
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user

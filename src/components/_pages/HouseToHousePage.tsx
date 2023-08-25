@@ -1,8 +1,8 @@
-import { Card, Container, FloatingLabel, Form } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import { generalBlue, hthChangeString } from '../../constants'
 import { getHTHTerritoryService, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
-import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
+import { HTHAllBuildings, HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
 import { io, Socket } from 'socket.io-client'
 import { SERVER } from '../../app-config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
@@ -14,19 +14,18 @@ import { useState, useEffect, useCallback } from 'react'
 const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const HouseToHousePage = () => {
-    const territoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
     const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
+    const territoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
     const [currentFace, setCurrentFace] = useState<typePolygon|null>(null)
     const [isAddingPolygon, setIsAddingPolygon] = useState(false)
     const [isEditingView, setIsEditingView] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [showNewFaceOptions, setShowNewFaceOptions] = useState(false)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory|null>(null)
-    const [buildingAddress, setBuildingAddress] = useState("")
     const dispatch = useDispatch()
 
     const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
@@ -227,35 +226,12 @@ export const HouseToHousePage = () => {
 
         {/* <BuildingSearcherSection /> */}
 
-        {!currentFace && <>
-            {!!territoryHTH?.map.polygons?.some(x => !!x.buildings?.length) ?
-                <>
-                    <h1>Buscar edificio</h1>
-                    <FloatingLabel
-                        className={'mb-3 text-dark'}
-                        label={"Dirección"}
-                    >
-                        <Form.Control
-                            className={'form-control'}
-                            type={'text'}
-                            value={buildingAddress}
-                            onChange={e => setBuildingAddress((e.target as HTMLInputElement).value)}
-                            autoFocus
-                        />
-                    </FloatingLabel>
-                    {territoryHTH.map.polygons.map(p =>
-                        <Card key={p.id}>
-                            {p.buildings?.map(b => <>
-                                {`${p.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) &&
-                                    <span>{p.street} {b.streetNumber}</span>
-                                }
-                            </>)}
-                        </Card>
-                    )}
-                </>
-                :
-                <h4> No hay edificios cargados en este territorio </h4>
-            }
-        </>}
+        {!!territoryHTH &&
+            <HTHAllBuildings
+                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                territoryHTH={territoryHTH}
+                territoryNumber={territoryNumber}
+            />
+        }
     </>)
 }

@@ -55,12 +55,13 @@ export const HTHBuildingCheckbox: FC<propsType> = ({
 
     const inputValue: typeHTHHousehold = useMemo(() => {
         return {
-            dateOfLastCall: 0,
             doorName,
             doorNumber,
             id: 0,
             isChecked,
-            level
+            level,
+            offDates: [],
+            onDates: []
         }
     }, [doorName, doorNumber, isChecked, level])
 

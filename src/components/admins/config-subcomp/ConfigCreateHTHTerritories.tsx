@@ -1,8 +1,8 @@
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
-import { createHTHTerritoriesService } from '../../services'
+import { createHTHTerritoriesService } from '../../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
-import { H2, Hr } from '../commons'
-import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
+import { H2, Hr } from '../../commons'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../../store'
 import { useDispatch } from 'react-redux'
 
 type propsType = {

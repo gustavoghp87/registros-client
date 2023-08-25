@@ -13,7 +13,7 @@ type propsType = {
     hideGoogleMapHandler: () => void
 }
 
-export const MapModal: FC<propsType> = ({ address, hideGoogleMapHandler }) => {
+export const MapModalTeleph: FC<propsType> = ({ address, hideGoogleMapHandler }) => {
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey,
         id: mapId

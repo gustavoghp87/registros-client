@@ -14,16 +14,21 @@ export const getHeaders = (): typeHeaders => ({
     'x-Recaptcha-Token': localStorage.getItem('recaptchaToken') || ""
 })
 
-export const timeConverter = (UNIX_timestamp: number): string => {
+export const timeConverter = (UNIX_timestamp: number, withHour: boolean = true): string => {
     try {
-        let a: Date = new Date(UNIX_timestamp)
-        let months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-        let year = a.getFullYear()
-        let month = months[a.getMonth()]
-        let date = a.getDate()
-        let hour = a.getHours()
-        let min = a.getMinutes() < 10 ? "0" + a.getMinutes() : a.getMinutes()
-        let time = date + " " + month + " " + year + " - " + hour + ":" + min + " hs"
+        const a: Date = new Date(UNIX_timestamp)
+        const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        const year = a.getFullYear()
+        const month = months[a.getMonth()]
+        const date = a.getDate()
+        const hour = a.getHours()
+        const min = a.getMinutes() < 10 ? "0" + a.getMinutes() : a.getMinutes()
+        let time: string
+        if (withHour) {
+            time = date + " " + month + " " + year + " - " + hour + ":" + min + " hs"
+        } else {
+            time = date + " " + month + " " + year
+        }
         return time
     } catch (error) {
         console.log(error)

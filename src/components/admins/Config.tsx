@@ -1,4 +1,4 @@
-import { ConfigCreateHTHTerritories, ConfigSetCongregationName, ConfigSetGoogleBoardUrl } from '../config'
+import { ConfigCreateHTHTerritories, ConfigSetCongregationName, ConfigSetGoogleBoardUrl } from './config-subcomp'
 import { Container } from 'react-bootstrap'
 import { goToTop } from '../../services'
 import { H2 } from '../commons'
