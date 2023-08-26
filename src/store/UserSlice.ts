@@ -33,8 +33,12 @@ export const userSlice = createSlice({
             setUserToLSService(JSON.stringify(action.payload))
             state = action.payload
             return state
+        },
+        setAnonymousEmail: (state, action: PayloadAction<string>) => {
+            state.email = action.payload
+            return state
         }
     }
 })
 
-export const { logoutReducer, refreshUserReducer } = userSlice.actions
+export const { logoutReducer, refreshUserReducer, setAnonymousEmail } = userSlice.actions

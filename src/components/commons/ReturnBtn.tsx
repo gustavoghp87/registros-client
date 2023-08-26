@@ -1,9 +1,9 @@
 import { BsBackspace } from 'react-icons/bs'
 import { Button } from 'react-bootstrap'
 import { generalBlue } from '../../constants'
-import { useLocation } from 'react-router'
 import { typeRootState } from '../../models'
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -19,6 +19,7 @@ export const ReturnBtn = () => {
             location.pathname === '/admins' ||
             location.pathname === '/gmail' ||
             location.pathname === '/usuario' ||
+            location.pathname.split('/')[1] === 'admins' ||
             location.pathname.split('/')[1] === 'casa-en-casa' ||
             location.pathname.split('/')[1] === 'celulares' ||
             location.pathname.split('/')[1] === 'telefonica'

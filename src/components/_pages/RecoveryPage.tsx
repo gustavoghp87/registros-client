@@ -1,4 +1,5 @@
 import { changePswService, getEmailByEmailLink } from '../../services/userServices'
+import { emailPattern } from '../../app-config'
 import { FormLayout } from '../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { useDispatch } from 'react-redux'
@@ -29,11 +30,15 @@ export const RecoveryPage = () => {
     }
     
     const recoverAccountHandler = async (): Promise<void> => {
-        if (!team || !id || !email || !password || !confPassword) return openAlertModalHandler("Faltan datos", "")
-        if (password.length < 8) return openAlertModalHandler("La contraseña es demasiado corta (mín 8)", "")
-        if (password !== confPassword) return openAlertModalHandler("La contraseña no coincide con su confirmación", "")
+        if (!team || !id || !email || !emailPattern.test(email) || !password || !confPassword)
+            return openAlertModalHandler("Faltan datos", "")
+        if (password.length < 8)
+            return openAlertModalHandler("La contraseña es demasiado corta (mín 8)", "")
+        if (password !== confPassword)
+            return openAlertModalHandler("La contraseña no coincide con su confirmación", "")
         const congr = parseInt(team)
-        if (isNaN(congr)) return openAlertModalHandler("Hay un error en los datos", "")
+        if (isNaN(congr))
+            return openAlertModalHandler("Hay un error en los datos", "")
         const response = await changePswService(congr, null, password, id)
         if (response && response.success) {
             openAlertModalHandler("Clave cambiada con éxito", "", 1, () => navigate('/'))

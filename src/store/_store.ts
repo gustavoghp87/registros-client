@@ -1,4 +1,4 @@
-import { alertModalSlice, configurationSlice, darkModeSlice, loadingModalSlice, mobileModeSlice, userSlice } from './'
+import { alertModalSlice, configurationSlice, darkModeSlice, loadingModalSlice, mobileModeSlice, userSlice } from '.'
 import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({

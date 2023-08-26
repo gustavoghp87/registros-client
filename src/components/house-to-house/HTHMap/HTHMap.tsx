@@ -17,7 +17,7 @@ type propsType = {
     setIsAddingPolygon: Dispatch<SetStateAction<boolean>>
     setIsEditingView: Dispatch<SetStateAction<boolean>>
     setShowNewFaceOptions: Dispatch<SetStateAction<boolean>>
-    setTerritoryHTHHandler: (hthTerritory: typeHTHTerritory) => void
+    setTerritoryHTH: Dispatch<SetStateAction<typeHTHTerritory|null>>
     showNewFaceOptions: boolean
     territoryHTH: typeHTHTerritory
 }
@@ -25,7 +25,7 @@ type propsType = {
 export const HTHMap: FC<propsType> = ({
     currentFace, isAddingPolygon, isEditingView, refreshHTHTerritoryHandler,
     selectBlockAndFaceHandler, setIsAddingPolygon, setIsEditingView, setShowNewFaceOptions,
-    setTerritoryHTHHandler, showNewFaceOptions, territoryHTH
+    setTerritoryHTH, showNewFaceOptions, territoryHTH
 }) => {
     const { isMobile, user} = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile,
@@ -50,7 +50,7 @@ export const HTHMap: FC<propsType> = ({
         const currentTerritoryHTH: typeHTHTerritory = territoryHTH
         currentTerritoryHTH.map.centerCoords.lat = lat
         currentTerritoryHTH.map.centerCoords.lng = lng
-        setTerritoryHTHHandler(currentTerritoryHTH)
+        setTerritoryHTH(currentTerritoryHTH)
     }
 
     const onZoomChangedHandler = (): void => {
@@ -59,7 +59,7 @@ export const HTHMap: FC<propsType> = ({
         if (!newZoom || newZoom === territoryHTH.map.zoom) return
         const currentTerritoryHTH = territoryHTH
         currentTerritoryHTH.map.zoom = newZoom
-        setTerritoryHTHHandler(currentTerritoryHTH)
+        setTerritoryHTH(currentTerritoryHTH)
     }
 
     const initMapViewEditingHandler = (): void => {
@@ -135,7 +135,7 @@ export const HTHMap: FC<propsType> = ({
         }
         const currentTerritory: typeHTHTerritory = territoryHTH
         currentTerritory.map.polygons = [...currentTerritory.map.polygons, polygon]
-        setTerritoryHTHHandler(currentTerritory)
+        setTerritoryHTH(currentTerritory)
     }
 
     const addFaceHandler = (): void => {
@@ -183,7 +183,7 @@ export const HTHMap: FC<propsType> = ({
     //     currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
     //         polygon0.id === polygon.id ? modifiedPolygon : polygon0
     //     )
-    //     setTerritoryHTHHandler(currentTerritoryHTH)
+    //     setTerritoryHTH(currentTerritoryHTH)
     // }
     
     const cancelChangesHandler = (): void => {
@@ -248,7 +248,7 @@ export const HTHMap: FC<propsType> = ({
                                 polygon={polygon}
                                 runIntervals={runIntervals}
                                 selectBlockAndFaceHandler={selectBlockAndFaceHandler}
-                                setTerritoryHTHHandler={setTerritoryHTHHandler}
+                                setTerritoryHTH={setTerritoryHTH}
                                 territoryHTH={territoryHTH}
                             />
                         </div>

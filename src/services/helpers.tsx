@@ -1,4 +1,4 @@
-import { typeBlock, typeHousehold, typeHTHTerritory } from '../models'
+import { typeBlock, typeHousehold, typeHTHBuilding, typeHTHTerritory } from '../models'
 
 type typeHeaders = {
     'Accept': string
@@ -226,6 +226,24 @@ export const getHouseholdDoorBell = (doorNumber: number, index: number, index1: 
         if (hasCharacters) return getCharacterForNumber(doorNumber, hasNn)
         return doorNumber.toString()
     }
+}
+
+export const getFreeHouseholds = (building: typeHTHBuilding): number => {
+    if (!building.households?.length) return 0
+    const rest = building.households.filter(x => !x.isChecked).length
+    if (!!building.manager) {
+        return !!building.manager.isChecked ? rest : rest + 1
+    }
+    return rest
+}
+
+export const generateRandomEmail = () => {
+    const domains = ['gmailx.com', 'yahoox.com', 'outlookx.com', 'examplex.com', 'randommailx.net']
+    const randomDomainIndex = Math.floor(Math.random() * domains.length)
+    const usernameLength = Math.floor(Math.random() * 10) + 5
+    const username = Array.from({ length: usernameLength }, () => Math.random().toString(36).charAt(2)).join('')
+    const email = `${username}@${domains[randomDomainIndex]}`
+    return email
 }
 
 export const goToTop = () => window.scrollTo(0, 0);

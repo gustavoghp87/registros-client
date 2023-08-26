@@ -45,13 +45,16 @@ export const HTHBuildingModal: FC<propsType> = ({
 
     const deleteHTHBuildingHandler = (): void => {
         deleteHTHBuildingService(territoryNumber, currentFace.block, currentFace.face, currentBuilding.streetNumber).then((success: boolean) => {
-            if (success) refreshHTHTerritoryHandler()
-            else dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Algo falló",
-                message: "No se pudo eliminar el edificio",
-                animation: 2
-            }))
+            if (!success) {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "Algo falló",
+                    message: "No se pudo eliminar el edificio",
+                    animation: 2
+                }))
+                return
+            }
+            refreshHTHTerritoryHandler()
         })
     }
 
@@ -87,7 +90,6 @@ export const HTHBuildingModal: FC<propsType> = ({
                     {[...levels]
                      .slice(currentBuilding.hasLowLevel ? 0 : 1, currentBuilding.numberOfLevels + 1)
                      .map((level: number) =>
-
                         <div key={level}>
                             <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                                 {[...doorNames]
@@ -96,20 +98,20 @@ export const HTHBuildingModal: FC<propsType> = ({
                                     const currentHousehold = currentBuilding.households.find(x => x.level === level && x.doorNumber === doorNumber)
                                     if (!currentHousehold) return <></>
                                     return (
-                                        <HTHBuildingCheckbox
+                                        <HTHBuildingCheckbox 
+                                            block={currentFace.block}
+                                            closeBuildingModalHandler={closeBuildingModalHandler}
                                             congregation={congregation}
                                             doorName={currentHousehold.doorName}
                                             doorNumber={currentHousehold.doorNumber}
-                                            key={doorNumber}
-                                            level={currentHousehold.level}
-                                            
-                                            block={currentFace.block}
-                                            closeBuildingModalHandler={closeBuildingModalHandler}
                                             face={currentFace.face}
                                             id={currentHousehold.id}
-                                            isChecked0={currentHousehold.isChecked}
+                                            isChecked={currentHousehold.isChecked}
+                                            isManager={false}
+                                            key={level + '-' + doorNumber}
+                                            level={currentHousehold.level}
                                             refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                                            setShow={setShow}  // building page
+                                            setShow={setShow}
                                             streetNumber={currentBuilding.streetNumber}
                                             territoryNumber={territoryNumber}
                                         />
@@ -124,19 +126,18 @@ export const HTHBuildingModal: FC<propsType> = ({
                     {!!currentBuilding.manager &&
                         <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                             <HTHBuildingCheckbox
+                                block={currentFace.block}
+                                closeBuildingModalHandler={closeBuildingModalHandler}
                                 congregation={congregation}
                                 doorName={''}
                                 doorNumber={0}
-                                level={null}
-                                
-                                block={currentFace.block}
-                                closeBuildingModalHandler={closeBuildingModalHandler}
                                 face={currentFace.face}
                                 id={currentBuilding.manager.id}
-                                isChecked0={currentBuilding.manager.isChecked}
+                                isChecked={currentBuilding.manager.isChecked}
                                 isManager={true}
+                                level={null}
                                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                                setShow={setShow}  // building page
+                                setShow={setShow}
                                 streetNumber={currentBuilding.streetNumber}
                                 territoryNumber={territoryNumber}
                             />

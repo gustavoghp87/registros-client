@@ -1,7 +1,7 @@
 import { FC } from 'react'
-import { setHTHIsFinishedService } from '../../services'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { typeHTHTerritory, typePolygon } from '../../models'
+import { setHTHIsFinishedService } from '../../../services'
+import { setValuesAndOpenAlertModalReducer } from '../../../store'
+import { typeHTHTerritory, typePolygon } from '../../../models'
 import { useDispatch } from 'react-redux'
 
 type propsType = {

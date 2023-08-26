@@ -1,13 +1,15 @@
-import { assignHTHTerritoryService, assignTLPTerritoryService, changePswOtherUserService, deleteUserService, editUserService } from '../../services/userServices'
+import { assignHTHTerritoryService, assignTLPTerritoryService, changePswOtherUserService, deleteUserService, editUserService } from '../../../services/userServices'
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs'
 import { Card, Pagination } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
-import { Hr } from '../commons'
-import { setValuesAndOpenAlertModalReducer, typeMode } from '../../store'
+import { Hr } from '../../commons'
+import { setValuesAndOpenAlertModalReducer, typeMode } from '../../../store'
 import { Socket } from 'socket.io-client'
-import { typeRootState, typeUser } from '../../models'
+import { typeRootState, typeUser } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
-import { userChangeString } from '../../constants'
+import { userChangeString } from '../../../constants'
+
+const groups: number[] = [1, 2, 3, 4, 5, 6]
 
 type propsType = {
     currentUser: typeUser
@@ -31,7 +33,6 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
     const [changeTLPAssignmentsVisible, setChangeTLPAssignmentsVisible] = useState(false)
     const [groupVisible, setGroupVisible] = useState(false)
     const [showCardBody, setShowCardBody] = useState(false)
-    const groups: number[] = [1,2,3,4,5,6]
 
     const openAlertModalHandler = (mode: typeMode, title: string, message: string, animation?: number, execution?: Function): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -430,8 +431,12 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
                     }
 
                     <button className={'col-12 btn btn-general-blue my-2'}
-                        disabled={!!currentUser.isActive || currentUser.role !== 0 || !!currentUser.hthAssignments?.length
-                     || !!currentUser.phoneAssignments?.length || !!currentUser.phoneAssignments?.length}
+                        disabled={
+                            !!currentUser.isActive || currentUser.role !== 0 ||
+                            !!currentUser.hthAssignments?.length ||
+                            !!currentUser.phoneAssignments?.length ||
+                            !!currentUser.phoneAssignments?.length
+                        }
                         onClick = {() => openDeleteUserConfirmModalHandler()}
                     >
                         ELIMINAR USUARIO

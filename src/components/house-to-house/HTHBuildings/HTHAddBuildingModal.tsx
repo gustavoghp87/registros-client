@@ -2,7 +2,7 @@ import { addBuildingService, getHouseholdDoorBell } from '../../../services'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { FC, useState } from 'react'
 import { Hr } from '../../commons'
-import { HTHBuildingCheckbox } from '..'
+import { HTHAddBuildingCheckbox } from './HTHAddBuildingCheckbox'
 import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useSelector } from 'react-redux'
 
@@ -222,12 +222,11 @@ export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, curre
                             <div key={level}>
                                 <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                                     {[...doorNames].slice(0, numberPerLevel).map((doorNumber: number, index1: number) =>
-                                        <HTHBuildingCheckbox
-                                            congregation={user.congregation}
+                                        <HTHAddBuildingCheckbox key={doorNumber}
                                             doorName={getHouseholdDoorBell(doorNumber, index, index1, hasContinuousNumbers, hasCharacters, numberPerLevel, hasNn)}
                                             doorNumber={doorNumber}
-                                            key={doorNumber}
                                             level={level}
+                                            isManager={false}
                                         />
                                     )}
                                 </div>
@@ -237,12 +236,11 @@ export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, curre
 
                         {hasManager &&
                             <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
-                                <HTHBuildingCheckbox
-                                    congregation={user.congregation}
+                                <HTHAddBuildingCheckbox
                                     doorName={'Portería'}
                                     doorNumber={0}
-                                    isManager={true}
                                     level={null}
+                                    isManager={true}
                                 />
                             </div>
                         }

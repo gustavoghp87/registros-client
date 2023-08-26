@@ -1,10 +1,9 @@
-import { Container, FloatingLabel, Form } from "react-bootstrap"
-import { Dispatch, FC, SetStateAction, useState } from "react"
-import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from "../../../store"
-import { setCongregationNameService } from "../../../services/configServices"
-import { typeRootState } from "../../../models"
-import { useDispatch } from "react-redux"
-import { useSelector } from "react-redux"
+import { Container, FloatingLabel, Form } from 'react-bootstrap'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../../store'
+import { setCongregationNameService } from '../../../services/configServices'
+import { typeRootState } from '../../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
 type propsType = {
     setShowSetCongregationName: Dispatch<SetStateAction<boolean>>

@@ -1,6 +1,7 @@
 import { Card, Form, FloatingLabel } from 'react-bootstrap'
 import { changeEmailService } from '../../services/userServices'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { emailPattern } from '../../app-config'
 import { typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
 
@@ -18,6 +19,8 @@ export const UserChangeEmail: FC<propsType> = ({ openAlertModalHandler, openConf
     const [newEmail, setNewEmail] = useState("")
 
     const changeEmail = async (): Promise<void> => {
+        if (!newEmail || !emailPattern.test(newEmail))
+            return
         const response = await changeEmailService(newEmail)
         if (!!response?.success) {
             openAlertModalHandler("Clave cambiada con éxito", "", 1)
@@ -81,7 +84,10 @@ export const UserChangeEmail: FC<propsType> = ({ openAlertModalHandler, openConf
                     Esta dirección de Email va a ser también el 'username' para ingresar a la aplicación
                 </span>
 
-                <button className={'btn btn-general-blue my-2'} onClick={changeEmailHandler}>
+                <button className={'btn btn-general-blue my-2'}
+                    onClick={changeEmailHandler}
+                    disabled={!newEmail || !emailPattern.test(newEmail)}
+                >
                     Aceptar
                 </button>
 

@@ -5,6 +5,22 @@ import { typeResponseData } from '../models'
 
 const base: string = pointer.config
 
+export const inviteNewUserService = async (email: string): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(`${base}/invite`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify({ email })
+        })
+        const data: typeResponseData = await response.json()
+        return !!data?.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 export const setCongregationNameService = async (name: string): Promise<boolean> => {
     if (!getTokenService() || !name) return false
     try {

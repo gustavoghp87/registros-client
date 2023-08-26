@@ -6,52 +6,50 @@ import { typeBlock, typeFace, typeHTHHousehold, typeTerritoryNumber } from '../.
 import { useDispatch } from 'react-redux'
 
 type propsType = {
-    // add and use:
+    block: typeBlock
+    closeBuildingModalHandler?: () => void
     congregation: number
     doorName: string
     doorNumber: number
+    face: typeFace
+    id: number
+    isChecked: boolean
+    isManager: boolean
     level: number|null
-    // use:
-    block?: typeBlock
-    closeBuildingModalHandler?: () => void
-    face?: typeFace
-    id?: number
-    isChecked0?: boolean
-    isManager?: boolean
-    refreshHTHTerritoryHandler?: () => void
-    setShow?: Dispatch<SetStateAction<boolean>>
-    streetNumber?: number
-    territoryNumber?: typeTerritoryNumber
+    refreshHTHTerritoryHandler: () => void
+    setShow: Dispatch<SetStateAction<boolean>>
+    streetNumber: number
+    territoryNumber: typeTerritoryNumber
 }
 
 export const HTHBuildingCheckbox: FC<propsType> = ({
-    block, closeBuildingModalHandler, congregation, doorName, doorNumber, face, id, isChecked0,
+    block, closeBuildingModalHandler, congregation, doorName, doorNumber, face, id, isChecked,
     isManager, level, refreshHTHTerritoryHandler, setShow, streetNumber, territoryNumber
 }) => {
     const dispatch = useDispatch()
-    const [isChecked, setIsChecked] = useState<boolean>(isChecked0 ?? isChecked0 === undefined)
+    const [isCheckedAddBuilding, setIsCheckedAddBuilding] = useState(true)
 
     const changeCallingState = (): void => {
         if (!territoryNumber || !block || !face || !streetNumber || !id || !refreshHTHTerritoryHandler) return
         modifyHTHHouseholdService(congregation, territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager).then((success: boolean) => {
             if (!success) {
-                if (closeBuildingModalHandler) closeBuildingModalHandler()
-                else if (setShow) setShow(false)
-                return dispatch(setValuesAndOpenAlertModalReducer({
+                if (closeBuildingModalHandler) {
+                    closeBuildingModalHandler()
+                } else if (setShow) {
+                    setShow(false)
+                }
+                dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: "Error",
                     message: "Falló el cambio de estado de la vivienda",
                     animation: 2,
                     execution: refreshHTHTerritoryHandler
                 }))
+                return
             }
             refreshHTHTerritoryHandler()
         })
     }
-
-    const isAddingModal: boolean = useMemo(() => {
-        return isChecked0 === undefined
-    }, [isChecked0])
 
     const inputValue: typeHTHHousehold = useMemo(() => {
         return {
@@ -74,7 +72,7 @@ export const HTHBuildingCheckbox: FC<propsType> = ({
             />
             <Form.Group
                 className={`d-flex align-items-center my-2 ${level !== undefined && doorName !== undefined ? 'bg-dark text-white' : ''}`}
-                onClick={() => setIsChecked(x => !x)}
+                onClick={() => !block ? setIsCheckedAddBuilding(x => !x) : null}
                 style={{
                     border: level !== undefined && doorName !== undefined ? '1px solid black' : '',
                     borderRadius: '7px',
@@ -85,11 +83,11 @@ export const HTHBuildingCheckbox: FC<propsType> = ({
             >
                 {level !== undefined && doorName !== undefined &&
                     <Form.Check
-                        checked={isChecked}
+                        type={'checkbox'}
                         className={'checkbox-3 d-flex align-items-center'}
                         label={isManager ? 'Portería' : level === 0 ? `PB ${doorName}` : `${level}° ${doorName}`}
-                        onChange={() => isAddingModal ? null : changeCallingState()}
-                        type={'checkbox'}
+                        checked={!block ? isCheckedAddBuilding : isChecked}
+                        onChange={() => !block ? null : changeCallingState()}
                     />
                 }
             </Form.Group>

@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { getCurrentLocalDate } from '../../../services'
+import { getCurrentLocalDate, getFreeHouseholds } from '../../../services'
 import { HTHBuildingModal } from '..'
 import { typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useSelector } from 'react-redux'
@@ -14,15 +14,6 @@ type propsType = {
 export const HTHBuildingItem: FC<propsType> = ({ building, currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
     const user = useSelector((state: typeRootState) => state.user)
     const [show, setShow] = useState(false)
-
-    const getFreeHouseholds = (building: typeHTHBuilding): number => {
-        if (!building.households?.length) return 0
-        const rest = building.households.filter(x => !x.isChecked).length
-        if (!!building.manager) {
-            return !!building.manager.isChecked ? rest : rest + 1
-        }
-        return rest
-    }
 
     const closeBuildingModalHandler = (): void => setShow(false)
 

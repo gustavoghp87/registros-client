@@ -1,4 +1,3 @@
-import { Card, DropdownButton, ButtonGroup, Dropdown, Form } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { getUsersService } from '../../services/userServices'
 import { H2, Loading, WarningToaster } from '../commons'
@@ -9,6 +8,8 @@ import { typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { userChangeString } from '../../constants'
 import { UsersCard } from './'
+import { UsersInvite } from './users/UsersInvite'
+import { UsersSelector } from './users/UsersSelector'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
@@ -17,30 +18,27 @@ type propsType = {
 }
 
 export const Users: FC<propsType> = ({ setIsLoading }) => {
-    const { isDarkMode, user } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode,
-        user: state.user
-    }))
-    const dispatch = useDispatch()
+    const user = useSelector((state: typeRootState) => state.user)
     const [emailSearchInputText, setEmailSearchInputText] = useState("")
     const [selectedGroup, setSelectedGroup] = useState(0)
-    const [users, setUsers] = useState<typeUser[]>()
-    const [usersToShow, setUsersToShow] = useState<typeUser[]>()
+    const [showNewUser, setShowNewUser] = useState(false)
+    const [users, setUsers] = useState<typeUser[]|null>(null)
+    const [usersToShow, setUsersToShow] = useState<typeUser[]|null>(null)
+    const dispatch = useDispatch()
     
     useEffect(() => {
         getUsersService().then((users0: typeUser[]|null) => {
-            if (!users0) return dispatch(setValuesAndOpenAlertModalReducer({
-                mode:'alert',
-                title: "Problemas",
-                message: "Algo falló al cargar los usuarios; refrescar",
-                animation: 2
-            }))
+            if (!users0) {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode:'alert',
+                    title: "Problemas",
+                    message: "Algo falló al cargar los usuarios; refrescar",
+                    animation: 2
+                }))
+                return
+            }
             setUsers(users0)
         })
-        return () => {
-            setUsers(undefined)
-            setUsersToShow(undefined)
-        }
     }, [dispatch])
 
     useEffect(() => {
@@ -56,7 +54,7 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
     }, [setIsLoading, user.congregation])
 
     useEffect(() => {
-        (!users || !users.length || (!emailSearchInputText && !selectedGroup)) ?
+        (!users?.length || (!emailSearchInputText && !selectedGroup)) ?
                 setUsersToShow(users)
             :
                 emailSearchInputText ?
@@ -83,54 +81,22 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
             </div>
         }
 
-        {!!users?.length &&
-            <Card
-                className={`mx-auto text-center ${isDarkMode ? 'bg-dark text-white' : ''}`}
-                style={{ backgroundColor: '#f6f6f8', marginTop: '70px', maxWidth: '500px' }}
-            >
-                <Card.Body>
-                    
-                    <Card.Title className={'mt-4 mb-2'}> <h1>Mostrando {usersToShow?.length || 0} </h1> </Card.Title>
+        <UsersInvite
+            setIsLoading={setIsLoading}
+            setShowNewUser={setShowNewUser}
+            showNewUser={showNewUser}
+        />
 
-                    <div className={'row w-100 mx-0'}>
-                        <div className={'col-sm-6'}>
-                            <Card.Title className={'mt-4 mb-3'}> Buscar por correo: </Card.Title>
-
-                            <Form.Control
-                                autoFocus
-                                className={'d-block mx-auto mb-4'}
-                                onChange={(e: any) => setEmailSearchInputText(e.target.value?.toLowerCase() || "")}
-                                placeholder={"Buscar por email"}
-                                style={{ maxWidth: '300px' }}
-                                type={'email'}
-                            />
-                        </div>
-
-                        <div className={'col-sm-6'}>
-                            <Card.Title className={'mt-4 mb-3'}> Buscar por grupo: </Card.Title>
-
-                            <DropdownButton
-                                as={ButtonGroup}
-                                className={'d-block mx-auto text-center mb-4'}
-                                id={"adminsPageDropdownBtn"}
-                                title={`Viendo ${selectedGroup ? `Grupo ${selectedGroup}` : 'todos'}`}
-                            >
-                                <Dropdown.Item eventKey={"0"} onClick={() => setSelectedGroup(0)} active={selectedGroup === 0}> Ver todos </Dropdown.Item>
-                                <Dropdown.Divider />
-                                <Dropdown.Item eventKey={"1"} onClick={() => setSelectedGroup(1)} active={selectedGroup === 1}> Grupo 1 </Dropdown.Item>
-                                <Dropdown.Item eventKey={"2"} onClick={() => setSelectedGroup(2)} active={selectedGroup === 2}> Grupo 2 </Dropdown.Item>
-                                <Dropdown.Item eventKey={"3"} onClick={() => setSelectedGroup(3)} active={selectedGroup === 3}> Grupo 3 </Dropdown.Item>
-                                <Dropdown.Item eventKey={"4"} onClick={() => setSelectedGroup(4)} active={selectedGroup === 4}> Grupo 4 </Dropdown.Item>
-                                <Dropdown.Item eventKey={"5"} onClick={() => setSelectedGroup(5)} active={selectedGroup === 5}> Grupo 5 </Dropdown.Item>
-                                <Dropdown.Item eventKey={"6"} onClick={() => setSelectedGroup(6)} active={selectedGroup === 6}> Grupo 6 </Dropdown.Item>
-                            </DropdownButton>
-                        </div>
-                    </div>
-                </Card.Body>
-            </Card>
+        {!!users?.length && !showNewUser &&
+            <UsersSelector
+                selectedGroup={selectedGroup}
+                setEmailSearchInputText={setEmailSearchInputText}
+                setSelectedGroup={setSelectedGroup}
+                usersToShow={usersToShow}
+            />
         }
 
-        {usersToShow?.map((user: typeUser) => (
+        {!showNewUser && !!usersToShow?.length && usersToShow.map((user: typeUser) => (
             <UsersCard
                 key={user.id}
                 currentUser={user}

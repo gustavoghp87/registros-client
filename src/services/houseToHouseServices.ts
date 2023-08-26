@@ -167,8 +167,6 @@ export const getHTHBuildingService = async (congregation: number, territoryNumbe
             headers: getHeaders()
         })
         const data: types.typeResponseData|null = await response.json()
-        console.log(data);
-        
         if (!data || !data.success || !data.hthTerritory) return null
         return data.hthTerritory
     } catch (error) {

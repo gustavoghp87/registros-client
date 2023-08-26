@@ -1,5 +1,5 @@
+import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react'
 import { editInfoWindowsStyles } from '../../../services'
-import { FC, useEffect, useRef, useState } from 'react'
 import { generalBlue, generalRed } from '../../../constants'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
 import { typeBlock, typeFace, typeHTHTerritory, typePolygon } from '../../../models'
@@ -14,13 +14,13 @@ type propsType = {
     polygon: typePolygon
     runIntervals: boolean
     selectBlockAndFaceHandler: (block?: typeBlock, face?: typeFace, hthTerritory0?: typeHTHTerritory|null) => void
-    setTerritoryHTHHandler: (territory: typeHTHTerritory) => void
+    setTerritoryHTH: Dispatch<SetStateAction<typeHTHTerritory|null>>
     territoryHTH: typeHTHTerritory
 }
 
 export const HTHPolygonComponent: FC<propsType> = ({
     currentFace, isAddingPolygon, isEditingView, polygon, runIntervals,
-    selectBlockAndFaceHandler, setTerritoryHTHHandler, territoryHTH
+    selectBlockAndFaceHandler, setTerritoryHTH, territoryHTH
 }) => {
     const ref = useRef<google.maps.Polygon>()
     const [polygonColor, setPolygonColor] = useState(generalBlue)
@@ -70,11 +70,11 @@ export const HTHPolygonComponent: FC<propsType> = ({
             currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
                 polygon0.id === polygon.id ? modifiedPolygon : polygon0
             )
-            setTerritoryHTHHandler(currentTerritoryHTH)
+            setTerritoryHTH(currentTerritoryHTH)
         }, 1000)
         if (!runIntervals) clearInterval(interval0)
         return () => clearInterval(interval0)
-    }, [polygon, runIntervals, setTerritoryHTHHandler, territoryHTH])
+    }, [polygon, runIntervals, setTerritoryHTH, territoryHTH])
 
     return (<>
         <Polygon

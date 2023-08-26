@@ -35,14 +35,23 @@ export const FormLayout: FC<propsType> = ({
     }))
 
     const clearInputs = (): void => {
-        if (isRegister) setEmail(getFailingEmailFromLSService() ?? "")
-        else setEmail('')
-        if (setIsRegister) setIsRegister(x => !x)
+        if (isRegister) {
+            setEmail(getFailingEmailFromLSService() ?? "")
+        } else {
+            setEmail('')
+        }
+        if (setIsRegister) {
+            setIsRegister(x => !x)
+        }
         setPassword('')
         setConfPassword('')
-        if (setGroup) setGroup(0)
-        if (email && isRegister) document.getElementById('passwordInput')?.focus()
-        else document.getElementById('emailInput')?.focus()
+        if (setGroup)
+            setGroup(0)
+        if (email && isRegister) {
+            document.getElementById('passwordInput')?.focus()
+        } else {
+            document.getElementById('emailInput')?.focus()
+        }
     }
 
     return (
@@ -80,7 +89,6 @@ export const FormLayout: FC<propsType> = ({
                         disabled={!!isRecovery}
                         id={"emailInput"}
                         onChange={e => setEmail((e.target as HTMLInputElement).value)}
-                        placeholder={isRecovery ? "Cargando..." : "Correo electrónico"}
                         //style={{ backgroundColor: 'lightgray' }}
                         type={'email'}
                         value={email}

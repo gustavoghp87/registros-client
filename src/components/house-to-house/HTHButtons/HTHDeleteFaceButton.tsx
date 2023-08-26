@@ -1,7 +1,7 @@
-import { deleteHTHPolygonFaceService } from '../../services'
+import { deleteHTHPolygonFaceService } from '../../../services'
 import { FC, useMemo } from 'react'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { typeHTHTerritory, typePolygon } from '../../models'
+import { setValuesAndOpenAlertModalReducer } from '../../../store'
+import { typeHTHTerritory, typePolygon } from '../../../models'
 import { useDispatch } from 'react-redux'
 
 type propsType = {

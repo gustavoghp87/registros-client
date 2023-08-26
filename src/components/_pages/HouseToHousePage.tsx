@@ -1,88 +1,58 @@
-import { Container } from 'react-bootstrap'
-import { generalBlue, hthChangeString } from '../../constants'
 import { getHTHTerritoryService, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
-import { HTHAllBuildings, HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '../house-to-house'
+import { HTHAllBuildings, HTHMapSection } from '../house-to-house'
+import { hthChangeString } from '../../constants'
 import { io, Socket } from 'socket.io-client'
 import { SERVER } from '../../app-config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { typeBlock, typeDoNotCall, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
+import { typeDoNotCall, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const HouseToHousePage = () => {
-    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode,
-        isMobile: state.mobileMode.isMobile,
-        user: state.user
-    }))
+    const user = useSelector((state: typeRootState) => state.user)
     const territoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
     const [currentFace, setCurrentFace] = useState<typePolygon|null>(null)
-    const [isAddingPolygon, setIsAddingPolygon] = useState(false)
-    const [isEditingView, setIsEditingView] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
-    const [showNewFaceOptions, setShowNewFaceOptions] = useState(false)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory|null>(null)
     const dispatch = useDispatch()
 
-    const setTerritoryHTHHandler = (territoryHTH0: typeHTHTerritory): void => {
-        setTerritoryHTH(territoryHTH0)
-    }
-
-    const selectBlockAndFaceHandler = (selectedBlock?: typeBlock, selectedFace?: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
-        if (selectedBlock === undefined && selectedFace === undefined)
-            setCurrentFace(null)
-        if (!selectedBlock || !selectedFace || !territoryHTH || !territoryHTH.map || !territoryHTH.map.polygons)
-            return
-        const target = hthTerritory0 ?? territoryHTH
-        let currentFace0 = target.map.polygons.find((x: typePolygon) => x.block === selectedBlock && x.face === selectedFace)
-        if (!currentFace0) {
-            return
+    const refreshHTHTerritoryHandler = (emitSocket: boolean = true): void => {
+        if (emitSocket) {
+            socket.emit(hthChangeString, user.congregation, territoryNumber, user.email)
         }
-        if (currentFace0.doNotCalls) {
-            currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a, b) => a.streetNumber - b.streetNumber)
-        }
-        if (currentFace0.observations) {
-            currentFace0.observations = currentFace0.observations.reverse()
-        }
-        if (currentFace0) {
-            setCurrentFace(currentFace0)
-        }
-    }
-
-    const refreshHTHTerritoryHandler = useCallback((init?: boolean): void => {
         setIsLoading(true)
         getHTHTerritoryService(territoryNumber).then((hthTerritory0: typeHTHTerritory|null) => {
             setIsLoading(false)
-            if (!hthTerritory0) return dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Algo falló",
-                message: `No se pudo recuperar el territorio ${territoryNumber}`,
-                animation: 2
-            }))
+            if (!hthTerritory0) {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "Algo falló",
+                    message: `No se pudo recuperar el territorio ${territoryNumber}`,
+                    animation: 2
+                }))
+                return
+            }
             setTerritoryHTH(hthTerritory0)
             setCurrentFace(x => {
                 if (!x) return x
-                const currentFace0: typePolygon|null = hthTerritory0.map.polygons.find((y: typePolygon) => y.block === x.block && y.face === x.face) ?? null
+                const currentFace0: typePolygon|null = hthTerritory0.map.polygons?.find(y => y.block === x.block && y.face === x.face) ?? null
                 if (currentFace0) {
-                    if (currentFace0.doNotCalls) currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
-                    if (currentFace0.observations) currentFace0.observations = currentFace0.observations.reverse()
+                    if (currentFace0.doNotCalls) {
+                        currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
+                    }
+                    if (currentFace0.observations) {
+                        currentFace0.observations = currentFace0.observations.reverse()
+                    }
                 }
                 return currentFace0
             })
-            // type typeMonth = {
-            //     month: number
-            //     year: number
-            // }
-            // let monthAndYear: typeMonth
-            // let twoMonths: boolean = false
-            // if (hthTerritory0.map.)
             hthTerritory0.map.polygons.forEach(x => {
                 x.completionData?.completionDates?.forEach(y => {
-                    console.log("Closed:", new Date(y))
+                    // console.log("Closed:", new Date(y))
                     // const date = new Date(y)
                     // const month = date.getUTCMonth()
                     // const year = date.getUTCFullYear()
@@ -92,31 +62,33 @@ export const HouseToHousePage = () => {
                     // monthAndYear = { month, year }
                 })
                 x.completionData?.reopeningDates?.forEach(y => {
-                    console.log("Opened:", new Date(y))
+                    // console.log("Opened:", new Date(y))
                 })
             })
         })
-        if (!init) socket.emit(hthChangeString, user.congregation, territoryNumber, user.email)
-    }, [dispatch, territoryNumber, user.congregation, user.email])
+    }
 
     useEffect(() => goToTop(), [])
 
     useEffect(() => {
-        refreshHTHTerritoryHandler(true)
-    }, [refreshHTHTerritoryHandler])
+        refreshHTHTerritoryHandler(false)
+    }, [])
 
     useEffect(() => {
-        socket.on(hthChangeString, (congregation: number, territoryNumber0: typeTerritoryNumber, userEmail?: string) => {
-            if (congregation && congregation === user.congregation && userEmail && userEmail !== user.email && territoryNumber && territoryNumber0 === territoryNumber) {
-                refreshHTHTerritoryHandler(true)
-                console.log("Refrescado por uso del usuario", userEmail)
+        socket.on(hthChangeString, (congregation: number, territoryNumber0: typeTerritoryNumber, userEmail: string) => {
+            if (!congregation || congregation !== user.congregation ||
+                !territoryNumber || territoryNumber0 !== territoryNumber ||
+                !userEmail || userEmail === user.email) {
+                return
             }
+            refreshHTHTerritoryHandler(false)
+            console.log("Refrescado (1) por uso del usuario", userEmail)
         })
         return () => { socket.off(hthChangeString) }
     }, [refreshHTHTerritoryHandler, territoryNumber, user.congregation, user.email])
 
-    return (
-    <>
+    return (<>
+
         <H2 title={"CASA EN CASA"} />
 
         {isLoading && <Loading mt={'60px'} />}
@@ -133,96 +105,15 @@ export const HouseToHousePage = () => {
         {/* <MapSection /> */}
 
         {(user.isAdmin || !!user.hthAssignments?.includes(parseInt(territoryNumber))) && <>
-            <h1
-                className={`text-center mt-3 mb-4 ${isDarkMode ? 'text-white' : ''}`}
-                style={{ fontWeight: 'bolder' }}
-            >
-                SELECCIONAR CARA DE MANZANA
-            </h1>
-
-            {!!territoryHTH?.map && <>
-                <HTHMap
-                    currentFace={currentFace}
-                    isAddingPolygon={isAddingPolygon}
-                    isEditingView={isEditingView}
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    selectBlockAndFaceHandler={selectBlockAndFaceHandler}
-                    setIsAddingPolygon={setIsAddingPolygon}
-                    setIsEditingView={setIsEditingView}
-                    setShowNewFaceOptions={setShowNewFaceOptions}
-                    setTerritoryHTHHandler={setTerritoryHTHHandler}
-                    showNewFaceOptions={showNewFaceOptions}
-                    territoryHTH={territoryHTH}
-                />
-                
-                {!showNewFaceOptions && !isEditingView && !isAddingPolygon &&
-                    <HTHChangeFaceStateButtons
-                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryNumber={territoryHTH.territoryNumber}
-                    />
-                }
-            </>}
-
-            <Container
-                className={isDarkMode ? 'bg-dark text-white' : ''}
-                style={{ paddingBottom: isMobile ? '1px' : '30px' }}
-            >
-
-                <h1 className={'text-white py-3 mb-4'}
-                    style={{
-                        backgroundColor: generalBlue,
-                        fontSize: isMobile ? '2.3rem' : '2.8rem',
-                        fontWeight: 'bolder',
-                        margin: isMobile ? '30px auto 20px auto' : '60px auto 40px auto',
-                        textAlign: 'center'
-                    }}
-                >
-                    <span> TERRITORIO {territoryNumber} </span>
-                    
-                    {currentFace &&
-                        <>
-                            <br />
-                            <span> Manzana {currentFace.block} </span>
-                            <br />
-                            <span> Cara {currentFace.face} - {currentFace.street} </span>
-                        </>
-                    }
-                </h1>
-                
-                {!!territoryHTH && !!currentFace && <>
-                    <HTHSetIsFinishedButton
-                        currentFace={currentFace}
-                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryHTH={territoryHTH}
-                    />
-                    <HTHBuildings
-                        currentFace={currentFace}
-                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryNumber={territoryHTH.territoryNumber}
-                    />
-                    <HTHObservations
-                        currentFace={currentFace}
-                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryNumber={territoryHTH.territoryNumber}
-                    />
-                    <HTHDoNotCalls
-                        currentFace={currentFace}
-                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryNumber={territoryHTH.territoryNumber}
-                    />
-
-                    {user.isAdmin && !isMobile &&
-                        <HTHDeleteFaceButton
-                            currentFace={currentFace}
-                            refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                            territoryHTH={territoryHTH}
-                        />
-                    }
-                </>}
-
-            </Container>
+            <HTHMapSection
+                currentFace={currentFace}
+                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                setCurrentFace={setCurrentFace}
+                setTerritoryHTH={setTerritoryHTH}
+                territoryHTH={territoryHTH}
+                territoryNumber={territoryNumber}
+            />
         </>}
-
 
         {/* <BuildingSearcherSection /> */}
 

@@ -3,9 +3,9 @@ import { setHTHIsSharedBuildingsService } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { WhatsAppIcon1 } from '../../commons/WhatsAppIcon1'
 import { WhatsappShareButton } from 'react-share'
-import { useSelector } from 'react-redux'
 
 type propsType = {
     currentFace: typePolygon

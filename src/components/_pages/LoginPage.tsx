@@ -1,3 +1,4 @@
+import { emailPattern } from '../../app-config'
 import { FormLayout, Loading } from '../commons'
 import { getFailingEmailFromLSService, setFailingEmailToLSService } from '../../services'
 import { getUserByTokenService, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
@@ -35,30 +36,36 @@ export const LoginPage = () => {
     }
 
     const recoverAccountHandler = (): void => {
-        if (email && email.includes('@') && email.includes('.')) dispatch(setValuesAndOpenAlertModalReducer({
+        if (!email || !emailPattern.test(email)) {
+            openAlertModalHandler("Escribir el email primero", "", 2)
+            return
+        }
+        dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: "¿Recuperar cuenta?",
             message: `Esto enviará un correo a ${email} para cambiar la contraseña`,
             execution: sendForgotPswEmailHandler
         }))
-        else openAlertModalHandler("Escribir el email primero", "", 2)
     }
 
     const sendForgotPswEmailHandler = async (): Promise<void> => {
         setLoading(true)
         const response = await sendLinkToRecoverAccount(email)
+        setLoading(false)
         if (response && response.success) openAlertModalHandler(`Se envió un correo a ${email}`, "", 1)
         else if (response && response.noUser) openAlertModalHandler("Este email no es de un usuario registrado:", `${email}`, 2)
         else if (response && response.notSent) openAlertModalHandler("Algo falló", `No se pudo mandar un correo a ${email}`, 2)
         else openAlertModalHandler("Algo falló", "", 2)
-        setLoading(false)
     }
 
     const loginHandler = async (): Promise<void> => {
-        if (email.length === 0 || password.length < 6) return openAlertModalHandler("Problemas", "Faltan datos", 2)
-        if (!executeRecaptcha) return
+        if (!email || !emailPattern.test(email) || password.length < 6)
+            return openAlertModalHandler("Problemas", "Faltan datos", 2)
+        if (!executeRecaptcha)
+            return
         const recaptchaToken: string = await executeRecaptcha()
-        if (!recaptchaToken) return openAlertModalHandler("Problemas (1)", "Refrescar la página", 2)
+        if (!recaptchaToken)
+            return openAlertModalHandler("Problemas (1)", "Refrescar la página", 2)
         setLoading(true)
         const response: typeResponseData|null = await loginService(email, password, recaptchaToken)
         setLoading(false)
@@ -84,7 +91,7 @@ export const LoginPage = () => {
 
     const registerHandler = async (): Promise<void> => {
         setLoading(true)
-        if (!email || !password || !confPassword || !team || !group)
+        if (!email || !emailPattern.test(email) || !password || !confPassword || !team || !group)
             return openAlertModalHandler("Problemas", "Faltan datos", 2)
         if (password.length < 8)
             return openAlertModalHandler("Problemas", "La contraseña es demasiado corta (mínimo 8)", 2)

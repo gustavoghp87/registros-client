@@ -1,8 +1,8 @@
 import { FC, Fragment, useState } from 'react'
 import { FloatingLabel, Form, ListGroup } from 'react-bootstrap'
+import { getFreeHouseholds, timeConverter } from '../../services'
 import { Hr } from '../commons'
 import { HTHBuildingModal } from '.'
-import { timeConverter } from '../../services'
 import { typeHTHBuilding, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useSelector } from 'react-redux'
 
@@ -85,7 +85,7 @@ export const HTHAllBuildings: FC<propsType> = ({
                                                 </div>
                                                 <div className='row text-center'>
                                                     <span className='text-center'>
-                                                        {ultVez ? timeConverter(ultVez) : '-'}
+                                                        {getFreeHouseholds(b)} libres | {ultVez ? timeConverter(ultVez) : '-'}
                                                     </span>
                                                 </div>
                                             </ListGroup.Item>
