@@ -3,11 +3,11 @@ import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { emailPattern } from '../../../app-config'
 import { generalBlue } from '../../../constants'
 import { inviteNewUserService } from '../../../services/configServices'
+import { registerUserAdminsService } from '../../../services/userServices'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeRootState } from '../../../models'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { registerUserService } from '../../../services/userServices'
 
 const radios = [
     { name: 'Invitar', value: '1' },
@@ -36,8 +36,27 @@ export const UsersNewUser: FC<propsType> = ({ setIsLoading, setShowNewUser }) =>
             message: `Se va a mandar un email a ${email} con una autorización para crear una cuenta`,
             execution: async () => {
                 setIsLoading(true)
-                const success: boolean = await inviteNewUserService(email)
-                if (!success) {
+                const response = await inviteNewUserService(email)
+                setIsLoading(false)
+                if (response?.userExists) {
+                    dispatch(setValuesAndOpenAlertModalReducer({
+                        mode: 'alert',
+                        title: "Error",
+                        message: `Ya existe un usuario con ${email} en esta o en otra congregación.`,
+                        animation: 2
+                    }))
+                    return
+                }
+                if (response?.notSent) {
+                    dispatch(setValuesAndOpenAlertModalReducer({
+                        mode: 'alert',
+                        title: "Error",
+                        message: `Hubo un error al enviar un correo a ${email}. Mirar los logs.`,
+                        animation: 2
+                    }))
+                    return
+                }
+                if (!response || !response.success) {
                     dispatch(setValuesAndOpenAlertModalReducer({
                         mode: 'alert',
                         title: "Error",
@@ -65,7 +84,7 @@ export const UsersNewUser: FC<propsType> = ({ setIsLoading, setShowNewUser }) =>
             message: `Se va a crear una cuenta con correo ${email} y contraseña '${password}'`,
             execution: async () => {
                 setIsLoading(true)
-                const response = await registerUserService(email, group, password)
+                const response = await registerUserAdminsService(email, group, password)
                 setIsLoading(false)
                 if (response?.userExists) {
                     dispatch(setValuesAndOpenAlertModalReducer({
@@ -137,8 +156,7 @@ export const UsersNewUser: FC<propsType> = ({ setIsLoading, setShowNewUser }) =>
                         className={`btn btn-general-blue d-block w-100 mt-3`}
                         style={{ fontWeight: 'bolder', height: '50px' }}
                         onClick={inviteNewUserHandler}
-                        // disabled={!email || !emailPattern.test(email)}
-                        disabled={true}
+                        disabled={!emailPattern.test(email)}
                     >
                         Aceptar
                     </button>
@@ -235,15 +253,6 @@ export const UsersNewUser: FC<propsType> = ({ setIsLoading, setShowNewUser }) =>
                         >
                             Cancelar
                         </button>
-                        {/* <Link to={'/acceso'}>
-                            <p style={{
-                                fontSize: '1.1rem',
-                                margin: '15px 0 20px 0',
-                                textAlign: 'end'
-                            }}>
-                                Cancelar
-                            </p>
-                        </Link> */}
 
                     </Container>
                 </>

@@ -1,26 +1,29 @@
-import { changePswService, getEmailByEmailLink } from '../../services/userServices'
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { emailPattern } from '../../app-config'
-import { setValuesAndOpenAlertModalReducer } from '../../store'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
+import { registerUserService } from '../../services/userServices'
 import { typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { useNavigate } from 'react-router'
+import { useState } from 'react'
 
-export const RecoveryPage = () => {
+export const NewUserPage = () => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const queryParams = Object.fromEntries(urlSearchParams.entries());
-    const id = queryParams.id;
-    const team = queryParams.team;
+    const { executeRecaptcha } = useGoogleReCaptcha()
+    const urlSearchParams = new URLSearchParams(window.location.search)
+    const queryParams = Object.fromEntries(urlSearchParams.entries())
+    const id = queryParams.id
+    const email = queryParams.email
+    const team = queryParams.team
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [confPassword, setConfPassword] = useState("")
-    const [email, setEmail] = useState("")
+    const [group, setGroup] = useState(0)
     const [password, setPassword] = useState("")
 
     const openAlertModalHandler = (title: string, message: string, animation?: number, execution?: Function): void => {
@@ -32,43 +35,37 @@ export const RecoveryPage = () => {
             execution
         }))
     }
-    
-    const recoverAccountByTokenHandler = async (): Promise<void> => {
-        if (!team || !id || !email || !emailPattern.test(email) || !password || !confPassword)
+
+    const createAccountByEmailInvitationHandler = async () => {
+        if (!id || !emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group)
             return openAlertModalHandler("Faltan datos", "")
-        if (password.length < 8)
-            return openAlertModalHandler("La contraseña es demasiado corta (mín 8)", "")
-        if (password !== confPassword)
-            return openAlertModalHandler("La contraseña no coincide con su confirmación", "")
         const congr = parseInt(team)
-        if (isNaN(congr))
+        if (isNaN(congr) || !Number.isInteger(congr))
             return openAlertModalHandler("Hay un error en los datos", "")
-        const response = await changePswService(congr, null, password, id)
-        if (response && response.success) {
-            openAlertModalHandler("Clave cambiada con éxito", "", 1, () => navigate('/'))
-        } else if (response && response.expired) {
-            openAlertModalHandler("Este link ya expiró; pedir otro", "", 2, () => navigate('/acceso'))
-        } else if (response && response.used) {
-            openAlertModalHandler("Este link de recuperación ya se usó antes", "", 2, () => navigate('/acceso'))
-        } else openAlertModalHandler("Algo salió mal", "", 2)
+        if (!executeRecaptcha)
+            return
+        const recaptchaToken: string = await executeRecaptcha()
+        if (!recaptchaToken)
+            return openAlertModalHandler("Problemas (1)", "Refrescar la página", 2)
+        dispatch(showLoadingModalReducer())
+        const response = await registerUserService(email, group, id, password, recaptchaToken, group)
+        dispatch(hideLoadingModalReducer())
+        if (!response) {
+            openAlertModalHandler("Algo salió mal", "", 2)
+            return
+        }
+        if (response.success) {
+            openAlertModalHandler("Usuario creado con éxito", "", 1, () => navigate('/'))
+        } else if (response.recaptchaFails) {
+            openAlertModalHandler("Algo falló en la página; se va a refrescar", "", 2, () => window.location.reload())
+        } else if (response.userExists) {
+            openAlertModalHandler("Ya hay una cuenta con esta dirección de email", "", 2, () => navigate('/acceso'))
+        } else if (response.expired) {
+            openAlertModalHandler("Esta invitación ya expiró; pedir otra", "", 2, () => navigate('/'))
+        } else {
+            openAlertModalHandler("Algo salió mal", "", 2)
+        }
     }
-    
-    useEffect(() => {
-        if (!id || !team || email) return
-        getEmailByEmailLink(team, id).then((email: string|null) => {
-            if (!email) {
-                dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "El link no es válido",
-                    message: "",
-                    execution: () => navigate('/'),
-                    animation: 2
-                }))
-                return
-            }
-            setEmail(email)
-        })
-    }, [dispatch, email, id, navigate, team])
 
     return (
         <Container className={isDarkMode ? 'bg-dark' : 'bg-white'}
@@ -90,7 +87,7 @@ export const RecoveryPage = () => {
                     textShadow: '0 0 1px gray'
                 }}
             >
-                CAMBIAR LA CLAVE PARA RECUPERAR LA CUENTA
+                COMPLETAR PARA CREAR UN USUARIO
             </h2>
 
             <Container style={{ maxWidth: '500px', padding: isMobile ? '35px 30px 0' : '35px 0 0' }}>
@@ -130,19 +127,31 @@ export const RecoveryPage = () => {
                         className={'form-control'}
                         type={'password'}
                         value={confPassword}
-                        placeholder={"Confirmar Contraseña"}
                         onChange={e => setConfPassword((e.target as HTMLInputElement).value)}
-                        onKeyDown={e => e.key === 'Enter' && !(!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword) ? recoverAccountByTokenHandler() : null }
+                    />
+                </FloatingLabel>
+
+                <FloatingLabel
+                    label={"Número de Grupo"}
+                    className={'mb-3 text-dark'}
+                >
+                    <Form.Control
+                        type={'number'}
+                        className={'form-control'}
+                        value={group ? group : ''}
+                        min={'1'}
+                        onChange={e => setGroup(parseInt(e.target.value))}
+                        onKeyDown={e => e.key === 'Enter' && !(!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group) ? createAccountByEmailInvitationHandler() : null }
                     />
                 </FloatingLabel>
 
                 <button
                     className={'btn btn-general-blue d-block w-100 mt-5'}
                     style={{ fontWeight: 'bolder', height: '50px' }}
-                    onClick={() => recoverAccountByTokenHandler()}
-                    disabled={!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword}
+                    onClick={() => createAccountByEmailInvitationHandler()}
+                    disabled={!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group}
                 >
-                    CAMBIAR CLAVE
+                    CREAR USUARIO
                 </button>
 
                 <button
@@ -150,7 +159,7 @@ export const RecoveryPage = () => {
                     style={{ fontWeight: 'bolder', height: '50px' }}
                     onClick={() => navigate('/')}
                 >
-                    Cancelar
+                    CANCELAR
                 </button>
 
             </Container>

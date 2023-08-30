@@ -30,7 +30,7 @@ export const TelephonicSelector = () => {
 
             {show &&
                 <>
-                    {user.isAdmin &&
+                    {user.isAdmin && user.phoneAssignments?.length !== config.numberOfTerritories &&
                         <button className={`btn btn-general-red d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}
                             onClick={() => setShowAll(x => !x)}
                         >

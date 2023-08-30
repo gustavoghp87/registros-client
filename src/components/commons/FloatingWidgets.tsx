@@ -20,52 +20,52 @@ export const FloatingWidgets = () => {
         return () => setScrollDown(false)
     }, [])
 
-    return (
-        <>
-            {!scrollDown && <ReturnBtn />}
-        
-            <div className={`row`}>
+    return (<>
+        <div className={scrollDown ? 'd-none' : ''}>
+            <ReturnBtn />
+        </div>
+    
+        <div className={`row`}>
 
-                {window.location.pathname !== '/' && ((isMobile && !scrollDown) || !isMobile) &&
-                    <div className={'col-4 offset-6 m-auto'}
-                        style={{
-                            position: 'relative',
-                            zIndex: 6
-                        }}
+            {window.location.pathname !== '/' && ((isMobile && !scrollDown) || !isMobile) &&
+                <div className={'col-4 offset-6 m-auto'}
+                    style={{
+                        position: 'relative',
+                        zIndex: 6
+                    }}
+                >
+                    <button className={`btn btn-general-red d-block m-auto mt-2 ${isMobile ? 'btn-sm' : ''}`}
+                        onClick={() => window.location.reload()}
                     >
-                        <button className={`btn btn-general-red d-block m-auto mt-2 ${isMobile ? 'btn-sm' : ''}`}
-                            onClick={() => window.location.reload()}
-                        >
-                            Refrescar
-                        </button>
-                    </div>
-                }
+                        Refrescar
+                    </button>
+                </div>
+            }
 
-                {user.isAuth && ((isMobile && !scrollDown) || !isMobile) &&
-                    <div className={`col-4 ${isDarkMode ? 'text-white' : ''}`}
-                        style={{
-                            fontSize: isMobile ? '.9rem' : '',
-                            marginRight: '18px',
-                            marginTop: '5px',
-                            position: 'fixed',
-                            right: '0',
-                            zIndex: 1
-                        }}
-                    >
-                        <p className={'text-end mb-0'}>
-                            {isMobile ? user.email.split('@')[0] : user.email}
+            {user.isAuth && ((isMobile && !scrollDown) || !isMobile) &&
+                <div className={`col-4 ${isDarkMode ? 'text-white' : ''}`}
+                    style={{
+                        fontSize: isMobile ? '.9rem' : '',
+                        marginRight: '18px',
+                        marginTop: '5px',
+                        position: 'fixed',
+                        right: '0',
+                        zIndex: 1
+                    }}
+                >
+                    <p className={'text-end mb-0'}>
+                        {isMobile ? user.email.split('@')[0] : user.email}
+                    </p>
+                    <p className={'text-end mb-0'}>
+                        {!!config.name ? `${config.name} - Grupo ${user.group}` : `Grupo ${user.group}`}
+                    </p>
+                    {user.isAdmin &&
+                        <p className={'text-end'}>
+                            {isMobile ? "Admin" : "Administrador"}
                         </p>
-                        <p className={'text-end mb-0'}>
-                            {!!config.name ? `${config.name} - Grupo ${user.group}` : `Grupo ${user.group}`}
-                        </p>
-                        {user.isAdmin &&
-                            <p className={'text-end'}>
-                                {isMobile ? "Admin" : "Administrador"}
-                            </p>
-                        }
-                    </div>
-                }
-            </div>
-        </>
-    )
+                    }
+                </div>
+            }
+        </div>
+    </>)
 }

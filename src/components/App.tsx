@@ -73,6 +73,7 @@ export const App = () => {
                         <Route path={'/celulares/:id'} element={ <Pages.CampaignPage /> } />
                         <Route path={'/privacidad'} element={ <Pages.PrivacyPolicyPage /> } />
                         <Route path={'/recovery'} element={ <Pages.RecoveryPage /> } />
+                        <Route path={'/nuevo-usuario'} element={ <Pages.NewUserPage /> } />
                         <Route path={'/servicio'} element={ <Pages.TermsOfServicePage /> } />
                         <Route path={'/edificio/:congregation/:territoryNumber/:block/:face/:streetNumber'} element={ <Pages.HTHBuildingPage /> } />
                         <Route path={'/reunion'} element={ <Pages.LastMeetingPage /> } />

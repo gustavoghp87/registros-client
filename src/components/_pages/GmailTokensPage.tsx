@@ -3,8 +3,11 @@ import { Credentials } from 'google-auth-library'
 import { getGmailRequestService, getGmailUrlService, saveNewGmailAPITokenToDBService, goToTop } from '../../services'
 import { H2 } from '../commons'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { typeRootState } from '../../models'
 
 export const GmailTokensPage = () => {
+    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
     const [code, setCode] = useState("")
     const [credentials, setCredentials] = useState<Credentials>()
     const [success, setSuccess] = useState<boolean>()
@@ -43,7 +46,11 @@ export const GmailTokensPage = () => {
                 </Button>
             }
 
-            {!!url && <span>Copiar esta URL y abrirla en otra pestaña de Chrome. Seleccionar la cuenta Gmail de la app.</span>}
+            {!!url &&
+                <span className={isDarkMode ? 'text-white' : ''}>
+                    Copiar esta URL y abrirla en otra pestaña de Chrome. Seleccionar la cuenta Gmail de la app.
+                </span>
+            }
 
             <br/><br/>
 
@@ -52,7 +59,9 @@ export const GmailTokensPage = () => {
             <br/><br/>
             
             {!!url && <>
-                <span>De la URL resultante, copiar el código que está después de "code=" y antes de "&scope=" y pegarlo abajo:</span>
+                <span className={isDarkMode ? 'text-white' : ''}>
+                    De la URL resultante, copiar el código que está después de "code=" y antes de "&scope=" y pegarlo abajo:
+                </span>
                 
                 <br/><br/><br/>
 
@@ -70,30 +79,34 @@ export const GmailTokensPage = () => {
 
             {credentials &&
                 <>
-                    <h1> La siguiente información se guardará en la base de datos para su uso por la aplicación si se acepta abajo: </h1>
+                    <h2 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
+                        La siguiente información se guardará en la base de datos para su uso por la aplicación si se acepta abajo:
+                    </h2>
                     <br/>
-                    <br/>
-                    <p className={'mb-0'}>
-                        <span style={{ fontWeight: 'bolder' }}>access_token:</span>
-                    </p>
-                    <p style={{ overflowWrap: 'break-word' }}>
-                        {credentials.access_token}
-                    </p>
-                    <p className={'mb-0'}>
-                        <span style={{ fontWeight: 'bolder' }}>refresh_token:</span>
-                    </p>
-                    <p style={{ overflowWrap: 'break-word' }}>
-                        {credentials.refresh_token}
-                    </p>
-                    <p>
-                        <span style={{ fontWeight: 'bolder' }}>scope:</span> {credentials.scope}
-                    </p>
-                    <p>
-                        <span style={{ fontWeight: 'bolder' }}>token_type:</span> {credentials.token_type}
-                    </p>
-                    <p>
-                        <span style={{ fontWeight: 'bolder' }}>expiry_date:</span> {credentials.expiry_date}
-                    </p>
+                    <div className={'bg-secondary p-2 text-white'}>
+                        <br/>
+                        <p className={'mb-0'}>
+                            <span style={{ fontWeight: 'bolder' }}>access_token:</span>
+                        </p>
+                        <p style={{ overflowWrap: 'break-word' }}>
+                            {credentials.access_token}
+                        </p>
+                        <p className={'mb-0'}>
+                            <span style={{ fontWeight: 'bolder' }}>refresh_token:</span>
+                        </p>
+                        <p style={{ overflowWrap: 'break-word' }}>
+                            {credentials.refresh_token}
+                        </p>
+                        <p>
+                            <span style={{ fontWeight: 'bolder' }}>scope:</span> {credentials.scope}
+                        </p>
+                        <p>
+                            <span style={{ fontWeight: 'bolder' }}>token_type:</span> {credentials.token_type}
+                        </p>
+                        <p>
+                            <span style={{ fontWeight: 'bolder' }}>expiry_date:</span> {credentials.expiry_date}
+                        </p>
+                    </div>
                 </>
             }
 
