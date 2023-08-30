@@ -1,13 +1,18 @@
 import { changePswService, getEmailByEmailLink } from '../../services/userServices'
+import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { emailPattern } from '../../app-config'
-import { FormLayout } from '../commons'
+import { Link, useNavigate } from 'react-router-dom'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { useDispatch } from 'react-redux'
+import { typeRootState } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 export const RecoveryPage = () => {
     // const { id } = useParams<string>()
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
+    }))
     const urlSearchParams = new URLSearchParams(window.location.search);
     const queryParams = Object.fromEntries(urlSearchParams.entries());
     const id = queryParams.id;
@@ -29,7 +34,7 @@ export const RecoveryPage = () => {
         }))
     }
     
-    const recoverAccountHandler = async (): Promise<void> => {
+    const recoverAccountByTokenHandler = async (): Promise<void> => {
         if (!team || !id || !email || !emailPattern.test(email) || !password || !confPassword)
             return openAlertModalHandler("Faltan datos", "")
         if (password.length < 8)
@@ -50,9 +55,9 @@ export const RecoveryPage = () => {
     }
     
     useEffect(() => {
-        if (id && team && !email) getEmailByEmailLink(team, id).then((email: string|null) => {
-            if (email) setEmail(email)
-            else {
+        if (!id || !team || email) return
+        getEmailByEmailLink(team, id).then((email: string|null) => {
+            if (!email) {
                 dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: "El link no es válido",
@@ -60,22 +65,97 @@ export const RecoveryPage = () => {
                     execution: () => navigate('/'),
                     animation: 2
                 }))
+                return
             }
+            setEmail(email)
         })
     }, [dispatch, email, id, navigate, team])
 
     return (
-        <FormLayout
-            acceptButtonLabel={"CAMBIAR CLAVE"}
-            action={recoverAccountHandler}
-            email={email}
-            confPassword={confPassword}
-            isRecovery={true}
-            password={password}
-            setConfPassword={setConfPassword}
-            setEmail={setEmail}
-            setPassword={setPassword}
-            title={"CAMBIAR LA CLAVE PARA RECUPERAR LA CUENTA"}
-        />
+        <Container className={isDarkMode ? 'bg-dark' : 'bg-white'}
+            style={{
+                border: '1px solid black',
+                borderRadius: '12px',
+                boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                marginBottom: '50px',
+                marginTop: '60px',
+                maxWidth: '600px',
+                padding: '50px 0 0'
+            }}
+        >
+            
+            <h2 className={`text-center mx-auto ${isDarkMode ? 'text-white' : ''}`}
+                style={{
+                    fontSize: isMobile ? '1.7rem' : '2rem',
+                    maxWidth: '90%',
+                    textShadow: '0 0 1px gray'
+                }}
+            >
+                CAMBIAR LA CLAVE PARA RECUPERAR LA CUENTA
+            </h2>
+
+            <Container style={{ maxWidth: '500px', padding: isMobile ? '35px 30px 0' : '35px 0 0' }}>
+
+                <FloatingLabel
+                    className={'mb-3 text-dark'}
+                    label={!email ? "Cargando..." : "Correo electrónico"}
+                >
+                    <Form.Control
+                        type={'email'}
+                        className={'form-control'}
+                        autoComplete={'email'}
+                        value={email}
+                        onChange={() => {}}
+                        disabled={true}
+                    />
+                </FloatingLabel>
+
+                <FloatingLabel
+                    label={"Nueva Contraseña"}
+                    className={'mb-3 text-dark'}
+                >
+                    <Form.Control
+                        className={'form-control'}
+                        type={'password'}
+                        value={password}
+                        onChange={e => setPassword((e.target as HTMLInputElement).value)}
+                    />
+                </FloatingLabel>
+
+                <FloatingLabel
+                    className={'mb-3 text-dark'}
+                    label={"Confirmar Nueva Contraseña"}
+                >
+                    <Form.Control
+                        className={'form-control'}
+                        type={'password'}
+                        value={confPassword}
+                        placeholder={"Confirmar Contraseña"}
+                        onChange={e => setConfPassword((e.target as HTMLInputElement).value)}
+                        onKeyDown={e => e.key === 'Enter' && !(emailPattern.test(email) || password.length < 8 || confPassword.length < 8) ? recoverAccountByTokenHandler() : null }
+                    />
+                </FloatingLabel>
+
+                <button
+                    className={'btn btn-general-red d-block w-100 mt-3'}
+                    style={{ fontWeight: 'bolder', height: '50px' }}
+                    onClick={() => recoverAccountByTokenHandler()}
+                    disabled={!emailPattern.test(email) || password.length < 8 || confPassword.length < 8}
+                >
+                    CAMBIAR CLAVE
+                </button>
+
+                <Link to={'/acceso'}>
+                    <p style={{
+                        fontSize: '1.1rem',
+                        margin: '15px 0 20px 0',
+                        textAlign: 'end'
+                    }}>
+                        Cancelar
+                    </p>
+                </Link>
+
+            </Container>
+        </Container>
     )
 }

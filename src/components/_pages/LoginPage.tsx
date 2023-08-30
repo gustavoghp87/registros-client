@@ -1,28 +1,24 @@
+import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { emailPattern } from '../../app-config'
-import { FormLayout, Loading } from '../commons'
 import { getFailingEmailFromLSService, setFailingEmailToLSService } from '../../services'
-import { getUserByTokenService, loginService, registerUserService, sendLinkToRecoverAccount } from '../../services/userServices'
+import { getUserByTokenService, loginService, sendLinkToRecoverAccount } from '../../services/userServices'
+import { Loading } from '../commons'
 import { logoutReducer, refreshUserReducer, setConfigurationReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { typeResponseData, typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { useNavigate } from 'react-router'
 
 export const LoginPage = () => {
-    const { executeRecaptcha } = useGoogleReCaptcha()
-    const { isDarkMode } = useSelector((state: typeRootState) => ({
-        isDarkMode: state.darkMode.isDarkMode
+    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        isDarkMode: state.darkMode.isDarkMode,
+        isMobile: state.mobileMode.isMobile
     }))
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const [confPassword, setConfPassword] = useState("")
     const [email, setEmail] = useState("")
-    const [group, setGroup] = useState(0)
-    const [team, setTeam] = useState(0)
-    const [isRegister, setIsRegister] = useState(false)
     const [loading, setLoading] = useState(false)
     const [password, setPassword] = useState("")
+    const { executeRecaptcha } = useGoogleReCaptcha()
+    const dispatch = useDispatch()
 
     const openAlertModalHandler = (title: string, message: string, animation: number, execution?: Function): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -32,7 +28,6 @@ export const LoginPage = () => {
             animation,
             execution
         }))
-        setLoading(false)
     }
 
     const recoverAccountHandler = (): void => {
@@ -44,18 +39,20 @@ export const LoginPage = () => {
             mode: 'confirm',
             title: "¿Recuperar cuenta?",
             message: `Esto enviará un correo a ${email} para cambiar la contraseña`,
-            execution: sendForgotPswEmailHandler
+            execution: async () => {
+                setLoading(true)
+                const response = await sendLinkToRecoverAccount(email)
+                setLoading(false)
+                if (response && response.success)
+                    openAlertModalHandler(`Se envió un correo a ${email}`, "", 1)
+                else if (response && response.noUser)
+                    openAlertModalHandler("Este email no es de un usuario registrado:", `${email}`, 2)
+                else if (response && response.notSent)
+                    openAlertModalHandler("Algo falló", `No se pudo mandar un correo a ${email}`, 2)
+                else
+                    openAlertModalHandler("Algo falló", "", 2)
+            }
         }))
-    }
-
-    const sendForgotPswEmailHandler = async (): Promise<void> => {
-        setLoading(true)
-        const response = await sendLinkToRecoverAccount(email)
-        setLoading(false)
-        if (response && response.success) openAlertModalHandler(`Se envió un correo a ${email}`, "", 1)
-        else if (response && response.noUser) openAlertModalHandler("Este email no es de un usuario registrado:", `${email}`, 2)
-        else if (response && response.notSent) openAlertModalHandler("Algo falló", `No se pudo mandar un correo a ${email}`, 2)
-        else openAlertModalHandler("Algo falló", "", 2)
     }
 
     const loginHandler = async (): Promise<void> => {
@@ -89,69 +86,125 @@ export const LoginPage = () => {
         }
     }
 
-    const registerHandler = async (): Promise<void> => {
-        setLoading(true)
-        if (!email || !emailPattern.test(email) || !password || !confPassword || !team || !group)
-            return openAlertModalHandler("Problemas", "Faltan datos", 2)
-        if (password.length < 8)
-            return openAlertModalHandler("Problemas", "La contraseña es demasiado corta (mínimo 8)", 2)
-        if (password !== confPassword)
-            return openAlertModalHandler("Problemas", "La contraseña no coincide con su confirmación", 2)
-        if (!executeRecaptcha)
-            return openAlertModalHandler("Problemas", "Se refrescará la página por un problema", 2, () => window.location.reload())
-        executeRecaptcha().then(async (recaptchaToken: string) => {
-            if (!recaptchaToken)
-                return openAlertModalHandler("Problemas", "Se refrescará la página por un problema", 2, () => window.location.reload())
-            const data: typeResponseData|null = await registerUserService(email, group, password, recaptchaToken, team)
-            if (!data) {
-                openAlertModalHandler("Problemas", "Algo salió mal", 2, () => window.location.reload())
-            } else if (data.recaptchaFails) {
-                openAlertModalHandler("Problemas", "Se refrescará la página por un problema", 2, () => window.location.reload())
-            } else if (data.userExists) {
-                openAlertModalHandler("Problemas", "Ya existe un usuario con ese correo", 2, () => navigate('/acceso'))
-            } else if (data.success) {
-                openAlertModalHandler("Registro exitoso", `Resta ser habilitado por el grupo de predicación. ${email}`, 1, () => navigate('/'))
-            } else {
-                openAlertModalHandler("Respuesta desconocida", `Algo falló. ${email}`, 2, () => navigate('/'))
-            }
-        })
-    }
+    // const registerHandler = async (): Promise<void> => {
+    //     if (!email || !emailPattern.test(email) || !password || !confPassword || !team || !group)
+    //         return openAlertModalHandler("Problemas", "Faltan datos", 2)
+    //     if (password.length < 8)
+    //         return openAlertModalHandler("Problemas", "La contraseña es demasiado corta (mínimo 8)", 2)
+    //     if (password !== confPassword)
+    //         return openAlertModalHandler("Problemas", "La contraseña no coincide con su confirmación", 2)
+    //     if (!executeRecaptcha)
+    //         return openAlertModalHandler("Problemas", "Se refrescará la página por un problema", 2, () => window.location.reload())
+    //     executeRecaptcha().then(async (recaptchaToken: string) => {
+    //         if (!recaptchaToken)
+    //             return openAlertModalHandler("Problemas", "Se refrescará la página por un problema", 2, () => window.location.reload())
+    //         setLoading(true)
+    //         const data: typeResponseData|null = await registerUserService(email, group, password, recaptchaToken, team)
+    //         setLoading(false)
+    //         if (!data) {
+    //             openAlertModalHandler("Problemas", "Algo salió mal", 2, () => window.location.reload())
+    //         } else if (data.recaptchaFails) {
+    //             openAlertModalHandler("Problemas", "Se refrescará la página por un problema", 2, () => window.location.reload())
+    //         } else if (data.userExists) {
+    //             openAlertModalHandler("Problemas", "Ya existe un usuario con ese correo", 2, () => navigate('/acceso'))
+    //         } else if (data.success) {
+    //             openAlertModalHandler("Registro exitoso", `Resta ser habilitado por el grupo de predicación. ${email}`, 1, () => navigate('/'))
+    //         } else {
+    //             openAlertModalHandler("Respuesta desconocida", `Algo falló. ${email}`, 2, () => navigate('/'))
+    //         }
+    //     })
+    // }
 
     useEffect(() => {
-        const failingEmail: string|null = getFailingEmailFromLSService()
-        if (!failingEmail) return document.getElementById('emailInput')?.focus()
+        const failingEmail = getFailingEmailFromLSService()
+        if (!failingEmail) {
+            document.getElementById('emailInput')?.focus()
+            return
+        }
         setEmail(failingEmail)
         document.getElementById('passwordInput')?.focus()
     }, [])
 
     return (<>
 
-        <FormLayout
-            action={isRegister ? registerHandler : loginHandler}
-            acceptButtonLabel={isRegister ? "REGISTRARSE" : "ENTRAR"}
-            email={email}
-            confPassword={confPassword}
-            group={group}
-            isRegister={isRegister}
-            password={password}
-            recoverAccountHandler={recoverAccountHandler}
-            setConfPassword={setConfPassword}
-            setEmail={setEmail}
-            setTeam={setTeam}
-            setGroup={setGroup}
-            setIsRegister={setIsRegister}
-            setPassword={setPassword}
-            team={team}
-            isRecovery={false}
-            title={isRegister ? "REGISTRARSE" : "INGRESAR"}
-        />
+        <Container className={isDarkMode ? 'bg-dark' : 'bg-white'}
+            style={{
+                border: '1px solid black',
+                borderRadius: '12px',
+                boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                marginBottom: '50px',
+                marginTop: '60px',
+                maxWidth: '600px',
+                padding: '50px 0 0'
+            }}
+        >
 
-        {isRegister &&
-            <p className={`text-center mb-4 ${isDarkMode ? 'text-white' : ''}`}
-                style={{ fontSize: '0.9rem', paddingBottom: '12px' }}>
-                Luego de registrarse, se debe aguardar la autorización de los administradores
-            </p>
-        }
+            <h2 className={`text-center mx-auto ${isDarkMode ? 'text-white' : ''}`}
+                style={{
+                    fontSize: isMobile ? '1.7rem' : '2rem',
+                    maxWidth: '90%',
+                    textShadow: '0 0 1px gray'
+                }}
+            >
+                INGRESAR
+            </h2>
+
+            <Container style={{ maxWidth: '500px', padding: isMobile ? '35px 30px 0' : '35px 0 0' }}>
+
+                <FloatingLabel
+                    className={'mb-3 text-dark'}
+                    label={"Correo electrónico"}
+                >
+                    <Form.Control
+                        type={'email'}
+                        id={"emailInput"}
+                        className={'form-control'}
+                        autoComplete={'email'}
+                        value={email}
+                        onChange={e => setEmail((e.target as HTMLInputElement).value)}
+                    />
+                </FloatingLabel>
+
+                <FloatingLabel
+                    label={"Contraseña"}
+                    className={'mb-3 text-dark'}
+                >
+                    <Form.Control
+                        type={'password'}
+                        id={"passwordInput"}
+                        className={'form-control'}
+                        value={password}
+                        onChange={e => setPassword((e.target as HTMLInputElement).value)}
+                        onKeyDown={e => e.key === 'Enter' ? loginHandler() : null }
+                    />
+                </FloatingLabel>
+
+                <button
+                    className={'btn btn-general-blue d-block w-100 mt-3'}
+                    style={{ fontWeight: 'bolder', height: '50px' }}
+                    onClick={() => loginHandler()}
+                    disabled={!emailPattern.test(email) || password.length < 8}
+                >
+                    ENTRAR
+                </button>
+
+                <p className={'text-end mt-3'}
+                    style={{
+                        color: '#0000cd',
+                        fontSize: '1rem',
+                        margin: '0 0 22px',
+                        textDecoration: 'underline'
+                    }}
+                >
+                    <span className={`pointer ${isDarkMode ? 'text-white' : ''}`}
+                        onClick={() => recoverAccountHandler()}
+                    >
+                        Olvidé mi contraseña
+                    </span>
+                </p>
+
+            </Container>
+        </Container>
 
         {loading && <Loading mt={'40px'} />}
 

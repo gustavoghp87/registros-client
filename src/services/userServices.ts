@@ -232,16 +232,31 @@ export const logoutService = (): void => {
     removeTokenService()
 }
 
-export const registerUserService = async (email: string, group: number, password: string, recaptchaToken: string, team: number): Promise<typeResponseData|null> => {
+// export const registerUserService = async (email: string, group: number, password: string, recaptchaToken: string, team: number): Promise<typeResponseData|null> => {
+//     try {
+//         const response = await fetch(base, {
+//             method: 'POST',
+//             headers: getHeaders(),
+//             body: JSON.stringify({ email, group, password, recaptchaToken, team })
+//         })
+//         const data: typeResponseData = await response.json()
+//         if (!data) return null
+//         data.userExists = !data.userExists ? false : true
+//         return data
+//     } catch (error) {
+//         console.log(error)
+//         return null
+//     }
+// }
+
+export const registerUserService = async (email: string, group: number, password: string): Promise<typeResponseData|null> => {
     try {
         const response = await fetch(base, {
             method: 'POST',
             headers: getHeaders(),
-            body: JSON.stringify({ email, group, password, recaptchaToken, team })
+            body: JSON.stringify({ email, group, password })
         })
         const data: typeResponseData = await response.json()
-        if (!data) return null
-        data.userExists = !data.userExists ? false : true
         return data
     } catch (error) {
         console.log(error)

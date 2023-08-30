@@ -1,3 +1,4 @@
+import { BsArrowBarDown } from 'react-icons/bs'
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { getUsersService } from '../../services/userServices'
 import { H2, Loading, WarningToaster } from '../commons'
@@ -8,7 +9,7 @@ import { typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { userChangeString } from '../../constants'
 import { UsersCard } from './'
-import { UsersInvite } from './users/UsersInvite'
+import { UsersNewUser } from './users/UsersNewUser'
 import { UsersSelector } from './users/UsersSelector'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
@@ -18,7 +19,10 @@ type propsType = {
 }
 
 export const Users: FC<propsType> = ({ setIsLoading }) => {
-    const user = useSelector((state: typeRootState) => state.user)
+    const { isMobile, user } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
+    }))
     const [emailSearchInputText, setEmailSearchInputText] = useState("")
     const [selectedGroup, setSelectedGroup] = useState(0)
     const [showNewUser, setShowNewUser] = useState(false)
@@ -81,11 +85,20 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
             </div>
         }
 
-        <UsersInvite
-            setIsLoading={setIsLoading}
-            setShowNewUser={setShowNewUser}
-            showNewUser={showNewUser}
-        />
+        <button className={'btn btn-general-blue btn-size12 d-block mx-auto mt-5 mb-3'}
+            style={{ width: '350px', minHeight: '60px' }}
+            onClick={() => setShowNewUser(true)}
+            disabled={showNewUser}
+        >
+            NUEVO USUARIO <BsArrowBarDown size={isMobile ? '2rem' : '1.4rem'} />
+        </button>
+
+        {showNewUser &&
+            <UsersNewUser
+                setIsLoading={setIsLoading}
+                setShowNewUser={setShowNewUser}
+            />
+        }
 
         {!!users?.length && !showNewUser &&
             <UsersSelector
