@@ -33,7 +33,14 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!navigator.geolocation) return
+        if (!navigator.geolocation) {
+            dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'alert',
+                title: "Error",
+                message: "La aplicación no tiene permisos del navegador para usar la ubicación"
+            }))
+            return
+        }
         navigator.geolocation.getCurrentPosition((geoPosition: GeolocationPosition) => {
             if (!geoPosition) {
                 dispatch(setValuesAndOpenAlertModalReducer({
