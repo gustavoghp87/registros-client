@@ -1,6 +1,6 @@
 import { BsTrash } from 'react-icons/bs'
 import { deleteHTHBuildingService } from '../../../services'
-import { FC, useState } from 'react'
+import { FC, Fragment, useState } from 'react'
 import { Hr, Loading } from '../../commons'
 import { HTHBuildingCheckbox } from '..'
 import { Modal } from 'react-bootstrap'
@@ -99,7 +99,7 @@ export const HTHBuildingModal: FC<propsType> = ({
                                  .slice(0, currentBuilding.numberPerLevel)
                                  .map((doorNumber: number) => {
                                     const currentHousehold = currentBuilding.households.find(x => x.level === level && x.doorNumber === doorNumber)
-                                    if (!currentHousehold) return <></>
+                                    if (!currentHousehold) return <Fragment key={level + '-' + doorNumber}></Fragment>
                                     return (
                                         <HTHBuildingCheckbox key={level + '-' + doorNumber}
                                             block={currentFace.block}

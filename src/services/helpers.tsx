@@ -74,11 +74,16 @@ export const insertAnimationForAlertModal = (animationNumber: number): NodeJS.Ti
     if (!animationNumber) return
     const tag = document.createElement('img')
     if (animationNumber === 1)
-        tag.src = 'https://upload.wikimedia.org/wikipedia/commons/7/73/Flat_tick_icon.svg'
+        // tag.src = 'https://upload.wikimedia.org/wikipedia/commons/7/73/Flat_tick_icon.svg'
+        tag.src = '../../svg_ok.svg';
     else if (animationNumber === 2)
-        tag.src = 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Flat_cross_icon.svg'
+        // tag.src = 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Flat_cross_icon.svg'
+        tag.src = '../../svg_fail.svg'
     else if (animationNumber === 3)
-        tag.src = 'https://pic.onlinewebfonts.com/svg/img_570882.png'
+        tag.src = '../../svg_warning.svg'
+    else if (animationNumber === 4)
+        // tag.src = 'https://pic.onlinewebfonts.com/svg/img_570882.png'
+        tag.src = '../../card.png'
     else
         return
     tag.alt = "Failed"

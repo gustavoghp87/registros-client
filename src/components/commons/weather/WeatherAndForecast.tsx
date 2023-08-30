@@ -19,6 +19,7 @@ const weatherIcons: typeWeatherIcons = {
     'rain': <Icons.SunBehindRainIcon />,
     'scattered clouds': <Icons.SunBehindLargeCloudIcon />,
     'shower rain': <Icons.RainIcon />,
+    'smoke': <Icons.FogIcon />,
     'snow': <Icons.SnowIcon />,
     'thunderstorm with heavy rain': <Icons.CloudLightningIcon />,
     'thunderstorm with light rain': <Icons.CloudLightningIcon />,

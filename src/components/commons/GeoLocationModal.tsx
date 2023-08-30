@@ -5,7 +5,9 @@ import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-g
 import { googleMapsApiKey, mapId } from '../../app-config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
+import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { typeCoords, typeHTHTerritory, typeRootState } from '../../models'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 
@@ -26,25 +28,41 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
     const [centerCoords, setCenterCoords] = useState<typeCoords|null>(null)
     const [hthTerritories, setHTHTerritories] = useState<typeHTHTerritory[]|null>(null)
     const [zoom, setZoom] = useState(0)
+    const dispatch = useDispatch()
     const map = useRef<any>()
     const navigate = useNavigate()
 
     useEffect(() => {
         if (!navigator.geolocation) return
         navigator.geolocation.getCurrentPosition((geoPosition: GeolocationPosition) => {
+            if (!geoPosition) {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "Error",
+                    message: "Algo falló al geolocalizar"
+                }))
+                return
+            }
             getHTHTerritoriesForMapService().then((x: typeHTHTerritory[]|null) => {
-                if (x) {
-                    setHTHTerritories(x)
-                    const interval = setInterval(() => { editInfoWindowsStyles() }, 300)
-                    setTimeout(() => { clearInterval(interval) }, 5000)
+                if (!x) {
+                    dispatch(setValuesAndOpenAlertModalReducer({
+                        mode: 'alert',
+                        title: "Error",
+                        message: "No se obtuvieron los territorios"
+                    }))
+                    return
                 }
-                const lat: number = geoPosition.coords.latitude
-                const lng: number = geoPosition.coords.longitude
-                const position: typeCoords = { lat, lng }
+                setHTHTerritories(x)
+                const interval = setInterval(() => { editInfoWindowsStyles() }, 300)
+                setTimeout(() => { clearInterval(interval) }, 5000)
+                const position: typeCoords = {
+                    lat: geoPosition.coords.latitude,
+                    lng: geoPosition.coords.longitude
+                }
                 setCenterCoords(position)
                 getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
                     if (!address0) {
-
+                        setAddress("-,")
                         return
                     }
                     setAddress(address0)
@@ -73,7 +91,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
 
         {loadError && <h3> Falló: {loadError.message} </h3>}
 
-        {address && centerCoords &&
+        {centerCoords &&
             <Modal
                 fullscreen={'md-down'}
                 onHide={() => setShowGeolocationModalHandler()}

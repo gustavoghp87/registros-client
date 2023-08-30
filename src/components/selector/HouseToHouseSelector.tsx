@@ -16,10 +16,7 @@ export const HouseToHouseSelector = () => {
     const [showGeolocationModal, setShowGeolocationModal] = useState(false)
 
     const setShowGeolocationModalHandler = (): void => setShowGeolocationModal(false)
-    
-    
-    console.log(user.hthAssignments?.length, config.numberOfTerritories);
-    
+
     return (
         <>
             <H2 title={"CASA EN CASA"} />
@@ -32,13 +29,11 @@ export const HouseToHouseSelector = () => {
 
             {show &&
                 <>
-                    {true &&
-                        <button className={`btn btn-general-blue d-block mx-auto my-4 ${isMobile ? 'w-75' : 'w-25'}`}
-                            onClick={() => setShowGeolocationModal(true)}
-                        >
-                            Dónde Estoy
-                        </button>
-                    }
+                    <button className={`btn btn-general-blue d-block mx-auto my-4 ${isMobile ? 'w-75' : 'w-25'}`}
+                        onClick={() => setShowGeolocationModal(true)}
+                    >
+                        Dónde Estoy
+                    </button>
 
                     {user.isAdmin && user.hthAssignments?.length !== config.numberOfTerritories &&
                         <button className={`btn btn-general-blue d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}

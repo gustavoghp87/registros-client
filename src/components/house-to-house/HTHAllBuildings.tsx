@@ -80,12 +80,12 @@ export const HTHAllBuildings: FC<propsType> = ({
                     </FloatingLabel>
                     <ListGroup as="ul">
                         {territoryHTH.map.polygons.map(p => <Fragment key={p.id}>
-                            {!!p.buildings?.length && p.buildings.map(b => <Fragment key={b.streetNumber}>
+                            {!!p.buildings?.length && p.buildings.map(b => <Fragment key={p.street + "-" + b.streetNumber}>
                                 {`${p.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) && (
                                     () => {
                                         const ultVez = b.households.map(h => h.onDates?.length ? h.onDates[h.onDates.length - 1] : 0).sort((a, b) => a - b)?.at(-1)
                                         return (
-                                            <ListGroup.Item key={b.streetNumber}
+                                            <ListGroup.Item
                                                 as={'li'}
                                                 className={'pointer bg-light bg-gradient hover-primary'}
                                                 active={selectedAddress === `${p.street} ${b.streetNumber}`}
