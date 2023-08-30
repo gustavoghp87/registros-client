@@ -12,10 +12,10 @@ export const RecoveryPage = () => {
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const queryParams = Object.fromEntries(urlSearchParams.entries());
-    const id = queryParams.id;
-    const team = queryParams.team;
+    const urlSearchParams = new URLSearchParams(window.location.search)
+    const queryParams = Object.fromEntries(urlSearchParams.entries())
+    const id = queryParams.id
+    const team = queryParams.team
 
     const dispatch = useDispatch()
     const navigate = useNavigate()

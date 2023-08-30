@@ -1,4 +1,4 @@
-import { FC, Fragment, useState } from 'react'
+import { FC, Fragment, useEffect, useState } from 'react'
 import { FloatingLabel, Form, ListGroup } from 'react-bootstrap'
 import { getFreeHouseholds, timeConverter } from '../../services'
 import { Hr } from '../commons'
@@ -30,18 +30,35 @@ export const HTHAllBuildings: FC<propsType> = ({
         setSelectedAddress("")
     }
 
+    useEffect(() => {
+        setCurrentFace(x => x ?
+            territoryHTH.map.polygons.find(p => p.id === x.id) ?? null
+            :
+            x
+        )
+    }, [territoryHTH])
+
+    useEffect(() => {
+        setCurrentBuilding(x => x ?
+            currentFace?.buildings?.find(b => b.streetNumber === x.streetNumber) ?? null
+            :
+            x
+        )
+    }, [currentFace])
+
     return (
         <>
             {!!currentFace && !!currentBuilding &&
                 <HTHBuildingModal
+                    closeBuildingModalHandler={closeBuildingModalHandler}
                     congregation={user.congregation}
                     currentBuilding={currentBuilding}
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryNumber}
-                    closeBuildingModalHandler={closeBuildingModalHandler}
                 />
             }
+
             {!!territoryHTH?.map.polygons?.some(x => !!x.buildings?.length) ?
                 <>
                 <Hr styles={{ marginTop: '100px', marginBottom: '30px' }} />

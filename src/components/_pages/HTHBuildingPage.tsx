@@ -7,7 +7,7 @@ import { Socket, io } from 'socket.io-client'
 import { typeBlock, typeFace, typeHTHBuilding, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useSelector } from 'react-redux'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
@@ -20,8 +20,11 @@ export const HTHBuildingPage = () => {
     const congregation = parseInt(useParams().congregation || '')
     const dispatch = useDispatch()
     const face = useParams().face as typeFace
+    const navigate = useNavigate()
     const streetNumber = parseInt(useParams().streetNumber || '')
     const territoryNumber = useParams().territoryNumber as typeTerritoryNumber
+
+    const closeBuildingModalHandler = () => navigate('/')
 
     const refreshHTHTerritoryHandler = (emitSocket: boolean = true): void => {
         if (!congregation || isNaN(congregation) || !territoryNumber || !block || !face || !streetNumber)
@@ -96,7 +99,7 @@ export const HTHBuildingPage = () => {
         <>
             {!!currentBuilding && !!currentFace && !!territoryNumber &&
                 <HTHBuildingModal
-                    // closeBuildingModalHandler={closeBuildingModalHandler}
+                    closeBuildingModalHandler={closeBuildingModalHandler}
                     congregation={congregation}
                     currentBuilding={currentBuilding}
                     currentFace={currentFace}

@@ -1,7 +1,7 @@
 import { BsTrash } from 'react-icons/bs'
 import { deleteHTHBuildingService } from '../../../services'
 import { FC, useState } from 'react'
-import { Hr } from '../../commons'
+import { Hr, Loading } from '../../commons'
 import { HTHBuildingCheckbox } from '..'
 import { Modal } from 'react-bootstrap'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 
 type propsType = {
-    closeBuildingModalHandler?: () => void
+    closeBuildingModalHandler: () => void
     congregation: number
     currentBuilding: typeHTHBuilding
     currentFace: typePolygon
@@ -26,7 +26,7 @@ export const HTHBuildingModal: FC<propsType> = ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
-    const [show, setShow] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const levels: number[] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
@@ -65,7 +65,7 @@ export const HTHBuildingModal: FC<propsType> = ({
             contentClassName={isDarkMode ? 'bg-secondary' : ''}
             keyboard={false}
             onHide={() => closeBuildingModalHandler ? closeBuildingModalHandler() : navigate('/')}
-            show={show}
+            show={true}
             size={'xl'}
         >
             <Modal.Header closeButton />
@@ -77,10 +77,13 @@ export const HTHBuildingModal: FC<propsType> = ({
                         style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
                     >
                         Edificio {currentFace.street} {currentBuilding.streetNumber}
-                        {(user.isAdmin || currentBuilding.creatorId === user.id) && closeBuildingModalHandler &&
+                        {(user.isAdmin || currentBuilding.creatorId === user.id) &&
                             <>
                                 &nbsp; &nbsp;
-                                <BsTrash className={'pointer mb-1'} onClick={() => openDeleteBuildingModal()} />
+                                <BsTrash
+                                    className={'pointer mb-1'}
+                                    onClick={() => openDeleteBuildingModal()}
+                                />
                             </>
                         }
                     </h1>
@@ -98,20 +101,17 @@ export const HTHBuildingModal: FC<propsType> = ({
                                     const currentHousehold = currentBuilding.households.find(x => x.level === level && x.doorNumber === doorNumber)
                                     if (!currentHousehold) return <></>
                                     return (
-                                        <HTHBuildingCheckbox 
+                                        <HTHBuildingCheckbox key={level + '-' + doorNumber}
                                             block={currentFace.block}
-                                            closeBuildingModalHandler={closeBuildingModalHandler}
                                             congregation={congregation}
                                             doorName={currentHousehold.doorName}
-                                            doorNumber={currentHousehold.doorNumber}
                                             face={currentFace.face}
                                             id={currentHousehold.id}
                                             isChecked={currentHousehold.isChecked}
                                             isManager={false}
-                                            key={level + '-' + doorNumber}
                                             level={currentHousehold.level}
                                             refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                                            setShow={setShow}
+                                            setIsLoading={setIsLoading}
                                             streetNumber={currentBuilding.streetNumber}
                                             territoryNumber={territoryNumber}
                                         />
@@ -127,29 +127,31 @@ export const HTHBuildingModal: FC<propsType> = ({
                         <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                             <HTHBuildingCheckbox
                                 block={currentFace.block}
-                                closeBuildingModalHandler={closeBuildingModalHandler}
                                 congregation={congregation}
                                 doorName={''}
-                                doorNumber={0}
                                 face={currentFace.face}
                                 id={currentBuilding.manager.id}
                                 isChecked={currentBuilding.manager.isChecked}
                                 isManager={true}
                                 level={null}
                                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                                setShow={setShow}
+                                setIsLoading={setIsLoading}
                                 streetNumber={currentBuilding.streetNumber}
                                 territoryNumber={territoryNumber}
                             />
                         </div>
                     }
 
-                    <button className={'btn btn-general-blue btn-size12 w-100 mx-auto mt-1 mb-3'}
-                        onClick={() => closeBuildingModalHandler ? closeBuildingModalHandler() : navigate('/')}
-                        style={{ maxWidth: '300px' }}
-                    >
-                        Cerrar
-                    </button>
+                    {isLoading ?
+                        <Loading mb={'15px'} />
+                        :
+                        <button className={'btn btn-general-blue btn-size12 w-100 mx-auto mt-1 mb-3'}
+                            onClick={() => closeBuildingModalHandler ? closeBuildingModalHandler() : navigate('/')}
+                            style={{ maxWidth: '300px' }}
+                        >
+                            Cerrar
+                        </button>
+                    }
 
                 </div>
             </Modal.Body>

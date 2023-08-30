@@ -36,7 +36,7 @@ export const HTHMap: FC<propsType> = ({
         id: mapId,
         libraries: ['maps', 'places'],
         region: 'AR',
-        language: 'es',
+        language: 'es'
     })
     const dispatch = useDispatch()
     const [map, setMap] = useState<google.maps.Map>()

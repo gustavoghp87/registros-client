@@ -11,7 +11,7 @@ type propsType = {
 }
 
 export const Loading: FC<propsType> = ({ big, mb, mt, white }) => {
-    const { isDarkMode } = useSelector((state: typeRootState) => state.darkMode)
+    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
 
     return (
         <div className={`text-center ${(isDarkMode || !!white) ? 'text-white' : ''}`}

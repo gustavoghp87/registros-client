@@ -3,9 +3,7 @@ import { typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
 
 export const LoadingModal = () => {
-    const { isMobile } = useSelector((state: typeRootState) => ({
-        isMobile: state.mobileMode.isMobile
-    }))
+    const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
 
     return (
         <div className={'bg-opacity bg-danger'}

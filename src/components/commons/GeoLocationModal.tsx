@@ -1,11 +1,12 @@
 import { editInfoWindowsStyles, getGeocodingFromCoordinatesService, getHTHTerritoriesForMapService } from '../../services'
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, Fragment, useEffect, useRef, useState } from 'react'
 import { generalBlue } from '../../constants'
 import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
 import { googleMapsApiKey, mapId } from '../../app-config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
 import { typeCoords, typeHTHTerritory, typeRootState } from '../../models'
+import { useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 
 type propsType = {
@@ -13,16 +14,20 @@ type propsType = {
 }
 
 export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler }) => {
-    const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: googleMapsApiKey,
-        id: mapId
+        googleMapsApiKey,
+        id: mapId,
+        libraries: ['maps', 'places'],
+        region: 'AR',
+        language: 'es'
     })
-    const map = useRef<any>()
+    const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
     const [address, setAddress] = useState("")
-    const [centerCoords, setCenterCoords] = useState<typeCoords>()
-    const [hthTerritories, setHTHTerritories] = useState<typeHTHTerritory[]>()
-    const [zoom, setZoom] = useState<number>()
+    const [centerCoords, setCenterCoords] = useState<typeCoords|null>(null)
+    const [hthTerritories, setHTHTerritories] = useState<typeHTHTerritory[]|null>(null)
+    const [zoom, setZoom] = useState(0)
+    const map = useRef<any>()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (!navigator.geolocation) return
@@ -38,14 +43,14 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                 const position: typeCoords = { lat, lng }
                 setCenterCoords(position)
                 getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
-                    if (address0) setAddress(address0)
+                    if (!address0) {
+
+                        return
+                    }
+                    setAddress(address0)
                 })
             })
         })
-        return () => {
-            setHTHTerritories(undefined)
-            setZoom(undefined)
-        }
     }, [])
 
     // useEffect(() => {
@@ -68,7 +73,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
 
         {loadError && <h3> Falló: {loadError.message} </h3>}
 
-        {centerCoords &&
+        {address && centerCoords &&
             <Modal
                 fullscreen={'md-down'}
                 onHide={() => setShowGeolocationModalHandler()}
@@ -87,9 +92,11 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                             width: '93%'
                         }}
                         onLoad={(map0: google.maps.Map) => {map.current = map0}}
-                        onZoomChanged={() => setZoom(map.current?.getZoom())}
-                        options={{ center: centerCoords }}
+                        center={centerCoords}
                         zoom={17.8}
+                        onZoomChanged={() => setZoom(map.current?.getZoom())}
+                        // options={{ center: centerCoords, zoom: zoom }}
+                        // zoom={zoom}
                     >
                         {centerCoords &&
                             <Marker
@@ -98,14 +105,15 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                                 title={"Tu posición"}
                             />
                         }
-                        {!!hthTerritories?.length && hthTerritories.map(currentHTHTerritory => (
-                            <div key={currentHTHTerritory.territoryNumber}>
-                                {currentHTHTerritory.map.polygons.map(currentFace =>
-                                    <div key={currentFace.id}>
+                        {!!hthTerritories?.length && hthTerritories.map(t => (
+                            <div key={t.territoryNumber}>
+                                {t.map.polygons.map(currentFace =>
+                                    <Fragment key={currentFace.id}>
                                         <Polygon
                                             editable={false}
                                             draggable={false}
                                             path={[currentFace.coordsPoint1, currentFace.coordsPoint2, currentFace.coordsPoint3]}
+                                            onClick={() => navigate(`/casa-en-casa/${t.territoryNumber}?b=${currentFace.block}&f=${currentFace.face}`)}
                                             options={{
                                                 clickable: true,
                                                 fillColor: generalBlue,
@@ -135,13 +143,13 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                                                 width: '136px'
                                             }}>
                                                 {zoom && zoom >= 18 ?
-                                                    <span> {currentHTHTerritory.territoryNumber} - {currentFace.block} - {currentFace.face} </span>
+                                                    <span> {t.territoryNumber} - {currentFace.block} - {currentFace.face} </span>
                                                     :
-                                                    <span> Territorio {currentHTHTerritory.territoryNumber} </span>
+                                                    <span> Territorio {t.territoryNumber} </span>
                                                 }
                                             </div>
                                         </InfoWindow>
-                                    </div>
+                                    </Fragment>
                                 )}
                             </div>
                         ))}

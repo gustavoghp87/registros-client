@@ -28,9 +28,6 @@ export const ReturnBtn = () => {
         if (location.pathname === '/acceso') setShow(false)
     }, [window.location.href])
 
-    console.log(show, location.pathname);
-    
-
     if (!show) return <></>
     
     return (

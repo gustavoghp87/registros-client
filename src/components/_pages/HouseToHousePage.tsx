@@ -15,12 +15,17 @@ const socket: Socket = io(SERVER, { withCredentials: true })
 export const HouseToHousePage = () => {
     const user = useSelector((state: typeRootState) => state.user)
     const territoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
+    const urlSearchParams = new URLSearchParams(window.location.search)
+    const queryParams = Object.fromEntries(urlSearchParams.entries())
+    const b = queryParams.b
+    const f = queryParams.f
+
     const [currentFace, setCurrentFace] = useState<typePolygon|null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [territoryHTH, setTerritoryHTH] = useState<typeHTHTerritory|null>(null)
     const dispatch = useDispatch()
 
-    const refreshHTHTerritoryHandler = (emitSocket: boolean = true): void => {
+    const refreshHTHTerritoryHandler = (emitSocket: boolean = true, isFirstLoading?: boolean): void => {
         if (emitSocket) {
             socket.emit(hthChangeString, user.congregation, territoryNumber, user.email)
         }
@@ -38,7 +43,22 @@ export const HouseToHousePage = () => {
             }
             setTerritoryHTH(hthTerritory0)
             setCurrentFace(x => {
-                if (!x) return x
+                if (!x) {
+                    if (isFirstLoading && b && f) {
+                        const currentFace0: typePolygon|null = hthTerritory0.map.polygons?.find(y => y.block === b && y.face === f) ?? null
+                        if (currentFace0) {
+                            if (currentFace0.doNotCalls) {
+                                currentFace0.doNotCalls = currentFace0.doNotCalls.sort((a: typeDoNotCall, b: typeDoNotCall) => a.streetNumber - b.streetNumber)
+                            }
+                            if (currentFace0.observations) {
+                                currentFace0.observations = currentFace0.observations.reverse()
+                            }
+                        }
+                        return currentFace0
+                    } else {
+                        return x
+                    }
+                }
                 const currentFace0: typePolygon|null = hthTerritory0.map.polygons?.find(y => y.block === x.block && y.face === x.face) ?? null
                 if (currentFace0) {
                     if (currentFace0.doNotCalls) {
@@ -71,7 +91,7 @@ export const HouseToHousePage = () => {
     useEffect(() => goToTop(), [])
 
     useEffect(() => {
-        refreshHTHTerritoryHandler(false)
+        refreshHTHTerritoryHandler(false, true)
     }, [])
 
     useEffect(() => {
@@ -85,7 +105,7 @@ export const HouseToHousePage = () => {
             console.log("Refrescado (1) por uso del usuario", userEmail)
         })
         return () => { socket.off(hthChangeString) }
-    }, [refreshHTHTerritoryHandler, territoryNumber, user.congregation, user.email])
+    }, [territoryNumber, user.congregation, user.email])
 
     return (<>
 
