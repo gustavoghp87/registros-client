@@ -115,7 +115,7 @@ export const HTHAllBuildings: FC<propsType> = ({
                 </div>
                 </>
                 :
-                <h4> No hay edificios cargados en este territorio </h4>
+                <h4 className={'text-center'}> No hay edificios cargados en este territorio </h4>
             }
         </>
     )

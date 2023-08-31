@@ -40,7 +40,7 @@ export const Footer = () => {
                     
                     <Link to={'/servicio'} className={`${isMobile ? '' : 'ms-2'} text-white`}> Términos de Uso </Link>
 
-                    <span className={'text-white'} style={{ fontSize: '1rem' }}>&nbsp;&nbsp;Versión 5.4</span>
+                    <span className={'text-white'} style={{ fontSize: '1rem' }}>&nbsp;&nbsp;Versión 5.5</span>
 
                 </div>
             </div>

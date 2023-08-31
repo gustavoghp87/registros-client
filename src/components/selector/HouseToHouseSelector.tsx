@@ -1,5 +1,5 @@
-import { GeoLocationModal, H2 } from '../commons'
-import { TerritoryNumberBlock } from '.'
+import { GeoLocationModal, TerritoryNumberBlock } from '.'
+import { H2 } from '../commons'
 import { typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'

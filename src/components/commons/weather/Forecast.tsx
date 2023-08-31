@@ -23,6 +23,10 @@ export const Forecast: FC<propsType> = ({ forecasts }) => {
         width: isMobile ? '100%' : undefined
     }
 
+    const forecastTomorrow = [...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() + 1 && x.date.hour > 6)
+
+    const forecastTwoDays = [...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6)
+
     return (
         <div className={`text-center p-0 animate__animated animate__bounceInDown ${isMobile ? 'mt-0' : 'mt-5'}`}>
 
@@ -37,23 +41,25 @@ export const Forecast: FC<propsType> = ({ forecasts }) => {
                 </>
             }
 
-            <h1 className={isDarkMode ? 'text-white' : ''}> Mañana </h1>
+            {!!forecastTomorrow?.length && <>
+                <h1 className={isDarkMode ? 'text-white' : ''}> Mañana </h1>
+                <div style={{ ...divStyles }}>
+                    {forecastTomorrow.map(f => (
+                        <ForecastCard key={`${f.date?.day}-${f.date?.hour}`} forecast={f} />
+                    ))}
+                </div>
+            </>}
 
-            <div style={{ ...divStyles }}>
-                {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() + 1 && x.date.hour > 6).map((forecast: typeForecast) => (
-                    <ForecastCard key={`${forecast.date?.day}-${forecast.date?.hour}`} forecast={forecast} />
-                ))}
-            </div>
-
-            <h1 className={isDarkMode ? 'text-white' : ''}>
-                {forecasts.find(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6)?.date.weekday}
-            </h1>
-
-            <div style={{ ...divStyles }}>
-                {[...forecasts]?.filter(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6).map((forecast: typeForecast) => (
-                    <ForecastCard key={`${forecast.date?.day}-${forecast.date?.hour}`} forecast={forecast} />
-                ))}
-            </div>
+            {!!forecastTwoDays?.length && <>
+                <h1 className={isDarkMode ? 'text-white' : ''}>
+                    {forecasts.find(x => x.date.dateDay === new Date().getDate() + 2 && x.date.hour > 6)?.date.weekday}
+                </h1>
+                <div style={{ ...divStyles }}>
+                    {forecastTwoDays.map(f => (
+                        <ForecastCard key={`${f.date?.day}-${f.date?.hour}`} forecast={f} />
+                    ))}
+                </div>
+            </>}
 
         </div>
     )
@@ -65,9 +71,7 @@ type propsType1 = {
 
 const ForecastCard: FC<propsType1> = ({ forecast }) => {
 
-    const { isMobile } = useSelector((state: typeRootState) => ({
-        isMobile: state.mobileMode.isMobile
-    }))
+    const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
 
     return (
         <div

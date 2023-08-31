@@ -75,7 +75,7 @@ export const HTHMapSection: FC<propsType> = ({
                 territoryHTH={territoryHTH}
             />
             
-            {!showNewFaceOptions && !isEditingView && !isAddingPolygon &&
+            {!showNewFaceOptions && !isEditingView && !isAddingPolygon && !!territoryHTH.map.polygons?.length &&
                 <HTHChangeFaceStateButtons
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryHTH.territoryNumber}

@@ -10,7 +10,10 @@ type propsType = {
 }
 
 export const ConfigSetGoogleBoardUrl: FC<propsType> = ({ setShowSetGoogleBoardUrl }) => {
-    const config = useSelector((state: typeRootState) => state.config)
+    const { config, isDarkMode } = useSelector((state: typeRootState) => ({
+        config: state.config,
+        isDarkMode: state.darkMode.isDarkMode
+    }))
     const [url, setUrl] = useState(`https://sites.google.com${config.googleBoardUrl}`)
     const dispatch = useDispatch()
 
@@ -47,7 +50,9 @@ export const ConfigSetGoogleBoardUrl: FC<propsType> = ({ setShowSetGoogleBoardUr
                 />
             </FloatingLabel>
 
-            <span> El formato tiene que ser https://sites.google.com/view/algo-mas </span>
+            <span className={isDarkMode ? 'text-white' : ''}>
+                El formato tiene que ser https://sites.google.com/view/algo-mas
+            </span>
 
             <button
                 className={`btn btn-general-blue d-block w-100 mt-3`}

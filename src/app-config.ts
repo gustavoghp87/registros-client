@@ -1,10 +1,10 @@
-const isLocalhost: boolean = Boolean(
+export const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||
     window.location.hostname === '[::1]' ||
     window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
 );
 
-export const SERVER: string = (isLocalhost ?
+export const SERVER = (isLocalhost ?
     'http://localhost:4005'
     :
     'https://misericordia-web-service-3v5m7nxntq-rj.a.run.app'  // production server will not respond to local because cors policies
@@ -26,9 +26,9 @@ export const pointer = {
 
 export const recaptchaPublicKey = '6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9'
 
-export const mapId: string = 'ad09b84d2db0b86d'
+export const mapId = 'ad09b84d2db0b86d'
 
-export const googleMapsApiKey: string = isLocalhost ? 'AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594' : 'AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE'
+export const googleMapsApiKey = isLocalhost ? 'AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594' : 'AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE'
 
 export const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 

@@ -1,4 +1,5 @@
 export { CampaignSelector } from './CampaignSelector'
+export { GeoLocationModal } from './GeoLocationModal'
 export { HouseToHouseSelector } from './HouseToHouseSelector'
 export { TelephonicSelector } from './TelephonicSelector'
 export { TerritoryNumberBlock } from './TerritoryNumberBlock'

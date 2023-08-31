@@ -4,7 +4,8 @@ export type typeMode = 'alert' | 'confirm'
 
 type typeAlertModalState = {
     animation?: number
-    execution?: Function|undefined
+    execution?: Function
+    executionOnCancelling?: Function
     message: string
     mode: typeMode
     showingAlertModal?: boolean
@@ -34,12 +35,13 @@ export const alertModalSlice = createSlice({
         },
         setValuesAndOpenAlertModalReducer: (state, action: PayloadAction<typeAlertModalState>) => {
             state = {
-                animation: action?.payload?.animation,
-                execution: action?.payload?.execution,
-                message: action?.payload?.message || "",
-                mode: action?.payload?.mode ?? 'alert',
+                animation: action.payload.animation,
+                execution: action.payload.execution,
+                executionOnCancelling: action.payload.executionOnCancelling,
+                message: action.payload.message || "",
+                mode: action.payload.mode ?? 'alert',
                 showingAlertModal: true,
-                title: action?.payload?.title || "",
+                title: action.payload.title || "",
             }
             return state
         }

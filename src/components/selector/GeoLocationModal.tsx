@@ -1,12 +1,12 @@
 import { editInfoWindowsStyles, getGeocodingFromCoordinatesService, getHTHTerritoriesForMapService } from '../../services'
 import { FC, Fragment, useEffect, useRef, useState } from 'react'
 import { generalBlue } from '../../constants'
-import { GoogleMap, InfoWindow, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsApiKey, mapId } from '../../app-config'
+import { GoogleMap, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
+import { googleMapsApiKey, isLocalhost, mapId } from '../../app-config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
-import { typeCoords, typeHTHTerritory, typeRootState } from '../../models'
+import { typeBlock, typeCoords, typeFace, typeHTHTerritory, typeRootState, typeTerritoryNumber } from '../../models'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
@@ -27,10 +27,42 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
     const [address, setAddress] = useState("")
     const [centerCoords, setCenterCoords] = useState<typeCoords|null>(null)
     const [hthTerritories, setHTHTerritories] = useState<typeHTHTerritory[]|null>(null)
-    const [zoom, setZoom] = useState(0)
+    // const [zoom, setZoom] = useState(0)
     const dispatch = useDispatch()
     const map = useRef<any>()
     const navigate = useNavigate()
+
+    const openModalHandler = (territoryNumber: typeTerritoryNumber, block: typeBlock, face: typeFace, street: string) => {
+        const modal = document.querySelector('body > div.fade.modal.show') as HTMLElement | null
+        if (modal) {
+            modal.style.display = 'none'
+        }
+        const shadow = document.querySelector('body > div.fade.modal-backdrop.show') as HTMLElement | null
+        if (shadow) {
+            shadow.classList.remove('show')
+            shadow.classList.add('modal-backdrop1')
+            shadow.classList.remove('modal-backdrop')
+        }
+        dispatch(setValuesAndOpenAlertModalReducer({
+            mode: 'confirm',
+            title: "Confirmar",
+            message: `Territorio ${territoryNumber} manzana ${block} calle ${street} (${face}). ¿Ir?`,
+            execution: () => {
+                navigate(`/casa-en-casa/${territoryNumber}?b=${block}&f=${face}`)
+            },
+            executionOnCancelling: () => {
+                // const modal = document.querySelector('body > div.fade.modal.show') as HTMLElement | null
+                if (modal) modal.style.display = 'block'
+                // const shadow = document.querySelector('body > div.fade.modal-backdrop.show') as HTMLElement | null
+                const shadow1 = document.querySelector('body > div.fade.modal-backdrop1') as HTMLElement | null
+                if (shadow1) {
+                    shadow1.classList.add('show')
+                    shadow1.classList.add('modal-backdrop')
+                    shadow1.classList.remove('modal-backdrop1')
+                }
+            }
+        }))
+    }
 
     useEffect(() => {
         if (!navigator.geolocation) {
@@ -63,8 +95,8 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                 const interval = setInterval(() => { editInfoWindowsStyles() }, 300)
                 setTimeout(() => { clearInterval(interval) }, 5000)
                 const position: typeCoords = {
-                    lat: geoPosition.coords.latitude,
-                    lng: geoPosition.coords.longitude
+                    lat: isLocalhost ? -34.632126 : geoPosition.coords.latitude,
+                    lng: isLocalhost ? -58.456176 : geoPosition.coords.longitude
                 }
                 setCenterCoords(position)
                 getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
@@ -76,7 +108,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                 })
             })
         })
-    }, [])
+    }, [dispatch])
 
     // useEffect(() => {
         // if (!map.current) return
@@ -119,7 +151,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                         onLoad={(map0: google.maps.Map) => {map.current = map0}}
                         center={centerCoords}
                         zoom={17.8}
-                        onZoomChanged={() => setZoom(map.current?.getZoom())}
+                        // onZoomChanged={() => setZoom(map.current?.getZoom())}
                         // options={{ center: centerCoords, zoom: zoom }}
                         // zoom={zoom}
                     >
@@ -138,7 +170,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                                             editable={false}
                                             draggable={false}
                                             path={[currentFace.coordsPoint1, currentFace.coordsPoint2, currentFace.coordsPoint3]}
-                                            onClick={() => navigate(`/casa-en-casa/${t.territoryNumber}?b=${currentFace.block}&f=${currentFace.face}`)}
+                                            onClick={() => openModalHandler(t.territoryNumber, currentFace.block, currentFace.face, currentFace.street)}
                                             options={{
                                                 clickable: true,
                                                 fillColor: generalBlue,
@@ -149,7 +181,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                                                 strokeWeight: 7
                                             }}
                                         />
-                                        <InfoWindow
+                                        {/* <InfoWindow
                                             position={{
                                                 lat: (currentFace.coordsPoint1.lat + currentFace.coordsPoint2.lat + currentFace.coordsPoint3.lat) / 3 + 0.00005,
                                                 lng: (currentFace.coordsPoint1.lng + currentFace.coordsPoint2.lng + currentFace.coordsPoint3.lng) / 3 - 0.0001
@@ -173,7 +205,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                                                     <span> Territorio {t.territoryNumber} </span>
                                                 }
                                             </div>
-                                        </InfoWindow>
+                                        </InfoWindow> */}
                                     </Fragment>
                                 )}
                             </div>

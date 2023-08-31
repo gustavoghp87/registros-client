@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 
 export const AlertModal = () => {
-    const { mode, title, message, execution, animation } = useSelector((state: typeRootState) => state.alertModal)
+    const { mode, title, message, execution, animation, executionOnCancelling } = useSelector((state: typeRootState) => state.alertModal)
     const dispatch = useDispatch()
     
     useEffect(() => {
@@ -32,14 +32,20 @@ export const AlertModal = () => {
                         },
                         {
                             label: 'CANCELAR',
-                            onClick: () => closeModalHandler()
+                            onClick: () => {
+                                if (executionOnCancelling) executionOnCancelling()
+                                closeModalHandler()
+                            }
                         }
                     ]
                 :
                     [
                         {
                             label: 'ACEPTAR',
-                            onClick: () => closeModalHandler()
+                            onClick: () => {
+                                if (executionOnCancelling) executionOnCancelling()
+                                closeModalHandler()
+                            }
                         }
                     ],
             closeOnEscape: true,
@@ -51,7 +57,7 @@ export const AlertModal = () => {
         })
         adjustModalStyles()
         if (animation) insertAnimationForAlertModal(animation)
-    }, [animation, dispatch, execution, message, mode, title])
+    }, [animation, dispatch, execution, executionOnCancelling, message, mode, title])
 
     return (<></>)
 }
