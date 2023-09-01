@@ -90,7 +90,6 @@ export const LastMeetingPage = () => {
                                     disabled={false}
                                     id={"emailInput"}
                                     onChange={e => console.log(e.target.value)}
-                                    placeholder={"URL de Youtube"}
                                     //style={{ backgroundColor: 'lightgray' }}
                                     type={'text'}
                                     //value={}

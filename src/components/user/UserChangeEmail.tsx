@@ -56,10 +56,8 @@ export const UserChangeEmail: FC<propsType> = ({ openAlertModalHandler, openConf
                         className={'mb-3 text-secondary'}
                     >
                         <Form.Control type={'text'}
-                            autoFocus
-                            onChange={e => setNewEmail(e.target.value)}
-                            placeholder={"Dirección actual"}
                             value={user.email}
+                            onChange={e => setNewEmail(e.target.value)}
                             disabled
                         />
                     </FloatingLabel>
@@ -71,7 +69,6 @@ export const UserChangeEmail: FC<propsType> = ({ openAlertModalHandler, openConf
                         className={'mb-3 text-secondary'}
                     >
                         <Form.Control type={'text'}
-                            placeholder={"Nueva dirección"}
                             value={newEmail}
                             onChange={e => setNewEmail(e.target.value)}
                             onKeyDown={e => e.key === 'Enter' ? changeEmailHandler() : null }

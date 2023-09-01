@@ -5,7 +5,7 @@ import { registerUserService } from '../../services/userServices'
 import { typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useState } from 'react'
 
 export const NewUserPage = () => {
@@ -14,17 +14,15 @@ export const NewUserPage = () => {
         isMobile: state.mobileMode.isMobile
     }))
     const { executeRecaptcha } = useGoogleReCaptcha()
-    const urlSearchParams = new URLSearchParams(window.location.search)
-    const queryParams = Object.fromEntries(urlSearchParams.entries())
-    const id = queryParams.id
-    const email = queryParams.email
-    const team = queryParams.team
+    const id = useParams().id || ""
+    const email = useParams().email || ""
+    const team = useParams().team || "0"
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
     const [confPassword, setConfPassword] = useState("")
     const [group, setGroup] = useState(0)
     const [password, setPassword] = useState("")
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const openAlertModalHandler = (title: string, message: string, animation?: number, execution?: Function): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
@@ -50,17 +48,15 @@ export const NewUserPage = () => {
         dispatch(showLoadingModalReducer())
         const response = await registerUserService(email, group, id, password, recaptchaToken, group)
         dispatch(hideLoadingModalReducer())
-        if (!response) {
-            openAlertModalHandler("Algo salió mal", "", 2)
+        if (response?.success) {
+            openAlertModalHandler("Usuario creado con éxito", "", 1, () => navigate('/'))
             return
         }
-        if (response.success) {
-            openAlertModalHandler("Usuario creado con éxito", "", 1, () => navigate('/'))
-        } else if (response.recaptchaFails) {
+        if (response?.recaptchaFails) {
             openAlertModalHandler("Algo falló en la página; se va a refrescar", "", 2, () => window.location.reload())
-        } else if (response.userExists) {
+        } else if (response?.userExists) {
             openAlertModalHandler("Ya hay una cuenta con esta dirección de email", "", 2, () => navigate('/acceso'))
-        } else if (response.expired) {
+        } else if (response?.expired) {
             openAlertModalHandler("Esta invitación ya expiró; pedir otra", "", 2, () => navigate('/'))
         } else {
             openAlertModalHandler("Algo salió mal", "", 2)

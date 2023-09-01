@@ -1,5 +1,4 @@
-import { ConfigCreateHTHTerritories, ConfigSetCongregationName, ConfigSetGoogleBoardUrl } from './config-subcomp'
-import { Container } from 'react-bootstrap'
+import { ConfigCreateHTHTerritories, ConfigSendInvitationNewCongregation, ConfigSetCongregationName, ConfigSetGoogleBoardUrl } from './config-subcomp'
 import { goToTop } from '../../services'
 import { H2 } from '../commons'
 import { typeRootState } from '../../models'
@@ -12,11 +11,9 @@ const btnClasses = 'btn btn-general-blue btn-size12 d-block mx-auto mt-5 mb-0'
 const btnStyles = { width: '350px', minHeight: '60px' }
 
 export const Config = () => {
-    const { config, isDarkMode } = useSelector((state: typeRootState) => ({
-        config: state.config,
-        isDarkMode: state.darkMode.isDarkMode
-    }))
+    const config = useSelector((state: typeRootState) => state.config)
     const [showCreateHthTerritories, setShowCreateHthTerritories] = useState(false)
+    const [showInvitationForNewCongregation, setShowInvitationForNewCongregation] = useState(false)
     const [showSetCongregationName, setShowSetCongregationName] = useState(false)
     const [showSetGoogleBoardUrl, setShowSetGoogleBoardUrl] = useState(false)
     const navigate = useNavigate()
@@ -27,7 +24,7 @@ export const Config = () => {
     
         <H2 title={'CONFIGURACIÓN DE LA APLICACIÓN'} mb={'80px'} />
 
-        {!showCreateHthTerritories && !showSetCongregationName && !showSetGoogleBoardUrl && <>
+        {!showCreateHthTerritories && !showInvitationForNewCongregation && !showSetCongregationName && !showSetGoogleBoardUrl && <>
 
             <button className={btnClasses} style={btnStyles} onClick={() => setShowSetCongregationName(true)}>
                 {!!config.name ? "Cambiar el nombre de la Congregación" : "Cargar el nombre de la Congregación"}
@@ -47,13 +44,19 @@ export const Config = () => {
                 Renovar credenciales de Gmail
             </button>
 
-            <Container className='text-center mt-5'>
+            {config.congregation === 1 &&
+                <button className={btnClasses} style={btnStyles} onClick={() => setShowInvitationForNewCongregation(true)}>
+                    Enviar invitación para Congregación nueva
+                </button>
+            }
+
+            {/*<Container className='text-center mt-5'>
                 <h1>En desarrollo:</h1>
 
                 <h5 className={isDarkMode ? 'text-white' : ''}> Establecer localidad </h5>
 
                 <h5 className={isDarkMode ? 'text-white' : ''}> Duración de cookie de acceso: 3 meses </h5>
-            </Container>
+            </Container> */}
         </>}
 
         {showCreateHthTerritories &&
@@ -71,6 +74,12 @@ export const Config = () => {
         {showSetGoogleBoardUrl &&
             <ConfigSetGoogleBoardUrl
                 setShowSetGoogleBoardUrl={setShowSetGoogleBoardUrl}
+            />
+        }
+
+        {showInvitationForNewCongregation &&
+            <ConfigSendInvitationNewCongregation
+                setShowInvitationForNewCongregation={setShowInvitationForNewCongregation}
             />
         }
 

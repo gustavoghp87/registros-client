@@ -5,13 +5,13 @@ import { typeResponseData } from '../models'
 
 const base: string = pointer.config
 
-export const inviteNewUserService = async (email: string): Promise<typeResponseData|null> => {
+export const sendInvitationForNewUserService = async (email: string, newCongregation: boolean = false): Promise<typeResponseData|null> => {
     if (!getTokenService()) return null
     try {
         const response = await fetch(`${base}/invite`, {
             method: 'PUT',
             headers: getHeaders(),
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ email, newCongregation })
         })
         const data: typeResponseData = await response.json()
         return data

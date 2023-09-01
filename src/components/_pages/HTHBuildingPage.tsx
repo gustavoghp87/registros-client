@@ -14,15 +14,16 @@ const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const HTHBuildingPage = () => {
     const unauthUser = useSelector((state: typeRootState) => state.user)
-    const [currentBuilding, setCurrentBuilding] = useState<typeHTHBuilding|null>(null)
-    const [currentFace, setCurrentFace] = useState<typePolygon|null>(null)
     const block = useParams().block as typeBlock
     const congregation = parseInt(useParams().congregation || '')
-    const dispatch = useDispatch()
     const face = useParams().face as typeFace
-    const navigate = useNavigate()
     const streetNumber = parseInt(useParams().streetNumber || '')
     const territoryNumber = useParams().territoryNumber as typeTerritoryNumber
+
+    const [currentBuilding, setCurrentBuilding] = useState<typeHTHBuilding|null>(null)
+    const [currentFace, setCurrentFace] = useState<typePolygon|null>(null)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const closeBuildingModalHandler = () => navigate('/')
 
