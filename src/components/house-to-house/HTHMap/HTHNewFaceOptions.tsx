@@ -1,13 +1,11 @@
-import { Container, Dropdown, FloatingLabel, Form } from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 import { getHTHStreetsByTerritoryService, getStreetsByHTHTerritory } from '../../../services'
+import { hthConfigOptions } from '../../../app-config'
+import { HTHNewFaceOptionsStreet } from './HTHNewFaceOptionsStreet'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeBlock, typeFace, typeHTHTerritory, typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { HTHNewFaceOptionsStreet } from './HTHNewFaceOptionsStreet'
-
-const blockOptions: typeBlock[] = ['1', '2', '3', '4', '5', '6']
-const facesOptions: typeFace[] = ['A', 'B', 'C', 'D', 'E', 'F']
 
 type propsType = {
     initFaceAddingHandler: (selectedBlock: typeBlock|null, selectedFace: typeFace|null, selectedStreet: string|null) => void
@@ -16,8 +14,8 @@ type propsType = {
 }
 
 export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }: propsType) => {
-    const [blocks, setBlocks] = useState<typeBlock[]>(blockOptions)
-    const [faces, setFaces] = useState<typeFace[]>(facesOptions)
+    const [blocks, setBlocks] = useState<typeBlock[]>(hthConfigOptions.blockOptions)
+    const [faces, setFaces] = useState<typeFace[]>(hthConfigOptions.facesOptions)
     const [selectedBlock, setSelectedBlock] = useState<typeBlock>()
     const [selectedFace, setSelectedFace] = useState<typeFace>()
     const [selectedStreet, setSelectedStreet] = useState('')
@@ -39,8 +37,8 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
     }
 
     const cancelHandler = (showBlock: boolean): void => {
-        setBlocks(blockOptions)
-        setFaces(facesOptions)
+        setBlocks(hthConfigOptions.blockOptions)
+        setFaces(hthConfigOptions.facesOptions)
         setSelectedBlock(undefined)
         setSelectedFace(undefined)
         setShowBlockMenu(showBlock)
@@ -49,7 +47,7 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
     }
 
     useEffect(() => {
-        let newFaces: typeFace[] = [...facesOptions]
+        let newFaces: typeFace[] = [...hthConfigOptions.facesOptions]
         if (selectedBlock) {
             territoryHTH.map.polygons.forEach(x => {
                 if (x.block === selectedBlock) newFaces = newFaces.filter(y => y !== x.face)

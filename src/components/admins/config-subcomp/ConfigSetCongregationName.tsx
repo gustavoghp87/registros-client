@@ -32,7 +32,7 @@ export const ConfigSetCongregationName: FC<propsType> = ({ setShowSetCongregatio
     }
 
     return (
-        <Container style={{ maxWidth: '400px' }}>
+        <Container className={'maxw-400'}>
             <FloatingLabel
                 className={'mb-3 text-dark'}
                 label={"Nombre de la Congregación"}

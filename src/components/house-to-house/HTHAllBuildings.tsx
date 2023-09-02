@@ -62,7 +62,7 @@ export const HTHAllBuildings: FC<propsType> = ({
             {!!territoryHTH?.map.polygons?.some(x => !!x.buildings?.length) ?
                 <>
                 <Hr styles={{ marginTop: '100px', marginBottom: '30px' }} />
-                <div className={'container'} style={{ maxWidth: '400px' }}>
+                <div className={'container maxw-400'}>
                     <h1 className={`text-center mb-5 ${isDarkMode ? 'text-white' : ''}`}>
                         BUSCAR EDIFICIO
                     </h1>
@@ -78,7 +78,7 @@ export const HTHAllBuildings: FC<propsType> = ({
                             autoFocus
                         />
                     </FloatingLabel>
-                    <ListGroup as="ul">
+                    <ListGroup as={'ul'}>
                         {territoryHTH.map.polygons.map(p => <Fragment key={p.id}>
                             {!!p.buildings?.length && p.buildings.map(b => <Fragment key={p.street + "-" + b.streetNumber}>
                                 {`${p.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) && (

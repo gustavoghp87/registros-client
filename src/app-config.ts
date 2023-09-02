@@ -1,3 +1,5 @@
+import { typeBlock, typeFace } from './models'
+
 export const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||
     window.location.hostname === '[::1]' ||
@@ -26,102 +28,26 @@ export const pointer = {
 
 export const recaptchaPublicKey = '6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9'
 
-export const mapId = 'ad09b84d2db0b86d'
+export const hthConfigOptions = {
+    blockOptions: ['1', '2', '3', '4', '5', '6'] as typeBlock[],
+    facesOptions: ['A', 'B', 'C', 'D', 'E', 'F'] as typeFace[]
+}
 
-export const googleMapsApiKey = isLocalhost ? 'AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594' : 'AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE'
+export const googleMapConfig = {
+    googleMapsApiKey: isLocalhost ? 'AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594' : 'AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE',
+    id: 'ad09b84d2db0b86d',
+    libraries: ['maps', 'places'] as any,
+    region: 'AR',
+    language: 'es'
+}
+
+export const placesBounds = {
+    east: -58.353243,
+    north: -34.562694,
+    south: -34.705957,
+    west: -58.530468
+}
+
+export const initCoordinates = { lat: -34.6258549, lng: -58.4343211 }
 
 export const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-
-///////// NEW PROJECT:
-
-// GET: () => { success: boolean, allLogsObj: typeAllLogsObj }
-
-// type service = {
-//     name: string
-//     url: string
-//     method: RequestInit["method"]
-//     body: any
-//     response: { data: any }
-// }
-
-// type pointerItem = {
-//     path: string,
-//     services: service[]
-// }
-
-// type typePointer = {
-//     board: pointerItem
-//     campaign: pointerItem
-//     email: pointerItem
-//     houseToHouse: pointerItem
-//     geocoding: pointerItem
-//     log: pointerItem
-//     telephonic: pointerItem
-//     user: pointerItem
-// }
-
-// export const pointer1: typePointer = {
-//     board: {
-//         path: `${SERVER}/api/board`,
-//         services: [
-
-//         ],
-//     },
-//     campaign: {
-//         path: `${SERVER}/api/campaign`,
-//         services: [
-//             {
-//                 name: 'askForANewCampaignPackService',
-//                 url: '/new-pack',
-//                 method: 'POST',
-//                 body: {},
-//                 response: { data: { success: false } }
-//             },
-//             {
-//                 name: 'assignCampaignPackByEmailService',
-//                 url: '/:id',
-//                 method: 'PUT',
-//                 body: { email: '' },
-//                 response: { data: { success: true } }
-//             }
-//         ]
-//     },
-//     email: {
-//         path: `${SERVER}/api/email`,
-//         services: [
-
-//         ],
-//     },
-//     houseToHouse: {
-//         path: `${SERVER}/api/house-to-house`,
-//         services: [
-
-//         ],
-//     },
-//     geocoding: {
-//         path: `${SERVER}/api/geocoding`,
-//         services: [
-
-//         ],
-//     },
-//     log: {
-//         path: `${SERVER}/api/log`,
-//         services: [
-
-//         ],
-//     },
-//         // GET: () => { success: boolean, allLogsObj: typeAllLogsObj }
-//     telephonic: {
-//         path: `${SERVER}/api/telephonic`,
-//         services: [
-
-//         ],
-//     },
-//     user: {
-//         path: `${SERVER}/api/user`,
-//         services: [
-
-//         ],
-//     }
-// }

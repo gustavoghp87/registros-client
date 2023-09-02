@@ -5,7 +5,8 @@ import { registerUserService } from '../../services/userServices'
 import { typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate } from 'react-router'
+import { useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 
 export const NewUserPage = () => {
@@ -14,9 +15,10 @@ export const NewUserPage = () => {
         isMobile: state.mobileMode.isMobile
     }))
     const { executeRecaptcha } = useGoogleReCaptcha()
-    const id = useParams().id || ""
-    const email = useParams().email || ""
-    const team = useParams().team || "0"
+    const [params] = useSearchParams();
+    const id = params.get('id') || ""
+    const email = params.get('email') || ""
+    const team = params.get('team') || "0"
 
     const [confPassword, setConfPassword] = useState("")
     const [group, setGroup] = useState(0)
@@ -64,19 +66,9 @@ export const NewUserPage = () => {
     }
 
     return (
-        <Container className={isDarkMode ? 'bg-dark' : 'bg-white'}
-            style={{
-                border: '1px solid black',
-                borderRadius: '12px',
-                boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-                marginBottom: '50px',
-                marginTop: '60px',
-                maxWidth: '600px',
-                padding: '50px 0 0'
-            }}
-        >
-            
-            <h2 className={`text-center mx-auto ${isDarkMode ? 'text-white' : ''}`}
+        <Container className={'maxw-400'}>
+
+            <h2 className={`text-center mt-5 mx-auto ${isDarkMode ? 'text-white' : ''}`}
                 style={{
                     fontSize: isMobile ? '1.7rem' : '2rem',
                     maxWidth: '90%',
@@ -90,12 +82,11 @@ export const NewUserPage = () => {
 
                 <FloatingLabel
                     className={'mb-3 text-dark'}
-                    label={!email ? "Cargando..." : "Correo electrónico"}
+                    label={"Correo electrónico"}
                 >
                     <Form.Control
                         type={'email'}
                         className={'form-control'}
-                        autoComplete={'email'}
                         value={email}
                         onChange={() => {}}
                         disabled={true}

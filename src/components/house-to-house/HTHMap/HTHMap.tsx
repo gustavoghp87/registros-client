@@ -1,7 +1,7 @@
 import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsApiKey, mapId } from '../../../app-config'
+import { googleMapConfig } from '../../../app-config'
 import { hthMapStyle, HTHMarkerComponent, HTHNewFaceOptions, HTHPolygonComponent } from '../'
 import { Loading } from '../../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
@@ -31,13 +31,7 @@ export const HTHMap: FC<propsType> = ({
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey,
-        id: mapId,
-        libraries: ['maps', 'places'],
-        region: 'AR',
-        language: 'es'
-    })
+    const { isLoaded, loadError } = useJsApiLoader(googleMapConfig)
     const dispatch = useDispatch()
     const [map, setMap] = useState<google.maps.Map>()
     const [runIntervals, setRunIntervals] = useState(false)
@@ -209,13 +203,13 @@ export const HTHMap: FC<propsType> = ({
         <div className={'position-relative'} style={{ marginBottom: isMobile ? '660px' : '' }}>
             <GoogleMap
                 center={territoryHTH.map.centerCoords}
-                id={mapId}
+                id={googleMapConfig.id}
                 mapContainerClassName={isMobile ? 'position-absolute' : 'd-block m-auto'}
                 mapContainerStyle={{
                     height: isMobile ? '600px' : '700px',
                     width: isMobile ? '100%' : '90%'
                 }}
-                onLoad={(mapInstance: google.maps.Map) => setMap(mapInstance)}
+                onLoad={mapInstance => setMap(mapInstance)}
                 onCenterChanged={() => onCenterChangedHandler()}
                 options={{
                     center: isEditingView ? null : territoryHTH.map.centerCoords,

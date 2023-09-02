@@ -2,7 +2,7 @@ import { editInfoWindowsStyles, getGeocodingFromCoordinatesService, getHTHTerrit
 import { FC, Fragment, useEffect, useRef, useState } from 'react'
 import { generalBlue } from '../../constants'
 import { GoogleMap, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsApiKey, isLocalhost, mapId } from '../../app-config'
+import { googleMapConfig, isLocalhost } from '../../app-config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
@@ -16,14 +16,8 @@ type propsType = {
 }
 
 export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler }) => {
-    const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey,
-        id: mapId,
-        libraries: ['maps', 'places'],
-        region: 'AR',
-        language: 'es'
-    })
     const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
+    const { isLoaded, loadError } = useJsApiLoader(googleMapConfig)
     const [address, setAddress] = useState("")
     const [centerCoords, setCenterCoords] = useState<typeCoords|null>(null)
     const [hthTerritories, setHTHTerritories] = useState<typeHTHTerritory[]|null>(null)
@@ -142,13 +136,13 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                 </Modal.Header>
                 <Modal.Body>
                     <GoogleMap
-                        id={mapId}
+                        id={googleMapConfig.id}
                         mapContainerClassName={isMobile ? 'position-absolute' : 'd-block m-auto'}
                         mapContainerStyle={{
                             height: isMobile ? '600px' : '700px',
                             width: '93%'
                         }}
-                        onLoad={(map0: google.maps.Map) => {map.current = map0}}
+                        onLoad={mapInstance => {map.current = mapInstance}}
                         center={centerCoords}
                         zoom={17.8}
                         // onZoomChanged={() => setZoom(map.current?.getZoom())}

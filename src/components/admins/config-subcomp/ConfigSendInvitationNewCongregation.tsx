@@ -17,47 +17,54 @@ export const ConfigSendInvitationNewCongregation: FC<propsType> = ({ setShowInvi
 
     const sendInvitationForNewCongregationHandler = async () => {
         if (!emailPattern.test(email)) return
-        dispatch(showLoadingModalReducer())
-        const response = await sendInvitationForNewUserService(email, true)
-        dispatch(hideLoadingModalReducer())
-        if (response?.success) {
-            dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Logrado",
-                message: `Se envió una invitación para crear una Congregación a ${email}`,
-                animation: 1,
-                execution: () => setShowInvitationForNewCongregation(false)
-            }))
-            return
-        }
-        if (response?.userExists) {
-            dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Error",
-                message: "Ya hay una cuenta con esta dirección de email",
-                animation: 2
-            }))
-            return
-        }
-        if (response?.notSent) {
-            dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Error",
-                message: `Hubo un error al enviar un correo a ${email}. Mirar los logs.`,
-                animation: 2
-            }))
-            return
-        }
         dispatch(setValuesAndOpenAlertModalReducer({
-            mode: 'alert',
-            title: "Algo falló",
-            message: "Mirar los logs",
-            animation: 2
+            mode: 'confirm',
+            title: "Confirmar",
+            message: `Se le va a enviar una invitación a ${email} para que cree y sea administrador de una nueva Congregación`,
+            execution: async () => {
+                dispatch(showLoadingModalReducer())
+                const response = await sendInvitationForNewUserService(email, true)
+                dispatch(hideLoadingModalReducer())
+                if (response?.success) {
+                    dispatch(setValuesAndOpenAlertModalReducer({
+                        mode: 'alert',
+                        title: "Logrado",
+                        message: `Se envió una invitación para crear una Congregación a ${email}`,
+                        animation: 1,
+                        execution: () => setShowInvitationForNewCongregation(false)
+                    }))
+                    return
+                }
+                if (response?.userExists) {
+                    dispatch(setValuesAndOpenAlertModalReducer({
+                        mode: 'alert',
+                        title: "Error",
+                        message: "Ya hay una cuenta con esta dirección de email",
+                        animation: 2
+                    }))
+                    return
+                }
+                if (response?.notSent) {
+                    dispatch(setValuesAndOpenAlertModalReducer({
+                        mode: 'alert',
+                        title: "Error",
+                        message: `Hubo un error al enviar un correo a ${email}. Mirar los logs.`,
+                        animation: 2
+                    }))
+                    return
+                }
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "Algo falló",
+                    message: "Mirar los logs",
+                    animation: 2
+                }))
+            }
         }))
     }
 
     return (
-        <Container className={'mt-4'} style={{ maxWidth: '400px' }}>
+        <Container className={'maxw-400 mt-4'}>
 
             <h3 className={`text-center mt-5 ${isDarkMode ? 'text-white' : ''}`}>
                 Enviar por Email un acceso para ser administrador y primer usuario de una Congregación nueva

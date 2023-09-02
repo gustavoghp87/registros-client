@@ -40,23 +40,19 @@ export const Config = () => {
                 {!!config.googleBoardUrl ? "Modificar dirección de Tablero Google" : "Cargar dirección de Tablero Google"}
             </button>
 
-            <button className={btnClasses} style={btnStyles} onClick={() => navigate('/gmail')}>
-                Renovar credenciales de Gmail
-            </button>
-
-            {config.congregation === 1 &&
+            {config.congregation === 1 && <>
                 <button className={btnClasses} style={btnStyles} onClick={() => setShowInvitationForNewCongregation(true)}>
                     Enviar invitación para Congregación nueva
                 </button>
-            }
 
-            {/*<Container className='text-center mt-5'>
-                <h1>En desarrollo:</h1>
+                <button className={btnClasses} style={btnStyles} onClick={() => navigate('/gmail')}>
+                    Renovar credenciales de Gmail
+                </button>
+            </>}
 
-                <h5 className={isDarkMode ? 'text-white' : ''}> Establecer localidad </h5>
+            {/* <h5 className={isDarkMode ? 'text-white' : ''}> Establecer localidad </h5>
 
-                <h5 className={isDarkMode ? 'text-white' : ''}> Duración de cookie de acceso: 3 meses </h5>
-            </Container> */}
+            <h5 className={isDarkMode ? 'text-white' : ''}> Duración de cookie de acceso: 3 meses </h5> */}
         </>}
 
         {showCreateHthTerritories &&

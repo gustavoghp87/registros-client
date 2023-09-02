@@ -35,7 +35,7 @@ export const ConfigSetGoogleBoardUrl: FC<propsType> = ({ setShowSetGoogleBoardUr
     }
 
     return (
-        <Container style={{ maxWidth: '400px' }}>
+        <Container className={'maxw-400'}>
             <FloatingLabel
                 className={'mb-3 text-dark'}
                 label={"Dirección del tablero en Google"}

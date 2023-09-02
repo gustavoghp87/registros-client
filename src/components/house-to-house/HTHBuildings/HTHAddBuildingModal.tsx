@@ -97,9 +97,9 @@ export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, curre
                         >
                             <Form.Label> Calle </Form.Label>
                             <Form.Control
-                                disabled
                                 type={'text'}
                                 value={currentFace.street}
+                                disabled
                             />
                         </Form.Group>
 
@@ -109,16 +109,17 @@ export const HTHAddBuildingModal: FC<propsType> = ({ closeHTHModalHandler, curre
                         >
                             <Form.Label> Número </Form.Label>
                             <Form.Control
+                                type={'number'}
                                 max={'100000'}
                                 min={'1'}
+                                value={streetNumber !== undefined && !isNaN(streetNumber) && streetNumber !== 0 ? streetNumber : ""}
                                 onChange={(event: any) => setStreetNumber(parseInt(event.target.value))}
                                 onInput={() => "event.target.value = event.target.value.replace(/[^0-9]*/g,'');"}
                                 onKeyPress={(event: any) => {
                                     if (event.key === '.' || event.key === ',') event.preventDefault()
                                 }}
                                 step={1}
-                                type={'number'}
-                                value={streetNumber !== undefined && !isNaN(streetNumber) && streetNumber !== 0 ? streetNumber : ""}
+                                autoFocus
                             />
                         </Form.Group>
 

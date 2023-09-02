@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import { getGeocodingFromAddressService } from '../../services'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
-import { googleMapsApiKey, mapId } from '../../app-config'
+import { googleMapConfig } from '../../app-config'
 import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
@@ -12,18 +12,15 @@ type propsType = {
     address: string
     hideGoogleMapHandler: () => void
 }
-
+ 
 export const MapModalTeleph: FC<propsType> = ({ address, hideGoogleMapHandler }) => {
-    const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey,
-        id: mapId
-    })
     const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
+    const { isLoaded, loadError } = useJsApiLoader(googleMapConfig)
     const [centerCoords, setCenterCoords] = useState<typeCoords>()
     const dispatch = useDispatch()
 
     useEffect(() => {
-        let target: string = address + " CABA"
+        const target: string = address + " CABA"
         getGeocodingFromAddressService(target).then((coordinates: typeCoords|null) => {
             if (!coordinates?.lat || !coordinates?.lng) {
                 dispatch(setValuesAndOpenAlertModalReducer({
@@ -59,7 +56,7 @@ export const MapModalTeleph: FC<propsType> = ({ address, hideGoogleMapHandler })
                 <Modal.Body>
                     <GoogleMap
                         center={centerCoords}
-                        id={mapId}
+                        id={googleMapConfig.id}
                         mapContainerClassName={isMobile ? 'position-absolute' : 'd-block m-auto'}
                         mapContainerStyle={{
                             height: isMobile ? '600px' : '700px',

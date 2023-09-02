@@ -131,3 +131,7 @@ input[type='checkbox'].checkbox-2 {
   border: 1px solid #4a6da7 !important;
   color: white;
 }
+
+.maxw-400 {
+  max-width: 400px !important;
+}

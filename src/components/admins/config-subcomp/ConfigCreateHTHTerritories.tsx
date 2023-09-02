@@ -1,7 +1,8 @@
+import { ConfigCreateHTHTerritoriesMap } from './ConfigCreateHTHTerritoriesMap'
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { createHTHTerritoriesService } from '../../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
-import { H2, Hr } from '../../commons'
+import { H2 } from '../../commons'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../../store'
 import { useDispatch } from 'react-redux'
 
@@ -10,21 +11,31 @@ type propsType = {
 }
 
 export const ConfigCreateHTHTerritories: FC<propsType> = ({ setShowCreateHthTerritories }) => {
-    const [lat, setLat] = useState(0)
-    const [lng, setLng] = useState(0)
+    const [map, setMap] = useState<google.maps.Map|null>(null)
     const [numberOfTerritories, setNumberOfTerritories] = useState(0)
-    // const config = useSelector((state: typeRootState) => state.config)
     const dispatch = useDispatch()
 
     const createHthTerritoriesHandler = async () => {
-        if (!numberOfTerritories || !Number.isInteger(numberOfTerritories) || !lat || !lng) return
+        const centerLat = map?.getCenter()?.lat()
+        const centerLng = map?.getCenter()?.lng()
+        if (!numberOfTerritories || !Number.isInteger(numberOfTerritories) || !centerLat || !centerLng)
+            return
+        if (numberOfTerritories > 200) {
+            dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'alert',
+                title: "Error",
+                message: "Se permiten hasta 200 territorios",
+                animation: 2
+            }))
+            return
+        }
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: 'Crear territorios',
-            message: `Se van a crear ${numberOfTerritories} territorios para casa en casa y el punto centrar inicial va a ser latitud ${lat}, longitud ${lng}`,
+            message: `Se van a crear ${numberOfTerritories} territorios para casa en casa y el punto centrar inicial va a ser latitud ${centerLat}, longitud ${centerLng}`,
             execution: async () => {
                 dispatch(showLoadingModalReducer())
-                const success = await createHTHTerritoriesService(numberOfTerritories, lat < 0 ? lat : lat*-1, lng < 0 ? lng : lng*-1)
+                const success = await createHTHTerritoriesService(numberOfTerritories, centerLat, centerLng)
                 dispatch(hideLoadingModalReducer())
                 if (!success) {
                     setValuesAndOpenAlertModalReducer({
@@ -45,8 +56,7 @@ export const ConfigCreateHTHTerritories: FC<propsType> = ({ setShowCreateHthTerr
 
             <H2 title={'CREAR LOS TERRITORIOS PARA CASA EN CASA'} />
 
-            <Container style={{ maxWidth: '400px' }}>
-
+            <Container className={'maxw-400'}>
                 <FloatingLabel
                     className={'mt-5 mb-4 text-dark'}
                     label={"Elegir la cantidad de territorios"}
@@ -59,59 +69,57 @@ export const ConfigCreateHTHTerritories: FC<propsType> = ({ setShowCreateHthTerr
                         autoFocus
                     />
                 </FloatingLabel>
-
-                <Hr />
-
-                <h5 className={'text-center my-4'}>
-                    Establecer las coordenadas de algún punto central del territorio de la congregación
-                </h5>
-
-                <h5 className={'text-center mb-5'}>
-                    Este punto va a ser el inicial antes de dibujar las caras de las manzanas. Se pueden conseguir en Google Maps.
-                </h5>
-
-                <FloatingLabel
-                    className={'mb-3 text-dark'}
-                    label={"Latitud"}
-                >
-                    <Form.Control
-                        className={'form-control'}
-                        type={'number'}
-                        value={lat ? lat : ''}
-                        onChange={e => setLat(parseFloat((e.target as HTMLInputElement).value))}
-                    />
-                </FloatingLabel>
-
-                <FloatingLabel
-                    className={'mb-3 text-dark'}
-                    label={"Longitud"}
-                >
-                    <Form.Control
-                        className={'form-control'}
-                        type={'number'}
-                        value={lng ? lng : ''}
-                        onChange={e => setLng(parseFloat((e.target as HTMLInputElement).value))}
-                        onKeyDown={e => e.key === 'Enter' ? createHthTerritoriesHandler() : null }
-                    />
-                </FloatingLabel>
-
-                <button
-                    className={'btn btn-general-blue d-block w-100 mt-3'}
-                    style={{ fontWeight: 'bolder', height: '50px' }}
-                    onClick={createHthTerritoriesHandler}
-                    disabled={!numberOfTerritories || !Number.isInteger(numberOfTerritories) || numberOfTerritories > 200 || !lat || !lng}
-                >
-                    Aceptar
-                </button>
-
-                <button
-                    className={'btn btn-general-red d-block w-100 mt-3'}
-                    style={{ fontWeight: 'bolder', height: '50px' }}
-                    onClick={() => setShowCreateHthTerritories(false)}
-                >
-                    Cancelar
-                </button>
             </Container>
+
+            {!!numberOfTerritories && <>
+
+                <ConfigCreateHTHTerritoriesMap
+                    setMap={setMap}
+                />
+
+                <Container className={'maxw-400'}>
+                    {/* <FloatingLabel
+                        className={'mb-3 text-dark'}
+                        label={"Latitud"}
+                    >
+                        <Form.Control
+                            className={'form-control'}
+                            type={'number'}
+                            value={lat ? lat : ''}
+                            onChange={e => setLat(parseFloat((e.target as HTMLInputElement).value))}
+                        />
+                    </FloatingLabel>
+
+                    <FloatingLabel
+                        className={'mb-3 text-dark'}
+                        label={"Longitud"}
+                    >
+                        <Form.Control
+                            className={'form-control'}
+                            type={'number'}
+                            value={lng ? lng : ''}
+                            onChange={e => setLng(parseFloat((e.target as HTMLInputElement).value))}
+                            onKeyDown={e => e.key === 'Enter' ? createHthTerritoriesHandler() : null }
+                        />
+                    </FloatingLabel> */}
+
+                    <button
+                        className={'btn btn-general-blue d-block w-100 mt-5'}
+                        style={{ fontWeight: 'bolder', height: '50px' }}
+                        onClick={createHthTerritoriesHandler}
+                    >
+                        Aceptar
+                    </button>
+
+                    <button
+                        className={'btn btn-general-red d-block w-100 mt-3'}
+                        style={{ fontWeight: 'bolder', height: '50px' }}
+                        onClick={() => setShowCreateHthTerritories(false)}
+                    >
+                        Cancelar
+                    </button>
+                </Container>
+            </>}
         </Container>
     )
 }

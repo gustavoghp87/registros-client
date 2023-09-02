@@ -25,7 +25,7 @@ export const UsersNewUser: FC<propsType> = ({ setIsLoading, setShowNewUser }) =>
     const [radioValue, setRadioValue] = useState('1')
 
     return (
-        <Container className={'mt-4'} style={{ maxWidth: '400px' }}>
+        <Container className={'maxw-400 mt-4'}>
 
             <ButtonGroup className={'w-100 mt-3 mb-2'}>
                 {radios.map((radio, idx) => (
