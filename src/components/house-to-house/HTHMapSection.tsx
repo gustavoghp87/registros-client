@@ -27,9 +27,11 @@ export const HTHMapSection: FC<propsType> = ({
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
-    const [showNewFaceOptions, setShowNewFaceOptions] = useState(false)
-    const [isAddingPolygon, setIsAddingPolygon] = useState(false)
+    const [isAddingNewBlock, setIsAddingNewBlock] = useState(false)
+    const [isAddingNewFace, setIsAddingNewFace] = useState(false)
+    const [isCompletingNewBlock, setIsCompletingNewBlock] = useState(false)
     const [isEditingView, setIsEditingView] = useState(false)
+    const [showNewFaceOptions, setShowNewFaceOptions] = useState(false)
     
     const selectBlockAndFaceHandler = (selectedBlock?: typeBlock, selectedFace?: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
         if (selectedBlock === undefined && selectedFace === undefined)
@@ -53,21 +55,24 @@ export const HTHMapSection: FC<propsType> = ({
     }
 
     return (<>
-        <h1
-            className={`text-center mt-3 mb-4 ${isDarkMode ? 'text-white' : ''}`}
-            style={{ fontWeight: 'bolder' }}
-        >
-            SELECCIONAR CARA DE MANZANA
-        </h1>
+        {!isAddingNewBlock && !isAddingNewFace && !isEditingView &&
+            <h1 className={`text-center fw-bolder ${isDarkMode ? 'text-white' : ''} mt-3 mb-4`}>
+                SELECCIONAR CARA DE MANZANA
+            </h1>
+        }
 
-        {!!territoryHTH?.map && <>
+        {territoryHTH?.map && <>
             <HTHMap
                 currentFace={currentFace}
-                isAddingPolygon={isAddingPolygon}
+                isAddingNewBlock={isAddingNewBlock}
+                isAddingNewFace={isAddingNewFace}
+                isCompletingNewBlock={isCompletingNewBlock}
                 isEditingView={isEditingView}
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                 selectBlockAndFaceHandler={selectBlockAndFaceHandler}
-                setIsAddingPolygon={setIsAddingPolygon}
+                setIsAddingNewBlock={setIsAddingNewBlock}
+                setIsAddingNewFace={setIsAddingNewFace}
+                setIsCompletingNewBlock={setIsCompletingNewBlock}
                 setIsEditingView={setIsEditingView}
                 setShowNewFaceOptions={setShowNewFaceOptions}
                 setTerritoryHTH={setTerritoryHTH}
@@ -75,7 +80,7 @@ export const HTHMapSection: FC<propsType> = ({
                 territoryHTH={territoryHTH}
             />
             
-            {!showNewFaceOptions && !isEditingView && !isAddingPolygon && !!territoryHTH.map.polygons?.length &&
+            {!showNewFaceOptions && !isEditingView && !isAddingNewFace && !isAddingNewBlock && !!territoryHTH.map.polygons?.length &&
                 <HTHChangeFaceStateButtons
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryHTH.territoryNumber}
@@ -109,7 +114,7 @@ export const HTHMapSection: FC<propsType> = ({
                 }
             </h1>
             
-            {!!territoryHTH && !!currentFace && <>
+            {territoryHTH && currentFace && <>
                 <HTHSetIsFinishedButton
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}

@@ -1,20 +1,24 @@
-import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService } from '../../../services'
+import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService, getPolygonCoordinates } from '../../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { googleMapConfig } from '../../../app-config'
-import { hthMapStyle, HTHMarkerComponent, HTHNewFaceOptions, HTHPolygonComponent } from '../'
+import { hthMapStyle, HTHMarkerComponent, HTHNewBlockOptions, HTHNewFaceOptions, HTHPolygonComponent } from '..'
 import { Loading } from '../../commons'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { typeBlock, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState } from '../../../models'
+import { typeBlock, typeNewBlockPolygon, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 
 type propsType = {
     currentFace: typePolygon|null
-    isAddingPolygon: boolean
+    isAddingNewBlock: boolean
+    isAddingNewFace: boolean
+    isCompletingNewBlock: boolean
     isEditingView: boolean
     refreshHTHTerritoryHandler: () => void
     selectBlockAndFaceHandler: (block?: typeBlock, face?: typeFace, hthTerritory0?: typeHTHTerritory|null) => void
-    setIsAddingPolygon: Dispatch<SetStateAction<boolean>>
+    setIsAddingNewBlock: Dispatch<SetStateAction<boolean>>
+    setIsAddingNewFace: Dispatch<SetStateAction<boolean>>
+    setIsCompletingNewBlock: Dispatch<SetStateAction<boolean>>
     setIsEditingView: Dispatch<SetStateAction<boolean>>
     setShowNewFaceOptions: Dispatch<SetStateAction<boolean>>
     setTerritoryHTH: Dispatch<SetStateAction<typeHTHTerritory|null>>
@@ -23,18 +27,18 @@ type propsType = {
 }
 
 export const HTHMap: FC<propsType> = ({
-    currentFace, isAddingPolygon, isEditingView, refreshHTHTerritoryHandler,
-    selectBlockAndFaceHandler, setIsAddingPolygon, setIsEditingView, setShowNewFaceOptions,
-    setTerritoryHTH, showNewFaceOptions, territoryHTH
+    currentFace, isAddingNewFace, isCompletingNewBlock, isAddingNewBlock, isEditingView, refreshHTHTerritoryHandler,
+    selectBlockAndFaceHandler, setIsAddingNewBlock, setIsAddingNewFace, setIsCompletingNewBlock, setIsEditingView,
+    setShowNewFaceOptions, setTerritoryHTH, showNewFaceOptions, territoryHTH
 }) => {
     const { isMobile, user} = useSelector((state: typeRootState) => ({
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
     const { isLoaded, loadError } = useJsApiLoader(googleMapConfig)
-    const dispatch = useDispatch()
-    const [map, setMap] = useState<google.maps.Map>()
+    const [map, setMap] = useState<google.maps.Map|null>(null)
     const [runIntervals, setRunIntervals] = useState(false)
+    const dispatch = useDispatch()
 
     const onCenterChangedHandler = (): void => {
         const lat: number = map?.getCenter()?.lat() ?? 0
@@ -77,8 +81,7 @@ export const HTHMap: FC<propsType> = ({
                 x.coordsPoint3.lat !== unP.coordsPoint3.lat || x.coordsPoint3.lng !== unP.coordsPoint3.lng
             ) editedHTHPolygons.push(x)
         })
-        if (!editedHTHMap.centerCoords.lat || !editedHTHMap.centerCoords.lng || !editedHTHMap.markers || !editedHTHMap.polygons
-            || !editedHTHMap.zoom) {
+        if (!editedHTHMap.centerCoords.lat || !editedHTHMap.centerCoords.lng || !editedHTHMap.markers || !editedHTHMap.polygons || !editedHTHMap.zoom) {
             dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
                 title: 'Algo falló en el mapa',
@@ -98,7 +101,7 @@ export const HTHMap: FC<propsType> = ({
     }
 
     const initFaceAddingHandler = (selectedBlock: typeBlock|null = null, selectedFace: typeFace|null = null, selectedStreet: string|null = null): void => {
-        setIsAddingPolygon(true)
+        setIsAddingNewFace(true)
         setShowNewFaceOptions(false)
         const currentPolygon: typePolygon|undefined = territoryHTH.map.polygons.find(x => x.id === 0)
         if (!selectedBlock || !selectedFace || !selectedStreet || currentPolygon) return
@@ -132,6 +135,63 @@ export const HTHMap: FC<propsType> = ({
         setTerritoryHTH(currentTerritory)
     }
 
+    const initBlockAddingHandler = (block: typeBlock, numberOfFaces = 4): void => {
+        setShowNewFaceOptions(false)
+        const newBlockPolygon: typeNewBlockPolygon = {
+            block,
+            coordinates: [
+                {
+                    lat: territoryHTH.map.centerCoords.lat + 0.001,
+                    lng: territoryHTH.map.centerCoords.lng - 0.001
+                },
+                {
+                    lat: territoryHTH.map.centerCoords.lat + 0.001,
+                    lng: territoryHTH.map.centerCoords.lng + 0.001
+                },
+                {
+                    lat: territoryHTH.map.centerCoords.lat - 0.001,
+                    lng: territoryHTH.map.centerCoords.lng + 0.001
+                },
+                {
+                    lat: territoryHTH.map.centerCoords.lat - 0.001,
+                    lng: territoryHTH.map.centerCoords.lng - 0.001
+                }
+            ],
+            polygons: []
+        }
+        const currentTerritory: typeHTHTerritory = { ...territoryHTH, map: { ...territoryHTH.map, newBlockPolygon } }
+        setTerritoryHTH(currentTerritory)
+    }
+
+    const acceptBlockHandler = () => {
+        const newBlockPolygon = { ...territoryHTH.map.newBlockPolygon }
+        if (!newBlockPolygon || !newBlockPolygon.coordinates) return
+        const newPolygons: typePolygon[] = []
+        const id = Date.now()
+        newBlockPolygon.coordinates.forEach((x, i) => {
+            if (!newBlockPolygon || !newBlockPolygon.block) return
+            const newPolygon: typePolygon = {
+                block: newBlockPolygon.block,
+                color: i === 0 ? 'yellow' : i === 1 ? 'green' : i === 2 ? 'red' : 'blue',
+                completionData: { completionDates: [], isFinished: false, reopeningDates: [] },
+                coordsPoint1: getPolygonCoordinates(1, i, newBlockPolygon.coordinates),
+                coordsPoint2: getPolygonCoordinates(2, i, newBlockPolygon.coordinates),
+                coordsPoint3: getPolygonCoordinates(3, i, newBlockPolygon.coordinates),
+                doNotCalls: [],
+                face: 'x',
+                id: id + i,
+                observations: [],
+                street: '',
+                buildings: []
+            }
+            newPolygons.push(newPolygon)
+        })
+        const currentTerritory = { ...territoryHTH, map: { ...territoryHTH.map, polygons: [...territoryHTH.map.polygons, ...newPolygons] } }
+        currentTerritory.map.newBlockPolygon = undefined
+        setTerritoryHTH(currentTerritory)
+        setIsCompletingNewBlock(true)
+    }
+
     const addFaceHandler = (): void => {
         const hthMapEdited: typeHTHMap = territoryHTH.map
         if (!hthMapEdited.polygons.length) return
@@ -148,38 +208,6 @@ export const HTHMap: FC<propsType> = ({
         })
     }
 
-    // const intervalExecution = (googlePolygon0: google.maps.Polygon, polygon: typePolygon) => {
-    //     const path: any[] = googlePolygon0.getPath().getArray()
-    //     const p1y: number = path[0].lat()
-    //     const p1x: number = path[0].lng()
-    //     const p2y: number = path[1].lat()
-    //     const p2x: number = path[1].lng()
-    //     const p3y: number = path[2].lat()
-    //     const p3x: number = path[2].lng()
-    //     if (polygon
-    //         && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
-    //         && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
-    //         && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
-    //     ) return
-    //     const modifiedPolygon: typePolygon = {
-    //         block: polygon.block,
-    //         completionData: polygon.completionData,
-    //         coordsPoint1: { lat: p1y, lng: p1x },
-    //         coordsPoint2: { lat: p2y, lng: p2x },
-    //         coordsPoint3: { lat: p3y, lng: p3x },
-    //         doNotCalls: polygon.doNotCalls,
-    //         face: polygon.face,
-    //         id: polygon.id,
-    //         observations: polygon.observations,
-    //         street: polygon.street
-    //     }
-    //     const currentTerritoryHTH: typeHTHTerritory = territoryHTH
-    //     currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
-    //         polygon0.id === polygon.id ? modifiedPolygon : polygon0
-    //     )
-    //     setTerritoryHTH(currentTerritoryHTH)
-    // }
-    
     const cancelChangesHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
@@ -191,10 +219,12 @@ export const HTHMap: FC<propsType> = ({
 
     const reloadHandler = (): void => {
         refreshHTHTerritoryHandler()
-        setIsAddingPolygon(false)
+        setIsAddingNewFace(false)
+        setIsAddingNewBlock(false)
         setIsEditingView(false)
         setRunIntervals(false)
         setShowNewFaceOptions(false)
+        setIsCompletingNewBlock(false)
     }
 
     if (!isLoaded) return <Loading />
@@ -231,22 +261,46 @@ export const HTHMap: FC<propsType> = ({
                 onZoomChanged={() => onZoomChangedHandler()}
             >
                 {/* Polygons */}
-                {territoryHTH.map.polygons && !!territoryHTH.map.polygons.length &&
-                    territoryHTH.map.polygons.map((polygon: typePolygon) => (
-                        <div key={polygon.id}>
-                            <HTHPolygonComponent
-                                currentFace={currentFace}
-                                // intervalExecution={intervalExecution}
-                                isAddingPolygon={isAddingPolygon}
-                                isEditingView={isEditingView}
-                                polygon={polygon}
-                                runIntervals={runIntervals}
-                                selectBlockAndFaceHandler={selectBlockAndFaceHandler}
-                                setTerritoryHTH={setTerritoryHTH}
-                                territoryHTH={territoryHTH}
-                            />
-                        </div>
-                    ))
+                {!!territoryHTH.map.polygons?.length && territoryHTH.map.polygons.map(polygon =>
+                    <HTHPolygonComponent key={polygon.id}
+                        currentFace={currentFace}
+                        isAddingPolygon={isAddingNewFace}
+                        isEditingView={isEditingView}
+                        polygon={polygon}
+                        runIntervals={runIntervals}
+                        selectBlockAndFaceHandler={selectBlockAndFaceHandler}
+                        setTerritoryHTH={setTerritoryHTH}
+                        territoryHTH={territoryHTH}
+                    />
+                )}
+                {/* New block */}
+                {territoryHTH.map.newBlockPolygon &&
+                    <HTHPolygonComponent
+                        currentFace={null}
+                        isAddingPolygon={true}
+                        isEditingView={false}
+                        polygon={{
+                            block: territoryHTH.map.newBlockPolygon.block,
+                            completionData: {
+                                completionDates: [],
+                                isFinished: false,
+                                reopeningDates: []
+                            },
+                            coordsPoint1: territoryHTH.map.newBlockPolygon.coordinates[0],
+                            coordsPoint2: territoryHTH.map.newBlockPolygon.coordinates[1],
+                            coordsPoint3: territoryHTH.map.newBlockPolygon.coordinates[2],
+                            coordsPoint4: territoryHTH.map.newBlockPolygon.coordinates[3],
+                            doNotCalls: [],
+                            face: 'x',
+                            id: 0,
+                            observations: [],
+                            street: ''
+                        }}
+                        runIntervals={runIntervals}
+                        selectBlockAndFaceHandler={selectBlockAndFaceHandler}
+                        setTerritoryHTH={setTerritoryHTH}
+                        territoryHTH={territoryHTH}
+                    />
                 }
                 {/* Markers */}
                 {territoryHTH.map.markers && !!territoryHTH.map.markers.length &&
@@ -261,59 +315,80 @@ export const HTHMap: FC<propsType> = ({
             </GoogleMap>
         </div>
         
-        {(isAddingPolygon || showNewFaceOptions) &&
+        {(isAddingNewFace || showNewFaceOptions) &&
             <HTHNewFaceOptions
                 initFaceAddingHandler={initFaceAddingHandler}
                 territoryHTH={territoryHTH}
-                show={isAddingPolygon && showNewFaceOptions}
+                show={isAddingNewFace && showNewFaceOptions}
+            />
+        }
+
+        {isAddingNewBlock &&
+            <HTHNewBlockOptions
+                initBlockAddingHandler={initBlockAddingHandler}
+                isCompletingNewBlock={isCompletingNewBlock}
+                setRunIntervals={setRunIntervals}
+                setTerritoryHTH={setTerritoryHTH}
+                territoryHTH={territoryHTH}
             />
         }
 
         {user.isAdmin && !isMobile &&
             <div className={'d-flex justify-content-center'}>
-                {!isAddingPolygon &&
-                    <button className={`mt-4 me-4 btn ${isEditingView ? 'btn-danger btn-size12' : 'btn-general-blue'}`}
+
+                {!isAddingNewFace && !isEditingView && !isAddingNewBlock && <>
+                    <button className={'btn btn-general-blue mt-4 me-4'}
                         onClick={() => {
-                            if (isEditingView) {
-                                initMapViewEditingHandler()
-                            } else {
-                                selectBlockAndFaceHandler()
-                                setIsEditingView(true)
-                                setRunIntervals(true)
-                            }
+                            selectBlockAndFaceHandler()
+                            setIsEditingView(true)
+                            setRunIntervals(true)
                         }}
                     >
-                        {isEditingView ? 'Guardar Cambios' : 'Editar Mapa'}
+                        Editar Mapa
                     </button>
-                }
-                {!isEditingView && !showNewFaceOptions &&
-                    <button className={`mt-4 btn ${isAddingPolygon ? 'btn-danger btn-size12' : 'btn-general-blue'}`}
+                    <button className={'btn btn-general-blue mt-4 me-4'}
+                        onClick={() => setIsAddingNewBlock(true)}
+                    >
+                        Agregar Manzana
+                    </button>
+                    <button className={'btn btn-general-blue mt-4'}
                         onClick={() => {
-                            if (isAddingPolygon) {
-                                addFaceHandler()
-                            } else {
-                                selectBlockAndFaceHandler()
-                                setIsAddingPolygon(true)
-                                setRunIntervals(true)
-                                setShowNewFaceOptions(true)
-                            }
+                            selectBlockAndFaceHandler()
+                            setIsAddingNewFace(true)
+                            setRunIntervals(true)
+                            setShowNewFaceOptions(true)
                         }}
                     >
-                        {isAddingPolygon ? 'Guardar Cambios' : 'Agregar Cara'}
+                        Agregar Cara
+                    </button>
+                </>}
+
+                {isAddingNewFace && !showNewFaceOptions &&
+                    <button className={'btn btn-danger btn-size12 mt-4'} onClick={() => addFaceHandler()}>
+                        Guardar Cambios
                     </button>
                 }
-                {(isEditingView || isAddingPolygon) && <>
-                    <button className={`btn btn-secondary btn-size12 mt-4 ${showNewFaceOptions ? '' : 'ms-4'}`}
+
+                {isAddingNewBlock && territoryHTH.map.newBlockPolygon &&
+                    <button className={'btn btn-general-blue mt-4'} onClick={() => acceptBlockHandler()}>
+                        Aceptar Manzana Nueva
+                    </button>
+                }
+
+                {isEditingView &&
+                    <button className={'btn btn-danger btn-size12 mt-4 me-4'} onClick={() => initMapViewEditingHandler()}>
+                        Guardar Cambios
+                    </button>
+                }
+
+                {(isEditingView || isAddingNewFace || isAddingNewBlock) &&
+                    <button className={`btn btn-secondary btn-size12 mt-4 ${showNewFaceOptions ? '' : 'mx-4'}`}
                         onClick={() => cancelChangesHandler()}
                     >
                         Cancelar Cambios
                     </button>
-                </>}
+                }
             </div>
-        }
-
-        {!isLoaded &&
-            <Loading />
         }
 
         {loadError &&

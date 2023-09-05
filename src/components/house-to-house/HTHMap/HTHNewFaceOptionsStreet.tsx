@@ -16,7 +16,7 @@ export const HTHNewFaceOptionsStreet = ({ setSelectedStreet }: propsType) => {
 
     return (
         <Container style={{ width: '300px', marginTop: '50px' }}>
-            <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
+            <h3 className={`text-center mb-3 ${isDarkMode ? 'text-white' : ''}`}>
                 Buscar una dirección de donde obtener el nombre de la calle:
             </h3>
             {/* <FloatingLabel
@@ -37,11 +37,11 @@ export const HTHNewFaceOptionsStreet = ({ setSelectedStreet }: propsType) => {
                         <Autocomplete
                             onLoad={(autocomplete) => {
                                 inputRef.current = autocomplete
-                                console.log(autocomplete);
+                                // console.log(autocomplete);
                                 autocomplete.setBounds(placesBounds)
-                                autocomplete.addListener('place_changed', () =>
-                                    console.log(autocomplete.getPlace())
-                                )
+                                // autocomplete.addListener('place_changed', () =>
+                                //     console.log(autocomplete.getPlace())
+                                // )
                             }}
                             onPlaceChanged={() => {
                                 const adrAddress = inputRef.current?.getPlace().adr_address

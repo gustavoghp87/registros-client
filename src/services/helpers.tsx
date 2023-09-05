@@ -1,4 +1,4 @@
-import { typeBlock, typeHousehold, typeHTHBuilding, typeHTHTerritory } from '../models'
+import { typeBlock, typeCoords, typeHousehold, typeHTHBuilding, typeHTHTerritory } from '../models'
 
 type typeHeaders = {
     'Accept': string
@@ -186,7 +186,7 @@ export const getStreetsByHTHTerritory = (hthTerritory: typeHTHTerritory): string
     if (!hthTerritory || !hthTerritory.map || !hthTerritory.map.polygons) return []
     const streets: string[] = []
     hthTerritory.map.polygons.forEach(x => {
-        if (!streets.includes(x.street)) streets.push(x.street)
+        if (x.street && !streets.includes(x.street)) streets.push(x.street)
     })
     return streets
 }
@@ -252,3 +252,71 @@ export const generateRandomEmail = () => {
 }
 
 export const goToTop = () => window.scrollTo(0, 0);
+
+const getCenter = (coordinates: typeCoords[]): typeCoords => {
+    let sumLat = 0;
+    let sumLng = 0;
+    for (const coordinate of coordinates) {
+        sumLat += coordinate.lat
+        sumLng += coordinate.lng
+    }
+    const numberOfCoordinates = coordinates.length
+    const lat = sumLat / numberOfCoordinates
+    const lng = sumLng / numberOfCoordinates
+    return { lat, lng }
+}
+
+export const getPolygonCoordinates = (numberOfCoordinate: number, numberOfPolygon: number, blockCoordinates?: typeCoords[]) => {
+    const coordinate: typeCoords = {
+        lat: 0,
+        lng: 0
+    }
+    if (!blockCoordinates) return coordinate
+    const center: typeCoords = getCenter(blockCoordinates)
+    if (numberOfPolygon === 1) {
+        if (numberOfCoordinate === 1) {
+            coordinate.lat = blockCoordinates[0].lat
+            coordinate.lng = blockCoordinates[0].lng
+        } else if (numberOfCoordinate === 2) {
+            coordinate.lat = blockCoordinates[1].lat
+            coordinate.lng = blockCoordinates[1].lng
+        } else {
+            coordinate.lat = center.lat
+            coordinate.lng = center.lng
+        }
+    } else if (numberOfPolygon === 2) {
+        if (numberOfCoordinate === 1) {
+            coordinate.lat = blockCoordinates[1].lat
+            coordinate.lng = blockCoordinates[1].lng
+        } else if (numberOfCoordinate === 2) {
+            coordinate.lat = blockCoordinates[2].lat
+            coordinate.lng = blockCoordinates[2].lng
+        } else {
+            coordinate.lat = center.lat
+            coordinate.lng = center.lng
+        }
+    } else if (numberOfPolygon === 3) {
+        if (numberOfCoordinate === 1) {
+            coordinate.lat = blockCoordinates[2].lat
+            coordinate.lng = blockCoordinates[2].lng
+        } else if (numberOfCoordinate === 2) {
+            coordinate.lat = blockCoordinates[3].lat
+            coordinate.lng = blockCoordinates[3].lng
+        } else {
+            coordinate.lat = center.lat
+            coordinate.lng = center.lng
+        }
+    } else {
+        if (numberOfCoordinate === 1) {
+            coordinate.lat = blockCoordinates[3].lat
+            coordinate.lng = blockCoordinates[3].lng
+        } else if (numberOfCoordinate === 2) {
+            coordinate.lat = blockCoordinates[0].lat
+            coordinate.lng = blockCoordinates[0].lng
+        } else {
+            coordinate.lat = center.lat
+            coordinate.lng = center.lng
+        }
+    }
+    return coordinate
+}

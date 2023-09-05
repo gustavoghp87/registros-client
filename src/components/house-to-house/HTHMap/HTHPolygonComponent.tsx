@@ -23,7 +23,7 @@ export const HTHPolygonComponent: FC<propsType> = ({
     selectBlockAndFaceHandler, setTerritoryHTH, territoryHTH
 }) => {
     const ref = useRef<google.maps.Polygon>()
-    const [polygonColor, setPolygonColor] = useState(generalBlue)
+    const [polygonColor, setPolygonColor] = useState(polygon.color ?? generalBlue)
     const [showInfoWindow, setShowInfoWindow] = useState(false)
 
     const setIsFinishedHandler = (): void => {
@@ -37,7 +37,8 @@ export const HTHPolygonComponent: FC<propsType> = ({
     }, [polygon])
 
     useEffect(() => {
-        setPolygonColor(polygon.completionData?.isFinished ? 'black' : generalBlue)
+        setPolygonColor(polygon.completionData?.isFinished ? 'black' : polygon.color ?? generalBlue)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentFace, polygon.completionData, polygon.id])
 
     useEffect(() => {
@@ -50,10 +51,20 @@ export const HTHPolygonComponent: FC<propsType> = ({
             const p2x: number = path[1].lng()
             const p3y: number = path[2].lat()
             const p3x: number = path[2].lng()
-            if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
-                && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
-                && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
-            ) return
+            const p4y: number = path[3]?.lat() || 0
+            const p4x: number = path[3]?.lng() || 0
+            if (p4y && p4x) {
+                if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
+                    && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
+                    && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
+                    && p4y === polygon.coordsPoint4?.lat && p4x === polygon.coordsPoint4?.lng
+                ) return
+            } else {
+                if (polygon && p1y === polygon.coordsPoint1.lat && p1x === polygon.coordsPoint1.lng
+                    && p2y === polygon.coordsPoint2.lat && p2x === polygon.coordsPoint2.lng
+                    && p3y === polygon.coordsPoint3.lat && p3x === polygon.coordsPoint3.lng
+                ) return
+            }
             const modifiedPolygon: typePolygon = {
                 block: polygon.block,
                 completionData: polygon.completionData,
@@ -66,10 +77,20 @@ export const HTHPolygonComponent: FC<propsType> = ({
                 observations: polygon.observations,
                 street: polygon.street
             }
-            const currentTerritoryHTH: typeHTHTerritory = territoryHTH
-            currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map((polygon0: typePolygon) =>
-                polygon0.id === polygon.id ? modifiedPolygon : polygon0
-            )
+            const currentTerritoryHTH: typeHTHTerritory = { ...territoryHTH }
+            if (currentTerritoryHTH.map.newBlockPolygon && p4x && p4y) {
+                modifiedPolygon.coordsPoint4 = { lat: p4y, lng: p4x }
+                currentTerritoryHTH.map.newBlockPolygon.coordinates = [
+                    { lat: p1y, lng: p1x },
+                    { lat: p2y, lng: p2x },
+                    { lat: p3y, lng: p3x },
+                    { lat: p4y, lng: p4x }
+                ]
+            } else {
+                currentTerritoryHTH.map.polygons = currentTerritoryHTH.map.polygons.map(polygon0 =>
+                    polygon0.id === polygon.id ? modifiedPolygon : polygon0
+                )
+            }
             setTerritoryHTH(currentTerritoryHTH)
         }, 1000)
         if (!runIntervals) clearInterval(interval0)
@@ -86,15 +107,15 @@ export const HTHPolygonComponent: FC<propsType> = ({
                     selectBlockAndFaceHandler(polygon.block, polygon.face)
                 }
             }}
-            onLoad={(googlePolygon0: google.maps.Polygon) => ref.current = googlePolygon0}
+            onLoad={googlePolygon => ref.current = googlePolygon}
             onMouseOver={() => {
                 if (isEditingView || isAddingPolygon || !ref.current || currentFace) return
-                setPolygonColor(generalRed)
+                setPolygonColor(polygon.color ?? generalRed)
                 setShowInfoWindow(true)
             }}
             onMouseOut={() => {
                 if (isEditingView || isAddingPolygon || !ref.current) return
-                setPolygonColor(polygon.completionData?.isFinished ? 'black' : generalBlue)
+                setPolygonColor(polygon.completionData?.isFinished ? 'black' : polygon.color ?? generalBlue)
                 setShowInfoWindow(false)
             }}
             options={{
@@ -109,7 +130,8 @@ export const HTHPolygonComponent: FC<propsType> = ({
             path={[
                 polygon.coordsPoint1,
                 polygon.coordsPoint2,
-                polygon.coordsPoint3
+                polygon.coordsPoint3,
+                ...(polygon.coordsPoint4 ? [polygon.coordsPoint4] : [])
             ]}
         />
 

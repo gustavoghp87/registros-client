@@ -14,6 +14,7 @@ type propsType = {
 }
 
 export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }: propsType) => {
+    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
     const [blocks, setBlocks] = useState<typeBlock[]>(hthConfigOptions.blockOptions)
     const [faces, setFaces] = useState<typeFace[]>(hthConfigOptions.facesOptions)
     const [selectedBlock, setSelectedBlock] = useState<typeBlock>()
@@ -24,7 +25,6 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
     const [showStreetMenu, setShowStreetMenu] = useState(false)
     const [streets, setStreets] = useState<string[]>()
     const dispatch = useDispatch()
-    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
 
     const selectBlockHandler = (block: typeBlock): void => {
         setSelectedBlock(block)
@@ -76,6 +76,7 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
             message: `Se va a agregar la Cara ${selectedFace} en la calle ${selectedStreet} de la Manzana ${selectedBlock} del territorio ${territoryHTH.territoryNumber}. Si hay un error, cancelar abajo.`
         }))
         initFaceAddingHandler(selectedBlock, selectedFace, selectedStreet)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, selectedBlock, selectedFace, selectedStreet, territoryHTH.territoryNumber])
 
     return (<>
@@ -89,11 +90,11 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
                         </Dropdown.Toggle>
                         <Dropdown.Menu show={showBlockMenu}>
                             <Dropdown.Header> Seleccionar la Manzana </Dropdown.Header>
-                            {blocks && !!blocks.length && blocks.map((block: typeBlock) => (
+                            {!!blocks?.length && blocks.map(block =>
                                 <Dropdown.Item key={block} eventKey={block} onClick={() => selectBlockHandler(block)}>
                                     {`Manzana ${block}`}
                                 </Dropdown.Item>
-                            ))}
+                            )}
                         </Dropdown.Menu>
                     </Dropdown>
                 }
@@ -104,11 +105,11 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
                         </Dropdown.Toggle>
                         <Dropdown.Menu show={showFaceMenu}>
                             <Dropdown.Header> Seleccionar la Cara </Dropdown.Header>
-                            {faces && !!faces.length && faces.map((face: typeFace) => (
+                            {!!faces?.length && faces.map(face =>
                                 <Dropdown.Item key={face} eventKey={face} onClick={() => selectFaceHandler(face)}>
                                     Cara {face}
                                 </Dropdown.Item>
-                            ))}
+                            )}
                         </Dropdown.Menu>
                     </Dropdown>
                 }
@@ -119,11 +120,11 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
                         </Dropdown.Toggle>
                         <Dropdown.Menu show={showStreetMenu}>
                             <Dropdown.Header> Seleccionar la calle </Dropdown.Header>
-                            {streets && !!streets.length && streets.map((street: string) => (
+                            {!!streets?.length && streets.map(street =>
                                 <Dropdown.Item key={street} eventKey={street} onClick={() => setSelectedStreet(street)}>
                                     Calle {street}
                                 </Dropdown.Item>
-                            ))}
+                            )}
                             <Dropdown.Divider />
                             <Dropdown.Item key={'other'} eventKey={'other'} onClick={() => setSelectedStreet('other')}>
                                 Otra...

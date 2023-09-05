@@ -2,4 +2,4 @@ export type typeTerritoryNumber = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' 
 
 export type typeBlock = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 
-export type typeFace = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
+export type typeFace = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'x'
