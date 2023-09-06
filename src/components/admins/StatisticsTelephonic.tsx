@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-export const Statistics = () => {
+export const StatisticsTelephonic = () => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile

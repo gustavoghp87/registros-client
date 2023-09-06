@@ -1,17 +1,18 @@
-import { Config, Logs, Statistics, Users } from '../admins'
+import { Config, Logs, StatisticsHTH, StatisticsTelephonic, Users } from '../admins'
 import { H2, Hr } from '../commons'
 import { hideLoadingModalReducer, showLoadingModalReducer } from '../../store'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { useState, useEffect } from 'react'
 
-type typeAdminsSections = '' | 'users' | 'statistics' | 'logs' | 'campaign' | 'config'
+type typeAdminsSections = '' | 'campaign' | 'config' | 'logs' | 'statistics-hth' | 'statistics-telephonic' | 'users'
 
 const styles = { width: '350px' }
 
 const getSection = (): typeAdminsSections => {
     const relativePath = window.location.pathname
-    if (relativePath === '/admins/estadisticas-telefonica') return 'statistics'
+    if (relativePath === '/admins/estadisticas-telefonica') return 'statistics-telephonic'
+    if (relativePath === '/admins/estadisticas-casa-en-casa') return 'statistics-hth'
     if (relativePath === '/admins/usuarios') return 'users'
     if (relativePath === '/admins/logs') return 'logs'
     if (relativePath === '/admins/config') return 'config'
@@ -42,11 +43,18 @@ export const AdminsPage = () => {
         <>
             <H2 title={"ADMINISTRADORES"} mb={'50px'} />
 
-            <button className={getClasses('statistics')}
+            <button className={getClasses('statistics-hth')}
+                onClick={() => navigate('/admins/estadisticas-casa-en-casa')}
+                style={styles}
+            >
+                {currentSection === 'statistics-hth' ? "Estadísticas de Casa en Casa" : "Ir a Estadísticas de Casa en Casa"}
+            </button>
+
+            <button className={getClasses('statistics-telephonic')}
                 onClick={() => navigate('/admins/estadisticas-telefonica')}
                 style={styles}
             >
-                {currentSection === 'statistics' ? "Estadísticas de Telefónica" : "Ir a Estadísticas de Telefónica"}
+                {currentSection === 'statistics-telephonic' ? "Estadísticas de Telefónica" : "Ir a Estadísticas de Telefónica"}
             </button>
 
             <button className={getClasses('users')}
@@ -80,9 +88,12 @@ export const AdminsPage = () => {
 
             <Hr classes='mt-5' />
 
+            {currentSection === 'statistics-hth' &&
+                <StatisticsHTH />
+            }
 
-            {currentSection === 'statistics' &&
-                <Statistics />
+            {currentSection === 'statistics-telephonic' &&
+                <StatisticsTelephonic />
             }
 
             {currentSection === 'users' &&
