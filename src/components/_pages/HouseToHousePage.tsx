@@ -1,6 +1,6 @@
 import { getHTHTerritoryService, goToTop } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
-import { HTHAllBuildings, HTHMapSection } from '../house-to-house'
+import { HTHAllBuildings, HTHDoNotTouchs, HTHMapSection } from '../house-to-house'
 import { hthChangeString } from '../../constants'
 import { io, Socket } from 'socket.io-client'
 import { SERVER } from '../../app-config'
@@ -105,6 +105,7 @@ export const HouseToHousePage = () => {
             console.log("Refrescado (1) por uso del usuario", userEmail)
         })
         return () => { socket.off(hthChangeString) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [territoryNumber, user.congregation, user.email])
 
     return (<>
@@ -113,7 +114,7 @@ export const HouseToHousePage = () => {
 
         {isLoading && <Loading mt={'60px'} />}
 
-        {!!territoryHTH && (!socket || !socket.connected) &&
+        {territoryHTH && (!socket || !socket.connected) &&
             <div style={{ marginTop: '30px', position: 'fixed', zIndex: 4 }}>
                 <WarningToaster
                     bodyText={"Refrescar la página y verificar que hay internet"}
@@ -121,8 +122,6 @@ export const HouseToHousePage = () => {
                 />
             </div>
         }
-
-        {/* <MapSection /> */}
 
         {(user.isAdmin || !!user.hthAssignments?.includes(parseInt(territoryNumber))) && <>
             <HTHMapSection
@@ -135,9 +134,13 @@ export const HouseToHousePage = () => {
             />
         </>}
 
-        {/* <BuildingSearcherSection /> */}
+        {territoryHTH &&
+            <HTHDoNotTouchs
+                hthTerritory={territoryHTH}
+            />
+        }
 
-        {!!territoryHTH &&
+        {territoryHTH &&
             <HTHAllBuildings
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                 territoryHTH={territoryHTH}

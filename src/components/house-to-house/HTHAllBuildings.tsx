@@ -116,7 +116,7 @@ export const HTHAllBuildings: FC<propsType> = ({
                 </>
                 :
                 <h4 className={`text-center mt-4 ${isDarkMode ? 'text-white' : ''}`}>
-                    No hay edificios cargados en este territorio
+                    No hay Edificios cargados en este Territorio
                 </h4>
             }
         </>

@@ -1,10 +1,10 @@
-import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService, getMiddlePointOfCoordinates, getPolygonCoordinates, getStreetFromCoordinatesService } from '../../../services'
+import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService, getMiddlePointOfCoordinates, getPolygonCoordinates, getStreetFromCoordinatesService, sortCoordinatesClockwise } from '../../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { googleMapConfig } from '../../../app-config'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../../store'
 import { hthMapStyle, HTHMarkerComponent, HTHNewBlockOptions, HTHNewFaceOptions, HTHPolygonComponent } from '..'
 import { Loading } from '../../commons'
-import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeBlock, typeNewBlockPolygon, typeFace, typeHTHMap, typeHTHTerritory, typeMarker, typePolygon, typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -173,14 +173,19 @@ export const HTHMap: FC<propsType> = ({
                 mode: 'confirm',
                 title: "Confirmar",
                 message: `Se van a agregar estas 4 caras correspondientes a la manzana ${newBlockPolygon.block}`,
-                execution: () => {
+                execution: async () => {
                     if (!newBlockPolygon?.coordinates) return
                     let success = true
-                    newBlockPolygon.coordinates.forEach(async (x, i) => {
-                        if (!newBlockPolygon?.block || !newBlockPolygon?.coordinates) return
+                    const sortedCoordinates = sortCoordinatesClockwise(newBlockPolygon.coordinates)
+                    dispatch(showLoadingModalReducer())
+                    for (let i = 0; i < 4; i++) {
+                        if (!newBlockPolygon?.block || !newBlockPolygon?.coordinates) {
+                            dispatch(hideLoadingModalReducer())
+                            return
+                        }
                         const middlePointCoordinates = getMiddlePointOfCoordinates(
-                            newBlockPolygon.coordinates[i],
-                            i < 3 ? newBlockPolygon.coordinates[i+1] : newBlockPolygon.coordinates[0]
+                            sortedCoordinates[i],
+                            i < 3 ? sortedCoordinates[i+1] : sortedCoordinates[0]
                         )
                         const street = await getStreetFromCoordinatesService(middlePointCoordinates)
                         if (!street) {
@@ -190,16 +195,17 @@ export const HTHMap: FC<propsType> = ({
                                 message: "No se pudo conseguir alguna de las calles. Ubicar bien los puntos en las esquinas de la manzana. Si el problema persiste, usar la otra opción para cargar la manzana que permite elegir los nombres de calle manualmente.",
                                 animation: 2
                             }))
+                            dispatch(hideLoadingModalReducer())
                             return
                         }
                         const newPolygon: typePolygon = {
                             block: newBlockPolygon.block,
                             completionData: { completionDates: [], isFinished: false, reopeningDates: [] },
-                            coordsPoint1: getPolygonCoordinates(1, i, newBlockPolygon.coordinates),
-                            coordsPoint2: getPolygonCoordinates(2, i, newBlockPolygon.coordinates),
-                            coordsPoint3: getPolygonCoordinates(3, i, newBlockPolygon.coordinates),
+                            coordsPoint1: getPolygonCoordinates(1, i + 1, sortedCoordinates),
+                            coordsPoint2: getPolygonCoordinates(2, i + 1, sortedCoordinates),
+                            coordsPoint3: getPolygonCoordinates(3, i + 1, sortedCoordinates),
                             doNotCalls: [],
-                            face: i === 0 ? 'D' : i === 1 ? 'A' : i === 2 ? 'B' : 'C',
+                            face: i === 0 ? 'B' : i === 1 ? 'C' : i === 2 ? 'D' : 'A',
                             id: id + i,
                             observations: [],
                             street,
@@ -207,19 +213,18 @@ export const HTHMap: FC<propsType> = ({
                         }
                         const success1 = await addHTHPolygonFaceService(territoryHTH.territoryNumber, newPolygon)
                         if (!success1) success = false
-                    })
-                    setTimeout(() => {
-                        if (!success) {
-                            dispatch(setValuesAndOpenAlertModalReducer({
-                                mode: 'alert',
-                                title: "Algo falló",
-                                message: "",
-                                animation: 2
-                            }))
-                            return
-                        }
-                        window.location.reload()
-                    }, 500)
+                    }
+                    if (!success) {
+                        dispatch(hideLoadingModalReducer())
+                        dispatch(setValuesAndOpenAlertModalReducer({
+                            mode: 'alert',
+                            title: "Algo falló",
+                            message: "",
+                            animation: 2
+                        }))
+                        return
+                    }
+                    window.location.reload()
                 }
             }))
         } else {

@@ -273,6 +273,7 @@ export const getPolygonCoordinates = (numberOfCoordinate: number, numberOfPolygo
     }
     if (!blockCoordinates) return coordinate
     const center: typeCoords = getCenter(blockCoordinates)
+    if (numberOfCoordinate === 3) return center
     if (numberOfPolygon === 1) {
         if (numberOfCoordinate === 1) {
             coordinate.lat = blockCoordinates[0].lat
@@ -280,9 +281,6 @@ export const getPolygonCoordinates = (numberOfCoordinate: number, numberOfPolygo
         } else if (numberOfCoordinate === 2) {
             coordinate.lat = blockCoordinates[1].lat
             coordinate.lng = blockCoordinates[1].lng
-        } else {
-            coordinate.lat = center.lat
-            coordinate.lng = center.lng
         }
     } else if (numberOfPolygon === 2) {
         if (numberOfCoordinate === 1) {
@@ -291,9 +289,6 @@ export const getPolygonCoordinates = (numberOfCoordinate: number, numberOfPolygo
         } else if (numberOfCoordinate === 2) {
             coordinate.lat = blockCoordinates[2].lat
             coordinate.lng = blockCoordinates[2].lng
-        } else {
-            coordinate.lat = center.lat
-            coordinate.lng = center.lng
         }
     } else if (numberOfPolygon === 3) {
         if (numberOfCoordinate === 1) {
@@ -302,20 +297,14 @@ export const getPolygonCoordinates = (numberOfCoordinate: number, numberOfPolygo
         } else if (numberOfCoordinate === 2) {
             coordinate.lat = blockCoordinates[3].lat
             coordinate.lng = blockCoordinates[3].lng
-        } else {
-            coordinate.lat = center.lat
-            coordinate.lng = center.lng
         }
-    } else {
+    } else if (numberOfPolygon === 4) {
         if (numberOfCoordinate === 1) {
             coordinate.lat = blockCoordinates[3].lat
             coordinate.lng = blockCoordinates[3].lng
         } else if (numberOfCoordinate === 2) {
             coordinate.lat = blockCoordinates[0].lat
             coordinate.lng = blockCoordinates[0].lng
-        } else {
-            coordinate.lat = center.lat
-            coordinate.lng = center.lng
         }
     }
     return coordinate
@@ -327,4 +316,25 @@ export const getMiddlePointOfCoordinates = (coordinates1: typeCoords, coordinate
         lng: (coordinates1.lng + coordinates2.lng) / 2
     }
     return middlePointCoordinates
+}
+
+export const sortCoordinatesClockwise = (coordinates: typeCoords[]) => {
+    let closestPoint = coordinates[0]
+    let shortestDistance = Math.abs(closestPoint.lat) + Math.abs(closestPoint.lng)
+    for (const point of coordinates) {
+        const distance = Math.abs(point.lat) + Math.abs(point.lng);
+        if (distance < shortestDistance) {
+            closestPoint = point
+            shortestDistance = distance
+        }
+    }
+    const sortedPoints = coordinates
+        .filter((point: typeCoords) => point !== closestPoint)
+        .sort((a: typeCoords, b: typeCoords) => {
+            const angleA = Math.atan2(a.lat - closestPoint.lat, a.lng - closestPoint.lng)
+            const angleB = Math.atan2(b.lat - closestPoint.lat, b.lng - closestPoint.lng)
+            return angleB - angleA
+        })
+    sortedPoints.unshift(closestPoint)
+    return sortedPoints
 }
