@@ -254,8 +254,8 @@ export const generateRandomEmail = () => {
 export const goToTop = () => window.scrollTo(0, 0);
 
 const getCenter = (coordinates: typeCoords[]): typeCoords => {
-    let sumLat = 0;
-    let sumLng = 0;
+    let sumLat = 0
+    let sumLng = 0
     for (const coordinate of coordinates) {
         sumLat += coordinate.lat
         sumLng += coordinate.lng
@@ -319,4 +319,12 @@ export const getPolygonCoordinates = (numberOfCoordinate: number, numberOfPolygo
         }
     }
     return coordinate
+}
+
+export const getMiddlePointOfCoordinates = (coordinates1: typeCoords, coordinates2: typeCoords): typeCoords => {
+    const middlePointCoordinates = {
+        lat: (coordinates1.lat + coordinates2.lat) / 2,
+        lng: (coordinates1.lng + coordinates2.lng) / 2
+    }
+    return middlePointCoordinates
 }

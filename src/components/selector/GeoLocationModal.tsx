@@ -1,4 +1,4 @@
-import { editInfoWindowsStyles, getGeocodingFromCoordinatesService, getHTHTerritoriesForMapService } from '../../services'
+import { editInfoWindowsStyles, getAddressFromCoordinatesService, getHTHTerritoriesForMapService } from '../../services'
 import { FC, Fragment, useEffect, useRef, useState } from 'react'
 import { generalBlue } from '../../constants'
 import { GoogleMap, Marker, Polygon, useJsApiLoader } from '@react-google-maps/api'
@@ -93,7 +93,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
                     lng: isLocalhost ? -58.456176 : geoPosition.coords.longitude
                 }
                 setCenterCoords(position)
-                getGeocodingFromCoordinatesService(position).then((address0: string|null) => {
+                getAddressFromCoordinatesService(position).then((address0: string|null) => {
                     if (!address0) {
                         setAddress("-,")
                         return

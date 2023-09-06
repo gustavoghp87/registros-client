@@ -1,4 +1,4 @@
-import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService, getPolygonCoordinates } from '../../../services'
+import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService, getMiddlePointOfCoordinates, getPolygonCoordinates, getStreetFromCoordinatesService } from '../../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { googleMapConfig } from '../../../app-config'
@@ -36,6 +36,7 @@ export const HTHMap: FC<propsType> = ({
         user: state.user
     }))
     const { isLoaded, loadError } = useJsApiLoader(googleMapConfig)
+    const [isAddingNewBlockPlus, setIsAddingNewBlockPlus] = useState(false)
     const [map, setMap] = useState<google.maps.Map|null>(null)
     const [runIntervals, setRunIntervals] = useState(false)
     const dispatch = useDispatch()
@@ -165,31 +166,87 @@ export const HTHMap: FC<propsType> = ({
 
     const acceptBlockHandler = () => {
         const newBlockPolygon = { ...territoryHTH.map.newBlockPolygon }
-        if (!newBlockPolygon || !newBlockPolygon.coordinates) return
-        const newPolygons: typePolygon[] = []
+        if (!newBlockPolygon?.coordinates) return
         const id = Date.now()
-        newBlockPolygon.coordinates.forEach((x, i) => {
-            if (!newBlockPolygon || !newBlockPolygon.block) return
-            const newPolygon: typePolygon = {
-                block: newBlockPolygon.block,
-                color: i === 0 ? 'yellow' : i === 1 ? 'green' : i === 2 ? 'red' : 'blue',
-                completionData: { completionDates: [], isFinished: false, reopeningDates: [] },
-                coordsPoint1: getPolygonCoordinates(1, i, newBlockPolygon.coordinates),
-                coordsPoint2: getPolygonCoordinates(2, i, newBlockPolygon.coordinates),
-                coordsPoint3: getPolygonCoordinates(3, i, newBlockPolygon.coordinates),
-                doNotCalls: [],
-                face: 'x',
-                id: id + i,
-                observations: [],
-                street: '',
-                buildings: []
-            }
-            newPolygons.push(newPolygon)
-        })
-        const currentTerritory = { ...territoryHTH, map: { ...territoryHTH.map, polygons: [...territoryHTH.map.polygons, ...newPolygons] } }
-        currentTerritory.map.newBlockPolygon = undefined
-        setTerritoryHTH(currentTerritory)
-        setIsCompletingNewBlock(true)
+        if (isAddingNewBlockPlus) {
+            dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'confirm',
+                title: "Confirmar",
+                message: `Se van a agregar estas 4 caras correspondientes a la manzana ${newBlockPolygon.block}`,
+                execution: () => {
+                    if (!newBlockPolygon?.coordinates) return
+                    let success = true
+                    newBlockPolygon.coordinates.forEach(async (x, i) => {
+                        if (!newBlockPolygon?.block || !newBlockPolygon?.coordinates) return
+                        const middlePointCoordinates = getMiddlePointOfCoordinates(
+                            newBlockPolygon.coordinates[i],
+                            i < 3 ? newBlockPolygon.coordinates[i+1] : newBlockPolygon.coordinates[0]
+                        )
+                        const street = await getStreetFromCoordinatesService(middlePointCoordinates)
+                        if (!street) {
+                            dispatch(setValuesAndOpenAlertModalReducer({
+                                mode: 'alert',
+                                title: "Algo falló",
+                                message: "No se pudo conseguir alguna de las calles. Ubicar bien los puntos en las esquinas de la manzana. Si el problema persiste, usar la otra opción para cargar la manzana que permite elegir los nombres de calle manualmente.",
+                                animation: 2
+                            }))
+                            return
+                        }
+                        const newPolygon: typePolygon = {
+                            block: newBlockPolygon.block,
+                            completionData: { completionDates: [], isFinished: false, reopeningDates: [] },
+                            coordsPoint1: getPolygonCoordinates(1, i, newBlockPolygon.coordinates),
+                            coordsPoint2: getPolygonCoordinates(2, i, newBlockPolygon.coordinates),
+                            coordsPoint3: getPolygonCoordinates(3, i, newBlockPolygon.coordinates),
+                            doNotCalls: [],
+                            face: i === 0 ? 'D' : i === 1 ? 'A' : i === 2 ? 'B' : 'C',
+                            id: id + i,
+                            observations: [],
+                            street,
+                            buildings: []
+                        }
+                        const success1 = await addHTHPolygonFaceService(territoryHTH.territoryNumber, newPolygon)
+                        if (!success1) success = false
+                    })
+                    setTimeout(() => {
+                        if (!success) {
+                            dispatch(setValuesAndOpenAlertModalReducer({
+                                mode: 'alert',
+                                title: "Algo falló",
+                                message: "",
+                                animation: 2
+                            }))
+                            return
+                        }
+                        window.location.reload()
+                    }, 500)
+                }
+            }))
+        } else {
+            const newPolygons: typePolygon[] = []
+            newBlockPolygon.coordinates.forEach((x, i) => {
+                if (!newBlockPolygon || !newBlockPolygon.block) return
+                const newPolygon: typePolygon = {
+                    block: newBlockPolygon.block,
+                    color: i === 0 ? 'yellow' : i === 1 ? 'green' : i === 2 ? 'red' : 'blue',
+                    completionData: { completionDates: [], isFinished: false, reopeningDates: [] },
+                    coordsPoint1: getPolygonCoordinates(1, i, newBlockPolygon.coordinates),
+                    coordsPoint2: getPolygonCoordinates(2, i, newBlockPolygon.coordinates),
+                    coordsPoint3: getPolygonCoordinates(3, i, newBlockPolygon.coordinates),
+                    doNotCalls: [],
+                    face: 'x',
+                    id: id + i,
+                    observations: [],
+                    street: '',
+                    buildings: []
+                }
+                newPolygons.push(newPolygon)
+            })
+            const currentTerritory = { ...territoryHTH, map: { ...territoryHTH.map, polygons: [...territoryHTH.map.polygons, ...newPolygons] } }
+            currentTerritory.map.newBlockPolygon = undefined
+            setTerritoryHTH(currentTerritory)
+            setIsCompletingNewBlock(true)
+        }
     }
 
     const addFaceHandler = (): void => {
@@ -221,6 +278,7 @@ export const HTHMap: FC<propsType> = ({
         refreshHTHTerritoryHandler()
         setIsAddingNewFace(false)
         setIsAddingNewBlock(false)
+        setIsAddingNewBlockPlus(false)
         setIsEditingView(false)
         setRunIntervals(false)
         setShowNewFaceOptions(false)
@@ -345,6 +403,11 @@ export const HTHMap: FC<propsType> = ({
                         }}
                     >
                         Editar Mapa
+                    </button>
+                    <button className={'btn btn-general-blue mt-4 me-4'}
+                        onClick={() => {setIsAddingNewBlockPlus(true); setIsAddingNewBlock(true)}}
+                    >
+                        Agregar Manzana +
                     </button>
                     <button className={'btn btn-general-blue mt-4 me-4'}
                         onClick={() => setIsAddingNewBlock(true)}

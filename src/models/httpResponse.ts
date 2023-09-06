@@ -30,6 +30,7 @@ export type typeResponseData = {                           //  =>  UPDATE MOCKED
     newToken?: string,
     notSent?: boolean
     recaptchaFails?: boolean
+    street?: string
     streets?: string[]
     telephonicTerritory?: type.typeTelephonicTerritory
     territoriesTableData?: type.typeTerritoryRow[]

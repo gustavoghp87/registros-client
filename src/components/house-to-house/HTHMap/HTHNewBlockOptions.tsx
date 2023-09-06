@@ -199,7 +199,7 @@ const NewBlockOption: FC<propsType1> = ({ color, setOptionsHandler, streets }) =
             {face &&
                 <Dropdown className={'d-inline'}>
                     <Dropdown.Toggle variant={color === 'red' ? 'danger' : color === 'blue' ? 'primary' : color === 'yellow' ? 'warning' : 'success'}>
-                        {street ? `==> Calle ${street}` : "Seleccionar la Calle"} &nbsp;
+                        {street ? `==> Calle ${street === 'other' ? '' : street}` : "Seleccionar la Calle"} &nbsp;
                     </Dropdown.Toggle>
                     <Dropdown.Menu show={false}>
                         <Dropdown.Header> Seleccionar la calle </Dropdown.Header>

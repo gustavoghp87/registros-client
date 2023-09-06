@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react'
-import { getGeocodingFromAddressService } from '../../services'
+import { getCoordinatesFromAddressService } from '../../services'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { googleMapConfig } from '../../app-config'
 import { Loading } from '../commons'
@@ -21,7 +21,7 @@ export const MapModalTeleph: FC<propsType> = ({ address, hideGoogleMapHandler })
 
     useEffect(() => {
         const target: string = address + " CABA"
-        getGeocodingFromAddressService(target).then((coordinates: typeCoords|null) => {
+        getCoordinatesFromAddressService(target).then((coordinates: typeCoords|null) => {
             if (!coordinates?.lat || !coordinates?.lng) {
                 dispatch(setValuesAndOpenAlertModalReducer({
                     title: 'Error',
