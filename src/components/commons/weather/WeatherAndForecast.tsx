@@ -9,6 +9,7 @@ import * as Icons from './WeatherIcons'
 const weatherIcons: typeWeatherIcons = {
     'broken clouds': <Icons.CloudIcon />,
     'clear sky': <Icons.SunIcon />,
+    'drizzle': <Icons.RainIcon />,
     'few clouds': <Icons.SunBehindCloudIcon />,
     'heavy intensity rain': <Icons.CloudLightningIcon />,
     'light rain': <Icons.SunBehindRainIcon />,

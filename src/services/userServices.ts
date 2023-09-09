@@ -168,7 +168,7 @@ export const getUserByTokenService = async (token: string = ''): Promise<{ user:
         }
         data.user.isAuth = true
         data.user.isAdmin = data.user.role === 1
-        setUserToLSService(JSON.stringify(data.user))
+        setUserToLSService(data.user)
         return {
             user: data.user,
             config: data.config
