@@ -62,8 +62,9 @@ export const ConfigCreateHTHTerritories: FC<propsType> = ({ setShowCreateHthTerr
                     label={"Elegir la cantidad de territorios"}
                 >
                     <Form.Control
-                        className={'form-control'}
                         type={'number'}
+                        className={'form-control'}
+                        placeholder={""}
                         value={numberOfTerritories ? numberOfTerritories : ''}
                         onChange={e => setNumberOfTerritories(parseInt((e.target as HTMLInputElement).value))}
                         autoFocus
@@ -78,31 +79,6 @@ export const ConfigCreateHTHTerritories: FC<propsType> = ({ setShowCreateHthTerr
                 />
 
                 <Container className={'maxw-400'}>
-                    {/* <FloatingLabel
-                        className={'mb-3 text-dark'}
-                        label={"Latitud"}
-                    >
-                        <Form.Control
-                            className={'form-control'}
-                            type={'number'}
-                            value={lat ? lat : ''}
-                            onChange={e => setLat(parseFloat((e.target as HTMLInputElement).value))}
-                        />
-                    </FloatingLabel>
-
-                    <FloatingLabel
-                        className={'mb-3 text-dark'}
-                        label={"Longitud"}
-                    >
-                        <Form.Control
-                            className={'form-control'}
-                            type={'number'}
-                            value={lng ? lng : ''}
-                            onChange={e => setLng(parseFloat((e.target as HTMLInputElement).value))}
-                            onKeyDown={e => e.key === 'Enter' ? createHthTerritoriesHandler() : null }
-                        />
-                    </FloatingLabel> */}
-
                     <button
                         className={'btn btn-general-blue d-block w-100 mt-5'}
                         style={{ fontWeight: 'bolder', height: '50px' }}

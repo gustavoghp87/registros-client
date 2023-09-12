@@ -73,8 +73,9 @@ export const UsersNewUserInvite: FC<propsType> = ({ email, isDarkMode, setEmail,
             label={"Dirección de email"}
         >
             <Form.Control
-                className={'form-control'}
                 type={'email'}
+                className={'form-control'}
+                placeholder={""}
                 value={email}
                 onChange={e => setEmail((e.target as HTMLInputElement).value)}
                 onKeyDown={e => e.key === 'Enter' ? inviteNewUserHandler() : null }

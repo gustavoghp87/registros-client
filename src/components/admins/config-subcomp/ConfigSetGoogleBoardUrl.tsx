@@ -41,8 +41,9 @@ export const ConfigSetGoogleBoardUrl: FC<propsType> = ({ setShowSetGoogleBoardUr
                 label={"Dirección del tablero en Google"}
             >
                 <Form.Control
-                    className={'form-control'}
                     type={'text'}
+                    className={'form-control'}
+                    placeholder={""}
                     value={url}
                     onChange={e => setUrl(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' ? setGoogleSiteUrlHandler() : null }

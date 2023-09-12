@@ -87,6 +87,7 @@ export const NewUserPage = () => {
                     <Form.Control
                         type={'email'}
                         className={'form-control'}
+                        placeholder={""}
                         value={email}
                         onChange={() => {}}
                         disabled={true}
@@ -94,12 +95,13 @@ export const NewUserPage = () => {
                 </FloatingLabel>
 
                 <FloatingLabel
-                    label={"Nueva Contraseña"}
                     className={'mb-3 text-dark'}
+                    label={"Nueva Contraseña"}
                 >
                     <Form.Control
-                        className={'form-control'}
                         type={'password'}
+                        className={'form-control'}
+                        placeholder={""}
                         value={password}
                         onChange={e => setPassword((e.target as HTMLInputElement).value)}
                         autoFocus
@@ -111,8 +113,9 @@ export const NewUserPage = () => {
                     label={"Confirmar Nueva Contraseña"}
                 >
                     <Form.Control
-                        className={'form-control'}
                         type={'password'}
+                        className={'form-control'}
+                        placeholder={""}
                         value={confPassword}
                         onChange={e => setConfPassword((e.target as HTMLInputElement).value)}
                     />
@@ -125,6 +128,7 @@ export const NewUserPage = () => {
                     <Form.Control
                         type={'number'}
                         className={'form-control'}
+                        placeholder={""}
                         value={group ? group : ''}
                         min={'1'}
                         onChange={e => setGroup(parseInt(e.target.value))}

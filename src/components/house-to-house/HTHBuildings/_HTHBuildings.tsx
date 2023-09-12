@@ -2,7 +2,7 @@ import { FC, useState } from 'react'
 import { generalBlue } from '../../../constants'
 import { Hr } from '../../commons'
 import { HTHAddBuilding, HTHBuildingItem, HTHShareBuildingButton } from '..'
-import { typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useSelector } from 'react-redux'
 
 type propsType = {
@@ -47,11 +47,10 @@ export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHa
 
                     {!!currentFace.buildings?.length &&
                         <>
-                            {currentFace.buildings.map((building: typeHTHBuilding) =>
-                                <HTHBuildingItem
+                            {currentFace.buildings.map(building =>
+                                <HTHBuildingItem key={building.streetNumber}
                                     building={building}
                                     currentFace={currentFace}
-                                    key={building.streetNumber}
                                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                                     territoryNumber={territoryNumber}
                                 />

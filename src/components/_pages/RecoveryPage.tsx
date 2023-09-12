@@ -103,6 +103,7 @@ export const RecoveryPage = () => {
                         type={'email'}
                         className={'form-control'}
                         autoComplete={'email'}
+                        placeholder={""}
                         value={email}
                         onChange={() => {}}
                         disabled={true}
@@ -116,6 +117,7 @@ export const RecoveryPage = () => {
                     <Form.Control
                         className={'form-control'}
                         type={'password'}
+                        placeholder={""}
                         value={password}
                         onChange={e => setPassword((e.target as HTMLInputElement).value)}
                         autoFocus
@@ -130,7 +132,7 @@ export const RecoveryPage = () => {
                         className={'form-control'}
                         type={'password'}
                         value={confPassword}
-                        placeholder={"Confirmar Contraseña"}
+                        placeholder={""}
                         onChange={e => setConfPassword((e.target as HTMLInputElement).value)}
                         onKeyDown={e => e.key === 'Enter' && !(!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword) ? recoverAccountByTokenHandler() : null }
                     />

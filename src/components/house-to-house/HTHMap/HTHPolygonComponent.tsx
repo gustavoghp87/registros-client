@@ -92,7 +92,7 @@ export const HTHPolygonComponent: FC<propsType> = ({
                 )
             }
             setTerritoryHTH(currentTerritoryHTH)
-        }, 1000)
+        }, 500)
         if (!runIntervals) clearInterval(interval0)
         return () => clearInterval(interval0)
     }, [polygon, runIntervals, setTerritoryHTH, territoryHTH])

@@ -71,8 +71,9 @@ export const HTHAllBuildings: FC<propsType> = ({
                         label={"Dirección"}
                     >
                         <Form.Control
-                            className={'form-control'}
                             type={'text'}
+                            className={'form-control'}
+                            placeholder={""}
                             value={buildingAddress}
                             onChange={e => setBuildingAddress((e.target as HTMLInputElement).value)}
                             autoFocus

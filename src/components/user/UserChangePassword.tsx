@@ -52,7 +52,7 @@ export const UserChangePassword: FC<propsType> = ({ openAlertModalHandler, openC
                         className={'mb-3 text-secondary'}
                     >
                         <Form.Control type={'text'}
-                            placeholder={"Contraseña actual"}
+                            placeholder={""}
                             value={psw}
                             onChange={e => setPsw(e.target.value)}
                             autoFocus
@@ -66,7 +66,7 @@ export const UserChangePassword: FC<propsType> = ({ openAlertModalHandler, openC
                         className={'mb-3 text-secondary'}
                     >
                         <Form.Control type={'text'}
-                            placeholder={"Nueva contraseña"}
+                            placeholder={""}
                             value={newPsw}
                             onChange={e => setNewPsw(e.target.value)}
                             onKeyDown={e => e.key === 'Enter' ? changePswHandler() : null }

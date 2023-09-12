@@ -56,6 +56,7 @@ export const UserChangeEmail: FC<propsType> = ({ openAlertModalHandler, openConf
                         className={'mb-3 text-secondary'}
                     >
                         <Form.Control type={'text'}
+                            placeholder={""}
                             value={user.email}
                             onChange={e => setNewEmail(e.target.value)}
                             disabled
@@ -69,6 +70,7 @@ export const UserChangeEmail: FC<propsType> = ({ openAlertModalHandler, openConf
                         className={'mb-3 text-secondary'}
                     >
                         <Form.Control type={'text'}
+                            placeholder={""}
                             value={newEmail}
                             onChange={e => setNewEmail(e.target.value)}
                             onKeyDown={e => e.key === 'Enter' ? changeEmailHandler() : null }

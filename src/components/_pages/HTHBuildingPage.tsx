@@ -81,6 +81,7 @@ export const HTHBuildingPage = () => {
 
     useEffect(() => {
         refreshHTHTerritoryHandler()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -94,7 +95,8 @@ export const HTHBuildingPage = () => {
             console.log("Refrescado (2) por uso del usuario", userEmail)
         })
         return () => { socket.off(hthChangeString) }
-    }, [unauthUser.email])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [congregation, territoryNumber, unauthUser.email])
 
     return (
         <>

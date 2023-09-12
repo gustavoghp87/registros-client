@@ -38,8 +38,9 @@ export const ConfigSetCongregationName: FC<propsType> = ({ setShowSetCongregatio
                 label={"Nombre de la Congregación"}
             >
                 <Form.Control
-                    className={'form-control'}
                     type={'text'}
+                    className={'form-control'}
+                    placeholder={""}
                     value={name ? name : ''}
                     onChange={e => setName( e.target.value)}
                     onKeyDown={e => e.key === 'Enter' ? setCongregationNameHandler() : null }

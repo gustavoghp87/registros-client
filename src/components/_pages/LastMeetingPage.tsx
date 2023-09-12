@@ -84,15 +84,15 @@ export const LastMeetingPage = () => {
                                 className={'mb-3 text-dark'}
                                 label={"URL de Youtube"}
                             >
-                                <Form.Control
-                                    autoComplete={'off'}
-                                    className={'form-control'}
-                                    disabled={false}
-                                    id={"emailInput"}
-                                    onChange={e => console.log(e.target.value)}
-                                    //style={{ backgroundColor: 'lightgray' }}
+                                <Form.Control id={"emailInput"}
                                     type={'text'}
+                                    className={'form-control'}
+                                    //style={{ backgroundColor: 'lightgray' }}
+                                    placeholder={""}
                                     //value={}
+                                    onChange={e => console.log(e.target.value)}
+                                    autoComplete={'off'}
+                                    disabled={false}
                                 />
                             </FloatingLabel>
                             <button className={'btn btn-general-blue btn-size12 d-block mx-auto w-50 mt-4'}> Aceptar </button>

@@ -23,7 +23,7 @@ export const HTHNewFaceOptionsStreet = ({ setSelectedStreet }: propsType) => {
                 label={"Nombre de la calle"}
                 className={'mb-3'}
             >
-                <Form.Control type={'text'} placeholder={" "} onChange={(event: any) => setSelectedStreetPrev(event.target.value)} />
+                <Form.Control type={'text'} placeholder={""} onChange={(event: any) => setSelectedStreetPrev(event.target.value)} />
             </FloatingLabel> */}
             
             {/* <LoadScript googleMapsApiKey={googleMapsApiKey}> */}

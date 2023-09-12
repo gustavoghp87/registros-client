@@ -1,5 +1,7 @@
 export { HTHAddBuilding } from './HTHBuildings/HTHAddBuilding'
-export { HTHAddBuildingModal } from './HTHBuildings/HTHAddBuildingModal'
+export { HTHAddBuildingCheckbox } from './HTHBuildings/HTHAddBuildingCheckbox'
+export { HTHAddBuildingModalComplex } from './HTHBuildings/HTHAddBuildingModalComplex'
+export { HTHAddBuildingModalSimple } from './HTHBuildings/HTHAddBuildingModalSimple'
 export { HTHAllBuildings } from './HTHAllBuildings'
 export { HTHBuildingCheckbox } from './HTHBuildings/HTHBuildingCheckbox'
 export { HTHBuildingItem } from './HTHBuildings/HTHBuildingItem'

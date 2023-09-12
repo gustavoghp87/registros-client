@@ -75,8 +75,9 @@ export const ConfigSendInvitationNewCongregation: FC<propsType> = ({ setShowInvi
                 label={"Dirección de email"}
             >
                 <Form.Control
-                    className={'form-control'}
                     type={'email'}
+                    className={'form-control'}
+                    placeholder={""}
                     value={email}
                     onChange={e => setEmail((e.target as HTMLInputElement).value)}
                     onKeyDown={e => e.key === 'Enter' ? sendInvitationForNewCongregationHandler() : null }

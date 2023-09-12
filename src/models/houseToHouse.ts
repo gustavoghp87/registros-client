@@ -31,6 +31,8 @@ export type typeHTHBuilding = {
     manager?: typeHTHHousehold
     numberOfLevels: number
     numberPerLevel: number
+    reverseOrderX: boolean
+    reverseOrderY: boolean
     streetNumber: number
 }
 

@@ -69,24 +69,22 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
         }
     }, [url])
 
-    return (
-        <>
-            <button className={'btn btn-general-blue d-block mx-auto mt-4'}
-                disabled={isShareButtonDisabled}
-                onClick={() => shareBuildingHandler()}
-            >
-                &nbsp; Compartir por WhatsApp &nbsp; <WhatsAppIcon1 styles={{ width: '40px' }} />
-            </button>
-            <WhatsappShareButton
-                className={'d-none'}
-                ref={shareButton}
-                style={{ marginTop: '7px' }}
-                title={"EDIFICIOS - CASA EN CASA"}
-                url={url}
-                windowHeight={460}
-                windowWidth={660}
-            >
-            </WhatsappShareButton>
-        </>
-    )
+    return (<>
+        <button className={'btn btn-general-blue d-block mx-auto mt-4'}
+            disabled={isShareButtonDisabled}
+            onClick={() => shareBuildingHandler()}
+        >
+            &nbsp; Compartir por WhatsApp &nbsp; <WhatsAppIcon1 styles={{ width: '40px' }} />
+        </button>
+        <WhatsappShareButton
+            className={'d-none'}
+            ref={shareButton}
+            style={{ marginTop: '7px' }}
+            title={"EDIFICIOS - CASA EN CASA"}
+            url={url}
+            windowHeight={460}
+            windowWidth={660}
+        >
+        </WhatsappShareButton>
+    </>)
 }

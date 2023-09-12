@@ -20,18 +20,17 @@ export const HTHBuildingItem: FC<propsType> = ({ building, currentFace, refreshH
     return (
         <>
             <div className={'text-center my-3'}>
-                <button
-                    className={`btn ${!!getFreeHouseholds(building) ? 'btn-general-blue' : 'btn-general-red'} d-inline mx-auto my-2`}
-                    key={building.streetNumber}
+                <button key={building.streetNumber}
+                    className={`btn ${!!getFreeHouseholds(building) ? 'btn-general-blue' : 'btn-general-red'} d-inline mx-auto py-2 my-2`}
                     onClick={() => setShow(true)}
                     style={{ width: '220px' }}
                 >
                     {currentFace.street} {building.streetNumber} ({getFreeHouseholds(building)} libres)
                 </button>
                 <div className={'form-check form-check-inline ms-3 me-0'}>
-                    <input className={'form-check-input share-building'}
-                        style={{ height: '20px', width: '20px' }}
-                        type={'checkbox'}
+                    <input type={'checkbox'}
+                        className={'form-check-input share-building checkbox-md mt-0'}
+                        // style={{ height: '20px', width: '20px' }}
                         value={building.streetNumber}
                     />
                     <label className={'form-check-label'} htmlFor="inlineCheckbox1"></label>

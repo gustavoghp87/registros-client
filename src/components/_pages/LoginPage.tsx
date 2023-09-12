@@ -160,6 +160,7 @@ export const LoginPage = () => {
                         id={"emailInput"}
                         className={'form-control'}
                         autoComplete={'email'}
+                        placeholder={""}
                         value={email}
                         onChange={e => setEmail((e.target as HTMLInputElement).value)}
                     />
@@ -173,6 +174,7 @@ export const LoginPage = () => {
                         type={'password'}
                         id={"passwordInput"}
                         className={'form-control'}
+                        placeholder={""}
                         value={password}
                         onChange={e => setPassword((e.target as HTMLInputElement).value)}
                         onKeyDown={e => e.key === 'Enter' ? loginHandler() : null }

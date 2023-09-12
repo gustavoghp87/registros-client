@@ -114,7 +114,7 @@ export const HTHNewBlockOptions: FC<propsType> = ({
                     </Dropdown.Toggle>
                     <Dropdown.Menu show={true} className={'text-center'}>
                         <Dropdown.Header> Seleccionar la letra </Dropdown.Header>
-                        {hthConfigOptions.blockOptions.filter(x => !usedBlocks.includes(x)).map(b =>
+                        {hthConfigOptions.blocks.filter(x => !usedBlocks.includes(x)).map(b =>
                             <Dropdown.Item key={b} onClick={() => selectBlockHandler(b)}>
                                 Manzana {b}
                             </Dropdown.Item>
@@ -189,7 +189,7 @@ const NewBlockOption: FC<propsType1> = ({ color, setOptionsHandler, streets }) =
                 </Dropdown.Toggle>
                 <Dropdown.Menu show={false}>
                     <Dropdown.Header> Seleccionar la letra </Dropdown.Header>
-                    {hthConfigOptions.facesOptions.map(face =>
+                    {hthConfigOptions.faces.map(face =>
                         <Dropdown.Item key={face} eventKey={face} onClick={() => setFace(face)}>
                             Cara {face}
                         </Dropdown.Item>

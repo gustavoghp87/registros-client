@@ -90,39 +90,41 @@ export const HTHBuildingModal: FC<propsType> = ({
 
                     <Hr />
 
-                    {[...levels]
-                     .slice(currentBuilding.hasLowLevel ? 0 : 1, currentBuilding.numberOfLevels + 1)
-                     .map((level: number) =>
-                        <div key={level}>
-                            <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
-                                {[...doorNames]
-                                 .slice(0, currentBuilding.numberPerLevel)
-                                 .map((doorNumber: number) => {
-                                    const currentHousehold = currentBuilding.households.find(x => x.level === level && x.doorNumber === doorNumber)
-                                    if (!currentHousehold) return <Fragment key={level + '-' + doorNumber}></Fragment>
-                                    return (
-                                        <HTHBuildingCheckbox key={level + '-' + doorNumber}
-                                            block={currentFace.block}
-                                            congregation={congregation}
-                                            doorName={currentHousehold.doorName}
-                                            face={currentFace.face}
-                                            id={currentHousehold.id}
-                                            isChecked={currentHousehold.isChecked}
-                                            isManager={false}
-                                            level={currentHousehold.level}
-                                            refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                                            setIsLoading={setIsLoading}
-                                            streetNumber={currentBuilding.streetNumber}
-                                            territoryNumber={territoryNumber}
-                                        />
-                                    )
-                                })}
+                    <div style={{ display: 'flex' ,flexDirection: currentBuilding.reverseOrderY ? 'column' : 'column-reverse' }}>
+                        {[...levels]
+                        .slice(currentBuilding.hasLowLevel ? 0 : 1, currentBuilding.numberOfLevels + 1)
+                        .map((level: number) =>
+                            <div key={level}>
+                                <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
+                                    {[...doorNames]
+                                    .slice(0, currentBuilding.numberPerLevel)
+                                    .map((doorNumber: number) => {
+                                        const currentHousehold = currentBuilding.households.find(x => x.level === level && x.doorNumber === doorNumber)
+                                        if (!currentHousehold) return <Fragment key={level + '-' + doorNumber}></Fragment>
+                                        return (
+                                            <HTHBuildingCheckbox key={level + '-' + doorNumber}
+                                                block={currentFace.block}
+                                                congregation={congregation}
+                                                doorName={currentHousehold.doorName}
+                                                face={currentFace.face}
+                                                id={currentHousehold.id}
+                                                isChecked={currentHousehold.isChecked}
+                                                isManager={false}
+                                                level={currentHousehold.level}
+                                                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                                                setIsLoading={setIsLoading}
+                                                streetNumber={currentBuilding.streetNumber}
+                                                territoryNumber={territoryNumber}
+                                            />
+                                        )
+                                    })}
+                                </div>
+
+                                <Hr />
+
                             </div>
-
-                            <Hr />
-
-                        </div>
-                    )}
+                        )}
+                    </div>
                     {!!currentBuilding.manager &&
                         <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                             <HTHBuildingCheckbox

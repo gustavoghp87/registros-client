@@ -24,15 +24,22 @@ input[type='checkbox'].checkbox-2 {
   width: 22px;
   height: 22px;
 }
+/* Or transform:"scale(1.5)" */
+
+.checkbox-md {
+  height: 1.9rem !important;
+  width: 3rem !important;
+  border-radius: 1rem !important;
+}
+
+.checkbox-md.form-check-input:checked {
+  background-color: #b02a37;
+  border-color: #b02a37;
+}
 
 .pointer {
   cursor: pointer;
 }
-
-/* Or transform:"scale(1.5)" */
-
-
-
 
 .btn-general-blue {
   background-color: #4a6da7 !important;

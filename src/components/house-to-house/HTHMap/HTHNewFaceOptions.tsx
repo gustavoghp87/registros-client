@@ -15,8 +15,8 @@ type propsType = {
 
 export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }: propsType) => {
     const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
-    const [blocks, setBlocks] = useState<typeBlock[]>(hthConfigOptions.blockOptions)
-    const [faces, setFaces] = useState<typeFace[]>(hthConfigOptions.facesOptions)
+    const [blocks, setBlocks] = useState<typeBlock[]>(hthConfigOptions.blocks)
+    const [faces, setFaces] = useState<typeFace[]>(hthConfigOptions.faces)
     const [selectedBlock, setSelectedBlock] = useState<typeBlock>()
     const [selectedFace, setSelectedFace] = useState<typeFace>()
     const [selectedStreet, setSelectedStreet] = useState('')
@@ -37,8 +37,8 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
     }
 
     const cancelHandler = (showBlock: boolean): void => {
-        setBlocks(hthConfigOptions.blockOptions)
-        setFaces(hthConfigOptions.facesOptions)
+        setBlocks(hthConfigOptions.blocks)
+        setFaces(hthConfigOptions.faces)
         setSelectedBlock(undefined)
         setSelectedFace(undefined)
         setShowBlockMenu(showBlock)
@@ -47,7 +47,7 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
     }
 
     useEffect(() => {
-        let newFaces: typeFace[] = [...hthConfigOptions.facesOptions]
+        let newFaces: typeFace[] = [...hthConfigOptions.faces]
         if (selectedBlock) {
             territoryHTH.map.polygons.forEach(x => {
                 if (x.block === selectedBlock) newFaces = newFaces.filter(y => y !== x.face)
