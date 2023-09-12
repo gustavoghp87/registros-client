@@ -20,7 +20,7 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
     const shareButton = useRef<any>()
     const user = useSelector((state: typeRootState) => state.user)
 
-    const shareBuildingHandler = (): void => {
+    const shareBuildingHandler = async () => {
         let currentUrl: string = '\n\n'
         const checkboxes = Array.from(document.getElementsByClassName('share-building')) as Array<HTMLInputElement>
         if (!checkboxes) return
@@ -36,15 +36,14 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
             }
         })
         if (buildings.length) {
-            setHTHIsSharedBuildingsService(territoryNumber, currentFace.block, currentFace.face, currentFace.id, buildings).then((success: boolean) => {
-                if (!success) dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "Algo falló",
-                    message: `${buildings.length > 1 ? "No se pudieron compartir los edificios" : "No se pudo compartir el edificio"}`,
-                    animation: 2
-                }))
-                refreshHTHTerritoryHandler()
-            })
+            const success = await setHTHIsSharedBuildingsService(territoryNumber, currentFace.block, currentFace.face, currentFace.id, buildings)
+            if (!success) dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'alert',
+                title: "Algo falló",
+                message: `${buildings.length > 1 ? "No se pudieron compartir los edificios" : "No se pudo compartir el edificio"}`,
+                animation: 2
+            }))
+            refreshHTHTerritoryHandler()
         }
         setUrl(currentUrl)
     }
@@ -70,7 +69,7 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
     }, [url])
 
     return (<>
-        <button className={'btn btn-general-blue d-block mx-auto mt-4'}
+        <button className={'btn btn-general-blue d-block mx-auto mt-4'} style={{ width: '300px' }}
             disabled={isShareButtonDisabled}
             onClick={() => shareBuildingHandler()}
         >

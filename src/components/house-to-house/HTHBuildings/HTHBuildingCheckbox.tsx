@@ -1,9 +1,7 @@
 import { Dispatch, FC, SetStateAction } from 'react'
 import { Form } from 'react-bootstrap'
 import { modifyHTHHouseholdService } from '../../../services'
-import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeBlock, typeFace, typeTerritoryNumber } from '../../../models'
-import { useDispatch } from 'react-redux'
 
 type propsType = {
     block: typeBlock
@@ -25,25 +23,17 @@ export const HTHBuildingCheckbox: FC<propsType> = ({
     face, id, isChecked, isManager, level, refreshHTHTerritoryHandler,
     setIsLoading, streetNumber, territoryNumber
 }) => {
-    const dispatch = useDispatch()
 
-    const changeCallingState = (): void => {
-        if (!territoryNumber || !block || !face || !streetNumber || !id || !refreshHTHTerritoryHandler) return
+    const changeCallingState = async () => {
+        if (!territoryNumber || !block || !face || !streetNumber || !id) return
         setIsLoading(true)
-        modifyHTHHouseholdService(congregation, territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager).then((success: boolean) => {
-            if (!success) {
-                dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "Error",
-                    message: "Falló el cambio de estado de la vivienda",
-                    animation: 2,
-                    execution: refreshHTHTerritoryHandler
-                }))
-                return
-            }
-            refreshHTHTerritoryHandler()
-            setIsLoading(false)
-        })
+        const success = await modifyHTHHouseholdService(congregation, territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager)
+        if (!success) {
+            alert("Falló el cambio de estado de la vivienda")  // keep alert (modal vs modal)
+            return
+        }
+        setIsLoading(false)
+        refreshHTHTerritoryHandler()
     }
 
     return (

@@ -11,7 +11,7 @@ export const Footer = () => {
             <div className={'main-footer'}
                 style={{
                     backgroundColor: generalBlue,
-                    height: isMobile ? '170px' : '160px',
+                    height: isMobile ? '180px' : '170px',
                     marginTop: '200px',
                     paddingBottom: '20px',
                     paddingTop: isMobile ? '10px' : '20px'
@@ -20,17 +20,21 @@ export const Footer = () => {
                 <div style={{
                     alignItems: 'center',
                     display: 'flex',
-                    fontSize: isMobile ? '1.2rem' : '2.2rem',
+                    fontSize: isMobile ? '1.4rem' : '2.2rem',
                     justifyContent: 'center',
                     margin: 'auto',
                     width: '100%'
                 }}>
                     <a href={'https://misericordiaweb.com/'} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
-                        Misericordia Web
+                        Misericordia Web <span className={'text-white'} style={{ fontSize: isMobile ? '0.7rem' : '1rem', fontWeight: 'normal' }}>v 5.9</span>
                     </a>
                 </div>
 
-                <h5 className={'text-center text-white mt-2 mb-3'}> Comunicación: misericordiawebapp@gmail.com </h5>
+                <h5 className={'text-center text-white mt-2 mb-3'}>
+                    <span style={{ fontSize: isMobile ? '1.2rem' : '1.5rem' }}>
+                        Comunicación: misericordiawebapp@gmail.com
+                    </span>
+                </h5>
 
                 <div className={'text-center mt-2'}>
 
@@ -40,7 +44,7 @@ export const Footer = () => {
                     
                     <Link to={'/servicio'} className={`${isMobile ? '' : 'ms-2'} text-white`}> Términos de Uso </Link>
 
-                    <span className={'text-white'} style={{ fontSize: '1rem' }}>&nbsp;&nbsp;Versión 5.7</span>
+                    
 
                 </div>
             </div>

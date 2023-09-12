@@ -191,7 +191,7 @@ export const getStreetsByHTHTerritory = (hthTerritory: typeHTHTerritory): string
     return streets
 }
 
-const getCharacterForNumber = (apartmentNumber: number, hasNn: boolean = false): string => {
+const getCharacterForNumber = (apartmentNumber: number, hasNn: boolean = false): string => {  // String.fromCharCode(65 + apartmentNumber)}
     if (apartmentNumber === 1) return 'A'
     if (apartmentNumber === 2) return 'B'
     if (apartmentNumber === 3) return 'C'

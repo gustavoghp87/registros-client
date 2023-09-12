@@ -30,8 +30,8 @@ export const recaptchaPublicKey = '6LfDIdIZAAAAAElWChHQZq-bZzO9Pu42dt9KANY9'
 export const hthConfigOptions = {
     blocks: ['1', '2', '3', '4', '5', '6'] as typeBlock[],
     faces: ['A', 'B', 'C', 'D', 'E', 'F'] as typeFace[],
-    buildingDoorNumbers: Array.from({ length: 15 }, (_, i) => i + 1),  // 1-15
-    buildingLevels: Array.from({ length: 39 }, (_, i) => i)  // 0-39
+    buildingDoorNumbers: Array.from({ length: 30 }, (_, i) => i + 1),  // 1-30
+    buildingLevels: Array.from({ length: 51 }, (_, i) => i)  // PB-50
 }
 
 export const googleMapConfig = {

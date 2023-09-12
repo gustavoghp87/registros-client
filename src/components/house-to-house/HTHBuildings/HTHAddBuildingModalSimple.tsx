@@ -4,9 +4,7 @@ import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import { Hr } from '../../commons'
 import { HTHAddBuildingCheckbox } from '..'
 import { hthConfigOptions } from '../../../app-config'
-import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
-import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 
 type propsType = {
@@ -32,7 +30,6 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler,
     const [reverseOrderX, setReverseOrderX] = useState(false)
     const [reverseOrderY, setReverseOrderY] = useState(false)
     const [streetNumber, setStreetNumber] = useState(0)
-    const dispatch = useDispatch()
 
     const submitHandler = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -42,12 +39,8 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler,
             const newHousehold: typeHTHHousehold = JSON.parse(y.value)
             if (newHousehold && newHousehold.isChecked) households.push(newHousehold)
         })
-        if (!territoryNumber || !currentFace.street || !streetNumber || !households || !households.length) {
-            dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Faltan datos",
-                message: ""
-            }))
+        if (!territoryNumber || !currentFace.street || !streetNumber || !households.length) {
+            alert("Faltan datos")
             return
         }
         const building: typeHTHBuilding = {
@@ -57,10 +50,11 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler,
             hasContinuousNumbers,
             hasLowLevel,
             households,
+            isComplex: false,
             numberOfLevels,
             numberPerLevel,
-            reverseOrderY,
             reverseOrderX,
+            reverseOrderY,
             streetNumber
         }
         if (hasManager) building.manager = {
@@ -79,215 +73,231 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler,
                 return
             }
             if (response?.dataError) {
-                dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "Falló algo en los datos",
-                    message: ""
-                }))
+                alert("Falló algo en los datos")  // keep alert (modal vs modal)
                 return
             }
             if (response?.alreadyExists) {
-                dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "Este edificio ya existe o hay otro con el mismo número",
-                    message: ""
-                }))
+                alert("Este edificio ya existe o hay otro con el mismo número")
                 return
             }
-            dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Algo falló",
-                message: ""
-            }))
+            alert("Error: Falló algo")
         })
     }
 
     return (
-        <Modal.Body>
+        <Modal
+            backdrop={'static'}
+            backdropClassName={isDarkMode ? 'bg-dark': ''}
+            contentClassName={isDarkMode ? 'bg-dark text-white' : ''}
+            keyboard={false}
+            onHide={() => closeHTHModalHandler()}
+            show={true}
+            size={'xl'}
+        >
+            <Modal.Header closeButton>
+                <Modal.Title className={'text-center'}> Agregar edificio </Modal.Title>
+            </Modal.Header>
 
-            {/* <button className={'btn btn-general-blue d-block mx-auto my-3'}
-                style={{ width: '300px'}}
-                onClick={() => setShowComplex(true)}
-            >
-                Cambiar a portero complejo
-            </button> */}
+            <Modal.Body>
 
-            <Hr classes={'my-4'} />
+                <button className={'btn btn-general-blue d-block mx-auto my-3'}
+                    style={{ width: '300px'}}
+                    onClick={() => setShowComplex(true)}
+                >
+                    Cambiar a portero complejo
+                </button>
 
-            <Form onSubmit={submitHandler}>
+                <Hr classes={'my-4'} />
 
-                <div className={'row d-flex align-self-center justify-content-center mt-2 mb-3'}>
+                <Form onSubmit={submitHandler}>
 
-                    <Form.Group
-                        className={'font-weight-bolder m-2'}
-                        style={{ width: '170px' }}
-                    >
-                        <Form.Label> Calle </Form.Label>
-                        <Form.Control
-                            type={'text'}
-                            value={currentFace.street}
-                            disabled
-                        />
-                    </Form.Group>
+                    <div className={'row d-flex align-self-center justify-content-center mt-2 mb-3'}>
 
-                    <Form.Group
-                        className={'font-weight-bolder m-2'}
-                        style={{ width: '120px' }}
-                    >
-                        <Form.Label> Número </Form.Label>
-                        <Form.Control
-                            type={'number'}
-                            max={'100000'}
-                            min={'1'}
-                            value={streetNumber ? streetNumber : ""}
-                            onChange={e => setStreetNumber(parseInt(e.target.value))}
-                            autoFocus
-                        />
-                    </Form.Group>
-
-                    <Form.Group
-                        className={'font-weight-bolder m-2'}
-                        style={{ width: '130px' }}
-                    >
-                        <Form.Label> Pisos </Form.Label>
-                        <Form.Select
-                            className={'text-center'}
-                            onChange={e => setNumberOfLevels(parseInt(e.target.value) ? parseInt(e.target.value) : 0)}
-                            value={numberOfLevels === undefined || numberOfLevels === null ? "" : numberOfLevels === 0 ? 'Solo PB' : numberOfLevels}
+                        <Form.Group
+                            className={'font-weight-bolder m-2'}
+                            style={{ width: '170px' }}
                         >
-                            {hthConfigOptions.buildingLevels.map(level =>
-                                <option key={level}> {level ? level : 'Solo PB'} </option>
-                            )}
-                        </Form.Select>
-                    </Form.Group>
-
-                    <Form.Group
-                        className={'font-weight-bolder m-2'}
-                        style={{ width: '160px' }}
-                    >
-                        <Form.Label> Deptos. por piso </Form.Label>
-                        <Form.Select
-                            className={'text-center'}
-                            style={{ width: '100px' }}
-                            value={numberPerLevel ?? ""}
-                            onChange={e => setNumberPerLevel(parseInt(e.target.value) ? parseInt(e.target.value) : 0)}
-                        >
-                            {hthConfigOptions.buildingDoorNumbers.map(doorNumber =>
-                                <option key={doorNumber}> {doorNumber} </option>
-                            )}
-                        </Form.Select>
-                    </Form.Group>
-
-                    <div className={`col-3 ${isMobile ? '' : 'ms-5'}`} style={{ marginTop: isMobile ? '25px' : '', width: '220px' }}>
-                        <Form.Group className={'mb-2'} onClick={() => setHasCharacters(x => !x)}>
-                            <Form.Check
-                                type={'checkbox'}
-                                className={'checkbox-3'}
-                                label={'Deptos. con letras'}
-                                checked={hasCharacters}
-                                onChange={() => {}}
+                            <Form.Label> Calle </Form.Label>
+                            <Form.Control
+                                type={'text'}
+                                value={currentFace.street}
+                                disabled
                             />
                         </Form.Group>
-                        {hasCharacters &&
-                            <Form.Group className={'mb-2'} onClick={() => setHasNn(x => !x)}>
+
+                        <Form.Group
+                            className={'font-weight-bolder m-2'}
+                            style={{ width: '120px' }}
+                        >
+                            <Form.Label> Número </Form.Label>
+                            <Form.Control
+                                type={'number'}
+                                max={'100000'}
+                                min={'1'}
+                                value={streetNumber ? streetNumber : ""}
+                                onChange={e => setStreetNumber(parseInt(e.target.value))}
+                                autoFocus
+                            />
+                        </Form.Group>
+
+                        <Form.Group
+                            className={'font-weight-bolder m-2'}
+                            style={{ width: '130px' }}
+                        >
+                            <Form.Label> Pisos </Form.Label>
+                            <Form.Select
+                                className={'text-center'}
+                                onChange={e => setNumberOfLevels(parseInt(e.target.value) ? parseInt(e.target.value) : 0)}
+                                value={numberOfLevels === undefined || numberOfLevels === null ? "" : numberOfLevels === 0 ? 'Solo PB' : numberOfLevels}
+                            >
+                                {hthConfigOptions.buildingLevels.map(level =>
+                                    <option key={level}> {level ? level : 'Solo PB'} </option>
+                                )}
+                            </Form.Select>
+                        </Form.Group>
+
+                        <Form.Group
+                            className={'font-weight-bolder m-2'}
+                            style={{ width: '160px' }}
+                        >
+                            <Form.Label> Deptos. por piso </Form.Label>
+                            <Form.Select
+                                className={'text-center'}
+                                style={{ width: '100px' }}
+                                value={numberPerLevel ?? ""}
+                                onChange={e => setNumberPerLevel(parseInt(e.target.value) ? parseInt(e.target.value) : 0)}
+                            >
+                                {hthConfigOptions.buildingDoorNumbers.map(doorNumber =>
+                                    <option key={doorNumber}> {doorNumber} </option>
+                                )}
+                            </Form.Select>
+                        </Form.Group>
+
+                        <div className={`col-3 ${isMobile ? '' : 'ms-5'}`} style={{ marginTop: isMobile ? '25px' : '', width: '220px' }}>
+                            <Form.Group className={'mb-2'} onClick={() => setHasCharacters(x => !x)}>
                                 <Form.Check
                                     type={'checkbox'}
                                     className={'checkbox-3'}
-                                    label={'Usar la Ñ'}
-                                    checked={hasNn}
+                                    label={'Deptos. con letras'}
+                                    checked={hasCharacters}
                                     onChange={() => {}}
                                 />
                             </Form.Group>
-                        }
-                        <Form.Group className={'mb-2'} onClick={() => setHasContinuousNumbers(x => !x)}>
-                            <Form.Check
-                                type={'checkbox'}
-                                className={'checkbox-3'}
-                                label={isMobile ? 'Num. de corrido' : 'Numeración de corrido'}
-                                onChange={() => {}}
-                                checked={hasContinuousNumbers}
-                            />
-                        </Form.Group>
-                        <Form.Group className={'mb-2'} onClick={() => setHasLowLevel(x => !x)}>
-                            <Form.Check
-                                type={'checkbox'}
-                                className={'checkbox-3'}
-                                label={'Sin PB'}
-                                checked={!hasLowLevel}
-                                onChange={() => {}}
-                            />
-                        </Form.Group>
-                        <Form.Group className={'mb-2'} onClick={() => setHasManager(x => !x)}>
-                            <Form.Check
-                                type={'checkbox'}
-                                className={'checkbox-3'}
-                                label={'Agregar un Portería'}
-                                checked={hasManager}
-                                onChange={() => {}}
-                            />
-                        </Form.Group>
-                        <Form.Group className={'mb-2'} onClick={() => setReverseOrderY(x => !x)}>
-                            <Form.Check
-                                type={'checkbox'}
-                                className={'checkbox-3'}
-                                label={'Invertir Verticalmente'}
-                                checked={reverseOrderY}
-                                onChange={() => {}}
-                            />
-                        </Form.Group>
-                    </div>
-                </div>
-
-                <div className={`card my-4 ${streetNumber ? '' : 'd-none'}`}>
-
-                    <h1 className={'bg-dark text-white text-center font-weight-bolder mt-4 mb-2 py-2'}
-                        style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
-                    >
-                        Esquema del Edificio:
-                    </h1>
-
-                    <Hr />
-
-                    <div style={{ display: 'flex', flexDirection: reverseOrderY ? 'column' : 'column-reverse' }}>
-                        {hthConfigOptions.buildingLevels.slice(hasLowLevel ? 0 : 1, numberOfLevels + 1).map((level, index) =>
-                            <div key={level}>
-                                <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
-                                    {hthConfigOptions.buildingDoorNumbers.slice(0, numberPerLevel).map((doorNumber, index1) =>
-                                        <HTHAddBuildingCheckbox key={doorNumber}
-                                            doorName={getHouseholdDoorBell(doorNumber, index, index1, hasContinuousNumbers, hasCharacters, numberPerLevel, hasNn)}
-                                            doorNumber={doorNumber}
-                                            level={level}
-                                            isManager={false}
-                                        />
-                                    )}
-                                </div>
-                                <Hr />
-                            </div>
-                        )}
-                    </div>
-
-                    {hasManager &&
-                        <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
-                            <HTHAddBuildingCheckbox
-                                doorName={'Portería'}
-                                doorNumber={0}
-                                level={null}
-                                isManager={true}
-                            />
+                            {hasCharacters &&
+                                <Form.Group className={'mb-2'} onClick={() => setHasNn(x => !x)}>
+                                    <Form.Check
+                                        type={'checkbox'}
+                                        className={'checkbox-3'}
+                                        label={'Usar la Ñ'}
+                                        checked={hasNn}
+                                        onChange={() => {}}
+                                    />
+                                </Form.Group>
+                            }
+                            <Form.Group className={'mb-2'} onClick={() => setHasContinuousNumbers(x => !x)}>
+                                <Form.Check
+                                    type={'checkbox'}
+                                    className={'checkbox-3'}
+                                    label={isMobile ? 'Num. de corrido' : 'Numeración de corrido'}
+                                    onChange={() => {}}
+                                    checked={hasContinuousNumbers}
+                                />
+                            </Form.Group>
+                            <Form.Group className={'mb-2'} onClick={() => setHasLowLevel(x => !x)}>
+                                <Form.Check
+                                    type={'checkbox'}
+                                    className={'checkbox-3'}
+                                    label={'Sin PB'}
+                                    checked={!hasLowLevel}
+                                    onChange={() => {}}
+                                />
+                            </Form.Group>
+                            <Form.Group className={'mb-2'} onClick={() => setHasManager(x => !x)}>
+                                <Form.Check
+                                    type={'checkbox'}
+                                    className={'checkbox-3'}
+                                    label={'Agregar un Portería'}
+                                    checked={hasManager}
+                                    onChange={() => {}}
+                                />
+                            </Form.Group>
+                            <Form.Group className={'mb-2'} onClick={() => setReverseOrderY(x => !x)}>
+                                <Form.Check
+                                    type={'checkbox'}
+                                    className={'checkbox-3'}
+                                    label={'Invertir Vertical'}
+                                    checked={reverseOrderY}
+                                    onChange={() => {}}
+                                />
+                            </Form.Group>
+                            <Form.Group className={'mb-2'} onClick={() => setReverseOrderX(x => !x)}>
+                                <Form.Check
+                                    type={'checkbox'}
+                                    className={'checkbox-3'}
+                                    label={'Invertir Horizontal'}
+                                    checked={reverseOrderX}
+                                    onChange={() => {}}
+                                />
+                            </Form.Group>
                         </div>
-                    }
-                </div>
-                
-                <Modal.Footer className={'justify-content-center align-items-center'}>
-                    <Button variant={'success'} type={'submit'} style={{ height: '40px', width: '120px' }} disabled={!streetNumber}>
-                        ACEPTAR
-                    </Button>
-                    <Button variant={'secondary'} style={{ height: '40px', width: '120px' }} onClick={() => closeHTHModalHandler()}>
-                        CANCELAR
-                    </Button>
-                </Modal.Footer>
+                    </div>
 
-            </Form>
-        </Modal.Body>
+                    <div className={`card my-4 ${streetNumber ? '' : 'd-none'}`}>
+
+                        <h1 className={'bg-dark text-white text-center font-weight-bolder mt-4 mb-2 py-2'}
+                            style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
+                        >
+                            Esquema del Edificio:
+                        </h1>
+
+                        <Hr />
+
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: reverseOrderY ? 'column' : 'column-reverse'
+                        }}>
+                            {hthConfigOptions.buildingLevels.slice(hasLowLevel ? 0 : 1, numberOfLevels + 1).map((level, index) =>
+                                <div key={level}>
+                                    <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
+                                        {hthConfigOptions.buildingDoorNumbers.slice(0, numberPerLevel)
+                                         .sort((a, b) => reverseOrderX ? b - a : a - b)
+                                         .map((doorNumber, index1) =>
+                                            <HTHAddBuildingCheckbox key={doorNumber}
+                                                doorName={getHouseholdDoorBell(doorNumber, index, reverseOrderX ? hthConfigOptions.buildingDoorNumbers.slice(0, numberPerLevel).length - index1 - 1: index1, hasContinuousNumbers, hasCharacters, numberPerLevel, hasNn)}
+                                                doorNumber={doorNumber}
+                                                level={level}
+                                                isManager={false}
+                                            />
+                                        )}
+                                    </div>
+                                    <Hr />
+                                </div>
+                            )}
+                        </div>
+
+                        {hasManager &&
+                            <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
+                                <HTHAddBuildingCheckbox
+                                    doorName={'Portería'}
+                                    doorNumber={0}
+                                    level={null}
+                                    isManager={true}
+                                />
+                            </div>
+                        }
+                    </div>
+                    
+                    <Modal.Footer className={'justify-content-center align-items-center'}>
+                        <Button variant={'success'} type={'submit'} style={{ height: '40px', width: '120px' }} disabled={!streetNumber}>
+                            ACEPTAR
+                        </Button>
+                        <Button variant={'secondary'} style={{ height: '40px', width: '120px' }} onClick={() => closeHTHModalHandler()}>
+                            CANCELAR
+                        </Button>
+                    </Modal.Footer>
+
+                </Form>
+            </Modal.Body>
+        </Modal>
     )
 }
