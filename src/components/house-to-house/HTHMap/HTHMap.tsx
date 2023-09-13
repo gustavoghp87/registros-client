@@ -400,7 +400,7 @@ export const HTHMap: FC<propsType> = ({
         {user.isAdmin && !isMobile &&
             <div className={'d-flex justify-content-center'}>
 
-                {!config.disabledEditMaps && !isAddingNewFace && !isEditingView && !isAddingNewBlock && <>
+                {!config.isDisabledEditHthMaps && !isAddingNewFace && !isEditingView && !isAddingNewBlock && <>
                     <button className={'btn btn-general-blue mt-4 me-4'}
                         onClick={() => {
                             selectBlockAndFaceHandler()

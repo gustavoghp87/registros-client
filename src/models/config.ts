@@ -1,7 +1,9 @@
 export type typeConfig = {
     congregation: number
-    disabledEditMaps: boolean
     googleBoardUrl: string
+    isDisabledCloseHthFaces: boolean
+    isDisabledEditHthMaps: boolean
+    isDisabledHthFaceObservations: boolean
     name: string
     numberOfTerritories: number
 }

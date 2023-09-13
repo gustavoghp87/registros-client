@@ -37,13 +37,45 @@ export const setCongregationNameService = async (name: string): Promise<boolean>
     }
 }
 
-export const setDisableEditMapsService = async (disableEditMaps: boolean): Promise<boolean> => {
+export const setDisableCloseHthFacesService = async (disableCloseHthFaces: boolean): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
         const response = await fetch(base, {
             method: 'PATCH',
             headers: getHeaders(),
-            body: JSON.stringify({ disableEditMaps })
+            body: JSON.stringify({ disableCloseHthFaces })
+        })
+        const data: typeResponseData|null = await response.json()
+        return !!data?.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export const setDisableHthFaceObservatiosService = async (disableHthFaceObservations: boolean): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(base, {
+            method: 'PATCH',
+            headers: getHeaders(),
+            body: JSON.stringify({ disableHthFaceObservations })
+        })
+        const data: typeResponseData|null = await response.json()
+        return !!data?.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export const setDisableEditMapsService = async (disableEditHthMaps: boolean): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(base, {
+            method: 'PATCH',
+            headers: getHeaders(),
+            body: JSON.stringify({ disableEditHthMaps })
         })
         const data: typeResponseData|null = await response.json()
         return !!data?.success

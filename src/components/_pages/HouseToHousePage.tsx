@@ -92,6 +92,7 @@ export const HouseToHousePage = () => {
 
     useEffect(() => {
         refreshHTHTerritoryHandler(false, true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {

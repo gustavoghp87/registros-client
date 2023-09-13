@@ -2,9 +2,10 @@ import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react
 import { editInfoWindowsStyles } from '../../../services'
 import { generalBlue, generalRed } from '../../../constants'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
-import { typeBlock, typeFace, typeHTHTerritory, typePolygon } from '../../../models'
+import { typeBlock, typeFace, typeHTHTerritory, typePolygon, typeRootState } from '../../../models'
+import { useSelector } from 'react-redux'
 
-// let lastClick: number = 0
+let lastClick: number = 0
 
 type propsType = {
     currentFace: typePolygon|null
@@ -22,15 +23,16 @@ export const HTHPolygonComponent: FC<propsType> = ({
     currentFace, isAddingPolygon, isEditingView, polygon, runIntervals,
     selectBlockAndFaceHandler, setTerritoryHTH, territoryHTH
 }) => {
+    const config = useSelector((state: typeRootState) => state.config)
     const ref = useRef<google.maps.Polygon>()
     const [polygonColor, setPolygonColor] = useState(polygon.color ?? generalBlue)
     const [showInfoWindow, setShowInfoWindow] = useState(false)
 
-    // const setIsFinishedHandler = (): void => {
-    //     if ((+new Date() - lastClick) < 500) return
-    //     document.getElementById('setHTHIsFinishedButton')?.click()
-    //     lastClick = +new Date()
-    // }
+    const setIsFinishedHandler = (): void => {
+        if ((+new Date() - lastClick) < 500) return
+        document.getElementById('setHTHIsFinishedButton')?.click()
+        lastClick = +new Date()
+    }
 
     useEffect(() => {
         editInfoWindowsStyles()
@@ -137,9 +139,8 @@ export const HTHPolygonComponent: FC<propsType> = ({
 
         {polygon.id !== 0 &&
             <div onClick={() => {
-                // if (currentFace && currentFace.id === polygon.id) setIsFinishedHandler()
-                // else
-                if (!isEditingView && !isAddingPolygon) selectBlockAndFaceHandler(polygon.block, polygon.face)
+                if (!config.isDisabledCloseHthFaces && currentFace && currentFace.id === polygon.id) setIsFinishedHandler()
+                else if (!isEditingView && !isAddingPolygon) selectBlockAndFaceHandler(polygon.block, polygon.face)
             }}>
                 <InfoWindow
                     position={{
