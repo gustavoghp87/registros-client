@@ -1,4 +1,4 @@
-import { changePswService, getEmailByEmailLink } from '../../services/userServices'
+import { changePswService, getEmailByEmailLink } from '../../services'
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { emailPattern } from '../../app-config'
 import { setValuesAndOpenAlertModalReducer } from '../../store'

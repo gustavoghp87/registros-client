@@ -1,5 +1,4 @@
-import { getUserByTokenService } from '../../services/userServices'
-import { goToTop } from '../../services'
+import { getUserByTokenService, goToTop } from '../../services'
 import { HouseToHouseSelector, TelephonicSelector } from '../selector'
 import { Hr } from '../commons'
 import { logoutReducer, refreshUserReducer, setConfigurationReducer } from '../../store'

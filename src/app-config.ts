@@ -34,6 +34,8 @@ export const hthConfigOptions = {
     buildingLevels: Array.from({ length: 51 }, (_, i) => i)  // PB-50
 }
 
+export const userGroups = Array.from({ length: 6 }, (_, i) => i + 1);
+
 export const googleMapConfig = {
     googleMapsApiKey: isLocalhost ? 'AIzaSyCWWH0mdRMiQ2fIsWD_xcV7AqXCyQVg594' : 'AIzaSyBPcwNALtiEb3_s-mHvS8R5WxBb_jyRYhE',
     id: 'ad09b84d2db0b86d',

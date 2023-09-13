@@ -1,6 +1,6 @@
 import { BsArrowBarDown } from 'react-icons/bs'
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
-import { getUsersService } from '../../services/userServices'
+import { getUsersService } from '../../services'
 import { H2, Loading, WarningToaster } from '../commons'
 import { io, Socket } from 'socket.io-client'
 import { SERVER } from '../../app-config'
@@ -8,9 +8,7 @@ import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { typeRootState, typeUser } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { userChangeString } from '../../constants'
-import { UsersCard } from './'
-import { UsersNewUser } from './users/UsersNewUser'
-import { UsersSelector } from './users/UsersSelector'
+import { UsersCard, UsersNewUser, UsersSelector } from './users-subcomp'
 
 const socket: Socket = io(SERVER, { withCredentials: true })
 

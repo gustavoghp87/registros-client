@@ -4,6 +4,7 @@ import { typeConfig } from '../models'
 
 export const unauthenticatedConfig: typeConfig = {
     congregation: 0,
+    disabledEditMaps: false,
     googleBoardUrl: '',
     name: "",
     numberOfTerritories: 0

@@ -2,7 +2,7 @@ import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { emailPattern } from '../../../app-config'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../../store'
-import { sendInvitationForNewUserService } from '../../../services/configServices'
+import { sendInvitationForNewUserService } from '../../../services'
 import { typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 

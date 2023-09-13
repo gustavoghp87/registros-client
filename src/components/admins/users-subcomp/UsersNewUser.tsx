@@ -2,8 +2,7 @@ import { ButtonGroup, Container, ToggleButton } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { generalBlue } from '../../../constants'
 import { typeRootState } from '../../../models'
-import { UsersNewUserCreate } from './UsersNewUserCreate'
-import { UsersNewUserInvite } from './UsersNewUserInvite'
+import { UsersNewUserCreate, UsersNewUserInvite } from '.'
 import { useSelector } from 'react-redux'
 
 const radios = [

@@ -157,6 +157,7 @@ export const getUserByTokenService = async (token: string = ''): Promise<{ user:
         if (!data.config) {
             data.config = {
                 congregation: 0,
+                disabledEditMaps: false,
                 googleBoardUrl: '',
                 name: "",
                 numberOfTerritories: 0

@@ -1,10 +1,11 @@
 import { ConfigCreateHTHTerritories, ConfigSendInvitationNewCongregation, ConfigSetCongregationName, ConfigSetGoogleBoardUrl } from './config-subcomp'
-import { goToTop } from '../../services'
+import { goToTop, setDisableEditMapsService } from '../../services'
 import { H2 } from '../commons'
+import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 import { typeRootState } from '../../models'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { useSelector } from 'react-redux'
 
 const btnClasses = 'btn btn-general-blue btn-size12 d-block mx-auto mt-5 mb-0'
 
@@ -16,7 +17,24 @@ export const Config = () => {
     const [showInvitationForNewCongregation, setShowInvitationForNewCongregation] = useState(false)
     const [showSetCongregationName, setShowSetCongregationName] = useState(false)
     const [showSetGoogleBoardUrl, setShowSetGoogleBoardUrl] = useState(false)
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const setDisableEditMapsHandler = async () => {
+        dispatch(showLoadingModalReducer())
+        const success = await setDisableEditMapsService(!config.disabledEditMaps)
+        dispatch(hideLoadingModalReducer())
+        if (!success) {
+            dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'alert',
+                title: "Algo falló",
+                message: `No se pudo ${config.disabledEditMaps ? 'habilitar' : 'deshabilitar'} la edición de Mapas`,
+                animation: 2
+            }))
+            return
+        }
+        window.location.reload()
+    }
 
     useEffect(() => goToTop(), [])
 
@@ -38,6 +56,13 @@ export const Config = () => {
 
             <button className={btnClasses} style={btnStyles} onClick={() => setShowSetGoogleBoardUrl(true)}>
                 {!!config.googleBoardUrl ? "Modificar dirección de Tablero Google" : "Cargar dirección de Tablero Google"}
+            </button>
+
+            <button className={`btn ${config.disabledEditMaps ? 'btn-general-red' : 'btn-general-blue'} btn-size12 d-block mx-auto mt-5 mb-0`}
+                style={btnStyles}
+                onClick={() => setDisableEditMapsHandler()}
+            >
+                {config.disabledEditMaps ? "Habilitar edición de mapas" : "Deshabilitar edición de mapas"}
             </button>
 
             {config.congregation === 1 && <>

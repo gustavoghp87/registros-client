@@ -30,8 +30,23 @@ export const setCongregationNameService = async (name: string): Promise<boolean>
             body: JSON.stringify({ name })
         })
         const data: typeResponseData|null = await response.json()
-        if (!data?.success) return false
-        return data.success
+        return !!data?.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export const setDisableEditMapsService = async (disableEditMaps: boolean): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(base, {
+            method: 'PATCH',
+            headers: getHeaders(),
+            body: JSON.stringify({ disableEditMaps })
+        })
+        const data: typeResponseData|null = await response.json()
+        return !!data?.success
     } catch (error) {
         console.log(error)
         return false
@@ -47,8 +62,7 @@ export const setGoogleBoardUrlService = async (googleBoardUrl: string): Promise<
             body: JSON.stringify({ googleBoardUrl })
         })
         const data: typeResponseData|null = await response.json()
-        if (!data?.success) return false
-        return data.success
+        return !!data?.success
     } catch (error) {
         console.log(error)
         return false

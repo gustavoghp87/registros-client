@@ -1,7 +1,7 @@
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../../store'
-import { setCongregationNameService } from '../../../services/configServices'
+import { setCongregationNameService } from '../../../services'
 import { typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 

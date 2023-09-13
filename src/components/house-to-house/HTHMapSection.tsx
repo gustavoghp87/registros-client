@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Container } from 'react-bootstrap'
-import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '.'
+import { HTHBuildings, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHSetIsFinishedButton } from '.'
 import { generalBlue } from '../../constants'
 import { useSelector } from 'react-redux'
 import { typeBlock, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
@@ -22,7 +22,8 @@ export const HTHMapSection: FC<propsType> = ({
     territoryHTH,
     territoryNumber
 }) => {
-    const { isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
+    const { config, isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile,
         user: state.user
@@ -80,12 +81,12 @@ export const HTHMapSection: FC<propsType> = ({
                 territoryHTH={territoryHTH}
             />
             
-            {!showNewFaceOptions && !isEditingView && !isAddingNewFace && !isAddingNewBlock && !!territoryHTH.map.polygons?.length &&
+            {/* {!showNewFaceOptions && !isEditingView && !isAddingNewFace && !isAddingNewBlock && !!territoryHTH.map.polygons?.length &&
                 <HTHChangeFaceStateButtons
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryHTH.territoryNumber}
                 />
-            }
+            } */}
         </>}
 
         <Container
@@ -125,18 +126,18 @@ export const HTHMapSection: FC<propsType> = ({
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryHTH.territoryNumber}
                 />
-                <HTHObservations
+                {/* <HTHObservations
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryHTH.territoryNumber}
-                />
+                /> */}
                 <HTHDoNotCalls
                     currentFace={currentFace}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryHTH.territoryNumber}
                 />
 
-                {user.isAdmin && !isMobile &&
+                {!config.disabledEditMaps && user.isAdmin && !isMobile &&
                     <HTHDeleteFaceButton
                         currentFace={currentFace}
                         refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}

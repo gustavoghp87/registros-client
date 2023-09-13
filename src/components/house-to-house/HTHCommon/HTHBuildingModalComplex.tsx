@@ -1,18 +1,6 @@
 import { Dispatch, FC, SetStateAction } from 'react'
-import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeTerritoryNumber } from '../../../models'
-import { modifyHTHHouseholdService } from '../../../services'
-
-type droppableType = {
-    id: string
-    content: typeHTHHousehold | null
-}
-
-const getItems = (currentBuilding: typeHTHBuilding, door: number): droppableType[] =>
-    Array.from({ length: currentBuilding.numberOfLevels }, (_, level) => ({
-        id: `item-${level + door}-${new Date().getTime()}`,
-        content: currentBuilding.households.find(h => h.level === level && h.doorNumber === door) || null
-    })
-)
+import { getHthComplexBuilding, modifyHTHHouseholdService } from '../../../services'
+import { typeHTHBuilding, typePolygon, typeTerritoryNumber } from '../../../models'
 
 type propsType = {
     closeBuildingModalHandler: () => void
@@ -27,7 +15,7 @@ type propsType = {
 export const HTHBuildingModalComplex: FC<propsType> = ({
     congregation, currentBuilding, currentFace, refreshHTHTerritoryHandler, setIsLoading, territoryNumber
 }) => {
-    const state: droppableType[][] = Array.from({ length: currentBuilding.numberPerLevel }, (_, i) => getItems(currentBuilding, i))
+    const state = getHthComplexBuilding(currentBuilding)
 
     const changeCallingState = async (householdId: number, isChecked: boolean) => {
         if (!territoryNumber || !currentFace.block || !currentFace.face || !currentBuilding.streetNumber || !householdId) return
@@ -53,7 +41,7 @@ export const HTHBuildingModalComplex: FC<propsType> = ({
                                     style={{ display: 'flex', justifyContent: 'space-around' }}
                                 >
                                     
-                                    {item.content ?
+                                    {item.household ?
                                         <div
                                             className={`row d-flex justify-content-start pointer bg-dark text-white text-center my-2 `}
                                             style={{
@@ -68,19 +56,19 @@ export const HTHBuildingModalComplex: FC<propsType> = ({
                                                 width: '98px',
                                                 // whiteSpace: 'nowrap'
                                             }}
-                                            onClick={() => changeCallingState(item.content?.id || 0, !!item.content?.isChecked)}
+                                            onClick={() => changeCallingState(item.household?.id || 0, !!item.household?.isChecked)}
                                         >
                                             <div className="col-5">
-                                                <input id={`checkbox-${item.content.id}`}
+                                                <input id={`checkbox-${item.household.id}`}
                                                     type='checkbox'
                                                     className={'form-check-input checkbox-xs'}
-                                                    checked={item.content.isChecked}
+                                                    checked={item.household.isChecked}
                                                     onChange={() => {}}
                                                 />
                                             </div>
                                             <div className="col-7">
-                                                <label htmlFor={`checkbox-${item.content.id}`}
-                                                    className={item.content.doorName.length > 5 ? 'animate__animated animate__fadeInLeft animate__slow animate__infinite infinite' : ''}
+                                                <label htmlFor={`checkbox-${item.household.id}`}
+                                                    className={item.household.doorName.length > 5 ? 'animate__animated animate__fadeInLeft animate__slow animate__infinite infinite' : ''}
                                                     style={{
                                                         marginTop: '2px',
                                                         marginLeft: '5px',
@@ -88,7 +76,7 @@ export const HTHBuildingModalComplex: FC<propsType> = ({
                                                         whiteSpace: 'nowrap'
                                                     }}
                                                 >
-                                                    {item.content.doorName}
+                                                    {item.household.doorName}
                                                 </label>
                                             </div>
                                         </div>

@@ -1,6 +1,5 @@
 import { Card, Col, Row, SplitButton, Dropdown, Button } from 'react-bootstrap'
-import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService, putHyphens } from '../../services'
-import { getUsersService } from '../../services/userServices'
+import { getCampaignPacksService, closeCampaignPackService, assignCampaignPackByEmailService, enableAccesibilityModeService, putHyphens, getUsersService } from '../../services'
 import { H2, Loading } from '../commons'
 import { noAsignado } from '../../constants'
 import { setValuesAndOpenAlertModalReducer } from '../../store'

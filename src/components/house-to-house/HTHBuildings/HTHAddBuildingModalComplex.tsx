@@ -1,22 +1,10 @@
-import { addBuildingService } from '../../../services'
+import { addBuildingService, getHthNewComplexBuilding } from '../../../services'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { Dispatch, FC, FormEvent, SetStateAction, useEffect, useState } from 'react'
 import { Hr } from '../../commons'
 import { hthConfigOptions } from '../../../app-config'
-import { typeHTHBuilding, typeHTHHousehold, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typeHTHBuilding, typeHTHHousehold, typeHthNewComplexBuildingItem, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useSelector } from 'react-redux'
-
-type droppableType = {
-    id: string
-    content: string
-}
-
-const getItems = (levels: number, door: number): droppableType[] =>
-    Array.from({ length: levels }, (_, level) => ({
-        id: `item-${level + door}-${new Date().getTime()}`,
-        content: `Fila ${level + door + 1} Columna ${door + 1}`
-    })
-)
 
 type propsType = {
     closeHTHModalHandler: () => void
@@ -26,13 +14,15 @@ type propsType = {
     territoryNumber: typeTerritoryNumber
 }
 
-export const HTHAddBuildingModalComplex: FC<propsType> = ({ closeHTHModalHandler, currentFace, refreshHTHTerritoryHandler, setShowComplex, territoryNumber }) => {
-    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
+export const HTHAddBuildingModalComplex: FC<propsType> = ({
+    closeHTHModalHandler, currentFace, refreshHTHTerritoryHandler, setShowComplex, territoryNumber
+}) => {
     const [isSecondStage, setIsSecondStage] = useState(false)
     const [numberOfLevels, setNumberOfLevels] = useState<number>(4)
     const [numberPerLevel, setNumberPerLevel] = useState<number>(2)
-    const [state, setState] = useState<droppableType[][]>(Array.from({ length: numberPerLevel }, (_, i) => getItems(numberOfLevels, i)))
+    const [state, setState] = useState<typeHthNewComplexBuildingItem[][]>(getHthNewComplexBuilding(numberOfLevels, numberPerLevel))
     const [streetNumber, setStreetNumber] = useState(0)
+    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
 
     const submitHandler = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -106,8 +96,7 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({ closeHTHModalHandler
     }
 
     useEffect(() => {
-        setState(Array.from({ length: numberPerLevel }, (_, i) => getItems(numberOfLevels, i)))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        setState(getHthNewComplexBuilding(numberOfLevels, numberPerLevel))
     }, [numberOfLevels, numberPerLevel])
 
     return (
@@ -243,7 +232,7 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({ closeHTHModalHandler
                                                     {isSecondStage && document.getElementById(`checkbox-${column}-${row}`)?.classList.contains('bg-dark') ?
                                                         <input id={`input-${column}-${row}`} type='text' className={'form-control text-center'} />
                                                         :
-                                                        item.content
+                                                        item.label
                                                     }
                                                 </div>
                                             </div>

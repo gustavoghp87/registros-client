@@ -26,7 +26,7 @@ export const Footer = () => {
                     width: '100%'
                 }}>
                     <a href={'https://misericordiaweb.com/'} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
-                        Misericordia Web <span className={'text-white'} style={{ fontSize: isMobile ? '0.7rem' : '1rem', fontWeight: 'normal' }}>v 5.9</span>
+                        Misericordia Web <span className={'text-white'} style={{ fontSize: isMobile ? '0.7rem' : '1rem', fontWeight: 'normal' }}>v 6.0</span>
                     </a>
                 </div>
 

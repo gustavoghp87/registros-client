@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction } from 'react'
 import { emailPattern } from '../../../app-config'
 import { FloatingLabel, Form } from 'react-bootstrap'
-import { sendInvitationForNewUserService } from '../../../services/configServices'
+import { sendInvitationForNewUserService } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { useDispatch } from 'react-redux'
 

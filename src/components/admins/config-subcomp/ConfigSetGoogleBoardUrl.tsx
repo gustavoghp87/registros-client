@@ -1,7 +1,7 @@
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../../store'
-import { setGoogleBoardUrlService } from '../../../services/configServices'
+import { setGoogleBoardUrlService } from '../../../services'
 import { typeRootState } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 

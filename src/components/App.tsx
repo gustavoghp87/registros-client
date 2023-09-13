@@ -1,7 +1,7 @@
 import { AlertModal, DarkModeButton, FloatingWidgets, Footer, LoadingModal, NavBar } from './commons'
 import { breakingPoint } from '../constants'
 import { changeMobileModeReducer, logoutReducer, refreshUserReducer, setConfigurationReducer } from '../store'
-import { getUserByTokenService } from '../services/userServices'
+import { getUserByTokenService } from '../services'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Suspense, useEffect } from 'react'
 import { typeRootState } from '../models'

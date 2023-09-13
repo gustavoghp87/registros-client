@@ -1,4 +1,4 @@
-import { typeBlock, typeCoords, typeHousehold, typeHTHBuilding, typeHTHTerritory } from '../models'
+import { typeBlock, typeCoords, typeHousehold, typeHTHBuilding, typeHthComplexBuildingItem, typeHthNewComplexBuildingItem, typeHTHTerritory } from '../models'
 
 type typeHeaders = {
     'Accept': string
@@ -241,6 +241,24 @@ export const getFreeHouseholds = (building: typeHTHBuilding): number => {
     }
     return rest
 }
+
+export const getHthComplexBuilding = (currentBuilding: typeHTHBuilding): typeHthComplexBuildingItem[][] => (
+    Array.from({ length: currentBuilding.numberPerLevel }, (_, door) =>
+        Array.from({ length: currentBuilding.numberOfLevels }, (_, level) => ({
+            id: `item-${level + door}-${new Date().getTime()}`,
+            household: currentBuilding.households.find(h => h.level === level && h.doorNumber === door) || null
+        })
+    ))
+);
+
+export const getHthNewComplexBuilding = (numberOfLevels: number, numberPerLevel: number): typeHthNewComplexBuildingItem[][] => (
+    Array.from({ length: numberPerLevel }, (_, door) => (
+        Array.from({ length: numberOfLevels }, (_, level) => ({
+            id: `item-${level + door}-${new Date().getTime()}`,
+            label: `Fila ${level + door + 1} Columna ${door + 1}`
+        }))
+    ))
+);
 
 export const generateRandomEmail = () => {
     const domains = ['gmailx.com', 'yahoox.com', 'outlookx.com', 'examplex.com', 'randommailx.net']

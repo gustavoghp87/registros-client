@@ -1,5 +1,5 @@
 import { Card, Form, FloatingLabel } from 'react-bootstrap'
-import { changeEmailService } from '../../services/userServices'
+import { changeEmailService } from '../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { emailPattern } from '../../app-config'
 import { typeRootState } from '../../models'

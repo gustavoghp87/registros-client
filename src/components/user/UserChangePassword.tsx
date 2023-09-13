@@ -1,5 +1,5 @@
 import { Card, Form, FloatingLabel } from 'react-bootstrap'
-import { changePswService } from '../../services/userServices'
+import { changePswService } from '../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { typeRootState } from '../../models'
 import { useSelector } from 'react-redux'

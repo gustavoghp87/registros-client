@@ -31,7 +31,8 @@ export const HTHMap: FC<propsType> = ({
     selectBlockAndFaceHandler, setIsAddingNewBlock, setIsAddingNewFace, setIsCompletingNewBlock, setIsEditingView,
     setShowNewFaceOptions, setTerritoryHTH, showNewFaceOptions, territoryHTH
 }) => {
-    const { isMobile, user} = useSelector((state: typeRootState) => ({
+    const { config, isMobile, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
@@ -399,7 +400,7 @@ export const HTHMap: FC<propsType> = ({
         {user.isAdmin && !isMobile &&
             <div className={'d-flex justify-content-center'}>
 
-                {!isAddingNewFace && !isEditingView && !isAddingNewBlock && <>
+                {!config.disabledEditMaps && !isAddingNewFace && !isEditingView && !isAddingNewBlock && <>
                     <button className={'btn btn-general-blue mt-4 me-4'}
                         onClick={() => {
                             selectBlockAndFaceHandler()

@@ -1,4 +1,4 @@
-import { getBoardItemsService } from '../../services/boardServices'
+import { getBoardItemsService } from '../../services'
 import { H2, Hr, Loading, SideBar } from '../commons'
 import { goToTop } from '../../services'
 import { typeBoardItem, typeRootState } from '../../models'

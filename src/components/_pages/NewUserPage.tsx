@@ -1,7 +1,7 @@
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { emailPattern } from '../../app-config'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
-import { registerUserService } from '../../services/userServices'
+import { registerUserService } from '../../services'
 import { typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'

@@ -94,3 +94,13 @@ export type typeHTHTerritory = {
 }
 
 // export type typeCallingHTHState = 'Atendido' | 'No atendido' | 'No tocado' | 'Carta dejada'
+
+export type typeHthComplexBuildingItem = {
+    id: string
+    household: typeHTHHousehold | null
+}
+
+export type typeHthNewComplexBuildingItem = {
+    id: string
+    label: string
+}

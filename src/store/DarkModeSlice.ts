@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getDarkModeService, setDarkModeService } from '../services/userServices'
+import { getDarkModeService, setDarkModeService } from '../services'
 
 export const darkModeSlice = createSlice({
     name: 'darkMode',

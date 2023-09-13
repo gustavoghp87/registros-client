@@ -8,8 +8,7 @@ import { Socket } from 'socket.io-client'
 import { typeRootState, typeUser } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { userChangeString } from '../../../constants'
-
-const groups: number[] = [1, 2, 3, 4, 5, 6]
+import { userGroups } from '../../../app-config'
 
 type propsType = {
     currentUser: typeUser
@@ -361,7 +360,7 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
                         <div className={'mx-auto my-4'}>
                             {isMobile ? <>
                                 <Pagination className={'text-center d-flex justify-content-center mb-0'} size={'lg'}>
-                                    {[1,2,3].map((groupNumber: number) =>
+                                    {[1,2,3].map(groupNumber =>
                                         <Pagination.Item key={groupNumber} className={''}
                                             active={groupNumber === currentUser.group}
                                             onClick={() => {
@@ -373,7 +372,7 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
                                     )}
                                 </Pagination>
                                 <Pagination className={'text-center d-flex justify-content-center'} size={'lg'}>
-                                    {[4,5,6].map((groupNumber: number) =>
+                                    {[4,5,6].map(groupNumber =>
                                         <Pagination.Item key={groupNumber} className={''}
                                             active={groupNumber === currentUser.group}
                                             onClick={() => {
@@ -387,7 +386,7 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
                             </>
                             :
                                 <Pagination className={'text-center d-flex justify-content-center'} size={'lg'}>
-                                    {groups.map((groupNumber: number) =>
+                                    {userGroups.map(groupNumber =>
                                         <Pagination.Item key={groupNumber} className={''}
                                             active={groupNumber === currentUser.group}
                                             onClick={() => {

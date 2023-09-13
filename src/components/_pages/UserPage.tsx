@@ -1,4 +1,4 @@
-import { getUserByTokenService, logoutAllService } from '../../services/userServices'
+import { getUserByTokenService, logoutAllService } from '../../services'
 import { H2, Hr } from '../commons'
 import { logoutReducer, refreshUserReducer, setConfigurationReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { typeRootState } from '../../models'
