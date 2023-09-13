@@ -13,21 +13,25 @@ export const Logs = () => {
     const removeDuplicates = (logs: typeLogObj[]): typeLogObj[] => logs   // TODO
 
     useEffect(() => {
-        getAllLogsService().then((allLogsObj0: typeAllLogsObj|null) => {
-            setIsLoading(false)
-            if (!allLogsObj0) return
-            setLogs([
-                //{ logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.campaignLogs?.logs)), title: "Campaña 2022" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.errorLogs?.logs)), title: "Errores generales de la App" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.loginLogs?.logs)), title: "Ingresos a la App" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.userLogs?.logs)), title: "Cambios en los Usuarios" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.telephonicStateLogs?.logs)), title: "Cambios en estados de Territorios de la Telefónica" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.telephonicLogs?.logs)), title: "Llamados de Telefónica" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseAdminLogs?.logs)), title: "Casa en casa - Admins" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseLogs?.logs)), title: "Casa en casa" },
-                { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.configLogs?.logs)), title: "Cambios en la configuración" },
-            ])
-        })
+        const exec = () => {
+            getAllLogsService().then((allLogsObj0: typeAllLogsObj|null) => {
+                setIsLoading(false)
+                if (!allLogsObj0) return
+                setLogs([
+                    //{ logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.campaignLogs?.logs)), title: "Campaña 2022" },
+                    { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.errorLogs?.logs)), title: "Errores generales de la App" },
+                    { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.loginLogs?.logs)), title: "Ingresos a la App" },
+                    { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.userLogs?.logs)), title: "Cambios en los Usuarios" },
+                    { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.telephonicStateLogs?.logs)), title: "Cambios en estados de Territorios de la Telefónica" },
+                    { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.telephonicLogs?.logs)), title: "Llamados de Telefónica" },
+                    { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseAdminLogs?.logs)), title: "Casa en casa - Admins" },
+                    { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.houseToHouseLogs?.logs)), title: "Casa en casa" },
+                    { logs: removeDuplicates(sortAndSliceLogsArray(allLogsObj0.configLogs?.logs)), title: "Cambios en la configuración" },
+                ])
+            })
+        }
+        exec()
+        setInterval(() => exec(), 10000)
         return () => setLogs(undefined)
     }, [])
 
