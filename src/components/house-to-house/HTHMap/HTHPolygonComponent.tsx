@@ -39,7 +39,7 @@ export const HTHPolygonComponent: FC<propsType> = ({
     }, [polygon])
 
     useEffect(() => {
-        setPolygonColor(polygon.completionData?.isFinished ? 'black' : polygon.color ?? generalBlue)
+        setPolygonColor(!config.isDisabledCloseHthFaces && polygon.completionData?.isFinished ? 'black' : polygon.color ?? generalBlue)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentFace, polygon.completionData, polygon.id])
 
@@ -117,7 +117,7 @@ export const HTHPolygonComponent: FC<propsType> = ({
             }}
             onMouseOut={() => {
                 if (isEditingView || isAddingPolygon || !ref.current) return
-                setPolygonColor(polygon.completionData?.isFinished ? 'black' : polygon.color ?? generalBlue)
+                setPolygonColor(!config.isDisabledCloseHthFaces && polygon.completionData?.isFinished ? 'black' : polygon.color ?? generalBlue)
                 setShowInfoWindow(false)
             }}
             options={{

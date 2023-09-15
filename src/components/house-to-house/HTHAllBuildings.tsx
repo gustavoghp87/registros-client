@@ -1,7 +1,6 @@
-import { FC, Fragment, useEffect, useState } from 'react'
+import { FC, Fragment, useEffect, useMemo, useState } from 'react'
 import { FloatingLabel, Form, ListGroup } from 'react-bootstrap'
 import { getFreeHouseholds, timeConverter } from '../../services'
-import { Hr } from '../commons'
 import { HTHBuildingModal } from '.'
 import { typeHTHBuilding, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useSelector } from 'react-redux'
@@ -19,10 +18,17 @@ export const HTHAllBuildings: FC<propsType> = ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
     }))
+    const [buildingAddress, setBuildingAddress] = useState("")
     const [currentBuilding, setCurrentBuilding] = useState<typeHTHBuilding|null>(null)
     const [currentFace, setCurrentFace] = useState<typePolygon|null>(null)
-    const [buildingAddress, setBuildingAddress] = useState("")
     const [selectedAddress, setSelectedAddress] = useState("")
+
+    const allBuildings: (typeHTHBuilding & { face: typePolygon })[] = useMemo(() =>
+        territoryHTH.map.polygons
+            .map(p => p.buildings ? p.buildings.map(b => ({ ...b, face: p})) : [])
+            .flat()
+            .sort((a, b) => a.face.street.localeCompare(b.face.street) || (a.streetNumber - b.streetNumber))
+    , [territoryHTH.map.polygons])
 
     const closeBuildingModalHandler = () => {
         setCurrentBuilding(null)
@@ -46,80 +52,79 @@ export const HTHAllBuildings: FC<propsType> = ({
         )
     }, [currentFace])
 
-    return (
-        <>
-            {!!currentFace && !!currentBuilding &&
-                <HTHBuildingModal
-                    closeBuildingModalHandler={closeBuildingModalHandler}
-                    congregation={user.congregation}
-                    currentBuilding={currentBuilding}
-                    currentFace={currentFace}
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territoryNumber={territoryNumber}
-                />
-            }
+    return (<>
+        {currentFace && currentBuilding &&
+            <HTHBuildingModal
+                closeBuildingModalHandler={closeBuildingModalHandler}
+                congregation={user.congregation}
+                currentBuilding={currentBuilding}
+                currentFace={currentFace}
+                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                territoryNumber={territoryNumber}
+            />
+        }
 
-            {!!territoryHTH?.map.polygons?.some(x => !!x.buildings?.length) ?
-                <>
-                <Hr styles={{ marginTop: '100px', marginBottom: '30px' }} />
-                <div className={'container maxw-400'}>
-                    <h1 className={`text-center mb-5 ${isDarkMode ? 'text-white' : ''}`}>
-                        BUSCAR EDIFICIO
-                    </h1>
-                    <FloatingLabel
-                        className={'mb-3 text-dark'}
-                        label={"Dirección"}
-                    >
-                        <Form.Control
-                            type={'text'}
-                            className={'form-control'}
-                            placeholder={""}
-                            value={buildingAddress}
-                            onChange={e => setBuildingAddress((e.target as HTMLInputElement).value)}
-                            autoFocus
-                        />
-                    </FloatingLabel>
-                    <ListGroup as={'ul'}>
-                        {territoryHTH.map.polygons.map(p => <Fragment key={p.id}>
-                            {!!p.buildings?.length && p.buildings.map(b => <Fragment key={p.street + "-" + b.streetNumber}>
-                                {`${p.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) && (
-                                    () => {
-                                        const ultVez = b.households.map(h => h.onDates?.length ? h.onDates[h.onDates.length - 1] : 0).sort((a, b) => a - b)?.at(-1)
-                                        return (
-                                            <ListGroup.Item
-                                                as={'li'}
-                                                className={'pointer bg-light bg-gradient hover-primary'}
-                                                active={selectedAddress === `${p.street} ${b.streetNumber}`}
-                                                onClick={() => {
-                                                    setSelectedAddress(`${p.street} ${b.streetNumber}`)
-                                                    setCurrentFace(p)
-                                                    setCurrentBuilding(b)
-                                                }}
-                                            >
-                                                <div className='row py-2'>
-                                                    <h5 className='text-center'>
-                                                        {p.street} {b.streetNumber}
-                                                    </h5>
-                                                </div>
-                                                <div className='row text-center'>
-                                                    <span className='text-center'>
-                                                        {getFreeHouseholds(b)} libres | {ultVez ? timeConverter(ultVez) : '-'}
-                                                    </span>
-                                                </div>
-                                            </ListGroup.Item>
-                                        )
-                                    })()    
-                                }
-                            </Fragment>)}
-                        </Fragment>)}
-                    </ListGroup>
-                </div>
-                </>
-                :
-                <h4 className={`text-center mt-4 ${isDarkMode ? 'text-white' : ''}`}>
-                    No hay Edificios cargados en este Territorio
-                </h4>
-            }
-        </>
-    )
+        {!!allBuildings?.length ?
+            <>
+            <div className={'container maxw-400'}>
+                <h1 className={`text-center mb-5 ${isDarkMode ? 'text-white' : ''}`}>
+                    BUSCAR EDIFICIO
+                </h1>
+                <FloatingLabel
+                    className={'mb-3 text-dark'}
+                    label={"Dirección"}
+                >
+                    <Form.Control
+                        type={'text'}
+                        className={'form-control'}
+                        placeholder={""}
+                        value={buildingAddress}
+                        onChange={e => setBuildingAddress((e.target as HTMLInputElement).value)}
+                        autoFocus
+                    />
+                </FloatingLabel>
+                <ListGroup as={'ul'}>
+                    {allBuildings.map(b =>
+                        <Fragment key={b.face.street + "-" + b.streetNumber}>
+                            {`${b.face.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) && (
+                                () => {
+                                    const lastTime = b.households
+                                        .map(h => h.onDates?.length ? h.onDates[h.onDates.length - 1] : 0)
+                                        .sort((a, b) => a - b)?.at(-1)
+                                    return (
+                                        <ListGroup.Item
+                                            as={'li'}
+                                            className={'pointer bg-light bg-gradient hover-primary'}
+                                            active={selectedAddress === `${b.face.street} ${b.streetNumber}`}
+                                            onClick={() => {
+                                                setSelectedAddress(`${b.face.street} ${b.streetNumber}`)
+                                                setCurrentFace(b.face)
+                                                setCurrentBuilding(b)
+                                            }}
+                                        >
+                                            <div className='row py-2'>
+                                                <h5 className='text-center'>
+                                                    {b.face.street} {b.streetNumber}
+                                                </h5>
+                                            </div>
+                                            <div className='row text-center'>
+                                                <span className='text-center'>
+                                                    {getFreeHouseholds(b)} libres | {lastTime ? timeConverter(lastTime) : '-'}
+                                                </span>
+                                            </div>
+                                        </ListGroup.Item>
+                                    )
+                                })()
+                            }
+                        </Fragment>
+                    )}
+                </ListGroup>
+            </div>
+            </>
+            :
+            <h4 className={`text-center mt-4 ${isDarkMode ? 'text-white' : ''}`}>
+                No hay Edificios cargados en este Territorio
+            </h4>
+        }
+    </>)
 }

@@ -1,6 +1,6 @@
 import { getHTHTerritoryService, goToTop } from '../../services'
-import { H2, Loading, WarningToaster } from '../commons'
-import { HTHAllBuildings, HTHDoNotTouchs, HTHMapSection } from '../house-to-house'
+import { H2, Hr, Loading, WarningToaster } from '../commons'
+import { HTHAllBuildings, HTHAllDoNotCalls, HTHMapSection } from '../house-to-house'
 import { hthChangeString } from '../../constants'
 import { io, Socket } from 'socket.io-client'
 import { SERVER } from '../../app-config'
@@ -135,18 +135,18 @@ export const HouseToHousePage = () => {
             />
         </>}
 
-        {territoryHTH &&
-            <HTHDoNotTouchs
+        {territoryHTH && <>
+            <Hr classes={'my-5'} />
+            <HTHAllDoNotCalls
                 hthTerritory={territoryHTH}
             />
-        }
-
-        {territoryHTH &&
+            <Hr classes={'my-5'} />
             <HTHAllBuildings
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                 territoryHTH={territoryHTH}
                 territoryNumber={territoryNumber}
             />
-        }
+            <Hr classes={'mt-5'} />
+        </>}
     </>)
 }

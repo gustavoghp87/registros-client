@@ -47,7 +47,7 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
         socket.on(userChangeString, (updatedUser: typeUser) => {
             if (!updatedUser || updatedUser.congregation !== user.congregation) return
             setIsLoading(true)
-            getUsersService().then((users: typeUser[]|null) => {
+            getUsersService().then(users => {
                 setIsLoading(false)
                 if (users) setUsers(users)
             })
@@ -107,13 +107,13 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
             />
         }
 
-        {!showNewUser && !!usersToShow?.length && usersToShow.map((user: typeUser) => (
+        {!showNewUser && !!usersToShow?.length && usersToShow.map(user =>
             <UsersCard
                 key={user.id}
                 currentUser={user}
                 setIsLoading={setIsLoading}
                 socket={socket}
             />
-        ))}
+        )}
     </>)
 }

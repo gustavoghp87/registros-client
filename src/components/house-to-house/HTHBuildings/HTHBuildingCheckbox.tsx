@@ -12,6 +12,7 @@ type propsType = {
     isChecked: boolean
     isManager: boolean
     level: number|null
+    onDates: number[]
     refreshHTHTerritoryHandler: () => void
     setIsLoading: Dispatch<SetStateAction<boolean>>
     streetNumber: number
@@ -19,13 +20,13 @@ type propsType = {
 }
 
 export const HTHBuildingCheckbox: FC<propsType> = ({
-    block, congregation, doorName,
-    face, id, isChecked, isManager, level, refreshHTHTerritoryHandler,
-    setIsLoading, streetNumber, territoryNumber
+    block, congregation, doorName, face, id, isChecked, isManager, level,
+    onDates, refreshHTHTerritoryHandler, setIsLoading, streetNumber, territoryNumber
 }) => {
 
-    const changeCallingState = async () => {
+    const changeCallingStateHandler = async () => {
         if (!territoryNumber || !block || !face || !streetNumber || !id) return
+        if (isChecked && !onDates?.some(x => Date.now() - x < 86400000 && new Date(x).getDay() === new Date().getDay())) return
         setIsLoading(true)
         const success = await modifyHTHHouseholdService(congregation, territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager)
         if (!success) {
@@ -55,7 +56,7 @@ export const HTHBuildingCheckbox: FC<propsType> = ({
                     level === 0 ? `PB ${doorName}` : `${level}° ${doorName}`
                 }
                 checked={isChecked}
-                onChange={() => changeCallingState()}
+                onChange={() => changeCallingStateHandler()}
             />
         </Form.Group>
     )

@@ -1,3 +1,4 @@
+import { BsArrowBarDown } from 'react-icons/bs'
 import { FC, useState } from 'react'
 import { generalBlue } from '../../../constants'
 import { HTHDoNotCallsForm, HTHDoNotCallsItem } from '../'
@@ -23,18 +24,14 @@ export const HTHDoNotCalls: FC<propsType> = ({ currentFace, refreshHTHTerritoryH
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>
 
             <h1 className={'py-3 text-center text-white d-block mx-auto pointer rounded-3'}
-                onClick={() => setShow(x => !x)}
                 style={{
                     backgroundColor: !!currentFace.doNotCalls?.length ? generalBlue : 'gray',
                     marginBottom: '50px',
                     width: isMobile ? '100%' : '90%'
                 }}
+                onClick={() => setShow(x => !x)}
             >
-                {!!currentFace.doNotCalls?.length ?
-                    'NO TOCAR'
-                    :
-                    'No hay No Tocar en esta cara'
-                }
+                {!!currentFace.doNotCalls?.length ? 'NO TOCAR' : 'No hay No Tocar en esta cara'} <BsArrowBarDown size={isMobile ? '2rem' : '1.4rem'} />
             </h1>
 
             {show &&

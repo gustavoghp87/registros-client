@@ -255,7 +255,7 @@ export const getHthNewComplexBuilding = (numberOfLevels: number, numberPerLevel:
     Array.from({ length: numberPerLevel }, (_, door) => (
         Array.from({ length: numberOfLevels }, (_, level) => ({
             id: `item-${level + door}-${new Date().getTime()}`,
-            label: `Fila ${level + door + 1} Columna ${door + 1}`
+            label: `Fila ${level + 1} Columna ${door + 1}`
         }))
     ))
 );

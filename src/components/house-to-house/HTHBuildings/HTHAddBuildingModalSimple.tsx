@@ -216,7 +216,7 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler,
                                 <Form.Check
                                     type={'checkbox'}
                                     className={'checkbox-3'}
-                                    label={'Agregar un Portería'}
+                                    label={'Portería separado'}
                                     checked={hasManager}
                                     onChange={() => {}}
                                 />
@@ -263,10 +263,18 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler,
                                          .sort((a, b) => reverseOrderX ? b - a : a - b)
                                          .map((doorNumber, index1) =>
                                             <HTHAddBuildingCheckbox key={doorNumber}
-                                                doorName={getHouseholdDoorBell(doorNumber, index, reverseOrderX ? hthConfigOptions.buildingDoorNumbers.slice(0, numberPerLevel).length - index1 - 1: index1, hasContinuousNumbers, hasCharacters, numberPerLevel, hasNn)}
+                                                doorName={getHouseholdDoorBell(
+                                                    doorNumber,
+                                                    index,
+                                                    reverseOrderX ? numberPerLevel - index1 - 1 : index1,
+                                                    hasContinuousNumbers,
+                                                    hasCharacters,
+                                                    numberPerLevel,
+                                                    hasNn
+                                                )}
                                                 doorNumber={doorNumber}
-                                                level={level}
                                                 isManager={false}
+                                                level={level}
                                             />
                                         )}
                                     </div>
@@ -280,8 +288,8 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler,
                                 <HTHAddBuildingCheckbox
                                     doorName={'Portería'}
                                     doorNumber={0}
-                                    level={null}
                                     isManager={true}
+                                    level={null}
                                 />
                             </div>
                         }

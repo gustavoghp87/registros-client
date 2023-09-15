@@ -32,7 +32,7 @@ export const StatisticsHTH = () => {
         })
     }, [dispatch])
 
-    if (isLoading) return <Loading />
+    if (isLoading) return <Loading mt={'50px'} />
 
     return (
         <div className='container text-center'>
@@ -43,7 +43,7 @@ export const StatisticsHTH = () => {
                         Cantidad total de edificios: {hthTerritories.map(t => t.map.polygons.map(x => x.buildings?.length || 0).reduce((a, n) => a + n, 0)).reduce((a, n) => a + n, 0)}
                     </h3>
                     <Hr classes={'mt-5 mx-5'} />
-                    {hthTerritories.map(t =>
+                    {hthTerritories.sort((a, b) => parseInt(a.territoryNumber) - parseInt(b.territoryNumber)).map(t =>
                         <div className={'my-5'}>
                             <h3 className={isDarkMode ? 'text-white' : ''}>
                                 Territorio {t.territoryNumber}

@@ -39,6 +39,7 @@ export const HTHBuildingModalSimple: FC<propsType> = ({
                                     isChecked={currentHousehold.isChecked}
                                     isManager={false}
                                     level={currentHousehold.level}
+                                    onDates={currentHousehold.onDates}
                                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                                     setIsLoading={setIsLoading}
                                     streetNumber={currentBuilding.streetNumber}
@@ -51,7 +52,7 @@ export const HTHBuildingModalSimple: FC<propsType> = ({
                 </div>
             )}
         </div>
-        {!!currentBuilding.manager &&
+        {currentBuilding.manager &&
             <div className={'row d-flex justify-content-center align-self-center mb-3 mx-1'}>
                 <HTHBuildingCheckbox
                     block={currentFace.block}
@@ -62,6 +63,7 @@ export const HTHBuildingModalSimple: FC<propsType> = ({
                     isChecked={currentBuilding.manager.isChecked}
                     isManager={true}
                     level={null}
+                    onDates={currentBuilding.manager.onDates}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     setIsLoading={setIsLoading}
                     streetNumber={currentBuilding.streetNumber}

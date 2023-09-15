@@ -16,6 +16,7 @@ export const LoginPage = () => {
     const [email, setEmail] = useState("")
     const [loading, setLoading] = useState(false)
     const [password, setPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
     const { executeRecaptcha } = useGoogleReCaptcha()
     const dispatch = useDispatch()
 
@@ -159,7 +160,7 @@ export const LoginPage = () => {
                         id={"emailInput"}
                         className={'form-control'}
                         autoComplete={'email'}
-                        placeholder={""}
+                        placeholder={email}
                         value={email}
                         onChange={e => setEmail((e.target as HTMLInputElement).value)}
                     />
@@ -170,10 +171,10 @@ export const LoginPage = () => {
                     className={'mb-3 text-dark'}
                 >
                     <Form.Control
-                        type={'password'}
+                        type={showPassword ? 'text' : 'password'}
                         id={"passwordInput"}
                         className={'form-control'}
-                        placeholder={""}
+                        placeholder={password}
                         value={password}
                         onChange={e => setPassword((e.target as HTMLInputElement).value)}
                         onKeyDown={e => e.key === 'Enter' ? loginHandler() : null }
@@ -190,6 +191,20 @@ export const LoginPage = () => {
                 </button>
 
                 <p className={'text-end mt-3'}
+                    style={{
+                        color: '#0000cd',
+                        fontSize: '1rem',
+                        margin: '0 0 6px',
+                        textDecoration: 'underline'
+                    }}
+                >
+                    <span className={`pointer ${isDarkMode ? 'text-white' : ''}`}
+                        onClick={() => setShowPassword(x => !x)}
+                    >
+                        Mostrar contraseña
+                    </span>
+                </p>
+                <p className={'text-end mt-2'}
                     style={{
                         color: '#0000cd',
                         fontSize: '1rem',

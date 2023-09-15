@@ -1,3 +1,4 @@
+import { BsArrowBarDown } from 'react-icons/bs'
 import { FC, useState } from 'react'
 import { generalBlue } from '../../../constants'
 import { Hr } from '../../commons'
@@ -22,51 +23,45 @@ export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHa
         <div style={{ marginTop: '100px', marginBottom: '50px' }}>
 
             <h1 className={'py-3 text-center text-white d-block mx-auto pointer rounded-3'}
-                onClick={() => setShow(x => !x)}
                 style={{
                     backgroundColor: !!currentFace.buildings?.length ? generalBlue : 'gray',
                     marginBottom: '50px',
                     width: isMobile ? '100%' : '90%'
                 }}
+                onClick={() => setShow(x => !x)}
             >
-                {!!currentFace.buildings?.length ? "EDIFICIOS" : "No hay edificios en esta cara"}
+                {!!currentFace.buildings?.length ? "EDIFICIOS" : "No hay edificios en esta cara"} <BsArrowBarDown size={isMobile ? '2rem' : '1.4rem'} />
             </h1>
 
-            {show &&
-                <>
-                    {user.isAdmin &&
-                        <>
-                            <HTHAddBuilding
-                                currentFace={currentFace}
-                                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                                territoryNumber={territoryNumber}
-                            />
-                            <Hr classes={'mx-auto my-4'} styles={{ maxWidth: '500px' }} />
-                        </>
-                    }
+            {show && <>
+                {user.isAdmin && <>
+                    <HTHAddBuilding
+                        currentFace={currentFace}
+                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                        territoryNumber={territoryNumber}
+                    />
+                    <Hr classes={'mx-auto my-4'} styles={{ maxWidth: '500px' }} />
+                </>}
 
-                    {!!currentFace.buildings?.length &&
-                        <>
-                            {currentFace.buildings.map(building =>
-                                <HTHBuildingItem key={building.streetNumber}
-                                    building={building}
-                                    currentFace={currentFace}
-                                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                                    territoryNumber={territoryNumber}
-                                />
-                            )}
+                {!!currentFace.buildings?.length && <>
+                    {currentFace.buildings.map(building =>
+                        <HTHBuildingItem key={building.streetNumber}
+                            building={building}
+                            currentFace={currentFace}
+                            refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                            territoryNumber={territoryNumber}
+                        />
+                    )}
 
-                            <Hr />
+                    <Hr />
 
-                            <HTHShareBuildingButton
-                                currentFace={currentFace}
-                                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                                territoryNumber={territoryNumber}
-                            />
-                        </>
-                    }
-                </>
-            }
+                    <HTHShareBuildingButton
+                        currentFace={currentFace}
+                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                        territoryNumber={territoryNumber}
+                    />
+                </>}
+            </>}
         </div>
     )
 }

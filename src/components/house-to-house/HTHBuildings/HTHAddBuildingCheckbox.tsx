@@ -5,13 +5,11 @@ import { typeHTHHousehold } from '../../../models'
 type propsType = {
     doorName: string
     doorNumber: number
-    level: number|null
     isManager: boolean
+    level: number|null
 }
 
-export const HTHAddBuildingCheckbox: FC<propsType> = ({
-    doorName, doorNumber, level, isManager
-}) => {
+export const HTHAddBuildingCheckbox: FC<propsType> = ({ doorName, doorNumber, isManager, level }) => {
     const [isChecked, setIsChecked] = useState(true)
 
     const inputValue: typeHTHHousehold = useMemo(() => {

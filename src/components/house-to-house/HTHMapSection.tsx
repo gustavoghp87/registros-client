@@ -105,14 +105,12 @@ export const HTHMapSection: FC<propsType> = ({
             >
                 <span> TERRITORIO {territoryNumber} </span>
                 
-                {currentFace &&
-                    <>
-                        <br />
-                        <span> Manzana {currentFace.block} </span>
-                        <br />
-                        <span> Cara {currentFace.face} - {currentFace.street} </span>
-                    </>
-                }
+                {currentFace && <>
+                    <br />
+                    <span> Manzana {currentFace.block} </span>
+                    <br />
+                    <span> Cara {currentFace.face} - {currentFace.street} </span>
+                </>}
             </h1>
             
             {territoryHTH && currentFace && <>

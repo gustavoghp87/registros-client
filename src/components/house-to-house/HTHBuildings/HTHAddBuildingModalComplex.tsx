@@ -38,10 +38,11 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({
             const element = document.getElementById(`checkbox-${obj.column}-${obj.row}`)
             if (element?.classList.contains('bg-dark')) {
                 const input = document.getElementById(`input-${obj.column}-${obj.row}`) as HTMLInputElement
-                if (input) {
-                    if (input.value) {
+                if (input?.value) {
+                    const doorName = input.value.trim()
+                    if (doorName) {
                         households.push({
-                            doorName: input.value.length > 20 ? input.value.substring(0, 20) : input.value,
+                            doorName: doorName.length > 20 ? doorName.substring(0, 20) : doorName,
                             doorNumber: obj.column,
                             id: 0,
                             isChecked: false,
@@ -57,7 +58,7 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({
             }
         })
         if (!areComplete) {
-            return alert("Completar todos los campos")
+            return alert("Completar todos los timbres")
         }
         if (!territoryNumber || !currentFace.street || !streetNumber || !households?.length) {
             alert("Faltan datos")
@@ -159,14 +160,14 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({
                             className={'font-weight-bolder m-2'}
                             style={{ width: '130px' }}
                         >
-                            <Form.Label> Pisos </Form.Label>
+                            <Form.Label> Filas </Form.Label>
                             <Form.Select
                                 className={'text-center'}
-                                value={numberOfLevels === 0 ? 'Solo PB' : numberOfLevels}
+                                value={numberOfLevels}
                                 onChange={e => setNumberOfLevels(parseInt(e.target.value))}
                             >
                                 {hthConfigOptions.buildingLevels.map(level =>
-                                    <option key={level}> {level ? level : 'Solo PB'} </option>
+                                    <option key={level}> {level + 1} </option>
                                 )}
                             </Form.Select>
                         </Form.Group>
@@ -175,7 +176,7 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({
                             className={'font-weight-bolder m-2'}
                             style={{ width: '160px' }}
                         >
-                            <Form.Label> Deptos. por piso </Form.Label>
+                            <Form.Label> Columnas </Form.Label>
                             <Form.Select
                                 className={'text-center'}
                                 onChange={(event: any) => setNumberPerLevel(isNaN(event.target.value) ? 0 : parseInt(event.target.value))}
@@ -245,7 +246,7 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({
                     
                     <Modal.Footer className={'justify-content-center align-items-center'}>
                         <Button variant={'success'} type={'submit'} style={{ height: '40px', width: '120px' }} disabled={!streetNumber}>
-                            {isSecondStage ? 'SIGUIENTE' : 'ACEPTAR'}
+                            {isSecondStage ? 'ACEPTAR' : 'SIGUIENTE'}
                         </Button>
                         <Button variant={'secondary'} style={{ height: '40px', width: '120px' }} onClick={() => closeHTHModalHandler()}>
                             CANCELAR
