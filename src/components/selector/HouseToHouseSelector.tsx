@@ -12,69 +12,68 @@ export const HouseToHouseSelector = () => {
         user: state.user
     }))
     const [show, setShow] = useState(false)
-    const [showAll, setShowAll] = useState(false)
+    const [showAll, setShowAll] = useState(!user.hthAssignments?.length)
     const [showGeolocationModal, setShowGeolocationModal] = useState(false)
 
-    const setShowGeolocationModalHandler = (): void => setShowGeolocationModal(false)
+    return (<>
 
-    return (
-        <>
-            <H2 title={"CASA EN CASA"} />
+        <H2 title={"CASA EN CASA"} />
 
-            {showGeolocationModal &&
-                <GeoLocationModal 
-                    setShowGeolocationModalHandler={setShowGeolocationModalHandler}
-                />
-            }
+        {showGeolocationModal &&
+            <GeoLocationModal 
+                closeGeolocationModalHandler={() => setShowGeolocationModal(false)}
+            />
+        }
 
-            <button className={`btn btn-general-blue w-100 mt-4`}
-                onClick={() => setShow(x => !x)}
+        <button className={`btn btn-general-blue w-100 mt-4`}
+            onClick={() => setShow(x => !x)}
+        >
+            {show ? 'Ocultar' : 'Ver territorios'}
+        </button>
+
+        {show && <>
+            <button className={`btn btn-general-blue d-block mx-auto my-4 ${isMobile ? 'w-75' : 'w-25'}`}
+                onClick={() => setShowGeolocationModal(true)}
             >
-                {show === true ? 'Ocultar' : 'Ver territorios'}
+                Dónde Estoy
             </button>
 
-            {show && <>
-                <button className={`btn btn-general-blue d-block mx-auto my-4 ${isMobile ? 'w-75' : 'w-25'}`}
-                    onClick={() => setShowGeolocationModal(true)}
+            {!!user.hthAssignments?.length && user.hthAssignments.length < config.numberOfTerritories &&
+                <button className={`btn btn-general-blue d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}
+                    onClick={() => setShowAll(x => !x)}
                 >
-                    Dónde Estoy
+                    {showAll ? 'Ver solo los asignados' : 'Ver todos los territorios'}
                 </button>
+            }
 
-                {user.isAdmin && user.hthAssignments?.length !== config.numberOfTerritories &&
-                    <button className={`btn btn-general-blue d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}
-                        onClick={() => setShowAll(x => !x)}
-                    >
-                        {showAll ? 'Ver solo los asignados' : 'Ver todos los territorios'}
-                    </button>
-                }
+            {!!user.hthAssignments?.length ?
+                <>
+                    {user.hthAssignments.length === config.numberOfTerritories &&
+                        <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
+                            Este usuario tiene asignados todos los territorios de Casa en Casa
+                        </h3>
+                    }
+                </>
+                :
+                <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
+                    No hay territorios asignados de Casa en Casa
+                </h3>
+            }
 
-                {showAll ?
-                    <TerritoryNumberBlock
-                        classes={'btn-general-blue animate__animated animate__rubberBand'}
-                        territories={Array.from({ length: config.numberOfTerritories }, (_: any, index: number) => index + 1)}
-                        url={'/casa-en-casa'}
-                        showForecast={true}
-                    />
+            <TerritoryNumberBlock
+                classes={'btn-general-blue animate__animated animate__rubberBand'}
+                showForecast={true}
+                territories={showAll ?
+                    Array.from({ length: config.numberOfTerritories }, (_, index) => index + 1)
                     :
-                    <>
-                        {!!user.hthAssignments?.length ?
-                            <TerritoryNumberBlock
-                                classes={'btn-general-blue animate__animated animate__rubberBand'}
-                                showForecast={true}
-                                territories={[...user.hthAssignments].sort((a: number, b: number) => a - b)}
-                                url={'/casa-en-casa'}
-                            />
-                            :
-                            <h3 className={`text-center my-5 ${isDarkMode ? 'text-white' : ''}`}>
-                                No hay territorios de Casa en Casa asignados <br /> Hablar con el grupo de territorios
-                            </h3>
-                        }
-                    </>
+                    [...user.hthAssignments].sort((a, b) => a - b)
                 }
-            </>}
+                url={'/casa-en-casa'}
+            />
 
-            {!show && <><br/><br/><br/></>}
+        </>}
 
-        </>
-    )
+        {!show && <><br/><br/><br/></>}
+
+    </>)
 }

@@ -4,10 +4,11 @@ import { typeConfig } from '../models'
 
 export const unauthenticatedConfig: typeConfig = {
     congregation: 0,
+    googleBoardUrl: '',
     isDisabledCloseHthFaces: true,
     isDisabledEditHthMaps: true,
+    isDisabledHthBuildingsForUnassignedUsers: true,
     isDisabledHthFaceObservations: true,
-    googleBoardUrl: '',
     name: "",
     numberOfTerritories: 0
 }

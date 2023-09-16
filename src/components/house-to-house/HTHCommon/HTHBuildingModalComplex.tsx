@@ -32,7 +32,7 @@ export const HTHBuildingModalComplex: FC<propsType> = ({
     }
 
     return (
-        <div className={'d-flex justify-content-center my-5'}>
+        <div className={'d-flex justify-content-center my-4'}>
             <div className={'d-flex'}  style={{ maxWidth: '100%', overflowX: 'auto' }}>
                 {state.map((el, column) =>
                     <div key={column} className={'justify-content-center'}>

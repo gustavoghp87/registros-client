@@ -53,6 +53,22 @@ export const setDisableCloseHthFacesService = async (disableCloseHthFaces: boole
     }
 }
 
+export const setDisableHthBuildingsForUnassignedUsersService = async (disableHthBuildingsForUnassignedUsers: boolean): Promise<boolean> => {
+    if (!getTokenService()) return false
+    try {
+        const response = await fetch(base, {
+            method: 'PATCH',
+            headers: getHeaders(),
+            body: JSON.stringify({ disableHthBuildingsForUnassignedUsers })
+        })
+        const data: typeResponseData|null = await response.json()
+        return !!data?.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 export const setDisableHthFaceObservatiosService = async (disableHthFaceObservations: boolean): Promise<boolean> => {
     if (!getTokenService()) return false
     try {

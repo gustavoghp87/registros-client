@@ -34,14 +34,13 @@ export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHa
             </h1>
 
             {show && <>
-                {user.isAdmin && <>
-                    <HTHAddBuilding
-                        currentFace={currentFace}
-                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                        territoryNumber={territoryNumber}
-                    />
-                    <Hr classes={'mx-auto my-4'} styles={{ maxWidth: '500px' }} />
-                </>}
+                <HTHAddBuilding
+                    currentFace={currentFace}
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    territoryNumber={territoryNumber}
+                />
+
+                <Hr classes={'mx-auto my-4'} styles={{ maxWidth: '500px' }} />
 
                 {!!currentFace.buildings?.length && <>
                     {currentFace.buildings.map(building =>

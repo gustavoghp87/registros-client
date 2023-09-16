@@ -67,27 +67,34 @@ export const HTHBuildingModal: FC<propsType> = ({
                 <div className={'card my-4'}>
 
                     {isLoading ?
-                        <Loading mt={'25px'} mb={'0'} white={false} />
+                        <Loading mt={'30px'} mb={'7px'} white={false} />
                         :
-                        <>
-                            <h1 className={'bg-dark text-white text-center font-weight-bolder mt-4 mb-2 py-2'}
-                                style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
-                            >
-                                Edificio {currentFace.street} {currentBuilding.streetNumber}
-                                {(user.isAdmin || currentBuilding.creatorId === user.id) &&
-                                    <>
-                                        &nbsp; &nbsp;
-                                        <BsTrash
-                                            className={'pointer mb-1'}
-                                            onClick={() => deleteHTHBuildingHandler()}
-                                        />
-                                    </>
-                                }
-                            </h1>
-                            <Hr />
-                        </>
+                        <button className={'btn btn-general-blue btn-size12 w-100 mx-auto mt-4 mb-2'}
+                            onClick={() => closeBuildingModalHandler ? closeBuildingModalHandler() : navigate('/')}
+                            style={{ maxWidth: '300px' }}
+                        >
+                            Cerrar
+                        </button>
                     }
 
+                    <Hr />
+
+                    <h1 className={'bg-dark text-white text-center font-weight-bolder mt-3 mb-2 py-2'}
+                        style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
+                    >
+                        Edificio {currentFace.street} {currentBuilding.streetNumber}
+                        {(user.isAdmin || currentBuilding.creatorId === user.id) &&
+                            <>
+                                &nbsp; &nbsp;
+                                <BsTrash
+                                    className={'pointer mb-1'}
+                                    onClick={() => deleteHTHBuildingHandler()}
+                                />
+                            </>
+                        }
+                    </h1>
+
+                    <Hr />
 
                     {currentBuilding.isComplex ?
                         <HTHBuildingModalComplex

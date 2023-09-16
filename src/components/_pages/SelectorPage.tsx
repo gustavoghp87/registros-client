@@ -8,7 +8,8 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 
 export const SelectorPage = () => {
-    const { user } = useSelector((state: typeRootState) => ({
+    const { config, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         user: state.user
     }))
     const dispatch = useDispatch()
@@ -30,7 +31,7 @@ export const SelectorPage = () => {
 
     return (
         <>
-            {(user.isAdmin || !!user.hthAssignments?.length) &&
+            {!(config.isDisabledHthBuildingsForUnassignedUsers && !user.isAdmin && !user.hthAssignments?.length) &&
                 <>
                     <HouseToHouseSelector />
 

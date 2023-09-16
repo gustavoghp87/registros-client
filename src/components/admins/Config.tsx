@@ -1,5 +1,5 @@
 import { ConfigCreateHTHTerritories, ConfigSendInvitationNewCongregation, ConfigSetCongregationName, ConfigSetGoogleBoardUrl } from './config-subcomp'
-import { goToTop, setDisableCloseHthFacesService, setDisableEditMapsService, setDisableHthFaceObservatiosService } from '../../services'
+import { goToTop, setDisableCloseHthFacesService, setDisableEditMapsService, setDisableHthBuildingsForUnassignedUsersService, setDisableHthFaceObservatiosService } from '../../services'
 import { H2 } from '../commons'
 import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 import { typeRootState } from '../../models'
@@ -68,6 +68,22 @@ export const Config = () => {
         window.location.reload()
     }
 
+    const setDisableHthBuildingsForUnassignedUsersHandler = async () => {
+        dispatch(showLoadingModalReducer())
+        const success = await setDisableHthBuildingsForUnassignedUsersService(!config.isDisabledHthBuildingsForUnassignedUsers)
+        dispatch(hideLoadingModalReducer())
+        if (!success) {
+            dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'alert',
+                title: "Algo falló",
+                message: `No se pudo ${config.isDisabledHthBuildingsForUnassignedUsers ? 'habilitar' : 'deshabilitar'} la predicación en edificios para usuarios no asignados (Casa en Casa)`,
+                animation: 2
+            }))
+            return
+        }
+        window.location.reload()
+    }
+
     useEffect(() => goToTop(), [])
 
     return (<>
@@ -116,6 +132,17 @@ export const Config = () => {
                     "Habilitar función de Observaciones de Caras (Casa en Casa)"
                     :
                     "Deshabilitar función de Observaciones de Caras (Casa en Casa)"
+                }
+            </button>
+
+            <button className={`btn ${config.isDisabledHthBuildingsForUnassignedUsers ? 'btn-general-red' : 'btn-general-blue'} ${btnClasses}`}
+                style={btnStyles}
+                onClick={() => setDisableHthBuildingsForUnassignedUsersHandler()}
+            >
+                {config.isDisabledHthBuildingsForUnassignedUsers ?
+                    "Habilitar Edificios a usuarios no asignados ni compartidos por WhatsApp (Casa en Casa)"
+                    :
+                    "Deshabilitar Edificios a usuarios no asignados ni compartidos por WhatsApp (Casa en Casa)"
                 }
             </button>
 

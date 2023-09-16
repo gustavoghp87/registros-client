@@ -7,15 +7,14 @@ import { Loading } from '../commons'
 import { Modal } from 'react-bootstrap'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 import { typeBlock, typeCoords, typeFace, typeHTHTerritory, typeRootState, typeTerritoryNumber } from '../../models'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
-import { useSelector } from 'react-redux'
 
 type propsType = {
-    setShowGeolocationModalHandler: () => void
+    closeGeolocationModalHandler: () => void
 }
 
-export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler }) => {
+export const GeoLocationModal: FC<propsType> = ({ closeGeolocationModalHandler }) => {
     const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
     const { isLoaded, loadError } = useJsApiLoader(googleMapConfig)
     const [address, setAddress] = useState("")
@@ -127,7 +126,7 @@ export const GeoLocationModal: FC<propsType> = ({ setShowGeolocationModalHandler
         {centerCoords &&
             <Modal
                 fullscreen={'md-down'}
-                onHide={() => setShowGeolocationModalHandler()}
+                onHide={() => closeGeolocationModalHandler()}
                 show={true}
                 size={'lg'}
             >

@@ -3,6 +3,7 @@ export type typeConfig = {
     googleBoardUrl: string
     isDisabledCloseHthFaces: boolean
     isDisabledEditHthMaps: boolean
+    isDisabledHthBuildingsForUnassignedUsers: boolean
     isDisabledHthFaceObservations: boolean
     name: string
     numberOfTerritories: number
