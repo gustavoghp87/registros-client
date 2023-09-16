@@ -303,13 +303,13 @@ export const deleteHTHBuildingService = async (
 }
 
 export const modifyHTHHouseholdService = async (congregation: number, territoryNumber: types.typeTerritoryNumber, block: types.typeBlock,
- face: types.typeFace, streetNumber: number, householdId: number, isChecked: boolean, isManager: boolean): Promise<boolean> => {
+ face: types.typeFace, streetNumber: number, householdId: number, isChecked: boolean, isManager: boolean, street: string): Promise<boolean> => {
     if (!territoryNumber) return false   // not !getTokenService()
     try {
         const response = await fetch(`${base}/building/${congregation}/${territoryNumber}/${block}/${face}`, {
             method: 'PATCH',
             headers: getHeaders(),
-            body: JSON.stringify({ householdId, isChecked, streetNumber, isManager })
+            body: JSON.stringify({ householdId, isChecked, isManager, street, streetNumber })
         })
         const data: types.typeResponseData|null = await response.json()
         return !!data && !!data.success

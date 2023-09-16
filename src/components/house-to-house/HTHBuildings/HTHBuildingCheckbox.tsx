@@ -15,20 +15,21 @@ type propsType = {
     onDates: number[]
     refreshHTHTerritoryHandler: () => void
     setIsLoading: Dispatch<SetStateAction<boolean>>
+    street: string
     streetNumber: number
     territoryNumber: typeTerritoryNumber
 }
 
 export const HTHBuildingCheckbox: FC<propsType> = ({
-    block, congregation, doorName, face, id, isChecked, isManager, level,
-    onDates, refreshHTHTerritoryHandler, setIsLoading, streetNumber, territoryNumber
+    block, congregation, doorName, face, id, isChecked, isManager, level, onDates,
+    refreshHTHTerritoryHandler, setIsLoading, street, streetNumber, territoryNumber
 }) => {
 
     const changeCallingStateHandler = async () => {
         if (!territoryNumber || !block || !face || !streetNumber || !id) return
         if (isChecked && !onDates?.some(x => Date.now() - x < 86400000 && new Date(x).getDay() === new Date().getDay())) return
         setIsLoading(true)
-        const success = await modifyHTHHouseholdService(congregation, territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager)
+        const success = await modifyHTHHouseholdService(congregation, territoryNumber, block, face, streetNumber, id, !isChecked, !!isManager, street)
         if (!success) {
             alert("Falló el cambio de estado de la vivienda")  // keep alert (modal vs modal)
             return

@@ -42,6 +42,7 @@ export const HTHBuildingModalSimple: FC<propsType> = ({
                                     onDates={currentHousehold.onDates}
                                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                                     setIsLoading={setIsLoading}
+                                    street={currentFace.street}
                                     streetNumber={currentBuilding.streetNumber}
                                     territoryNumber={territoryNumber}
                                 />
@@ -66,6 +67,7 @@ export const HTHBuildingModalSimple: FC<propsType> = ({
                     onDates={currentBuilding.manager.onDates}
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     setIsLoading={setIsLoading}
+                    street={currentFace.street}
                     streetNumber={currentBuilding.streetNumber}
                     territoryNumber={territoryNumber}
                 />

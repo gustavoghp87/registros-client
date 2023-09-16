@@ -21,7 +21,7 @@ export const HTHBuildingModalComplex: FC<propsType> = ({
         if (!territoryNumber || !currentFace.block || !currentFace.face || !currentBuilding.streetNumber || !household?.id) return
         if (household.isChecked && !household.onDates?.some(x => Date.now() - x < 86400000 && new Date(x).getDay() === new Date().getDay())) return
         setIsLoading(true)
-        const success = await modifyHTHHouseholdService(congregation, territoryNumber, currentFace.block, currentFace.face, currentBuilding.streetNumber, household.id, !household.isChecked, false)
+        const success = await modifyHTHHouseholdService(congregation, territoryNumber, currentFace.block, currentFace.face, currentBuilding.streetNumber, household.id, !household.isChecked, false, currentFace.street)
         if (!success) {
             setIsLoading(false)
             alert("Falló el cambio de estado de la vivienda")  // keep alert (modal vs modal)
