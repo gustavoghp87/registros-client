@@ -12,6 +12,12 @@ export const SERVER = (isLocalhost ?
     'https://misericordia-web-service-3v5m7nxntq-rj.a.run.app'
 );
 
+export const DOMAIN = (isLocalhost ?
+    'http://localhost:3000'
+    :
+    'https://www.misericordiaweb.com'
+)
+
 export const pointer = {
     board: `${SERVER}/api/board`,
     campaign: `${SERVER}/api/campaign`,

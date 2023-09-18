@@ -41,6 +41,7 @@ export const HTHMap: FC<propsType> = ({
     const [map, setMap] = useState<google.maps.Map|null>(null)
     const [runIntervals, setRunIntervals] = useState(false)
     const dispatch = useDispatch()
+    const initZoom = isMobile ? territoryHTH.map.zoom - 1 : territoryHTH.map.zoom
 
     const onCenterChangedHandler = (): void => {
         const lat: number = map?.getCenter()?.lat() ?? 0
@@ -317,7 +318,7 @@ export const HTHMap: FC<propsType> = ({
                     panControl: true,
                     streetViewControl: !isEditingView,
                     styles: hthMapStyle,
-                    zoom: isEditingView ? undefined : territoryHTH.map.zoom,
+                    zoom: isEditingView ? undefined : initZoom,
                     zoomControl: isEditingView,
                     zoomControlOptions: { position: google.maps.ControlPosition.LEFT_BOTTOM }
                 }}

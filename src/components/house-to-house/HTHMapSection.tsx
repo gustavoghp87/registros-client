@@ -1,7 +1,7 @@
 import { Container } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { generalBlue } from '../../constants'
-import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton } from '.'
+import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton, HTHShareAllBuildingsButtons } from '.'
 import { typeBlock, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useSelector } from 'react-redux'
 
@@ -63,6 +63,13 @@ export const HTHMapSection: FC<propsType> = ({
         }
 
         {territoryHTH?.map && <>
+
+            <HTHShareAllBuildingsButtons
+                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                territoryHTH={territoryHTH}
+                territoryNumber={territoryNumber}
+            />
+
             <HTHMap
                 currentFace={currentFace}
                 isAddingNewBlock={isAddingNewBlock}

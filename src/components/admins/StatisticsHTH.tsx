@@ -44,7 +44,7 @@ export const StatisticsHTH = () => {
                     </h3>
                     <Hr classes={'mt-5 mx-5'} />
                     {hthTerritories.sort((a, b) => parseInt(a.territoryNumber) - parseInt(b.territoryNumber)).map(t =>
-                        <div className={'my-5'}>
+                        <div key={t.territoryNumber} className={'my-5'}>
                             <h3 className={isDarkMode ? 'text-white' : ''}>
                                 Territorio {t.territoryNumber}
                             </h3>

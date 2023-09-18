@@ -29,6 +29,7 @@ export type typeResponseData = {                           //  =>  UPDATE MOCKED
     newPassword?: string
     newToken?: string,
     notSent?: boolean
+    notSharedToday?: boolean
     recaptchaFails?: boolean
     street?: string
     streets?: string[]

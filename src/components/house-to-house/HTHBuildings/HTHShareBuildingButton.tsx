@@ -1,3 +1,4 @@
+import { DOMAIN } from '../../../app-config'
 import { FC, useEffect, useRef, useState } from 'react'
 import { setHTHIsSharedBuildingsService } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
@@ -29,7 +30,10 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
             if (checkbox.checked) {
                 const streetNumber: number = parseInt(checkbox.value)
                 if (territoryNumber && currentFace && currentFace.block && currentFace.face && currentFace.street && streetNumber && !isNaN(streetNumber)) {
-                    currentUrl += `Edificio ${currentFace.street} ${streetNumber} (Territorio ${territoryNumber})\n\nhttps://www.misericordiaweb.com/edificio/${user.congregation}/${territoryNumber}/${currentFace.block}/${currentFace.face}/${streetNumber}\n\n`
+                    currentUrl += `Edificio ${currentFace.street} ${streetNumber} (Territorio ${territoryNumber})`
+                    currentUrl += `\n\n`
+                    currentUrl += `${DOMAIN}/edificio/${user.congregation}/${territoryNumber}/${currentFace.block}/${currentFace.face}/${streetNumber}`
+                    currentUrl += `\n\n`
                     buildings.push(streetNumber)
                 }
                 checkbox.checked = false
@@ -37,12 +41,15 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
         })
         if (buildings.length) {
             const success = await setHTHIsSharedBuildingsService(territoryNumber, currentFace.block, currentFace.face, currentFace.id, buildings)
-            if (!success) dispatch(setValuesAndOpenAlertModalReducer({
-                mode: 'alert',
-                title: "Algo falló",
-                message: `${buildings.length > 1 ? "No se pudieron compartir los edificios" : "No se pudo compartir el edificio"}`,
-                animation: 2
-            }))
+            if (!success) {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "Algo falló",
+                    message: `${buildings.length > 1 ? "No se pudieron compartir los edificios" : "No se pudo compartir el edificio"}`,
+                    animation: 2
+                }))
+                return
+            }
             refreshHTHTerritoryHandler()
         }
         setUrl(currentUrl)
@@ -50,28 +57,27 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
 
     useEffect(() => {
         setInterval(() => {
-            const checkboxes = Array.from(document.getElementsByClassName('share-building')) as Array<HTMLInputElement>
-            if (!checkboxes) return
-            const someChecked: boolean = checkboxes.some(x => x.checked)
+            const someChecked = (Array.from(document.getElementsByClassName('share-building')) as Array<HTMLInputElement>)?.some(x => x.checked)
             setIsShareButtonDisabled(!someChecked)
         }, 300)
     }, [])
 
     useEffect(() => {
         if (!shareButton.current || !url) return
-        shareButton.current.click()
-        const checkboxes = Array.from(document.getElementsByClassName('share-building')) as Array<HTMLInputElement>
-        if (checkboxes) {
-            checkboxes.forEach((checkbox: HTMLInputElement) => {
-                if (checkbox.checked) checkbox.checked = false
-            })
+        try {
+            shareButton.current.click()
+        } catch (error) {
+            console.log(error)
         }
+        (Array.from(document.getElementsByClassName('share-building')) as Array<HTMLInputElement>)?.forEach((checkbox: HTMLInputElement) => {
+            if (checkbox.checked) checkbox.checked = false
+        })
     }, [url])
 
     return (<>
         <button className={'btn btn-general-blue d-block mx-auto mt-4'} style={{ width: '300px' }}
-            disabled={isShareButtonDisabled}
             onClick={() => shareBuildingHandler()}
+            disabled={isShareButtonDisabled}
         >
             &nbsp; Compartir por WhatsApp &nbsp; <WhatsAppIcon1 styles={{ width: '40px' }} />
         </button>

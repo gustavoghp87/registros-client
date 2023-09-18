@@ -1,3 +1,4 @@
+import { DOMAIN } from '../../app-config'
 import { generalBlue } from '../../constants'
 import { Link } from 'react-router-dom'
 import { typeRootState } from '../../models'
@@ -25,8 +26,8 @@ export const Footer = () => {
                     margin: 'auto',
                     width: '100%'
                 }}>
-                    <a href={'https://misericordiaweb.com/'} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
-                        Misericordia Web <span className={'text-white'} style={{ fontSize: isMobile ? '0.7rem' : '1rem', fontWeight: 'normal' }}>v 6.1</span>
+                    <a href={DOMAIN} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
+                        Misericordia Web <span className={'text-white'} style={{ fontSize: isMobile ? '0.7rem' : '1rem', fontWeight: 'normal' }}>v 6.3</span>
                     </a>
                 </div>
 

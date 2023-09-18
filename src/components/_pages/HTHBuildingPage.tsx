@@ -35,41 +35,24 @@ export const HTHBuildingPage = () => {
             dispatch(setAnonymousEmail(email))
             socket.emit(hthChangeString, congregation, territoryNumber, email)
         }
-        getHTHBuildingService(congregation, territoryNumber, block, face, streetNumber).then((hthTerritory: typeHTHTerritory|null) => {
-            if (!hthTerritory) {
-                dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "Algo falló",
-                    message: "No se encontró el territorio; tal vez no haya internet",
-                    animation: 2
-                }))
-                return
-            }
-            const currentFace0: typePolygon|undefined = hthTerritory.map.polygons.find(x => x.block === block && x.face === face)
-            if (!currentFace0) {
-                dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "Algo falló",
-                    message: "No se encontró la calle",
-                    animation: 2
-                }))
-                return
-            }
-            const currentBuilding0: typeHTHBuilding|undefined = currentFace0.buildings?.find(x => x.streetNumber === streetNumber)
-            if (!currentBuilding0) {
-                dispatch(setValuesAndOpenAlertModalReducer({
-                    mode: 'alert',
-                    title: "Algo falló",
-                    message: "No se encontró el edificio",
-                    animation: 2
-                }))
-                return
-            }
-            if (!currentBuilding0.dateOfLastSharing || getCurrentLocalDate() !== getCurrentLocalDate(currentBuilding0.dateOfLastSharing)) {
+        getHTHBuildingService(congregation, territoryNumber, block, face, streetNumber).then(response => {
+            if (response?.notSharedToday) {
                 dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: "Algo falló",
                     message: "Este edificio no fue compartido hoy por un capitán de salida",
+                    animation: 2
+                }))
+                return
+            }
+            const hthTerritory0 = response?.hthTerritory
+            const currentFace0: typePolygon|undefined = hthTerritory0?.map.polygons.find(x => x.block === block && x.face === face)
+            const currentBuilding0: typeHTHBuilding|undefined = currentFace0?.buildings?.find(x => x.streetNumber === streetNumber)
+            if (!hthTerritory0 || !currentFace0 || !currentBuilding0) {
+                dispatch(setValuesAndOpenAlertModalReducer({
+                    mode: 'alert',
+                    title: "Algo falló",
+                    message: "No se encontró el edificio; tal vez no haya internet",
                     animation: 2
                 }))
                 return

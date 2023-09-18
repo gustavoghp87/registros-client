@@ -159,7 +159,7 @@ export const editHTHMapService = async (territoryNumber: types.typeTerritoryNumb
 }
 
 export const getHTHBuildingService = async (congregation: number, territoryNumber: string,
- block: types.typeBlock, face: types.typeFace, streetNumber: number): Promise<types.typeHTHTerritory|null> => {
+ block: types.typeBlock, face: types.typeFace, streetNumber: number): Promise<types.typeResponseData|null> => {
     if (!congregation || !territoryNumber) return null   // not !getTokenService()
     try {
         const response = await fetch(`${base}/building/${congregation}/${territoryNumber}/${block}/${face}/${streetNumber}`, {
@@ -167,8 +167,7 @@ export const getHTHBuildingService = async (congregation: number, territoryNumbe
             headers: getHeaders()
         })
         const data: types.typeResponseData|null = await response.json()
-        if (!data || !data.success || !data.hthTerritory) return null
-        return data.hthTerritory
+        return data
     } catch (error) {
         console.log(error)
         return null
@@ -320,10 +319,10 @@ export const modifyHTHHouseholdService = async (congregation: number, territoryN
 }
 
 export const setHTHIsSharedBuildingsService = async (territoryNumber: types.typeTerritoryNumber,
- block: types.typeBlock, face: types.typeFace, polygonId: number, streetNumbers: number[]): Promise<boolean> => {
+ block: types.typeBlock, face?: types.typeFace, polygonId?: number, streetNumbers?: number[]): Promise<boolean> => {
     if (!getTokenService()) return false
     try {
-        const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
+        const response = await fetch(`${base}/building/${territoryNumber}?block=${block}&face=${face ? face : ''}`, {
             method: 'PUT',
             headers: getHeaders(),
             body: JSON.stringify({ polygonId, streetNumbers })

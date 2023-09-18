@@ -13,10 +13,7 @@ type propsType = {
 }
 
 export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const { isMobile, user } = useSelector((state: typeRootState) => ({
-        isMobile: state.mobileMode.isMobile,
-        user: state.user
-    }))
+    const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
     const [show, setShow] = useState(false)
 
     return (
