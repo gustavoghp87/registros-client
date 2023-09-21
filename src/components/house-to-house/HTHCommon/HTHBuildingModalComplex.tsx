@@ -33,19 +33,17 @@ export const HTHBuildingModalComplex: FC<propsType> = ({
 
     return (
         <div className={'d-flex justify-content-center my-4'}>
-            <div className={'d-flex'}  style={{ maxWidth: '100%', overflowX: 'auto' }}>
+            <div className={'d-flex'} style={{ maxWidth: '100%', overflowX: 'auto' }}>
                 {state.map((el, column) =>
                     <div key={column} className={'justify-content-center'}>
                         {el.map((item, row) =>
                             <div key={`checkbox-${column}-${row}`}
                                 style={{ display: 'flex', justifyContent: 'space-around' }}
                             >
-                                
                                 {item.household ?
                                     <div
-                                        className={`row d-flex justify-content-start pointer bg-dark text-white text-center my-2 `}
+                                        className={'row d-flex justify-content-start pointer bg-dark text-white text-center my-2'}
                                         style={{
-                                            
                                             border: '1px solid black',
                                             borderRadius: '7px',
                                             marginInline: '10px',
@@ -55,7 +53,7 @@ export const HTHBuildingModalComplex: FC<propsType> = ({
                                         }}
                                         onClick={() => changeCallingStateHandler(item.household)}
                                     >
-                                        <div className="col-5">
+                                        <div className={'col-5'}>
                                             <input id={`checkbox-${item.household.id}`}
                                                 type='checkbox'
                                                 className={'form-check-input checkbox-xs'}
@@ -63,9 +61,13 @@ export const HTHBuildingModalComplex: FC<propsType> = ({
                                                 onChange={() => {}}
                                             />
                                         </div>
-                                        <div className="col-7">
+                                        <div className={'col-7'}>
                                             <label htmlFor={`checkbox-${item.household.id}`}
-                                                className={item.household.doorName.length > 5 ? 'animate__animated animate__fadeInLeft animate__slow animate__infinite infinite' : ''}
+                                                className={item.household.doorName.length > 5 ?
+                                                    'animate__animated animate__fadeInLeft animate__slow animate__infinite infinite'
+                                                    :
+                                                    ''
+                                                }
                                                 style={{
                                                     marginTop: '2px',
                                                     marginLeft: '5px',

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { setValuesAndOpenAlertModalReducer } from '../../store'
 
 export const StatisticsHTH = () => {
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { isDarkMode } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))

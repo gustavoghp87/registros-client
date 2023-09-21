@@ -21,7 +21,8 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
     return (
         <div className={`row mx-auto ${isMobile ? 'mb-5' : 'mb-3'}`} style={{ maxWidth: '1000px' }}>
             {hthConfigOptions.blocks.map(b => <Fragment key={b}>
-                {!!territoryHTH.map.polygons.filter(p => p.block === b)?.length && territoryHTH.map.polygons.filter(p => p.block === b).some(f => !!f.buildings?.length) &&
+                {!!territoryHTH.map.polygons.filter(p => p.block === b)?.length &&
+                 territoryHTH.map.polygons.filter(p => p.block === b).some(f => !!f.buildings?.length) &&
                     <div className={'col'}>
                         <HTHShareBuildingButton
                             faces={territoryHTH.map.polygons.filter(p => p.block === b)}
@@ -52,7 +53,7 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
     const dispatch = useDispatch()
 
     const shareUrl = useMemo(() => {
-        if (!faces.some(f => !!f.buildings?.length)) return ''
+        // if (!faces.some(f => !!f.buildings?.length)) return ''
         let currentUrl = `Territorio ${territoryNumber} - Manzana ${faces[0].block}\n\n`
         faces.forEach(f =>
             f.buildings?.sort((a, b) => a.streetNumber - b.streetNumber).forEach(b => {
@@ -138,7 +139,7 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
                                     <WhatsAppIcon1 styles={{ width: '45px' }} />
                                 </div>
                                 <div className={'col-10 ps-0'}>
-                                    &nbsp; Manzana {faces[0].block}: Enviar los Edificios por WhatsApp
+                                    &nbsp; Manzana {faces[0].block}: Enviar los Edificios por WhatsApp (hay {faces.map(f => f.buildings).flat().length})
                                 </div>
                             </div>
                         </WhatsappShareButton>

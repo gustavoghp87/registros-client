@@ -163,8 +163,9 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({
                             <Form.Label> Filas </Form.Label>
                             <Form.Select
                                 className={'text-center'}
-                                value={numberOfLevels}
-                                onChange={e => setNumberOfLevels(parseInt(e.target.value))}
+                                value={numberOfLevels.toString()}
+                                onChange={e => isSecondStage ? null : setNumberOfLevels(parseInt(e.target.value))}
+                                disabled={isSecondStage}
                             >
                                 {hthConfigOptions.buildingLevels.map(level =>
                                     <option key={level}> {level + 1} </option>
@@ -179,9 +180,10 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({
                             <Form.Label> Columnas </Form.Label>
                             <Form.Select
                                 className={'text-center'}
-                                onChange={(event: any) => setNumberPerLevel(isNaN(event.target.value) ? 0 : parseInt(event.target.value))}
                                 style={{ width: '100px' }}
-                                value={numberPerLevel ?? ""}
+                                value={numberPerLevel.toString()}
+                                onChange={e => isSecondStage ? null : setNumberPerLevel(parseInt(e.target.value))}
+                                disabled={isSecondStage}
                             >
                                 {hthConfigOptions.buildingDoorNumbers.map(doorNumber =>
                                     <option key={doorNumber}> {doorNumber} </option>

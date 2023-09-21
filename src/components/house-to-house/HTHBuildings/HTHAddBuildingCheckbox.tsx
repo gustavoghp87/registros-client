@@ -17,12 +17,12 @@ export const HTHAddBuildingCheckbox: FC<propsType> = ({ doorName, doorNumber, is
             doorName,
             doorNumber,
             id: 0,
-            isChecked,
+            isChecked: isManager ? false : isChecked,
             level,
             offDates: [],
             onDates: []
         }
-    }, [doorName, doorNumber, isChecked, level])
+    }, [doorName, doorNumber, isChecked, isManager, level])
 
     return (<>
         <input

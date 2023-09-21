@@ -26,10 +26,10 @@ export const ReturnBtn = () => {
         ) setShow(true)
         if (location.pathname === '/') setShow(false)
         if (location.pathname === '/acceso') setShow(false)
-    }, [window.location.href])
+    }, [location.pathname])
 
     if (!show) return <></>
-    
+
     return (
         <div className={'mt-2'}
             style={{
@@ -41,16 +41,14 @@ export const ReturnBtn = () => {
             }}
         >
             <Button size={isMobile ? 'sm' : undefined}
-                onClick={() => navigate(-1)}
                 style={{
                     backgroundColor: generalBlue,
                     border: '1px solid ' + generalBlue,
                     borderRadius:' 5px'
                 }}
+                onClick={() => navigate(-1)}
             >
-
                 <BsBackspace style={{ paddingBottom: '3px' }} /> VOLVER &nbsp;
-
             </Button>
         </div>
     )

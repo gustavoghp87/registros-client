@@ -1,10 +1,10 @@
-import { generateRandomEmail, getCurrentLocalDate, getHTHBuildingService } from '../../services'
+import { generateRandomEmail, getHTHBuildingService } from '../../services'
 import { HTHBuildingModal } from '../house-to-house'
 import { hthChangeString } from '../../constants'
 import { SERVER } from '../../app-config'
 import { setAnonymousEmail, setValuesAndOpenAlertModalReducer } from '../../store'
 import { Socket, io } from 'socket.io-client'
-import { typeBlock, typeFace, typeHTHBuilding, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
+import { typeBlock, typeFace, typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
@@ -83,7 +83,7 @@ export const HTHBuildingPage = () => {
 
     return (
         <>
-            {!!currentBuilding && !!currentFace && !!territoryNumber &&
+            {currentBuilding && currentFace && !!territoryNumber &&
                 <HTHBuildingModal
                     closeBuildingModalHandler={closeBuildingModalHandler}
                     congregation={congregation}
