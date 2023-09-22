@@ -2,7 +2,7 @@ import { BsArrowBarDown } from 'react-icons/bs'
 import { FC, useState } from 'react'
 import { generalBlue } from '../../../constants'
 import { HTHDoNotCallsForm, HTHDoNotCallsItem } from '../'
-import { typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useSelector } from 'react-redux'
 
 type propsType = {
@@ -12,9 +12,7 @@ type propsType = {
 }
 
 export const HTHDoNotCalls: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const { isMobile } = useSelector((state: typeRootState) => ({
-        isMobile: state.mobileMode.isMobile
-    }))
+    const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
     const [show, setShow] = useState(false)
     const [showForm, setShowForm] = useState(false)
     
@@ -36,7 +34,7 @@ export const HTHDoNotCalls: FC<propsType> = ({ currentFace, refreshHTHTerritoryH
 
             {show &&
                 <>
-                    {!!currentFace.doNotCalls?.length && currentFace.doNotCalls.map((doNotCall: typeDoNotCall) => (
+                    {!!currentFace.doNotCalls?.length && currentFace.doNotCalls.map(doNotCall =>
                         <HTHDoNotCallsItem
                             currentFace={currentFace}
                             doNotCall={doNotCall}
@@ -44,7 +42,7 @@ export const HTHDoNotCalls: FC<propsType> = ({ currentFace, refreshHTHTerritoryH
                             refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                             territoryNumber={territoryNumber}
                         />
-                    ))}
+                    )}
 
                     <button className={'btn btn-general-blue btn-size12 d-block mx-auto'}
                         onClick={() => setShowForm(!showForm)}

@@ -13,7 +13,10 @@ import { useState, useEffect } from 'react'
 const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const HouseToHousePage = () => {
-    const user = useSelector((state: typeRootState) => state.user)
+    const { isMobile, user } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
+    }))
     const territoryNumber = useParams<any>().territoryNumber as typeTerritoryNumber
     const urlSearchParams = new URLSearchParams(window.location.search)
     const queryParams = Object.fromEntries(urlSearchParams.entries())
@@ -124,7 +127,7 @@ export const HouseToHousePage = () => {
             </div>
         }
 
-        {(user.isAdmin || !!user.hthAssignments?.includes(parseInt(territoryNumber))) && <>
+        {(user.isAdmin || user.hthAssignments?.includes(parseInt(territoryNumber))) &&
             <HTHMapSection
                 currentFace={currentFace}
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
@@ -133,20 +136,20 @@ export const HouseToHousePage = () => {
                 territoryHTH={territoryHTH}
                 territoryNumber={territoryNumber}
             />
-        </>}
+        }
 
         {territoryHTH && <>
-            <Hr classes={'my-5'} />
+            <Hr classes={'text-center my-5 mx-auto'} styles={{ maxWidth: isMobile ? '95%' : '85%' }} />
             <HTHAllDoNotCalls
                 hthTerritory={territoryHTH}
             />
-            <Hr classes={'my-5'} />
+            <Hr classes={'text-center my-5 mx-auto'} styles={{ maxWidth: isMobile ? '95%' : '85%' }} />
             <HTHAllBuildings
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                 territoryHTH={territoryHTH}
                 territoryNumber={territoryNumber}
             />
-            <Hr classes={'mt-5'} />
+            <Hr classes={'text-center mt-5 mx-auto'} styles={{ maxWidth: isMobile ? '95%' : '85%' }} />
         </>}
     </>)
 }

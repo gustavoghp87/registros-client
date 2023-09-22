@@ -27,7 +27,8 @@ export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHa
                 }}
                 onClick={() => setShow(x => !x)}
             >
-                {!!currentFace.buildings?.length ? "EDIFICIOS" : "No hay edificios en esta cara"} <BsArrowBarDown size={isMobile ? '2rem' : '1.4rem'} />
+                {!!currentFace.buildings?.length ? "EDIFICIOS" : "No hay edificios en esta cara"}
+                &nbsp;<BsArrowBarDown size={isMobile ? '2rem' : '1.4rem'} />
             </h1>
 
             {show && <>

@@ -1,3 +1,4 @@
+import { BsArrowBarDown } from 'react-icons/bs'
 import { Container } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { generalBlue } from '../../constants'
@@ -32,6 +33,7 @@ export const HTHMapSection: FC<propsType> = ({
     const [isAddingNewFace, setIsAddingNewFace] = useState(false)
     const [isCompletingNewBlock, setIsCompletingNewBlock] = useState(false)
     const [isEditingView, setIsEditingView] = useState(false)
+    const [showMapSection, setShowMapSection] = useState(false)
     const [showNewFaceOptions, setShowNewFaceOptions] = useState(false)
     
     const selectBlockAndFaceHandler = (selectedBlock?: typeBlock, selectedFace?: typeFace, hthTerritory0: typeHTHTerritory|null = null) => {
@@ -56,37 +58,60 @@ export const HTHMapSection: FC<propsType> = ({
     }
 
     return (<>
-        {!isAddingNewBlock && !isAddingNewFace && !isEditingView &&
-            <h1 className={`text-center fw-bolder ${isDarkMode ? 'text-white' : ''} mt-3 mb-4`}>
-                SELECCIONAR CARA DE MANZANA
-            </h1>
-        }
 
         {territoryHTH?.map && <>
 
-            <HTHShareAllBuildingsButtons
-                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                territoryHTH={territoryHTH}
-                territoryNumber={territoryNumber}
-            />
+            {territoryHTH.map.polygons.some(f => f.buildings?.length) &&
+                <HTHShareAllBuildingsButtons
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    territoryHTH={territoryHTH}
+                    territoryNumber={territoryNumber}
+                />
+            }
 
-            <HTHMap
-                currentFace={currentFace}
-                isAddingNewBlock={isAddingNewBlock}
-                isAddingNewFace={isAddingNewFace}
-                isCompletingNewBlock={isCompletingNewBlock}
-                isEditingView={isEditingView}
-                refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                selectBlockAndFaceHandler={selectBlockAndFaceHandler}
-                setIsAddingNewBlock={setIsAddingNewBlock}
-                setIsAddingNewFace={setIsAddingNewFace}
-                setIsCompletingNewBlock={setIsCompletingNewBlock}
-                setIsEditingView={setIsEditingView}
-                setShowNewFaceOptions={setShowNewFaceOptions}
-                setTerritoryHTH={setTerritoryHTH}
-                showNewFaceOptions={showNewFaceOptions}
-                territoryHTH={territoryHTH}
-            />
+            {/* <h2> Compartir No Tocar del territorio por WhatsApp </h2> */}
+
+            <Container>
+                <h1 className={'container pointer btn-general-blue text-white py-3'}
+                    style={{
+                        backgroundColor: generalBlue,
+                        fontSize: isMobile ? '1.8rem' : '2.4rem',
+                        fontWeight: 'bold',
+                        margin: isMobile ? '30px auto 20px auto' : '60px auto 40px auto',
+                        // maxWidth: '90%',
+                        textAlign: 'center'
+                    }}
+                    onClick={() => setShowMapSection(x => !x)}
+                >
+                    {showMapSection ? 'OCULTAR MAPA' : 'VER MAPA'} <BsArrowBarDown size={isMobile ? '1.6rem' : '1.4rem'} />
+                </h1>
+            </Container>
+
+            {showMapSection && !isAddingNewBlock && !isAddingNewFace && !isEditingView &&
+                <h1 className={`text-center fw-bolder ${isDarkMode ? 'text-white' : ''} mt-3 mb-4`}>
+                    SELECCIONAR CARA DE MANZANA
+                </h1>
+            }
+
+            {showMapSection &&
+                <HTHMap
+                    currentFace={currentFace}
+                    isAddingNewBlock={isAddingNewBlock}
+                    isAddingNewFace={isAddingNewFace}
+                    isCompletingNewBlock={isCompletingNewBlock}
+                    isEditingView={isEditingView}
+                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                    selectBlockAndFaceHandler={selectBlockAndFaceHandler}
+                    setIsAddingNewBlock={setIsAddingNewBlock}
+                    setIsAddingNewFace={setIsAddingNewFace}
+                    setIsCompletingNewBlock={setIsCompletingNewBlock}
+                    setIsEditingView={setIsEditingView}
+                    setShowNewFaceOptions={setShowNewFaceOptions}
+                    setTerritoryHTH={setTerritoryHTH}
+                    showNewFaceOptions={showNewFaceOptions}
+                    territoryHTH={territoryHTH}
+                />
+            }
             
             {!config.isDisabledCloseHthFaces && !showNewFaceOptions && !isEditingView && !isAddingNewFace && !isAddingNewBlock && !!territoryHTH.map.polygons?.length &&
                 <HTHChangeFaceStateButtons

@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux'
 const socket: Socket = io(SERVER, { withCredentials: true })
 
 export const HTHBuildingPage = () => {
-    const unauthUser = useSelector((state: typeRootState) => state.user)
+    const user = useSelector((state: typeRootState) => state.user)  // remember user could be unauthorized
     const block = useParams().block as typeBlock
     const congregation = parseInt(useParams().congregation || '')
     const face = useParams().face as typeFace
@@ -31,9 +31,13 @@ export const HTHBuildingPage = () => {
         if (!congregation || isNaN(congregation) || !territoryNumber || !block || !face || !streetNumber)
             return
         if (emitSocket) {
-            let email = generateRandomEmail()
-            dispatch(setAnonymousEmail(email))
-            socket.emit(hthChangeString, congregation, territoryNumber, email)
+            if (user.email) {
+                socket.emit(hthChangeString, congregation, territoryNumber, user.email)
+            } else {
+                const email = generateRandomEmail()
+                dispatch(setAnonymousEmail(email))
+                socket.emit(hthChangeString, congregation, territoryNumber, email)
+            }
         }
         getHTHBuildingService(congregation, territoryNumber, block, face, streetNumber).then(response => {
             if (response?.notSharedToday) {
@@ -71,7 +75,7 @@ export const HTHBuildingPage = () => {
         socket.on(hthChangeString, (congregation0: number, territoryNumber0: typeTerritoryNumber, userEmail: string) => {
             if (!congregation0 || congregation0 !== congregation ||
                 !territoryNumber0 || territoryNumber0 !== territoryNumber ||
-                !userEmail || userEmail === unauthUser.email) {
+                !userEmail || userEmail === user.email) {
                 return
             }
             refreshHTHTerritoryHandler()
@@ -79,7 +83,7 @@ export const HTHBuildingPage = () => {
         })
         return () => { socket.off(hthChangeString) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [congregation, territoryNumber, unauthUser.email])
+    }, [congregation, territoryNumber, user.email])
 
     return (
         <>
