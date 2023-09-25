@@ -16,12 +16,7 @@ type propsType = {
 }
 
 export const HTHMapSection: FC<propsType> = ({
-    currentFace,
-    refreshHTHTerritoryHandler,
-    setCurrentFace,
-    setTerritoryHTH,
-    territoryHTH,
-    territoryNumber
+    currentFace, refreshHTHTerritoryHandler, setCurrentFace, setTerritoryHTH, territoryHTH, territoryNumber
 }) => {
     const { config, isDarkMode, isMobile, user } = useSelector((state: typeRootState) => ({
         config: state.config,

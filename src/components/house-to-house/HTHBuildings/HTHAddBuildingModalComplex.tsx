@@ -208,6 +208,7 @@ export const HTHAddBuildingModalComplex: FC<propsType> = ({
                                     <div key={column} className={'justify-content-center'}>
                                         {el.map((item, row) =>
                                             <div key={`checkbox-${column}-${row}`}
+                                                className={isSecondStage ? '' : 'pointer'}
                                                 style={{ display: 'flex', justifyContent: 'space-around' }}
                                             >
                                                 <div id={`checkbox-${column}-${row}`}

@@ -139,7 +139,8 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
                                     <WhatsAppIcon1 styles={{ width: '45px' }} />
                                 </div>
                                 <div className={'col-10 ps-0'}>
-                                    &nbsp; Manzana {faces[0].block}: Enviar los Edificios por WhatsApp (hay {faces.map(f => f.buildings).flat().length})
+                                    &nbsp; Manzana {faces[0].block}: Enviar los Edificios por WhatsApp
+                                    (hay {faces.map(f => f.buildings).filter(b => b && b.length > 0).flat().length})
                                 </div>
                             </div>
                         </WhatsappShareButton>

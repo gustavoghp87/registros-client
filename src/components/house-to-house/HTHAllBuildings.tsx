@@ -11,9 +11,7 @@ type propsType = {
     territoryNumber: typeTerritoryNumber
 }
 
-export const HTHAllBuildings: FC<propsType> = ({
-    refreshHTHTerritoryHandler, territoryHTH, territoryNumber
-}) => {
+export const HTHAllBuildings: FC<propsType> = ({ refreshHTHTerritoryHandler, territoryHTH, territoryNumber }) => {
     const { isDarkMode, user } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         user: state.user
@@ -80,7 +78,7 @@ export const HTHAllBuildings: FC<propsType> = ({
                         placeholder={""}
                         value={buildingAddress}
                         onChange={e => setBuildingAddress((e.target as HTMLInputElement).value)}
-                        autoFocus
+                        // autoFocus
                     />
                 </FloatingLabel>
                 <ListGroup as={'ul'}>
