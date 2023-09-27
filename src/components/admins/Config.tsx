@@ -14,8 +14,9 @@ const btnStyles = { width: '350px', minHeight: '80px' }
 const rowStyles = { marginTop: '14px', width: '400px' }
 
 export const Config = () => {
-    const { config, isMobile } = useSelector((state: typeRootState) => ({
+    const { config, isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         config: state.config,
+        isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
     const [showCreateHthTerritories, setShowCreateHthTerritories] = useState(false)
@@ -162,7 +163,9 @@ export const Config = () => {
                             />
                         </div>
                         <div className={'col-10 pt-1'}>
-                            <h5>Habilitar edición de Mapas</h5>
+                            <h5 className={isDarkMode ? 'text-white' : ''}>
+                                Habilitar edición de Mapas
+                            </h5>
                         </div>
                     </div>
                 </div>
@@ -176,7 +179,9 @@ export const Config = () => {
                             />
                         </div>
                         <div className={'col-10 pt-1'}>
-                            <h5>Habilitar función de cerrar Caras</h5>
+                            <h5 className={isDarkMode ? 'text-white' : ''}>
+                                Habilitar función de cerrar Caras
+                            </h5>
                         </div>
                     </div>
                 </div>
@@ -190,7 +195,9 @@ export const Config = () => {
                             />
                         </div>
                         <div className={'col-10'}>
-                            <h5>Habilitar función de Observaciones de Caras</h5>
+                            <h5 className={isDarkMode ? 'text-white' : ''}>
+                                Habilitar función de Observaciones de Caras
+                            </h5>
                         </div>
                     </div>
                 </div>
@@ -204,7 +211,9 @@ export const Config = () => {
                             />
                         </div>
                         <div className={'col-10'}>
-                            <h5>Habilitar Edificios a usuarios no asignados ni compartidos por WhatsApp</h5>
+                            <h5 className={isDarkMode ? 'text-white' : ''}>
+                                Habilitar Edificios a usuarios no asignados ni compartidos por WhatsApp
+                            </h5>
                         </div>
                     </div>
                 </div>
@@ -218,7 +227,9 @@ export const Config = () => {
                             />
                         </div>
                         <div className={'col-10'}>
-                            <h5>Usar números para identificar las manzanas y letras para las caras</h5>
+                            <h5 className={isDarkMode ? 'text-white' : ''}>
+                                Usar letras para identificar las manzanas en vez de números
+                            </h5>
                         </div>
                     </div>
                 </div>
