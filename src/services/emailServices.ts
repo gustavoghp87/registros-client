@@ -1,13 +1,13 @@
 import { Credentials } from 'google-auth-library'
 import { getHeaders } from '.'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeResponseData } from '../models'
 
 const base: string = pointer.email
 
 export const getGmailUrlService = async (): Promise<string|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(base, {
             method: 'GET',
@@ -23,7 +23,7 @@ export const getGmailUrlService = async (): Promise<string|null> => {
 }
 
 export const getGmailRequestService = async (code: string): Promise<Credentials|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(base, {
             method: 'POST',
@@ -40,7 +40,7 @@ export const getGmailRequestService = async (code: string): Promise<Credentials|
 }
 
 export const saveNewGmailAPITokenToDBService = async (accessToken: string, refreshToken: string): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(base, {
             method: 'PUT',

@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getDarkModeService, setDarkModeService } from '../services'
+import { getDarkModeFromLSService, setDarkModeToLSService } from '../services/localStorageServices'
 
 export const darkModeSlice = createSlice({
     name: 'darkMode',
-    initialState: { isDarkMode: getDarkModeService() },
+    initialState: { isDarkMode: getDarkModeFromLSService() },
     reducers: {
         changeDarkModeReducer: (state) => {
-            const newValue: boolean = !getDarkModeService()
-            setDarkModeService(newValue)
+            const newValue: boolean = !getDarkModeFromLSService()
+            setDarkModeToLSService(newValue)
             state = { isDarkMode: newValue }
             return state
         }

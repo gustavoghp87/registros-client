@@ -1,5 +1,5 @@
 import { getHeaders } from '.'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import * as types from '../models'
 
@@ -7,7 +7,7 @@ const base: string = pointer.houseToHouse
 
 export const addHTHDoNotCallService = async (territory: types.typeTerritoryNumber,
  block: types.typeBlock, face: types.typeFace, polygonId: number, doNotCall: types.typeDoNotCall): Promise<boolean> => {
-    if (!getTokenService() || !territory || !block || !face || !polygonId || !doNotCall) return false
+    if (!getTokenFromLSService() || !territory || !block || !face || !polygonId || !doNotCall) return false
     try {
         const response = await fetch(`${base}/do-not-call/${territory}/${block}/${face}`, {
             method: 'POST',
@@ -25,7 +25,7 @@ export const addHTHDoNotCallService = async (territory: types.typeTerritoryNumbe
 
 export const addHTHObservationService = async (territoryNumber: types.typeTerritoryNumber,
  block: types.typeBlock, face:types.typeFace, polygonId: number, observation: types.typeObservation): Promise<boolean> => {
-    if (!getTokenService() || !territoryNumber || !block || !face || !polygonId || !observation) return false
+    if (!getTokenFromLSService() || !territoryNumber || !block || !face || !polygonId || !observation) return false
     try {
         const response = await fetch(`${base}/observation/${territoryNumber}/${block}/${face}`, {
             method: 'POST',
@@ -41,7 +41,7 @@ export const addHTHObservationService = async (territoryNumber: types.typeTerrit
 }
 
 export const addHTHPolygonFaceService = async (territoryNumber: types.typeTerritoryNumber, polygon: types.typePolygon): Promise<boolean> => {
-    if (!getTokenService() || !territoryNumber || !polygon) return false
+    if (!getTokenFromLSService() || !territoryNumber || !polygon) return false
     try {
         const response = await fetch(`${base}/map/${territoryNumber}`, {
             method: 'POST',
@@ -57,7 +57,7 @@ export const addHTHPolygonFaceService = async (territoryNumber: types.typeTerrit
 }
 
 export const createHTHTerritoriesService = async (numberOfTerritories: number, lat: number, lng: number): Promise<boolean> => {
-    if (!getTokenService() || !numberOfTerritories || !lat || !lng) return false
+    if (!getTokenFromLSService() || !numberOfTerritories || !lat || !lng) return false
     try {
         const response = await fetch(`${base}/genesys`, {
             method: 'POST',
@@ -74,7 +74,7 @@ export const createHTHTerritoriesService = async (numberOfTerritories: number, l
 
 export const deleteHTHPolygonFaceService = async (
  territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face: types.typeFace, faceId: number): Promise<boolean> => {
-    if (!getTokenService() || !territoryNumber || !block || !face || !faceId) return false
+    if (!getTokenFromLSService() || !territoryNumber || !block || !face || !faceId) return false
     try {
         const response = await fetch(`${base}/map/${territoryNumber}/${block}/${face}`, {
             method: 'DELETE',
@@ -91,7 +91,7 @@ export const deleteHTHPolygonFaceService = async (
 
 export const deleteHTHDoNotCallService = async (
  territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face: types.typeFace, doNotCallId: number): Promise<boolean> => {
-    if (!getTokenService() || !territoryNumber || !block || !face || !doNotCallId) return false
+    if (!getTokenFromLSService() || !territoryNumber || !block || !face || !doNotCallId) return false
     try {
         const response = await fetch(`${base}/do-not-call/${territoryNumber}/${block}/${face}`, {
             method: 'DELETE',
@@ -108,7 +108,7 @@ export const deleteHTHDoNotCallService = async (
 
 export const deleteHTHObservationService = async (
  territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face:types.typeFace, observationId: number): Promise<boolean> => {
-    if (!getTokenService() || !territoryNumber || !block || !face || !observationId) return false
+    if (!getTokenFromLSService() || !territoryNumber || !block || !face || !observationId) return false
     try {
         const response = await fetch(`${base}/observation/${territoryNumber}/${block}/${face}`, {
             method: 'DELETE',
@@ -126,7 +126,7 @@ export const deleteHTHObservationService = async (
 
 export const editHTHObservationService = async (
     territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face:types.typeFace, observation: types.typeObservation): Promise<boolean> => {
-    if (!getTokenService() || !territoryNumber || !block || !face || !observation) return false
+    if (!getTokenFromLSService() || !territoryNumber || !block || !face || !observation) return false
     try {
         const response = await fetch(`${base}/observation/${territoryNumber}/${block}/${face}`, {
             method: 'PATCH',
@@ -143,7 +143,7 @@ export const editHTHObservationService = async (
 
 export const editHTHMapService = async (territoryNumber: types.typeTerritoryNumber,
     editedHTHMap: types.typeHTHMap, editedHTHPolygons: types.typePolygon[]): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(`${base}/map/${territoryNumber}`, {
             method: 'PATCH',
@@ -160,7 +160,7 @@ export const editHTHMapService = async (territoryNumber: types.typeTerritoryNumb
 
 export const getHTHBuildingService = async (congregation: number, territoryNumber: string,
  block: types.typeBlock, face: types.typeFace, streetNumber: number): Promise<types.typeResponseData|null> => {
-    if (!congregation || !territoryNumber) return null   // not !getTokenService()
+    if (!congregation || !territoryNumber) return null   // not !getTokenFromLSService()
     try {
         const response = await fetch(`${base}/building/${congregation}/${territoryNumber}/${block}/${face}/${streetNumber}`, {
             method: 'GET',
@@ -175,7 +175,7 @@ export const getHTHBuildingService = async (congregation: number, territoryNumbe
 }
 export const setHTHIsFinishedService = async (territoryNumber: types.typeTerritoryNumber, block: types.typeBlock|null,
  face: types.typeFace|null, polygonId: number|null, isFinish: boolean, isAll: boolean = false): Promise<boolean> => {
-    if (!getTokenService() || !territoryNumber || isFinish === undefined) return false
+    if (!getTokenFromLSService() || !territoryNumber || isFinish === undefined) return false
     try {
         const response = await fetch(`${base}/state/${territoryNumber}/${block}/${face}`, {
             method: 'PATCH',
@@ -191,7 +191,7 @@ export const setHTHIsFinishedService = async (territoryNumber: types.typeTerrito
 }
 
 export const getHTHStreetsByTerritoryService = async (territoryNumber: types.typeTerritoryNumber): Promise<string[]|null> => {
-    if (!getTokenService() || !territoryNumber) return null
+    if (!getTokenFromLSService() || !territoryNumber) return null
     try {
         const response = await fetch(`${base}/street/${territoryNumber}`, {
             method: 'GET',
@@ -207,7 +207,7 @@ export const getHTHStreetsByTerritoryService = async (territoryNumber: types.typ
 }
 
 export const getHTHTerritoriesForStatisticsService = async (): Promise<types.typeHTHTerritory[]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/map/territory-statistics`, {
             method: 'GET',
@@ -223,7 +223,7 @@ export const getHTHTerritoriesForStatisticsService = async (): Promise<types.typ
 }
 
 export const getHTHTerritoriesForMapService = async (): Promise<types.typeHTHTerritory[]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/map/territory-map`, {
             method: 'GET',
@@ -239,7 +239,7 @@ export const getHTHTerritoriesForMapService = async (): Promise<types.typeHTHTer
 }
 
 export const getHTHTerritoryService = async (territoryNumber: string): Promise<types.typeHTHTerritory|null> => {
-    if (!getTokenService() || !territoryNumber) return null
+    if (!getTokenFromLSService() || !territoryNumber) return null
     try {
         const response = await fetch(`${base}/${territoryNumber}`, {
             method: 'GET',
@@ -264,7 +264,7 @@ type addBuildingServiceResponse = {
 
 export const addBuildingService = async (territoryNumber: types.typeTerritoryNumber, block: types.typeBlock,
  face: types.typeFace, newBuilding: types.typeHTHBuilding): Promise<addBuildingServiceResponse|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
             method: 'POST',
@@ -286,7 +286,7 @@ export const addBuildingService = async (territoryNumber: types.typeTerritoryNum
 
 export const deleteHTHBuildingService = async (
  territoryNumber: types.typeTerritoryNumber, block: types.typeBlock, face: types.typeFace, streetNumber: number): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(`${base}/building/${territoryNumber}/${block}/${face}`, {
             method: 'DELETE',
@@ -303,7 +303,7 @@ export const deleteHTHBuildingService = async (
 
 export const modifyHTHHouseholdService = async (congregation: number, territoryNumber: types.typeTerritoryNumber, block: types.typeBlock,
  face: types.typeFace, streetNumber: number, householdId: number, isChecked: boolean, isManager: boolean, street: string): Promise<boolean> => {
-    if (!territoryNumber) return false   // not !getTokenService()
+    if (!territoryNumber) return false   // not !getTokenFromLSService()
     try {
         const response = await fetch(`${base}/building/${congregation}/${territoryNumber}/${block}/${face}`, {
             method: 'PATCH',
@@ -320,7 +320,7 @@ export const modifyHTHHouseholdService = async (congregation: number, territoryN
 
 export const setHTHIsSharedBuildingsService = async (territoryNumber: types.typeTerritoryNumber,
  block: types.typeBlock, face?: types.typeFace, polygonId?: number, streetNumbers?: number[]): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(`${base}/building/${territoryNumber}?block=${block}&face=${face ? face : ''}`, {
             method: 'PUT',

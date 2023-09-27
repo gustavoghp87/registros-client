@@ -1,12 +1,12 @@
 import { getHeaders } from '.'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeBoardItem, typeResponseData } from '../models'
 
 const base: string = pointer.board
 
 export const getBoardItemsService = async (): Promise<typeBoardItem[]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(base, {
             method: 'GET',

@@ -1,12 +1,12 @@
 import { getHeaders } from '.'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeAllLogsObj, typeResponseData } from '../models'
 
 const base: string = pointer.log
 
 export const getAllLogsService = async (): Promise<typeAllLogsObj|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(base, {
             method: 'GET',

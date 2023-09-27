@@ -1,4 +1,4 @@
-import { addHTHObservationService, editHTHObservationService } from '../../../services'
+import { addHTHObservationService, editHTHObservationService, maskTheBlock, maskTheFace } from '../../../services'
 import { FC, FormEvent, useState } from 'react'
 import { HTHForm } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
@@ -15,7 +15,8 @@ type propsType = {
 }
 
 export const HTHObservationsForm: FC<propsType> = ({ closeShowFormHandler, currentFace, editText, idEdit, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const { user } = useSelector((state: typeRootState) => ({
+    const { config, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         user: state.user
     }))
     const dispatch = useDispatch()
@@ -38,7 +39,7 @@ export const HTHObservationsForm: FC<propsType> = ({ closeShowFormHandler, curre
                     dispatch(setValuesAndOpenAlertModalReducer({
                         mode: 'alert',
                         title: 'Algo falló',
-                        message: `No se pudo agregar esta Observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${newObservation.text}"`,
+                        message: `No se pudo agregar esta Observación de la Manzana ${maskTheBlock(currentFace.block, config.usingLettersForBlocks)}, cara ${currentFace.street}: "${newObservation.text}"`,
                         execution: refreshHTHTerritoryHandler,
                         animation: 2
                     }))
@@ -59,7 +60,7 @@ export const HTHObservationsForm: FC<propsType> = ({ closeShowFormHandler, curre
                     dispatch(setValuesAndOpenAlertModalReducer({
                         mode: 'alert',
                         title: 'Algo falló',
-                        message: `No se pudo editar esta Observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${newObservation.text}"`,
+                        message: `No se pudo editar esta Observación de la Manzana ${maskTheBlock(currentFace.block, config.usingLettersForBlocks)}, cara ${currentFace.street}: "${newObservation.text}"`,
                         execution: refreshHTHTerritoryHandler,
                         animation: 2
                     }))

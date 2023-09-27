@@ -1,5 +1,5 @@
 import { getHeaders } from '.'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeForecastResponse, typeResponseData, typeWeatherResponse } from '../models'
 
@@ -18,7 +18,7 @@ export const getWeatherAndForecastService = async (): Promise<{ weather?: typeWe
             }
         }
     } catch { }
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(base, {
             method: 'GET',

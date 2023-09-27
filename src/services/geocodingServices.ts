@@ -1,12 +1,12 @@
 import { getHeaders } from './'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeCoords, typeResponseData } from '../models'
 
 const base: string = pointer.geocoding
 
 export const getCoordinatesFromAddressService = async (address: string): Promise<typeCoords|null> => {
-    if (!getTokenService() || !address) return null
+    if (!getTokenFromLSService() || !address) return null
     try {
         const response = await fetch(`${base}/address`, {
             method: 'POST',
@@ -23,7 +23,7 @@ export const getCoordinatesFromAddressService = async (address: string): Promise
 }
 
 export const getAddressFromCoordinatesService = async (coordinates: typeCoords): Promise<string|null> => {
-    if (!getTokenService() || !coordinates || !coordinates.lat || !coordinates.lng) return null
+    if (!getTokenFromLSService() || !coordinates || !coordinates.lat || !coordinates.lng) return null
     try {
         const response = await fetch(`${base}/coordinates`, {
             method: 'POST',
@@ -40,7 +40,7 @@ export const getAddressFromCoordinatesService = async (coordinates: typeCoords):
 }
 
 export const getStreetFromCoordinatesService = async (coordinates: typeCoords): Promise<string|null> => {
-    if (!getTokenService() || !coordinates || !coordinates.lat || !coordinates.lng) return null
+    if (!getTokenFromLSService() || !coordinates || !coordinates.lat || !coordinates.lng) return null
     try {
         const response = await fetch(`${base}/street`, {
             method: 'POST',

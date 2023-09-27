@@ -1,9 +1,9 @@
-import { deleteHTHDoNotCallService } from '../../../services'
+import { deleteHTHDoNotCallService, maskTheBlock, maskTheFace } from '../../../services'
 import { FC } from 'react'
 import { HTHItemCard } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { typeDoNotCall, typePolygon, typeTerritoryNumber } from '../../../models'
-import { useDispatch } from 'react-redux'
+import { typeDoNotCall, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
 type propsType = {
     currentFace: typePolygon
@@ -13,13 +13,14 @@ type propsType = {
 }
 
 export const HTHDoNotCallsItem: FC<propsType> = ({ currentFace, doNotCall, refreshHTHTerritoryHandler, territoryNumber }) => {
+    const config = useSelector((state: typeRootState) => state.config)
     const dispatch = useDispatch()
 
     const deleteHandler = (): void => {
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: '¿Eliminar No Tocar?',
-            message: `Se va a eliminar este No Tocar de la Manzana ${currentFace.block} Cara ${currentFace.face}: ${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
+            message: `Se va a eliminar este No Tocar de la Manzana ${maskTheBlock(currentFace.block, config.usingLettersForBlocks)}, cara ${maskTheFace(currentFace.face, config.usingLettersForBlocks)}: ${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
             execution: deleteConfirmedHandler
         }))
     }
@@ -30,7 +31,7 @@ export const HTHDoNotCallsItem: FC<propsType> = ({ currentFace, doNotCall, refre
                 dispatch(setValuesAndOpenAlertModalReducer({
                     mode: 'alert',
                     title: 'Algo falló',
-                    message: `No se pudo eliminar este No Tocar de la Manzana ${currentFace.block} Cara ${currentFace.face}: ${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
+                    message: `No se pudo eliminar este No Tocar de la Manzana ${maskTheBlock(currentFace.block, config.usingLettersForBlocks)}, cara ${maskTheFace(currentFace.face, config.usingLettersForBlocks)}: ${currentFace.street} ${doNotCall.streetNumber} ${doNotCall.doorBell}`,
                     animation: 2
                 }))
                 return

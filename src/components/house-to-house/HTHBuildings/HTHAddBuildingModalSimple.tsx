@@ -12,10 +12,14 @@ type propsType = {
     currentFace: typePolygon
     refreshHTHTerritoryHandler: () => void
     setShowComplex: Dispatch<SetStateAction<boolean>>
+    setStreetNumber: Dispatch<SetStateAction<number>>
+    streetNumber: number
     territoryNumber: typeTerritoryNumber
 }
 
-export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler, currentFace, refreshHTHTerritoryHandler, setShowComplex, territoryNumber }) => {
+export const HTHAddBuildingModalSimple: FC<propsType> = ({
+    closeHTHModalHandler, currentFace, refreshHTHTerritoryHandler, setShowComplex, setStreetNumber, streetNumber, territoryNumber
+}) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
@@ -29,7 +33,6 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({ closeHTHModalHandler,
     const [numberPerLevel, setNumberPerLevel] = useState<number>(2)
     const [reverseOrderX, setReverseOrderX] = useState(false)
     const [reverseOrderY, setReverseOrderY] = useState(false)
-    const [streetNumber, setStreetNumber] = useState(0)
 
     const submitHandler = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()

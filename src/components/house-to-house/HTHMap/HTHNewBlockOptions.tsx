@@ -1,4 +1,4 @@
-import { addHTHPolygonFaceService, getHTHStreetsByTerritoryService, getStreetsByHTHTerritory } from '../../../services'
+import { addHTHPolygonFaceService, getHTHStreetsByTerritoryService, getStreetsByHTHTerritory, maskTheBlock, maskTheFace } from '../../../services'
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { Dropdown } from 'react-bootstrap'
 import { H2, Hr } from '../../commons'
@@ -6,8 +6,7 @@ import { hthConfigOptions } from '../../../app-config'
 import { HTHNewFaceOptionsStreet } from '..'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeBlock, typeFace, typeHTHTerritory, typePolygon, typeRootState } from '../../../models'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 type typeColor = 'green' | 'red' | 'blue' | 'yellow'
 
@@ -30,7 +29,10 @@ type propsType = {
 export const HTHNewBlockOptions: FC<propsType> = ({
     initBlockAddingHandler, isCompletingNewBlock, setRunIntervals, territoryHTH
 }) => {
-    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
+    const { config, isDarkMode } = useSelector((state: typeRootState) => ({
+        config: state.config,
+        isDarkMode: state.darkMode.isDarkMode
+    }))
     const usedBlocks = [...new Set(territoryHTH.map.polygons.map(x => x.block))]
     const [options, setOptions] = useState<typeOption[]>([
         { color: 'yellow', face: null, street: '' },
@@ -61,7 +63,7 @@ export const HTHNewBlockOptions: FC<propsType> = ({
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: "Confirmar",
-            message: `Se van a agregar estas 4 caras correspondientes a la manzana ${block}`,
+            message: `Se van a agregar estas 4 caras correspondientes a la manzana ${maskTheBlock(block, config.usingLettersForBlocks)}`,
             execution: () => {
                 let success = true
                 options.forEach(async o => {
@@ -116,7 +118,7 @@ export const HTHNewBlockOptions: FC<propsType> = ({
                         <Dropdown.Header> Seleccionar la letra </Dropdown.Header>
                         {hthConfigOptions.blocks.filter(x => !usedBlocks.includes(x)).map(b =>
                             <Dropdown.Item key={b} onClick={() => selectBlockHandler(b)}>
-                                Manzana {b}
+                                Manzana {maskTheBlock(b, config.usingLettersForBlocks)}
                             </Dropdown.Item>
                         )}
                     </Dropdown.Menu>
@@ -124,7 +126,7 @@ export const HTHNewBlockOptions: FC<propsType> = ({
             </>}
 
             {isCompletingNewBlock && <>
-                <H2 title={`COMPLETAR MANZANA NUEVA ${territoryHTH.map.polygons.find(x => x.face === 'x')?.block}`} />
+                <H2 title={`COMPLETAR MANZANA NUEVA ${maskTheBlock(territoryHTH.map.polygons.find(x => x.face === 'x')?.block || '1', config.usingLettersForBlocks)}`} />
 
                 {colors.map(c =>
                     <NewBlockOption key={c}
@@ -159,7 +161,10 @@ type propsType1 = {
 }
 
 const NewBlockOption: FC<propsType1> = ({ color, setOptionsHandler, streets }) => {
-    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
+    const { config, isDarkMode } = useSelector((state: typeRootState) => ({
+        config: state.config,
+        isDarkMode: state.darkMode.isDarkMode
+    }))
     const [face, setFace] = useState<typeFace|null>(null)
     const [street, setStreet] = useState("")
 
@@ -179,19 +184,19 @@ const NewBlockOption: FC<propsType1> = ({ color, setOptionsHandler, streets }) =
     return (
         <div className={'container my-5'} style={{ maxWidth: '600px' }}>
             <h3 className={`mb-3 ${isDarkMode ? 'text-white' : ''}`}>
-                Cara {translateColor(color)}: {face ? `cara ${face}` : ''} {street ? `, calle ${street}` : ''}
+                Cara {translateColor(color)}: {face ? `cara ${maskTheFace(face, config.usingLettersForBlocks)}` : ''} {street ? `, calle ${street}` : ''}
             </h3>
             <Dropdown className={'d-inline me-3'}>
                 <Dropdown.Toggle
                     variant={color === 'red' ? 'danger' : color === 'blue' ? 'primary' : color === 'yellow' ? 'warning' : 'success'}
                 >
-                    {face ? `==> Cara ${face}` : `Seleccionar la letra de la cara ${translateColor(color)}`} &nbsp;
+                    {face ? `==> Cara ${maskTheFace(face, config.usingLettersForBlocks)}` : `Seleccionar la letra de la cara ${translateColor(color)}`} &nbsp;
                 </Dropdown.Toggle>
                 <Dropdown.Menu show={false}>
                     <Dropdown.Header> Seleccionar la letra </Dropdown.Header>
                     {hthConfigOptions.faces.map(face =>
                         <Dropdown.Item key={face} eventKey={face} onClick={() => setFace(face)}>
-                            Cara {face}
+                            Cara {maskTheFace(face, config.usingLettersForBlocks)}
                         </Dropdown.Item>
                     )}
                 </Dropdown.Menu>

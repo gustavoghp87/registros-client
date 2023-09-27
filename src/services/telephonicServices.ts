@@ -1,12 +1,12 @@
 import { getHeaders } from '.'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import * as types from '../models'
 
 const base: string = pointer.telephonic
 
 export const changeStateOfTerritoryService = async (territoryNumber: string, isFinished: boolean): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(base, {
             method: 'PATCH',
@@ -23,7 +23,7 @@ export const changeStateOfTerritoryService = async (territoryNumber: string, isF
 }
 
 export const getGlobalStatisticsService = async (): Promise<types.typeTelephonicStatistic|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/statistic/global`, {
             method: 'GET',
@@ -40,7 +40,7 @@ export const getGlobalStatisticsService = async (): Promise<types.typeTelephonic
 
 export const getGlobalStatistics1Service = async (): Promise<types.typeTerritoryRow[]|null> => {
     try {
-        if (!getTokenService()) throw new Error("Sin Token")
+        if (!getTokenFromLSService()) throw new Error("Sin Token")
         const response = await fetch(`${base}/statistics/table`, {
             method: 'GET',
             headers: getHeaders()
@@ -55,7 +55,7 @@ export const getGlobalStatistics1Service = async (): Promise<types.typeTerritory
 }
 
 export const getTLPTerritoryService = async (territoryNumber: string): Promise<types.typeTelephonicTerritory|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/${territoryNumber}`, {
             method: 'GET',
@@ -71,7 +71,7 @@ export const getTLPTerritoryService = async (territoryNumber: string): Promise<t
 }
 
 export const getLocalStatisticsService = async (): Promise<types.typeLocalTelephonicStatistic[]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/statistic/local`, {
             method: 'GET',
@@ -88,7 +88,7 @@ export const getLocalStatisticsService = async (): Promise<types.typeLocalTeleph
 
 export const modifyHouseholdService = async (territoryNumber: types.typeTerritoryNumber,
  householdId: number, callingState: string, notSubscribed: boolean, isAssigned: boolean): Promise<types.typeHousehold|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/${territoryNumber}`, {
             method: 'PUT',
@@ -105,7 +105,7 @@ export const modifyHouseholdService = async (territoryNumber: types.typeTerritor
 }
 
 export const resetTerritoryService = async (territoryNumber: string, option: number): Promise<number|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(base, {
             method: 'DELETE',

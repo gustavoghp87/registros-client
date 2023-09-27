@@ -1,4 +1,4 @@
-import { deleteHTHObservationService } from '../../../services'
+import { deleteHTHObservationService, maskTheBlock } from '../../../services'
 import { FC, useState } from 'react'
 import { HTHItemCard, HTHObservationsForm } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
@@ -14,7 +14,8 @@ type propsType = {
 }
 
 export const HTHObservationsItem: FC<propsType> = ({ closeShowAddFormHandler, currentFace, observation, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const { user } = useSelector((state: typeRootState) => ({
+    const { config, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         user: state.user
     }))
     const dispatch = useDispatch()
@@ -29,7 +30,7 @@ export const HTHObservationsItem: FC<propsType> = ({ closeShowAddFormHandler, cu
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: '¿Eliminar Observación?',
-            message: `Se va a eliminar esta observación de la Manzana ${currentFace.block} Cara ${currentFace.face}: "${observation.text}"`,
+            message: `Se va a eliminar esta observación de la Manzana ${maskTheBlock(currentFace.block, config.usingLettersForBlocks)}, cara ${currentFace.street}: "${observation.text}"`,
             execution: deleteConfirmedHandler
         }))
     }

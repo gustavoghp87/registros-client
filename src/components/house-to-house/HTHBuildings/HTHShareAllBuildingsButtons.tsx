@@ -1,7 +1,7 @@
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { DOMAIN, hthConfigOptions } from '../../../app-config'
 import { FC, Fragment, useMemo, useState } from 'react'
-import { setHTHIsSharedBuildingsService } from '../../../services'
+import { maskTheBlock, setHTHIsSharedBuildingsService } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useDispatch } from 'react-redux'
@@ -44,7 +44,8 @@ type propsType1 = {
 }
 
 const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const { isMobile, user } = useSelector((state: typeRootState) => ({
+    const { config, isMobile, user } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isMobile: state.mobileMode.isMobile,
         user: state.user
     }))
@@ -54,7 +55,7 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
 
     const shareUrl = useMemo(() => {
         // if (!faces.some(f => !!f.buildings?.length)) return ''
-        let currentUrl = `Territorio ${territoryNumber} - Manzana ${faces[0].block}\n\n`
+        let currentUrl = `Territorio ${territoryNumber} - Manzana ${maskTheBlock(faces[0].block, config.usingLettersForBlocks)}\n\n`
         faces.forEach(f =>
             f.buildings?.sort((a, b) => a.streetNumber - b.streetNumber).forEach(b => {
                 currentUrl += `${f.street} ${b.streetNumber}`
@@ -64,7 +65,7 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
             })
         )
         return currentUrl
-    }, [faces, territoryNumber, user.congregation])
+    }, [config.usingLettersForBlocks, faces, territoryNumber, user.congregation])
 
     const shareHandler = async () => {
         const success = await setHTHIsSharedBuildingsService(territoryNumber, faces[0].block)
@@ -115,7 +116,7 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
                             {copiedToClipboard ? 
                                 "Copiados!"
                                 :
-                                `Copiar Edificios de la manzana ${faces[0].block} para compartir`
+                                `Copiar Edificios de la manzana ${maskTheBlock(faces[0].block, config.usingLettersForBlocks)} para compartir`
                             }
                         </button>
                     </CopyToClipboard>
@@ -139,7 +140,7 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
                                     <WhatsAppIcon1 styles={{ width: '45px' }} />
                                 </div>
                                 <div className={'col-10 ps-0'}>
-                                    &nbsp; Manzana {faces[0].block}: Enviar los Edificios por WhatsApp
+                                    &nbsp; Manzana {maskTheBlock(faces[0].block, config.usingLettersForBlocks)}: Enviar los Edificios por WhatsApp
                                     (hay {faces.map(f => f.buildings).filter(b => b && b.length > 0).flat().length})
                                 </div>
                             </div>

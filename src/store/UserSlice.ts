@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getUserFromLSService, logoutService, setConfigToLSService, setUserToLSService } from '../services'
+import { getUserFromLSService, setConfigToLSService, setUserToLSService } from '../services/localStorageServices'
+import { logoutService } from '../services'
 import { typeUser } from '../models'
 import { unauthenticatedConfig } from '.'
 

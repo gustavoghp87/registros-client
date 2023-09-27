@@ -1,4 +1,4 @@
-import { typeBlock, typeCoords, typeHousehold, typeHTHBuilding, typeHthComplexBuildingItem, typeHthNewComplexBuildingItem, typeHTHTerritory } from '../models'
+import { typeBlock, typeCoords, typeFace, typeHousehold, typeHTHBuilding, typeHthComplexBuildingItem, typeHthNewComplexBuildingItem, typeHTHTerritory } from '../models'
 
 type typeHeaders = {
     'Accept': string
@@ -191,36 +191,59 @@ export const getStreetsByHTHTerritory = (hthTerritory: typeHTHTerritory): string
     return streets
 }
 
-const getCharacterForNumber = (apartmentNumber: number, hasNn: boolean = false): string => {  // String.fromCharCode(65 + apartmentNumber)}
-    if (apartmentNumber === 1) return 'A'
-    if (apartmentNumber === 2) return 'B'
-    if (apartmentNumber === 3) return 'C'
-    if (apartmentNumber === 4) return 'D'
-    if (apartmentNumber === 5) return 'E'
-    if (apartmentNumber === 6) return 'F'
-    if (apartmentNumber === 7) return 'G'
-    if (apartmentNumber === 8) return 'H'
-    if (apartmentNumber === 9) return 'I'
-    if (apartmentNumber === 10) return 'J'
-    if (apartmentNumber === 11) return 'K'
-    if (apartmentNumber === 12) return 'L'
-    if (apartmentNumber === 13) return 'M'
-    if (apartmentNumber === 14) return 'N'
-    if (apartmentNumber === 15) return hasNn ? 'Ñ' : 'O'
-    if (apartmentNumber === 16) return hasNn ? 'O' : 'P'
-    if (apartmentNumber === 17) return hasNn ? 'P' : 'Q'
-    if (apartmentNumber === 18) return hasNn ? 'Q' : 'R'
-    if (apartmentNumber === 19) return hasNn ? 'R' : 'S'
-    if (apartmentNumber === 20) return hasNn ? 'S' : 'T'
-    if (apartmentNumber === 21) return hasNn ? 'T' : 'U'
-    if (apartmentNumber === 22) return hasNn ? 'U' : 'V'
-    if (apartmentNumber === 23) return hasNn ? 'V' : 'W'
-    if (apartmentNumber === 24) return hasNn ? 'W' : 'X'
-    if (apartmentNumber === 25) return hasNn ? 'X' : 'Y'
-    if (apartmentNumber === 26) return hasNn ? 'Y' : 'Z'
-    if (apartmentNumber === 27) return hasNn ? 'Z' : 'Z'
-    return apartmentNumber.toString()
+const getCharacterForNumber = (numberToChange: number, hasNn: boolean = false): string => {  // String.fromCharCode(65 + apartmentNumber)}
+    if (numberToChange === 1) return 'A'
+    if (numberToChange === 2) return 'B'
+    if (numberToChange === 3) return 'C'
+    if (numberToChange === 4) return 'D'
+    if (numberToChange === 5) return 'E'
+    if (numberToChange === 6) return 'F'
+    if (numberToChange === 7) return 'G'
+    if (numberToChange === 8) return 'H'
+    if (numberToChange === 9) return 'I'
+    if (numberToChange === 10) return 'J'
+    if (numberToChange === 11) return 'K'
+    if (numberToChange === 12) return 'L'
+    if (numberToChange === 13) return 'M'
+    if (numberToChange === 14) return 'N'
+    if (numberToChange === 15) return hasNn ? 'Ñ' : 'O'
+    if (numberToChange === 16) return hasNn ? 'O' : 'P'
+    if (numberToChange === 17) return hasNn ? 'P' : 'Q'
+    if (numberToChange === 18) return hasNn ? 'Q' : 'R'
+    if (numberToChange === 19) return hasNn ? 'R' : 'S'
+    if (numberToChange === 20) return hasNn ? 'S' : 'T'
+    if (numberToChange === 21) return hasNn ? 'T' : 'U'
+    if (numberToChange === 22) return hasNn ? 'U' : 'V'
+    if (numberToChange === 23) return hasNn ? 'V' : 'W'
+    if (numberToChange === 24) return hasNn ? 'W' : 'X'
+    if (numberToChange === 25) return hasNn ? 'X' : 'Y'
+    if (numberToChange === 26) return hasNn ? 'Y' : 'Z'
+    if (numberToChange === 27) return hasNn ? '?' : 'Z'
+    return '?'
 }
+
+const getNumberForLetter = (letterToChange: string): number => {
+    if (letterToChange === 'A') return 1
+    if (letterToChange === 'B') return 2
+    if (letterToChange === 'C') return 3
+    if (letterToChange === 'D') return 4
+    if (letterToChange === 'E') return 5
+    if (letterToChange === 'F') return 6
+    if (letterToChange === 'G') return 7
+    if (letterToChange === 'H') return 8
+    if (letterToChange === 'I') return 9
+    if (letterToChange === 'J') return 10
+    if (letterToChange === 'K') return 11
+    return 0
+}
+
+export const maskTheBlock = (block: typeBlock, usingLettersForBlock: boolean): typeBlock|string => (
+    usingLettersForBlock ? getCharacterForNumber(parseInt(block)) : block
+);
+
+export const maskTheFace = (face: typeFace, usingLettersForBlock: boolean): typeFace|number => (
+    usingLettersForBlock ? getNumberForLetter(face) : face
+);
 
 export const getHouseholdDoorBell = (doorNumber: number, index: number, index1: number,
  hasContinuousNumbers: boolean, hasCharacters: boolean, numberPerLevel: number, hasNn: boolean): string => {

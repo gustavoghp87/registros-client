@@ -24,6 +24,7 @@ export const HTHAllBuildings: FC<propsType> = ({ refreshHTHTerritoryHandler, ter
     const allBuildings: (typeHTHBuilding & { face: typePolygon })[] = useMemo(() =>
         territoryHTH.map.polygons
             .map(p => p.buildings ? p.buildings.map(b => ({ ...b, face: p})) : [])
+            .filter(p => p.length)
             .flat()
             .sort((a, b) => a.face.street.localeCompare(b.face.street) || (a.streetNumber - b.streetNumber))
     , [territoryHTH.map.polygons])
@@ -66,7 +67,7 @@ export const HTHAllBuildings: FC<propsType> = ({ refreshHTHTerritoryHandler, ter
             <>
             <div className={'container maxw-400'}>
                 <h1 className={`text-center mb-5 ${isDarkMode ? 'text-white' : ''}`}>
-                    BUSCAR EDIFICIO
+                    BUSCAR EDIFICIO<span className={'h5 fw-normal ms-1'}>({allBuildings.length})</span>
                 </h1>
                 <FloatingLabel
                     className={'mb-3 text-dark'}

@@ -1,8 +1,8 @@
-import { deleteHTHPolygonFaceService } from '../../../services'
+import { deleteHTHPolygonFaceService, maskTheBlock } from '../../../services'
 import { FC, useMemo } from 'react'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
-import { typeHTHTerritory, typePolygon } from '../../../models'
-import { useDispatch } from 'react-redux'
+import { typeHTHTerritory, typePolygon, typeRootState } from '../../../models'
+import { useDispatch, useSelector } from 'react-redux'
 
 type propsType = {
     currentFace: typePolygon
@@ -11,6 +11,7 @@ type propsType = {
 }
 
 export const HTHDeleteFaceButton: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryHTH }) => {
+    const config = useSelector((state: typeRootState) => state.config)
     const dispatch = useDispatch()
 
     const openConfirmModalHTHDeleteFaceHandler = (): void => {
@@ -18,7 +19,7 @@ export const HTHDeleteFaceButton: FC<propsType> = ({ currentFace, refreshHTHTerr
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
             title: "¿Eliminar cara?",
-            message: `Se va a eliminar esta CARA ${currentFace.face} de MANZANA ${currentFace.block}. Esta acción no tiene vuelta atrás.`,
+            message: `Se va a eliminar esta CARA ${currentFace.street} de MANZANA ${maskTheBlock(currentFace.block, config.usingLettersForBlocks)}. Esta acción no tiene vuelta atrás.`,
             execution: deleteHTHFaceHandler
         }))
     }
@@ -29,7 +30,7 @@ export const HTHDeleteFaceButton: FC<propsType> = ({ currentFace, refreshHTHTerr
             if (!success) return dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
                 title: "Algo falló",
-                message: `No se pudo eliminar la cara ${currentFace.face} de la manzana ${currentFace.block} (territorio ${territoryHTH.territoryNumber})`,
+                message: `No se pudo eliminar la cara ${currentFace.street} de la manzana ${maskTheBlock(currentFace.block, config.usingLettersForBlocks)} (territorio ${territoryHTH.territoryNumber})`,
                 animation: 2
             }))
             refreshHTHTerritoryHandler()

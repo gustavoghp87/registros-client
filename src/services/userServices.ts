@@ -1,17 +1,13 @@
-import { getDarkModeFromLSService, getHeaders, getTokenFromLSService, removeTokenFromLSService, setDarkModeToLSService, setTokenToLSService, setUserToLSService } from '.'
+import { getHeaders } from '.'
+import { getTokenFromLSService, removeTokenFromLSService, setTokenToLSService, setUserToLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeConfig, typeResponseData, typeUser } from '../models'
+import { unauthenticatedConfig } from '../store'
 
 const base: string = pointer.user
 
-export const getDarkModeService = (): boolean => getDarkModeFromLSService()
-export const setDarkModeService = (darkMode: boolean): void => setDarkModeToLSService(darkMode)
-export const getTokenService = (): string|null => getTokenFromLSService()
-export const setTokenService = (newToken: string): void => setTokenToLSService(newToken)
-const removeTokenService = (): void => removeTokenFromLSService()
-
 export const assignHTHTerritoryService = async (email: string, toAssign: number|null, toUnassign: number|null, all: boolean|null): Promise<typeUser|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         all = !!all
         const response = await fetch(`${base}/hth-assignment`, {
@@ -29,7 +25,7 @@ export const assignHTHTerritoryService = async (email: string, toAssign: number|
 }
 
 export const assignTLPTerritoryService = async (email: string, toAssign: number|null, toUnassign: number|null, all: boolean|null): Promise<typeUser|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         all = !!all
         const response = await fetch(`${base}/tlp-assignment`, {
@@ -47,7 +43,7 @@ export const assignTLPTerritoryService = async (email: string, toAssign: number|
 }
 
 export const changeEmailService = async (newEmail: string): Promise<typeResponseData|null> => {
-    if (!getTokenService() && !newEmail) return null
+    if (!getTokenFromLSService() && !newEmail) return null
     try {
         const response = await fetch(`${base}/token`, {
             method: 'PUT',
@@ -63,7 +59,7 @@ export const changeEmailService = async (newEmail: string): Promise<typeResponse
 }
 
 export const changePswService = async (team: number, psw: string|null, newPsw: string, id: string|null): Promise<typeResponseData|null> => {
-    if (!getTokenService() && !id) return null
+    if (!getTokenFromLSService() && !id) return null
     try {
         const response = await fetch(`${base}/token`, {
             method: 'PUT',
@@ -71,7 +67,7 @@ export const changePswService = async (team: number, psw: string|null, newPsw: s
             body: JSON.stringify({ team, psw, newPsw, id })
         })
         const data: typeResponseData = await response.json()
-        if (data && data.success && data.newToken) setTokenService(data.newToken)
+        if (data && data.success && data.newToken) setTokenToLSService(data.newToken)
         return data
     } catch (error) {
         console.log(error)
@@ -80,7 +76,7 @@ export const changePswService = async (team: number, psw: string|null, newPsw: s
 }
 
 export const changePswOtherUserService = async (email: string): Promise<[string, boolean]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/token`, {
             method: 'PATCH',
@@ -98,7 +94,7 @@ export const changePswOtherUserService = async (email: string): Promise<[string,
 }
 
 export const deleteUserService = async (userId: number): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(base, {
             method: 'DELETE',
@@ -114,7 +110,7 @@ export const deleteUserService = async (userId: number): Promise<boolean> => {
 }
 
 export const editUserService = async (email: string, isActive: boolean, role: number, group: number): Promise<typeUser|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(base, {
             method: 'PUT',
@@ -146,7 +142,7 @@ export const getEmailByEmailLink = async (congregation: string, id: string): Pro
 }
 
 export const getUserByTokenService = async (token: string = ''): Promise<{ user: typeUser|false|null, config: typeConfig|null }> => {
-    if (!getTokenService()) return { user: false, config: null }
+    if (!getTokenFromLSService()) return { user: false, config: null }
     try {
         const response = await fetch(base, {
             method: 'GET',
@@ -155,19 +151,10 @@ export const getUserByTokenService = async (token: string = ''): Promise<{ user:
         const data: typeResponseData = await response.json()
         if (!data) return { user: false, config: null }
         if (!data.config) {
-            data.config = {
-                congregation: 0,
-                googleBoardUrl: '',
-                isDisabledCloseHthFaces: true,
-                isDisabledEditHthMaps: true,
-                isDisabledHthBuildingsForUnassignedUsers: true,
-                isDisabledHthFaceObservations: true,
-                name: "",
-                numberOfTerritories: 0
-            }
+            data.config = unauthenticatedConfig
         }
         if (!data?.success || !data?.user) {
-            if (data && !data.success) removeTokenService()
+            if (data && !data.success) removeTokenFromLSService()
             return { user: false, config: data.config }
         }
         data.user.isAuth = true
@@ -184,7 +171,7 @@ export const getUserByTokenService = async (token: string = ''): Promise<{ user:
 }
 
 export const getUsersService = async (): Promise<typeUser[]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/all`, {
             method: 'GET',
@@ -207,7 +194,7 @@ export const loginService = async (email: string, password: string, recaptchaTok
             body: JSON.stringify({ email, password, recaptchaToken })
         })
         const data: typeResponseData = await response.json()
-        if (!!data?.success && !!data?.newToken) setTokenService(data.newToken)
+        if (!!data?.success && !!data?.newToken) setTokenToLSService(data.newToken)
         return data
     } catch (error) {
         console.log(error)
@@ -216,7 +203,7 @@ export const loginService = async (email: string, password: string, recaptchaTok
 }
 
 export const logoutAllService = async (): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(`${base}/token`, {
             method: 'DELETE',
@@ -224,7 +211,7 @@ export const logoutAllService = async (): Promise<boolean> => {
         })
         const data: typeResponseData = await response.json()
         if (!data || !data.success || !data.newToken) return false
-        setTokenService(data.newToken)
+        setTokenToLSService(data.newToken)
         return true
     } catch (error) {
         console.log(error)
@@ -233,7 +220,7 @@ export const logoutAllService = async (): Promise<boolean> => {
 }
 
 export const logoutService = (): void => {
-    removeTokenService()
+    removeTokenFromLSService()
 }
 
 export const registerUserService = async (email: string, group: number, id: string, password: string, recaptchaToken: string, team: number): Promise<typeResponseData|null> => {

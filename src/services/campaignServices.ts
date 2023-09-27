@@ -1,12 +1,12 @@
 import { getHeaders } from '.'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeCampaignPack, typeResponseData } from '../models'
 
 const base: string = pointer.campaign
 
 export const askForANewCampaignPackService = async (): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(`${base}/new-pack`, {
             method: 'POST',
@@ -22,7 +22,7 @@ export const askForANewCampaignPackService = async (): Promise<boolean> => {
 }
 
 export const assignCampaignPackByEmailService = async (id: number, email: string): Promise<boolean> => {
-    if (!getTokenService() || !id || !email) return false
+    if (!getTokenFromLSService() || !id || !email) return false
     try {
         const response = await fetch(`${base}/${id.toString()}`, {
             method: 'PUT',
@@ -39,7 +39,7 @@ export const assignCampaignPackByEmailService = async (id: number, email: string
 }
 
 export const closeCampaignPackService = async (id: number): Promise<boolean> => {
-    // if (!getTokenService() || !id) return false    accessible
+    // if (!getTokenFromLSService() || !id) return false    accessible
     if (!id) return false
     try {
         const response = await fetch(`${base}/all`, {
@@ -57,7 +57,7 @@ export const closeCampaignPackService = async (id: number): Promise<boolean> => 
 }
 
 export const editCampaignPackService = async (phoneNumber: number, checked: boolean, id: number): Promise<typeCampaignPack|null> => {
-    // if (!getTokenService() || !phoneNumber || checked === undefined) return false    accessible
+    // if (!getTokenFromLSService() || !phoneNumber || checked === undefined) return false    accessible
     if (!phoneNumber || checked === undefined) return null
     try {
         const response = await fetch(base, {
@@ -75,7 +75,7 @@ export const editCampaignPackService = async (phoneNumber: number, checked: bool
 }
 
 export const enableAccesibilityModeService = async (id: number, accessible: boolean): Promise<boolean> => {
-    if (!getTokenService() || !id) return false
+    if (!getTokenFromLSService() || !id) return false
     try {
         const response = await fetch(`${base}/accessibility`, {
             method: 'PATCH',
@@ -92,7 +92,7 @@ export const enableAccesibilityModeService = async (id: number, accessible: bool
 }
 
 export const getCampaignAssignmentsByUser = async (): Promise<number[]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/assignment`, {
             method: 'GET',
@@ -108,7 +108,7 @@ export const getCampaignAssignmentsByUser = async (): Promise<number[]|null> => 
 }
 
 export const getCampaignPacksService = async (): Promise<typeCampaignPack[]|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/all`, {
             method: 'GET',
@@ -124,7 +124,7 @@ export const getCampaignPacksService = async (): Promise<typeCampaignPack[]|null
 }
 
 export const getCampaignPackService = async (id: number): Promise<typeCampaignPack|null> => {
-    // if (!getTokenService() || !id) return null    accessible
+    // if (!getTokenFromLSService() || !id) return null    accessible
     if (!id) return null
     try {
         const response = await fetch(`${base}/${id.toString()}`, {

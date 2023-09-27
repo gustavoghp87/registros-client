@@ -1,5 +1,6 @@
 import { Button, Container, Form, Row } from 'react-bootstrap'
 import { FC, FormEvent } from 'react'
+import { maskTheBlock, maskTheFace } from '../../../services'
 import { typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useSelector } from 'react-redux'
 
@@ -25,7 +26,8 @@ export const HTHForm: FC<propsType> = ({
     setDoorBellHandler, setStreetNumberHandler, setTextHandler,
     streetNumber, submitHandler, territoryNumber, text
 }) => {
-    const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+    const { config, isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isDarkMode: state.darkMode.isDarkMode,
         isMobile: state.mobileMode.isMobile
     }))
@@ -104,7 +106,7 @@ export const HTHForm: FC<propsType> = ({
                     <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Manzana </Form.Label>
                         <Form.Control
-                            value={currentFace.block}
+                            value={maskTheBlock(currentFace.block, config.usingLettersForBlocks)}
                             disabled
                         />
                     </Form.Group>
@@ -112,7 +114,7 @@ export const HTHForm: FC<propsType> = ({
                     <Form.Group className={`mb-3 ${isMobile ? 'w-50 mx-auto' : 'w-25'}`}>
                         <Form.Label> Cara </Form.Label>
                         <Form.Control
-                            value={currentFace.face}
+                            value={maskTheFace(currentFace.face, config.usingLettersForBlocks)}
                             disabled
                         />
                     </Form.Group>

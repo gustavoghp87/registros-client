@@ -1,12 +1,12 @@
 import { getHeaders } from '.'
-import { getTokenService } from './userServices'
+import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeResponseData } from '../models'
 
 const base: string = pointer.config
 
 export const sendInvitationForNewUserService = async (email: string, newCongregation: boolean = false): Promise<typeResponseData|null> => {
-    if (!getTokenService()) return null
+    if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(`${base}/invite`, {
             method: 'PUT',
@@ -22,7 +22,7 @@ export const sendInvitationForNewUserService = async (email: string, newCongrega
 }
 
 export const setCongregationNameService = async (name: string): Promise<boolean> => {
-    if (!getTokenService() || !name) return false
+    if (!getTokenFromLSService() || !name) return false
     try {
         const response = await fetch(base, {
             method: 'PATCH',
@@ -38,7 +38,7 @@ export const setCongregationNameService = async (name: string): Promise<boolean>
 }
 
 export const setDisableCloseHthFacesService = async (disableCloseHthFaces: boolean): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(base, {
             method: 'PATCH',
@@ -54,7 +54,7 @@ export const setDisableCloseHthFacesService = async (disableCloseHthFaces: boole
 }
 
 export const setDisableHthBuildingsForUnassignedUsersService = async (disableHthBuildingsForUnassignedUsers: boolean): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(base, {
             method: 'PATCH',
@@ -70,7 +70,7 @@ export const setDisableHthBuildingsForUnassignedUsersService = async (disableHth
 }
 
 export const setDisableHthFaceObservatiosService = async (disableHthFaceObservations: boolean): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(base, {
             method: 'PATCH',
@@ -86,7 +86,7 @@ export const setDisableHthFaceObservatiosService = async (disableHthFaceObservat
 }
 
 export const setDisableEditMapsService = async (disableEditHthMaps: boolean): Promise<boolean> => {
-    if (!getTokenService()) return false
+    if (!getTokenFromLSService()) return false
     try {
         const response = await fetch(base, {
             method: 'PATCH',
@@ -102,12 +102,28 @@ export const setDisableEditMapsService = async (disableEditHthMaps: boolean): Pr
 }
 
 export const setGoogleBoardUrlService = async (googleBoardUrl: string): Promise<boolean> => {
-    if (!getTokenService() || !googleBoardUrl) return false
+    if (!getTokenFromLSService() || !googleBoardUrl) return false
     try {
         const response = await fetch(base, {
             method: 'PATCH',
             headers: getHeaders(),
             body: JSON.stringify({ googleBoardUrl })
+        })
+        const data: typeResponseData|null = await response.json()
+        return !!data?.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export const setUsingLettesForBlocksService = async (useLettersForBlocks: boolean): Promise<boolean> => {
+    if (!getTokenFromLSService()) return false
+    try {
+        const response = await fetch(base, {
+            method: 'PATCH',
+            headers: getHeaders(),
+            body: JSON.stringify({ useLettersForBlocks })
         })
         const data: typeResponseData|null = await response.json()
         return !!data?.success

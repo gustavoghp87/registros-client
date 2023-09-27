@@ -3,6 +3,7 @@ import { Container } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { generalBlue } from '../../constants'
 import { HTHBuildings, HTHChangeFaceStateButtons, HTHDeleteFaceButton, HTHDoNotCalls, HTHMap, HTHObservations, HTHSetIsFinishedButton, HTHShareAllBuildingsButtons } from '.'
+import { maskTheBlock, maskTheFace } from '../../services'
 import { typeBlock, typeFace, typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useSelector } from 'react-redux'
 
@@ -134,9 +135,9 @@ export const HTHMapSection: FC<propsType> = ({
                 
                 {currentFace && <>
                     <br />
-                    <span> Manzana {currentFace.block} </span>
+                    <span> Manzana {maskTheBlock(currentFace.block, config.usingLettersForBlocks)} </span>
                     <br />
-                    <span> Cara {currentFace.face} - {currentFace.street} </span>
+                    <span> Cara {maskTheFace(currentFace.face, config.usingLettersForBlocks)} - {currentFace.street} </span>
                 </>}
             </h1>
             

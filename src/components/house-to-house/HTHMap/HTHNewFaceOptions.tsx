@@ -1,5 +1,5 @@
 import { Dropdown } from 'react-bootstrap'
-import { getHTHStreetsByTerritoryService, getStreetsByHTHTerritory } from '../../../services'
+import { getHTHStreetsByTerritoryService, getStreetsByHTHTerritory, maskTheBlock, maskTheFace } from '../../../services'
 import { hthConfigOptions } from '../../../app-config'
 import { HTHNewFaceOptionsStreet } from './HTHNewFaceOptionsStreet'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
@@ -14,7 +14,10 @@ type propsType = {
 }
 
 export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }: propsType) => {
-    const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
+    const { config, isDarkMode } = useSelector((state: typeRootState) => ({
+        config: state.config,
+        isDarkMode: state.darkMode.isDarkMode
+    }))
     const [blocks, setBlocks] = useState<typeBlock[]>(hthConfigOptions.blocks)
     const [faces, setFaces] = useState<typeFace[]>(hthConfigOptions.faces)
     const [selectedBlock, setSelectedBlock] = useState<typeBlock>()
@@ -73,7 +76,7 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'alert',
             title: 'Agregando Cara',
-            message: `Se va a agregar la Cara ${selectedFace} en la calle ${selectedStreet} de la Manzana ${selectedBlock} del territorio ${territoryHTH.territoryNumber}. Si hay un error, cancelar abajo.`
+            message: `Se va a agregar la Cara ${maskTheFace(selectedFace, config.usingLettersForBlocks)} en la calle ${selectedStreet} de la Manzana ${maskTheBlock(selectedBlock, config.usingLettersForBlocks)} del territorio ${territoryHTH.territoryNumber}. Si hay un error, cancelar abajo.`
         }))
         initFaceAddingHandler(selectedBlock, selectedFace, selectedStreet)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,13 +89,13 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
                 {!selectedBlock && showBlockMenu &&
                     <Dropdown className={'d-inline'}>
                         <Dropdown.Toggle variant={'danger'}>
-                            {selectedBlock ? `Manzana ${selectedBlock}` : "Seleccionar la Manzana"} &nbsp;
+                            {selectedBlock ? `Manzana ${maskTheBlock(selectedBlock, config.usingLettersForBlocks)}` : "Seleccionar la Manzana"} &nbsp;
                         </Dropdown.Toggle>
                         <Dropdown.Menu show={showBlockMenu}>
                             <Dropdown.Header> Seleccionar la Manzana </Dropdown.Header>
                             {!!blocks?.length && blocks.map(block =>
                                 <Dropdown.Item key={block} eventKey={block} onClick={() => selectBlockHandler(block)}>
-                                    {`Manzana ${block}`}
+                                    {`Manzana ${maskTheBlock(block, config.usingLettersForBlocks)}`}
                                 </Dropdown.Item>
                             )}
                         </Dropdown.Menu>
@@ -101,13 +104,13 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
                 {!selectedFace && showFaceMenu &&
                     <Dropdown className={'d-inline'}>
                         <Dropdown.Toggle variant={'danger'}>
-                            {selectedFace ? `==> Cara ${selectedFace}` : "Seleccionar la Cara"} &nbsp;
+                            {selectedFace ? `==> Cara ${maskTheFace(selectedFace, config.usingLettersForBlocks)}` : "Seleccionar la Cara"} &nbsp;
                         </Dropdown.Toggle>
                         <Dropdown.Menu show={showFaceMenu}>
                             <Dropdown.Header> Seleccionar la Cara </Dropdown.Header>
                             {!!faces?.length && faces.map(face =>
                                 <Dropdown.Item key={face} eventKey={face} onClick={() => selectFaceHandler(face)}>
-                                    Cara {face}
+                                    Cara {maskTheFace(face, config.usingLettersForBlocks)}
                                 </Dropdown.Item>
                             )}
                         </Dropdown.Menu>
@@ -146,7 +149,7 @@ export const HTHNewFaceOptions = ({ initFaceAddingHandler, show, territoryHTH }:
 
         {!!selectedBlock && !!selectedFace && !!selectedStreet && selectedStreet !== 'other' &&
             <h2 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
-                Agregando Manzana {selectedBlock} Cara {selectedFace} Calle {selectedStreet}
+                Agregando Manzana {maskTheBlock(selectedBlock, config.usingLettersForBlocks)}, Cara {maskTheFace(selectedFace, config.usingLettersForBlocks)}, Calle {selectedStreet}
             </h2>
         }
 

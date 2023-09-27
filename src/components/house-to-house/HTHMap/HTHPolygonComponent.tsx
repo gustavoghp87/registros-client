@@ -1,5 +1,5 @@
 import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react'
-import { editInfoWindowsStyles } from '../../../services'
+import { editInfoWindowsStyles, maskTheBlock, maskTheFace } from '../../../services'
 import { generalBlue, generalRed } from '../../../constants'
 import { InfoWindow, Polygon } from '@react-google-maps/api'
 import { typeBlock, typeFace, typeHTHTerritory, typePolygon, typeRootState } from '../../../models'
@@ -161,7 +161,7 @@ export const HTHPolygonComponent: FC<propsType> = ({
                             width: '56px'
                         }}
                     >
-                        {polygon.block}-{polygon.face}
+                        {maskTheBlock(polygon.block, config.usingLettersForBlocks)}-{maskTheFace(polygon.face, config.usingLettersForBlocks)}
                     </div>
                 </InfoWindow>
             </div>

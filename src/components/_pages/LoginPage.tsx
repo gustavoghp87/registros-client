@@ -1,6 +1,7 @@
 import { Container, FloatingLabel, Form } from 'react-bootstrap'
 import { emailPattern } from '../../app-config'
-import { getFailingEmailFromLSService, getUserByTokenService, loginService, sendLinkToRecoverAccount, setFailingEmailToLSService } from '../../services'
+import { getFailingEmailFromLSService, setFailingEmailToLSService } from '../../services/localStorageServices'
+import { getUserByTokenService, loginService, sendLinkToRecoverAccount } from '../../services'
 import { Loading } from '../commons'
 import { logoutReducer, refreshUserReducer, setConfigurationReducer, setValuesAndOpenAlertModalReducer } from '../../store'
 import { typeResponseData, typeRootState } from '../../models'

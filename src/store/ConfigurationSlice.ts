@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getConfigFromLSService, setConfigToLSService } from '../services'
+import { getConfigFromLSService, setConfigToLSService } from '../services/localStorageServices'
 import { typeConfig } from '../models'
 
 export const unauthenticatedConfig: typeConfig = {
@@ -10,10 +10,11 @@ export const unauthenticatedConfig: typeConfig = {
     isDisabledHthBuildingsForUnassignedUsers: true,
     isDisabledHthFaceObservations: true,
     name: "",
-    numberOfTerritories: 0
+    numberOfTerritories: 0,
+    usingLettersForBlocks: false
 }
 
-const configLocalStorage = getConfigFromLSService()
+const configLocalStorage = getConfigFromLSService ? getConfigFromLSService() : alert("No se cargó Config LS Service")
 
 export const configurationSlice = createSlice({
     name: 'configuration',

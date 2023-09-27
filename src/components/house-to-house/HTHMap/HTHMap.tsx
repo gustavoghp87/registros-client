@@ -1,4 +1,4 @@
-import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService, getMiddlePointOfCoordinates, getPolygonCoordinates, getStreetFromCoordinatesService, sortCoordinatesClockwise } from '../../../services'
+import { addHTHPolygonFaceService, editHTHMapService, getHTHTerritoryService, getMiddlePointOfCoordinates, getPolygonCoordinates, getStreetFromCoordinatesService, maskTheBlock, sortCoordinatesClockwise } from '../../../services'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { googleMapConfig } from '../../../app-config'
@@ -168,13 +168,13 @@ export const HTHMap: FC<propsType> = ({
 
     const acceptBlockHandler = () => {
         const newBlockPolygon = { ...territoryHTH.map.newBlockPolygon }
-        if (!newBlockPolygon?.coordinates) return
+        if (!newBlockPolygon?.coordinates || !newBlockPolygon.block) return
         const id = Date.now()
         if (isAddingNewBlockPlus) {
             dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'confirm',
                 title: "Confirmar",
-                message: `Se van a agregar estas 4 caras correspondientes a la manzana ${newBlockPolygon.block}`,
+                message: `Se van a agregar estas 4 caras correspondientes a la manzana ${maskTheBlock(newBlockPolygon.block, config.usingLettersForBlocks)}`,
                 execution: async () => {
                     if (!newBlockPolygon?.coordinates) return
                     let success = true
@@ -237,9 +237,9 @@ export const HTHMap: FC<propsType> = ({
                     block: newBlockPolygon.block,
                     color: i === 0 ? 'yellow' : i === 1 ? 'green' : i === 2 ? 'red' : 'blue',
                     completionData: { completionDates: [], isFinished: false, reopeningDates: [] },
-                    coordsPoint1: getPolygonCoordinates(1, i, newBlockPolygon.coordinates),
-                    coordsPoint2: getPolygonCoordinates(2, i, newBlockPolygon.coordinates),
-                    coordsPoint3: getPolygonCoordinates(3, i, newBlockPolygon.coordinates),
+                    coordsPoint1: getPolygonCoordinates(1, i + 1, newBlockPolygon.coordinates),
+                    coordsPoint2: getPolygonCoordinates(2, i + 1, newBlockPolygon.coordinates),
+                    coordsPoint3: getPolygonCoordinates(3, i + 1, newBlockPolygon.coordinates),
                     doNotCalls: [],
                     face: 'x',
                     id: id + i,
@@ -414,7 +414,7 @@ export const HTHMap: FC<propsType> = ({
                     <button className={'btn btn-general-blue mt-4 me-4'}
                         onClick={() => {setIsAddingNewBlockPlus(true); setIsAddingNewBlock(true)}}
                     >
-                        Agregar Manzana +
+                        Agregar Manzana Autocarga
                     </button>
                     <button className={'btn btn-general-blue mt-4 me-4'}
                         onClick={() => setIsAddingNewBlock(true)}
