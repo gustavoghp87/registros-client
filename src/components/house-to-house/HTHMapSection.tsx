@@ -89,7 +89,7 @@ export const HTHMapSection: FC<propsType> = ({
                 </h1>
             }
 
-            {showMapSection &&
+            {showMapSection && <>
                 <HTHMap
                     currentFace={currentFace}
                     isAddingNewBlock={isAddingNewBlock}
@@ -107,14 +107,14 @@ export const HTHMapSection: FC<propsType> = ({
                     showNewFaceOptions={showNewFaceOptions}
                     territoryHTH={territoryHTH}
                 />
-            }
-            
-            {!config.isDisabledCloseHthFaces && !showNewFaceOptions && !isEditingView && !isAddingNewFace && !isAddingNewBlock && !!territoryHTH.map.polygons?.length &&
-                <HTHChangeFaceStateButtons
+                {!config.isDisabledCloseHthFaces && !showNewFaceOptions && !isEditingView && !isAddingNewFace && !isAddingNewBlock && !!territoryHTH.map.polygons?.length &&
+                    <HTHChangeFaceStateButtons
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryNumber={territoryHTH.territoryNumber}
-                />
-            }
+                    />
+                }
+            </>}
+
         </>}
 
         <Container

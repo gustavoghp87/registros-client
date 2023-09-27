@@ -11,6 +11,8 @@ const btnClasses = 'btn-size12 d-block mx-auto px-3 mt-5 mb-0'
 
 const btnStyles = { width: '350px', minHeight: '80px' }
 
+const rowStyles = { marginTop: '14px', width: '400px' }
+
 export const Config = () => {
     const { config, isMobile } = useSelector((state: typeRootState) => ({
         config: state.config,
@@ -149,7 +151,80 @@ export const Config = () => {
 
             <H2 title={'CASA EN CASA'} mt={'30px'} />
 
-            <button className={`btn ${config.isDisabledEditHthMaps ? 'btn-general-red' : 'btn-general-blue'} ${btnClasses}`}
+            <div className={'container mt-5'}>
+                <div className={'d-flex justify-content-center'}>
+                    <div className={'row '} style={rowStyles}>
+                        <div className={'col-2'}>
+                            <input type='checkbox'
+                                className={'form-check-input checkbox-md'}
+                                checked={!config.isDisabledEditHthMaps}
+                                onChange={() => setDisableEditHthMapsHandler()}
+                            />
+                        </div>
+                        <div className={'col-10 pt-1'}>
+                            <h5>Habilitar edición de Mapas</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className={'d-flex justify-content-center'}>
+                    <div className={'row'} style={rowStyles}>
+                        <div className={'col-2'}>
+                            <input type='checkbox'
+                                className={'form-check-input checkbox-md'}
+                                checked={!config.isDisabledCloseHthFaces}
+                                onChange={() => setDisableCloseHthFacesHandler()}
+                            />
+                        </div>
+                        <div className={'col-10 pt-1'}>
+                            <h5>Habilitar función de cerrar Caras</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className={'d-flex justify-content-center'}>
+                    <div className={'row'} style={rowStyles}>
+                        <div className={'col-2'}>
+                            <input type='checkbox'
+                                className={'form-check-input checkbox-md'}
+                                checked={!config.isDisabledHthFaceObservations}
+                                onChange={() => setDisableHthFaceObservatiosHandler()}
+                            />
+                        </div>
+                        <div className={'col-10'}>
+                            <h5>Habilitar función de Observaciones de Caras</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className={'d-flex justify-content-center'}>
+                    <div className={'row'} style={rowStyles}>
+                        <div className={'col-2 pt-1'}>
+                            <input type='checkbox'
+                                className={'form-check-input checkbox-md'}
+                                checked={!config.isDisabledHthBuildingsForUnassignedUsers}
+                                onChange={() => setDisableHthBuildingsForUnassignedUsersHandler()}
+                            />
+                        </div>
+                        <div className={'col-10'}>
+                            <h5>Habilitar Edificios a usuarios no asignados ni compartidos por WhatsApp</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className={'d-flex justify-content-center'}>
+                    <div className={'row'} style={rowStyles}>
+                        <div className={'col-2 pt-1'}>
+                            <input type='checkbox'
+                                className={'form-check-input checkbox-md'}
+                                checked={config.usingLettersForBlocks}
+                                onChange={() => setUsingLettesForBlocksHandler()}
+                            />
+                        </div>
+                        <div className={'col-10'}>
+                            <h5>Usar números para identificar las manzanas y letras para las caras</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* <button className={`btn ${config.isDisabledEditHthMaps ? 'btn-general-red' : 'btn-general-blue'} ${btnClasses}`}
                 style={btnStyles}
                 onClick={() => setDisableEditHthMapsHandler()}
             >
@@ -198,7 +273,7 @@ export const Config = () => {
                     :
                     "Usar letras para identificar las manzanas y números para las caras"
                 }
-            </button>
+            </button> */}
 
         </>}
 

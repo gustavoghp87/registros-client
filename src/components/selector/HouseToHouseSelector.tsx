@@ -38,7 +38,8 @@ export const HouseToHouseSelector = () => {
                 Dónde Estoy
             </button>
 
-            {!!user.hthAssignments?.length && user.hthAssignments.length < config.numberOfTerritories &&
+            {(user.isAdmin || !config.isDisabledHthBuildingsForUnassignedUsers) &&
+                !(!!user.hthAssignments?.length && user.hthAssignments.length === config.numberOfTerritories) &&
                 <button className={`btn btn-general-blue d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}
                     onClick={() => setShowAll(x => !x)}
                 >
@@ -49,7 +50,7 @@ export const HouseToHouseSelector = () => {
             {!!user.hthAssignments?.length ?
                 <>
                     {user.hthAssignments.length === config.numberOfTerritories &&
-                        <h3 className={`text-center ${isDarkMode ? 'text-white' : ''}`}>
+                        <h3 className={`text-center ${isDarkMode ? 'text-white' : ''} mt-4`}>
                             Este usuario tiene asignados todos los territorios de Casa en Casa
                         </h3>
                     }
@@ -64,7 +65,7 @@ export const HouseToHouseSelector = () => {
                 classes={'btn-general-blue animate__animated animate__rubberBand'}
                 showForecast={true}
                 territories={showAll ?
-                    Array.from({ length: config.numberOfTerritories }, (_, index) => index + 1)
+                    Array.from({ length: config.numberOfTerritories }, (_, i) => i + 1)
                     :
                     [...user.hthAssignments].sort((a, b) => a - b)
                 }
