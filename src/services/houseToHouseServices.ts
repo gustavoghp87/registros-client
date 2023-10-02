@@ -319,10 +319,10 @@ export const modifyHTHHouseholdService = async (congregation: number, territoryN
 }
 
 export const setHTHIsSharedBuildingsService = async (territoryNumber: types.typeTerritoryNumber,
- block: types.typeBlock, face?: types.typeFace, polygonId?: number, streetNumbers?: number[]): Promise<boolean> => {
+ block?: types.typeBlock, face?: types.typeFace, polygonId?: number, streetNumbers?: number[]): Promise<boolean> => {
     if (!getTokenFromLSService()) return false
     try {
-        const response = await fetch(`${base}/building/${territoryNumber}?block=${block}&face=${face ? face : ''}`, {
+        const response = await fetch(`${base}/building/${territoryNumber}?block=${block ? block : ''}&face=${face ? face : ''}`, {
             method: 'PUT',
             headers: getHeaders(),
             body: JSON.stringify({ polygonId, streetNumbers })

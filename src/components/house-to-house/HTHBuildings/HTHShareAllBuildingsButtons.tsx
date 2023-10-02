@@ -4,10 +4,12 @@ import { FC, Fragment, useMemo, useState } from 'react'
 import { maskTheBlock, setHTHIsSharedBuildingsService } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { WhatsAppIcon1 } from '../../commons/WhatsAppIcon1'
 import { WhatsappShareButton } from 'react-share'
+
+const separator = "#####################"
+const separator1 = "##########"
 
 type propsType = {
     refreshHTHTerritoryHandler: () => void
@@ -16,9 +18,98 @@ type propsType = {
 }
 
 export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritoryHandler, territoryHTH, territoryNumber }) => {
-    const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
+    const { config, isMobile } = useSelector((state: typeRootState) => ({
+        config: state.config,
+        isMobile: state.mobileMode.isMobile
+    }))
+    const [copiedToClipboard, setCopiedToClipboard] = useState(false)
+    const dispatch = useDispatch()
 
-    return (
+    const shareUrl = useMemo(() => {
+        let currentUrl = `${separator}\n####  *TERRITORIO ${territoryNumber}*  ####\n${separator}\n\n`
+        const doNotCalls = territoryHTH.map.polygons.map(p =>
+                p.doNotCalls.map(d => ({ ...d, street: p.street, block: p.block }))
+            )
+            .filter(x => x.length).flat()
+            .sort((a, b) => parseInt(a.block) - parseInt(b.block))
+        const facesWithBuildings = territoryHTH.map.polygons.map(p => p).filter(p => p.buildings?.length)
+        const blocksNumbers = [...new Set(facesWithBuildings.map(f => f.block))].sort((a, b) => parseInt(a) - parseInt(b))
+        blocksNumbers.forEach(b => {
+            currentUrl += `\n${separator1}\n*MANZANA ${maskTheBlock(b, config.usingLettersForBlocks)}*\n${separator1}\n\n`
+            if (doNotCalls.some(d => d.block === b)) {
+                currentUrl += "*NO TOCAR:*\n"
+                doNotCalls.filter(d => d.block === b).forEach(d => {
+                    currentUrl += `${d.street} ${d.streetNumber} (${d.date})\n`
+                })
+                currentUrl += "\n"
+            } else {
+                currentUrl += "No hay No Tocar en esta manzana\n\n"
+            }
+            const faces = territoryHTH.map.polygons.filter(p => p.block === b)
+            faces.forEach(f => {
+                f.buildings?.sort((a, b) => a.streetNumber - b.streetNumber).forEach(b => {
+                    currentUrl += `${f.street} ${b.streetNumber}`
+                    currentUrl += `\n`
+                    currentUrl += `${DOMAIN}/edificio/${config.congregation}/${territoryNumber}/${faces[0].block}/${f.face}/${b.streetNumber}`
+                    currentUrl += `\n\n`
+                })
+            })
+        })
+        return currentUrl
+    }, [config.congregation, config.usingLettersForBlocks, territoryHTH.map.polygons, territoryNumber])
+
+    const shareHandler = async () => {
+        const success = await setHTHIsSharedBuildingsService(territoryNumber)
+        if (!success) {
+            dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'alert',
+                title: "Error",
+                message: "No se pudieron habilitar los permisos de los edificios",
+                animation: 2 
+            }))
+            return
+        }
+        refreshHTHTerritoryHandler()
+    }
+
+    return (<>
+        <style>
+            {`
+                .share-btn {
+                    border-radius: 10px;
+                    border: 1px solid #eaeaea;
+                    color: inherit;
+                    height: 72px;
+                    margin: 1rem;
+                    marginInline: 10px;
+                    text-align: left;
+                    text-decoration: none;
+                    transition: color 0.15s ease, border-color 0.15s ease;
+                    width: 300px;
+                }
+                .share-btn:hover, .share-btn:focus, .share-btn:active {
+                    border-color: #0070f3;
+                    color: #0070f3;
+                }
+            `}
+        </style>
+        <div className={'row mt-5'}>
+            <div className={'text-center'}>
+                <CopyToClipboard text={shareUrl} onCopy={() => setCopiedToClipboard(true)}>
+                    <button className={`btn ${copiedToClipboard ? 'btn-general-red' : 'btn-general-blue'} py-2`}
+                        style={{ width: '300px', maxWidth: '95%', height: '72px', marginBlock: '1rem' }}
+                        onClick={shareHandler}
+                        disabled={!shareUrl}
+                    >
+                        {copiedToClipboard ? 
+                            "Copiados!"
+                            :
+                            `Copiar Edificios y No Tocar de todo el Territorio para compartir`
+                        }
+                    </button>
+                </CopyToClipboard>
+            </div>
+        </div>
         <div className={`row mx-auto ${isMobile ? 'mb-5' : 'mb-3'}`} style={{ maxWidth: '1000px' }}>
             {hthConfigOptions.blocks.map(b => <Fragment key={b}>
                 {!!territoryHTH.map.polygons.filter(p => p.block === b)?.length &&
@@ -33,7 +124,7 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
                 }
             </Fragment>)}
         </div>
-    )
+    </>)
 }
 
 
@@ -54,7 +145,6 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
     const dispatch = useDispatch()
 
     const shareUrl = useMemo(() => {
-        // if (!faces.some(f => !!f.buildings?.length)) return ''
         let currentUrl = `Territorio ${territoryNumber} - Manzana ${maskTheBlock(faces[0].block, config.usingLettersForBlocks)}\n\n`
         faces.forEach(f =>
             f.buildings?.sort((a, b) => a.streetNumber - b.streetNumber).forEach(b => {
@@ -72,9 +162,9 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
         if (!success) {
             dispatch(setValuesAndOpenAlertModalReducer({
                 mode: 'alert',
-               title: "Error",
-               message: "No se pudieron habilitar los permisos de los edificios",
-               animation: 2 
+                title: "Error",
+                message: "No se pudieron habilitar los permisos de los edificios",
+                animation: 2 
             }))
             return
         }
@@ -84,30 +174,8 @@ const HTHShareBuildingButton: FC<propsType1> = ({ faces, refreshHTHTerritoryHand
 
     return (
         <div style={{ marginBlock: isMobile ? '0' : '40px' }}>
-
-            <style>
-                {`
-                    .share-btn {
-                        border-radius: 10px;
-                        border: 1px solid #eaeaea;
-                        color: inherit;
-                        height: 72px;
-                        margin: 1rem;
-                        marginInline: 10px;
-                        text-align: left;
-                        text-decoration: none;
-                        transition: color 0.15s ease, border-color 0.15s ease;
-                        width: 300px;
-                    }
-                    .share-btn:hover, .share-btn:focus, .share-btn:active {
-                        border-color: #0070f3;
-                        color: #0070f3;
-                    }
-                `}
-            </style>
-
             {isShared ?
-                <div className={'text-center'} style={{  }}>
+                <div className={'text-center'}>
                     <CopyToClipboard text={shareUrl} onCopy={() => setCopiedToClipboard(true)}>
                         <button className={`btn ${copiedToClipboard ? 'btn-general-red' : 'btn-secondary'} py-2`}
                             style={{ width: '300px', maxWidth: '95%', height: '72px', marginBlock: '1rem' }}

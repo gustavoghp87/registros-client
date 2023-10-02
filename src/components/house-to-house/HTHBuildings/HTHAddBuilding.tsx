@@ -16,6 +16,7 @@ export const HTHAddBuilding: FC<propsType> = ({ currentFace, refreshHTHTerritory
     const closeHTHModalHandler = () => {
         setShowModal(false)
         setShowComplex(false)
+        setStreetNumber(0)
     }
 
     return (<>
