@@ -21,7 +21,7 @@ export const NewUserPage = () => {
     const team = params.get('team') || "0"
 
     const [confPassword, setConfPassword] = useState("")
-    const [group, setGroup] = useState(0)
+    // const [group, setGroup] = useState(0)
     const [password, setPassword] = useState("")
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -37,7 +37,7 @@ export const NewUserPage = () => {
     }
 
     const createAccountByEmailInvitationHandler = async () => {
-        if (!id || !emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group)
+        if (!id || !emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword)
             return openAlertModalHandler("Faltan datos", "")
         const congr = parseInt(team)
         if (isNaN(congr) || !Number.isInteger(congr))
@@ -48,7 +48,7 @@ export const NewUserPage = () => {
         if (!recaptchaToken)
             return openAlertModalHandler("Problemas (1)", "Refrescar la página", 2)
         dispatch(showLoadingModalReducer())
-        const response = await registerUserService(email, group, id, password, recaptchaToken, group)
+        const response = await registerUserService(congr, email, id, password, recaptchaToken)
         dispatch(hideLoadingModalReducer())
         if (response?.success) {
             openAlertModalHandler("Usuario creado con éxito", "", 1, () => navigate('/'))
@@ -118,10 +118,11 @@ export const NewUserPage = () => {
                         placeholder={""}
                         value={confPassword}
                         onChange={e => setConfPassword((e.target as HTMLInputElement).value)}
+                        onKeyDown={e => e.key === 'Enter' && !(!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword) ? createAccountByEmailInvitationHandler() : null }
                     />
                 </FloatingLabel>
 
-                <FloatingLabel
+                {/* <FloatingLabel
                     label={"Número de Grupo"}
                     className={'mb-3 text-dark'}
                 >
@@ -134,13 +135,13 @@ export const NewUserPage = () => {
                         onChange={e => setGroup(parseInt(e.target.value))}
                         onKeyDown={e => e.key === 'Enter' && !(!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group) ? createAccountByEmailInvitationHandler() : null }
                     />
-                </FloatingLabel>
+                </FloatingLabel> */}
 
                 <button
                     className={'btn btn-general-blue d-block w-100 mt-5'}
                     style={{ fontWeight: 'bolder', height: '50px' }}
                     onClick={() => createAccountByEmailInvitationHandler()}
-                    disabled={!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group}
+                    disabled={!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword}
                 >
                     CREAR USUARIO
                 </button>

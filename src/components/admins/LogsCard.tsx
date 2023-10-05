@@ -1,17 +1,36 @@
 import { Card, ListGroup } from 'react-bootstrap'
 import { FC, useState } from 'react'
-import { typeLogObj, typeLogsAndTitle, typeRootState } from '../../models'
+import { hthConfigOptions } from '../../app-config'
+import { maskTheBlock, maskTheFace } from '../../services'
+import { typeLogsAndTitle, typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
 
 type propsType = {
     log: typeLogsAndTitle
 }
 
+// enmascarar manzanas y caras
+
 export const LogsCard: FC<propsType> = ({ log }) => {
-    const { isDarkMode } = useSelector((state: typeRootState) => ({
+    const { config, isDarkMode } = useSelector((state: typeRootState) => ({
+        config: state.config,
         isDarkMode: state.darkMode.isDarkMode
     }))
     const [showLogs, setShowLogs] = useState(false)
+
+    const maskBlockAndFaceHandler = (log: string) => {
+        console.log(log);
+        // const maskedLog = log
+        hthConfigOptions.blocks.forEach(b => {
+            log = log.replace(`manzana ${b}`, `manzana ${maskTheBlock(b, config.usingLettersForBlocks)}`)
+            log = log.replace(`Manzana ${b}`, `Manzana ${maskTheBlock(b, config.usingLettersForBlocks)}`)
+        })
+        hthConfigOptions.faces.forEach(f => {
+            log = log.replace(`cara ${f}`, `cara ${maskTheFace(f, config.usingLettersForBlocks)}`)
+            log = log.replace(`Cara ${f}`, `Cara ${maskTheFace(f, config.usingLettersForBlocks)}`)
+        })
+        return log
+    }
 
     return (
         <Card
@@ -31,9 +50,9 @@ export const LogsCard: FC<propsType> = ({ log }) => {
             <br />
             {showLogs &&
                 <ListGroup variant={'flush'}>
-                    {log.logs.map((log: typeLogObj, index: number) =>
-                        <ListGroup.Item className={isDarkMode ? 'bg-dark text-white' : ''} key={index}>
-                            {log.logText}
+                    {log.logs.map(log =>
+                        <ListGroup.Item className={isDarkMode ? 'bg-dark text-white' : ''} key={log.timestamp}>
+                            {maskBlockAndFaceHandler(log.logText)}
                         </ListGroup.Item>
                     )}
                 </ListGroup>

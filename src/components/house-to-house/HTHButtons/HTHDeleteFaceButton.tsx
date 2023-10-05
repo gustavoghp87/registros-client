@@ -44,11 +44,11 @@ export const HTHDeleteFaceButton: FC<propsType> = ({ currentFace, refreshHTHTerr
     return (
         <button
             className={'btn btn-general-red btn-size12 d-block mx-auto py-3'}
-            disabled={isDisabled}
-            onClick={() => openConfirmModalHTHDeleteFaceHandler()}
             style={{ marginTop: '100px', width: '90%' }}
+            onClick={() => openConfirmModalHTHDeleteFaceHandler()}
+            disabled={isDisabled}
         >
-            Eliminar Cara
+            ELIMINAR CARA
         </button>
     )
 }

@@ -57,7 +57,7 @@ export const FloatingWidgets = () => {
                         {isMobile ? user.email.split('@')[0] : user.email}
                     </p>
                     <p className={'text-end mb-0'}>
-                        {!!config.name ? `${config.name}` : `Grupo ${user.group}`}
+                        {config.name}
                     </p>
                     {user.isAdmin &&
                         <p className={'text-end'}>

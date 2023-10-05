@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { WhatsAppIcon1 } from '../../commons/WhatsAppIcon1'
 import { WhatsappShareButton } from 'react-share'
 
-const separator = "#####################"
-const separator1 = "##########"
+const separator = "######################"
+const separator1 = "###########"
 
 type propsType = {
     refreshHTHTerritoryHandler: () => void
@@ -33,9 +33,9 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
             .filter(x => x.length).flat()
             .sort((a, b) => parseInt(a.block) - parseInt(b.block))
         const facesWithBuildings = territoryHTH.map.polygons.map(p => p).filter(p => p.buildings?.length)
-        const blocksNumbers = [...new Set(facesWithBuildings.map(f => f.block))].sort((a, b) => parseInt(a) - parseInt(b))
+        const blocksNumbers = [...new Set(facesWithBuildings.map(f => f.block))].sort((a, b) => parseInt(a) - parseInt(b))  // cambiar para que se muestren también los No Tocar de las manzanas sin edificios
         blocksNumbers.forEach(b => {
-            currentUrl += `\n${separator1}\n*MANZANA ${maskTheBlock(b, config.usingLettersForBlocks)}*\n${separator1}\n\n`
+            currentUrl += `\n${separator1}\n *MANZANA ${maskTheBlock(b, config.usingLettersForBlocks)}*\n${separator1}\n\n`
             if (doNotCalls.some(d => d.block === b)) {
                 currentUrl += "*NO TOCAR:*\n"
                 doNotCalls.filter(d => d.block === b).forEach(d => {
@@ -43,7 +43,7 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
                 })
                 currentUrl += "\n"
             } else {
-                currentUrl += "No hay No Tocar en esta manzana\n\n"
+                currentUrl += "~No hay No Tocar en esta manzana~\n\n"
             }
             const faces = territoryHTH.map.polygons.filter(p => p.block === b)
             faces.forEach(f => {

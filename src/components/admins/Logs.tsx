@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 
 export const Logs = () => {
     const [isLoading, setIsLoading] = useState(true)
-    const [logs, setLogs] = useState<typeLogsAndTitle[]>()
+    const [logs, setLogs] = useState<typeLogsAndTitle[]|null>(null)
 
     const sortAndSliceLogsArray = (logs: typeLogObj[]): typeLogObj[] => logs?.sort((a, b) => b.timestamp - a.timestamp).slice(0, 100)
 
@@ -32,30 +32,25 @@ export const Logs = () => {
         }
         exec()
         setInterval(() => exec(), 10000)
-        return () => setLogs(undefined)
     }, [])
 
-    return (
-        <>
-            <H2 title={"LOGS DE LA APLICACIÓN"} />
+    return (<>
+        <H2 title={"LOGS DE LA APLICACIÓN"} />
 
-            {isLoading ?
-                <Loading mt={'50px'} />
-                :
-                <>
+        {isLoading ?
+            <Loading mt={'50px'} />
+            :
+            <>
                 {!!logs?.length && logs.some(x => !!x.logs?.length) ?
-                    logs.map((log: typeLogsAndTitle) =>
-                        <LogsCard
-                            key={log.title}
+                    logs.map(log =>
+                        <LogsCard key={log.title}
                             log={log}
                         />
                     )
                     :
                     <h4 className='text-center mt-5'>No hay datos</h4>
                 }
-                </>
-            }
-
-        </>
-    )
+            </>
+        }
+    </>)
 }

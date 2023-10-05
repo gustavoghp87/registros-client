@@ -80,7 +80,7 @@ export const LoginPage = () => {
             setFailingEmailToLSService(email)
             openAlertModalHandler("Problemas (3)", "Refrescar la página", 2)
         } else if (response && response.isDisabled) {
-            openAlertModalHandler("No habilitado", "Usuario aun no habilitado por el grupo de territorios... avisarles", 2)
+            openAlertModalHandler("No habilitado", "Usuario deshabilitado por el grupo de territorios... avisarles", 2)
         } else {
             setFailingEmailToLSService(email)
             openAlertModalHandler("Datos incorrectos", "", 2, () => window.location.reload())

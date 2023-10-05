@@ -40,7 +40,7 @@ export const HouseToHouseSelector = () => {
 
             {(user.isAdmin || !config.isDisabledHthBuildingsForUnassignedUsers) &&
                 !(!!user.hthAssignments?.length && user.hthAssignments.length === config.numberOfTerritories) &&
-                <button className={`btn btn-general-blue d-block mx-auto mt-4 ${isMobile ? 'w-75' : 'w-25'}`}
+                <button className={`btn btn-general-blue d-block mx-auto my-4 ${isMobile ? 'w-75' : 'w-25'}`}
                     onClick={() => setShowAll(x => !x)}
                 >
                     {showAll ? 'Ver solo los asignados' : 'Ver todos los territorios'}

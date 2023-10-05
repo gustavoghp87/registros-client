@@ -8,25 +8,23 @@ import { useDispatch } from 'react-redux'
 type propsType = {
     confPassword: string
     email: string
-    group: number
     isDarkMode: boolean
     password: string
     setConfPassword: Dispatch<SetStateAction<string>>
     setEmail: Dispatch<SetStateAction<string>>
     setIsLoading: Dispatch<SetStateAction<boolean>>
-    setGroup: Dispatch<SetStateAction<number>>
     setPassword: Dispatch<SetStateAction<string>>
     setShowNewUser: Dispatch<SetStateAction<boolean>>
 }
 
 export const UsersNewUserCreate: FC<propsType> = ({
-    confPassword, email, group, isDarkMode, password, setConfPassword, setEmail, setGroup, setIsLoading, setPassword, setShowNewUser
+    confPassword, email, isDarkMode, password, setConfPassword, setEmail, setIsLoading, setPassword, setShowNewUser
 }) => {
 
     const dispatch = useDispatch()
 
     const registerHandler = async () => {
-        if (!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group)
+        if (!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword)
             return
         dispatch(setValuesAndOpenAlertModalReducer({
             mode: 'confirm',
@@ -34,7 +32,7 @@ export const UsersNewUserCreate: FC<propsType> = ({
             message: `Se va a crear una cuenta con correo ${email} y contraseña '${password}'`,
             execution: async () => {
                 setIsLoading(true)
-                const response = await registerUserAdminsService(email, group, password)
+                const response = await registerUserAdminsService(email, password)
                 setIsLoading(false)
                 if (response?.userExists) {
                     dispatch(setValuesAndOpenAlertModalReducer({
@@ -106,10 +104,11 @@ export const UsersNewUserCreate: FC<propsType> = ({
                 placeholder={""}
                 value={confPassword}
                 onChange={e => setConfPassword((e.target as HTMLInputElement).value)}
+                onKeyDown={e => e.key === 'Enter' && !(!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword) ? registerHandler() : null }
             />
         </FloatingLabel>
 
-        <FloatingLabel
+        {/* <FloatingLabel
             label={"Número de Grupo"}
             className={'mb-3 text-dark'}
         >
@@ -122,13 +121,13 @@ export const UsersNewUserCreate: FC<propsType> = ({
                 onChange={e => setGroup(parseInt(e.target.value))}
                 onKeyDown={e => e.key === 'Enter' && !(!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group) ? registerHandler() : null }
             />
-        </FloatingLabel>
+        </FloatingLabel> */}
 
         <button
             className={'btn btn-general-blue d-block w-100 mt-4'}
             style={{ fontWeight: 'bolder', height: '50px' }}
             onClick={() => registerHandler()}
-            disabled={!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword || !group}
+            disabled={!emailPattern.test(email) || password.length < 8 || confPassword.length < 8 || password !== confPassword}
         >
             REGISTRAR CUENTA
         </button>

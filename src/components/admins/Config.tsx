@@ -233,6 +233,24 @@ export const Config = () => {
                         </div>
                     </div>
                 </div>
+                <div className={'d-flex justify-content-center'}>
+                    <div className={'row'} style={rowStyles}>
+                        <div className={'col-2 pt-1'}>
+                            <select className={'custom-select bg-light py-3 px-4 h5'} size={2}
+                                style={{ height: isMobile ? '330px' : '230px', overflow: 'hidden', width: isMobile ? '100%' : '330px' }}
+                                // onClick={(e: any) => setPollValue(e.target.value)}
+                                // onTouchStart={(e: any) => setPollValue(e.target.value)}
+                            >
+                                <option value={1}> 1 - Soy solo yo </option>
+                            </select>
+                        </div>
+                        <div className={'col-10'}>
+                            <h5 className={isDarkMode ? 'text-white' : ''}>
+                                Cantidad de timbres que se liberan cada día
+                            </h5>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* <button className={`btn ${config.isDisabledEditHthMaps ? 'btn-general-red' : 'btn-general-blue'} ${btnClasses}`}

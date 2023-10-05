@@ -22,7 +22,7 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
         user: state.user
     }))
     const [emailSearchInputText, setEmailSearchInputText] = useState("")
-    const [selectedGroup, setSelectedGroup] = useState(0)
+    // const [selectedGroup, setSelectedGroup] = useState(0)
     const [showNewUser, setShowNewUser] = useState(false)
     const [users, setUsers] = useState<typeUser[]|null>(null)
     const [usersToShow, setUsersToShow] = useState<typeUser[]|null>(null)
@@ -56,17 +56,24 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
     }, [setIsLoading, user.congregation])
 
     useEffect(() => {
-        (!users?.length || (!emailSearchInputText && !selectedGroup)) ?
-                setUsersToShow(users)
+        (!users?.length || !emailSearchInputText) ?
+            setUsersToShow(users)
             :
-                emailSearchInputText ?
-                    selectedGroup ?
-                        setUsersToShow(users.filter(x => x.group === selectedGroup && x.email.toLowerCase().includes(emailSearchInputText)))
-                    :
-                        setUsersToShow(users.filter(x => x.email.toLowerCase().includes(emailSearchInputText)))
-                :
-                    setUsersToShow(users.filter(x => x.group === selectedGroup))
-    }, [emailSearchInputText, selectedGroup, users])
+            setUsersToShow(users.filter(x => x.email.toLowerCase().includes(emailSearchInputText)))
+    }, [emailSearchInputText, users])
+
+    // useEffect(() => {
+    //     (!users?.length || (!emailSearchInputText && !selectedGroup)) ?
+    //             setUsersToShow(users)
+    //         :
+    //             emailSearchInputText ?
+    //                 selectedGroup ?
+    //                     setUsersToShow(users.filter(x => x.group === selectedGroup && x.email.toLowerCase().includes(emailSearchInputText)))
+    //                 :
+    //                     setUsersToShow(users.filter(x => x.email.toLowerCase().includes(emailSearchInputText)))
+    //             :
+    //                 setUsersToShow(users.filter(x => x.group === selectedGroup))
+    // }, [emailSearchInputText, selectedGroup, users])
 
     return (
     <>
@@ -100,9 +107,9 @@ export const Users: FC<propsType> = ({ setIsLoading }) => {
 
         {!!users?.length && !showNewUser &&
             <UsersSelector
-                selectedGroup={selectedGroup}
+                // selectedGroup={selectedGroup}
                 setEmailSearchInputText={setEmailSearchInputText}
-                setSelectedGroup={setSelectedGroup}
+                // setSelectedGroup={setSelectedGroup}
                 usersToShow={usersToShow}
             />
         }

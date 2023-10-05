@@ -1,18 +1,16 @@
-import { ButtonGroup, Card, Dropdown, DropdownButton, Form } from 'react-bootstrap'
+import { Card, Form } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction } from 'react'
 import { typeRootState, typeUser } from '../../../models'
 import { useSelector } from 'react-redux'
 
 type propsType = {
-    selectedGroup: number
+    // selectedGroup: number
     setEmailSearchInputText: Dispatch<SetStateAction<string>>
-    setSelectedGroup: Dispatch<SetStateAction<number>>
+    // setSelectedGroup: Dispatch<SetStateAction<number>>
     usersToShow: typeUser[]|null
 }
 
-export const UsersSelector: FC<propsType> = ({
-    selectedGroup, setEmailSearchInputText, setSelectedGroup, usersToShow
-}) => {
+export const UsersSelector: FC<propsType> = ({ setEmailSearchInputText, usersToShow }) => {
     const isDarkMode = useSelector((state: typeRootState) => state.user)
 
     return (
@@ -21,7 +19,7 @@ export const UsersSelector: FC<propsType> = ({
             style={{ backgroundColor: '#f6f6f8', marginTop: '70px', maxWidth: '500px' }}
         >
             <Card.Body>
-                
+
                 <Card.Title className={'mt-4 mb-2'}>
                     <h1>Mostrando {usersToShow?.length || 0} </h1>
                 </Card.Title>
@@ -42,7 +40,7 @@ export const UsersSelector: FC<propsType> = ({
                     </div>
 
                     <div className={'col-sm-6'}>
-                        <Card.Title className={'mt-4 mb-3'}>
+                        {/* <Card.Title className={'mt-4 mb-3'}>
                             Buscar por grupo:
                         </Card.Title>
                         <DropdownButton
@@ -59,7 +57,7 @@ export const UsersSelector: FC<propsType> = ({
                             <Dropdown.Item eventKey={'4'} onClick={() => setSelectedGroup(4)} active={selectedGroup === 4}> Grupo 4 </Dropdown.Item>
                             <Dropdown.Item eventKey={'5'} onClick={() => setSelectedGroup(5)} active={selectedGroup === 5}> Grupo 5 </Dropdown.Item>
                             <Dropdown.Item eventKey={'6'} onClick={() => setSelectedGroup(6)} active={selectedGroup === 6}> Grupo 6 </Dropdown.Item>
-                        </DropdownButton>
+                        </DropdownButton> */}
                     </div>
                 </div>
             </Card.Body>

@@ -1,6 +1,7 @@
+// import { userGroups } from '../../../app-config'
 import { assignHTHTerritoryService, assignTLPTerritoryService, changePswOtherUserService, deleteUserService, editUserService } from '../../../services/userServices'
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs'
-import { Card, Pagination } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Hr } from '../../commons'
 import { setValuesAndOpenAlertModalReducer, typeMode } from '../../../store'
@@ -8,7 +9,6 @@ import { Socket } from 'socket.io-client'
 import { typeRootState, typeUser } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { userChangeString } from '../../../constants'
-import { userGroups } from '../../../app-config'
 
 type propsType = {
     currentUser: typeUser
@@ -349,14 +349,14 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
 
                     <Hr />
 
-                    <Card.Text className={'text-center mt-3'} style={{ fontSize: '1.2rem', fontWeight: 600 }}>
+                    {/* <Card.Text className={'text-center mt-3'} style={{ fontSize: '1.2rem', fontWeight: 600 }}>
                         Grupo: {currentUser.group} &nbsp;&nbsp;
                         <button className={'btn btn-general-blue'} onClick={() => setGroupVisible(!groupVisible)}>
                             CAMBIAR GRUPO
                         </button>
-                    </Card.Text>
+                    </Card.Text> */}
 
-                    {groupVisible &&
+                    {/* {groupVisible &&
                         <div className={'mx-auto my-4'}>
                             {isMobile ? <>
                                 <Pagination className={'text-center d-flex justify-content-center mb-0'} size={'lg'}>
@@ -399,7 +399,7 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
                                 </Pagination>
                             }
                         </div>
-                    }
+                    } */}
                 
 
                     <Hr />
