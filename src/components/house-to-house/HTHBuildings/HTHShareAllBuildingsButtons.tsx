@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { WhatsAppIcon1 } from '../../commons/WhatsAppIcon1'
 import { WhatsappShareButton } from 'react-share'
 
-const separator = "######################"
+const separator = "#####################"
 const separator1 = "###########"
 
 type propsType = {
@@ -26,14 +26,15 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
     const dispatch = useDispatch()
 
     const shareUrl = useMemo(() => {
-        let currentUrl = `${separator}\n####  *TERRITORIO ${territoryNumber}*  ####\n${separator}\n\n`
+        let currentUrl = `${separator}\n####  *TERRITORIO ${territoryNumber}*  ####\n${separator}\n\n*Fecha: ${new Date().toLocaleDateString()}*\n\n`
         const doNotCalls = territoryHTH.map.polygons.map(p =>
                 p.doNotCalls.map(d => ({ ...d, street: p.street, block: p.block }))
             )
             .filter(x => x.length).flat()
             .sort((a, b) => parseInt(a.block) - parseInt(b.block))
         const facesWithBuildings = territoryHTH.map.polygons.map(p => p).filter(p => p.buildings?.length)
-        const blocksNumbers = [...new Set(facesWithBuildings.map(f => f.block))].sort((a, b) => parseInt(a) - parseInt(b))  // cambiar para que se muestren también los No Tocar de las manzanas sin edificios
+        // cambiar para que se muestren también los No Tocar de las manzanas sin edificios
+        const blocksNumbers = [...new Set(facesWithBuildings.map(f => f.block))].sort((a, b) => parseInt(a) - parseInt(b))
         blocksNumbers.forEach(b => {
             currentUrl += `\n${separator1}\n *MANZANA ${maskTheBlock(b, config.usingLettersForBlocks)}*\n${separator1}\n\n`
             if (doNotCalls.some(d => d.block === b)) {

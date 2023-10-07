@@ -7,7 +7,7 @@ import { unauthenticatedConfig } from '.'
 const unauthenticatedUser: typeUser = {
     congregation: 0,
     email: "",
-    group: 0,
+    // group: 0,
     hthAssignments: [],
     id: 0,
     isActive: false,

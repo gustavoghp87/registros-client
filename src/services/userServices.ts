@@ -109,13 +109,13 @@ export const deleteUserService = async (userId: number): Promise<boolean> => {
     }
 }
 
-export const editUserService = async (email: string, isActive: boolean, role: number, group: number): Promise<typeUser|null> => {
+export const editUserService = async (email: string, isActive: boolean, role: number): Promise<typeUser|null> => {
     if (!getTokenFromLSService()) return null
     try {
         const response = await fetch(base, {
             method: 'PUT',
             headers: getHeaders(),
-            body: JSON.stringify({ email, isActive, role, group })
+            body: JSON.stringify({ email, isActive, role })
         })
         const data: typeResponseData = await response.json()
         if (!data || !data.success || !data.user) return null

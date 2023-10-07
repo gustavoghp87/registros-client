@@ -30,7 +30,7 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
     const [unassignTLPValue, setUnassignTLPValue] = useState(0)
     const [changeHTHAssignmentsVisible, setChangeHTHAssignmentsVisible] = useState(false)
     const [changeTLPAssignmentsVisible, setChangeTLPAssignmentsVisible] = useState(false)
-    const [groupVisible, setGroupVisible] = useState(false)
+    // const [groupVisible, setGroupVisible] = useState(false)
     const [showCardBody, setShowCardBody] = useState(false)
 
     const openAlertModalHandler = (mode: typeMode, title: string, message: string, animation?: number, execution?: Function): void => {
@@ -63,9 +63,9 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
         )
     }
 
-    const editUserHandler = async (email: string, isActive: boolean, role: number, group: number): Promise<void> => {
+    const editUserHandler = async (email: string, isActive: boolean, role: number): Promise<void> => {
         setIsLoading(true)
-        const updatedUser: typeUser|null = await editUserService(email, isActive, role, group)
+        const updatedUser: typeUser|null = await editUserService(email, isActive, role)
         setIsLoading(false)
         if (!updatedUser) return openAlertModalHandler('alert', "Error", "Algo falló al modificar usuario", 2)
         sendUpdatedUser(updatedUser)
@@ -406,7 +406,7 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
                 
 
                     <button className={`col-12 btn btn ${currentUser.isActive ? 'btn-general-red' : 'btn-general-blue'} my-2`}
-                        onClick={() => editUserHandler(currentUser.email, !currentUser.isActive, currentUser.role, currentUser.group)}
+                        onClick={() => editUserHandler(currentUser.email, !currentUser.isActive, currentUser.role)}
                     >
                         {currentUser.isActive ? "DESACTIVAR" : "ACTIVAR"}
                     </button>
@@ -414,7 +414,7 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
                     <br/>
 
                     <button className={`col-12 btn ${currentUser.role === 1 ? 'btn-general-red' : 'btn-general-blue'} my-2`}
-                        onClick = {() => editUserHandler(currentUser.email, currentUser.isActive, currentUser.role === 1 ? 0 : 1, currentUser.group)}
+                        onClick = {() => editUserHandler(currentUser.email, currentUser.isActive, currentUser.role === 1 ? 0 : 1)}
                     >
                         {currentUser.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
                     </button>

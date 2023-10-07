@@ -1,7 +1,7 @@
 export type typeUser = {
     congregation: number;
     email: string
-    group: number
+    // group: number
     hthAssignments: number[]
     id: number
     isActive: boolean

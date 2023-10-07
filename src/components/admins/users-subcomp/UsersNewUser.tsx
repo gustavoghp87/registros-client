@@ -19,7 +19,7 @@ export const UsersNewUser: FC<propsType> = ({ setIsLoading, setShowNewUser }) =>
     const isDarkMode = useSelector((state: typeRootState) => state.darkMode.isDarkMode)
     const [confPassword, setConfPassword] = useState("")
     const [email, setEmail] = useState("")
-    const [group, setGroup] = useState(0)
+    // const [group, setGroup] = useState(0)
     const [password, setPassword] = useState("")
     const [radioValue, setRadioValue] = useState('1')
 
@@ -54,12 +54,12 @@ export const UsersNewUser: FC<propsType> = ({ setIsLoading, setShowNewUser }) =>
                 <UsersNewUserCreate
                     confPassword={confPassword}
                     email={email}
-                    group={group}
+                    // group={group}
                     isDarkMode={isDarkMode}
                     password={password}
                     setConfPassword={setConfPassword}
                     setEmail={setEmail}
-                    setGroup={setGroup}
+                    // setGroup={setGroup}
                     setIsLoading={setIsLoading}
                     setPassword={setPassword}
                     setShowNewUser={setShowNewUser}
