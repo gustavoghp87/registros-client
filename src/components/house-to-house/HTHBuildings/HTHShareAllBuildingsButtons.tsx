@@ -1,7 +1,7 @@
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { DOMAIN, hthConfigOptions } from '../../../app-config'
 import { FC, Fragment, useMemo, useState } from 'react'
-import { maskTheBlock, setHTHIsSharedBuildingsService } from '../../../services'
+import { getCurrentLocalDate, maskTheBlock, setHTHIsSharedBuildingsService } from '../../../services'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'
 import { typeHTHTerritory, typePolygon, typeRootState, typeTerritoryNumber } from '../../../models'
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,15 +26,15 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
     const dispatch = useDispatch()
 
     const shareUrl = useMemo(() => {
-        let currentUrl = `${separator}\n####  *TERRITORIO ${territoryNumber}*  ####\n${separator}\n\n*Fecha: ${new Date().toLocaleDateString()}*\n\n`
+        let currentUrl = `${separator}\n####  *TERRITORIO ${territoryNumber}*  ####\n${separator}\n\n*Fecha: ${getCurrentLocalDate()}*\n\n`
         const doNotCalls = territoryHTH.map.polygons.map(p =>
                 p.doNotCalls.map(d => ({ ...d, street: p.street, block: p.block }))
             )
             .filter(x => x.length).flat()
             .sort((a, b) => parseInt(a.block) - parseInt(b.block))
-        const facesWithBuildings = territoryHTH.map.polygons.map(p => p).filter(p => p.buildings?.length)
+        const facesWithBuildingsOrDnt = territoryHTH.map.polygons.map(p => p).filter(p => p.buildings?.length || p.doNotCalls?.length)
         // cambiar para que se muestren también los No Tocar de las manzanas sin edificios
-        const blocksNumbers = [...new Set(facesWithBuildings.map(f => f.block))].sort((a, b) => parseInt(a) - parseInt(b))
+        const blocksNumbers = [...new Set(facesWithBuildingsOrDnt.map(f => f.block))].sort((a, b) => parseInt(a) - parseInt(b))
         blocksNumbers.forEach(b => {
             currentUrl += `\n${separator1}\n *MANZANA ${maskTheBlock(b, config.usingLettersForBlocks)}*\n${separator1}\n\n`
             if (doNotCalls.some(d => d.block === b)) {
@@ -46,20 +46,26 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
             } else {
                 currentUrl += "~No hay No Tocar en esta manzana~\n\n"
             }
-            const faces = territoryHTH.map.polygons.filter(p => p.block === b)
-            faces.forEach(f => {
-                f.buildings?.sort((a, b) => a.streetNumber - b.streetNumber).forEach(b => {
-                    currentUrl += `${f.street} ${b.streetNumber}`
-                    currentUrl += `\n`
-                    currentUrl += `${DOMAIN}/edificio/${config.congregation}/${territoryNumber}/${faces[0].block}/${f.face}/${b.streetNumber}`
-                    currentUrl += `\n\n`
+            if (territoryHTH.map.polygons.some(f => f.block === b && f.buildings?.length)) {
+                currentUrl += "\n*EDIFICIOS:*\n"
+                const faces = territoryHTH.map.polygons.filter(p => p.block === b)
+                faces.forEach(f => {
+                    f.buildings?.sort((a, b) => a.streetNumber - b.streetNumber).forEach(b => {
+                        currentUrl += `${f.street} ${b.streetNumber}`
+                        currentUrl += `\n`
+                        currentUrl += `${DOMAIN}/edificio/${config.congregation}/${territoryNumber}/${faces[0].block}/${f.face}/${b.streetNumber}`
+                        currentUrl += `\n\n`
+                    })
                 })
-            })
+            } else {
+                currentUrl += "\n~No hay Edificios en esta manzana~\n\n"
+            }
         })
         return currentUrl
     }, [config.congregation, config.usingLettersForBlocks, territoryHTH.map.polygons, territoryNumber])
 
     const shareHandler = async () => {
+        if (!territoryHTH.map.polygons.some(f => f.buildings?.length)) return
         const success = await setHTHIsSharedBuildingsService(territoryNumber)
         if (!success) {
             dispatch(setValuesAndOpenAlertModalReducer({

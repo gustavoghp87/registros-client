@@ -57,7 +57,7 @@ export const HTHMapSection: FC<propsType> = ({
 
         {territoryHTH?.map && <>
 
-            {territoryHTH.map.polygons.some(f => f.buildings?.length) &&
+            {territoryHTH.map.polygons.some(f => f.buildings?.length || f.doNotCalls?.length) &&
                 <HTHShareAllBuildingsButtons
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     territoryHTH={territoryHTH}
