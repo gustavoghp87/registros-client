@@ -29,7 +29,7 @@ export const Footer = () => {
                     <a href={DOMAIN} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
                         Misericordia Web
                         <span className={'text-white ms-2'} style={{ fontSize: isMobile ? '0.7rem' : '0.9rem', fontWeight: 'normal' }}>
-                            v 6.6
+                            v 6.7
                         </span>
                     </a>
                 </div>

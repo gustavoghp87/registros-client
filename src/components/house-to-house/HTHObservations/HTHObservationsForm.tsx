@@ -1,4 +1,4 @@
-import { addHTHObservationService, editHTHObservationService, maskTheBlock, maskTheFace } from '../../../services'
+import { addHTHObservationService, editHTHObservationService, maskTheBlock } from '../../../services'
 import { FC, FormEvent, useState } from 'react'
 import { HTHForm } from '../'
 import { setValuesAndOpenAlertModalReducer } from '../../../store'

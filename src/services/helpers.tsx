@@ -37,8 +37,9 @@ export const timeConverter = (UNIX_timestamp: number, withHour: boolean = true):
 }
 
 export const getCurrentLocalDate = (timestamp?: number) => {
-    if (timestamp) return new Date(timestamp).toLocaleDateString('es-AR')
-    return new Date().toLocaleDateString('es-AR')
+    const argDate = timestamp ? new Date(timestamp) : new Date();
+    argDate.setTime(argDate.getTime() - 3 * 60 * 60 * 1000);
+    return argDate.toISOString().split('T')[0]
 }
 
 export const putHyphens = (phoneNumber: number): string => {

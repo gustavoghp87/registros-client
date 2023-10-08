@@ -4,6 +4,8 @@ import { typeConfig } from '../models'
 
 export const unauthenticatedConfig: typeConfig = {
     congregation: 0,
+    date: 0,
+    dbBackupLastDate: '',
     googleBoardUrl: '',
     isDisabledCloseHthFaces: true,
     isDisabledEditHthMaps: true,

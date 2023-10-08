@@ -1,6 +1,6 @@
 import { ConfigCreateHTHTerritories, ConfigSendInvitationNewCongregation, ConfigSetCongregationName, ConfigSetGoogleBoardUrl } from './config-subcomp'
 import { H2, Hr } from '../commons'
-import { hideLoadingModalReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
+import { hideLoadingModalReducer, setConfigurationReducer, setValuesAndOpenAlertModalReducer, showLoadingModalReducer } from '../../store'
 import { typeRootState } from '../../models'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
@@ -106,6 +106,21 @@ export const Config = () => {
         window.location.reload()
     }
 
+    const downloadBackupHandler = async () => {
+        dispatch(showLoadingModalReducer())
+        const success = await services.downloadDbBackupService()
+        dispatch(hideLoadingModalReducer())
+        if (!success) {
+            dispatch(setValuesAndOpenAlertModalReducer({
+                mode: 'alert',
+                title: "Algo falló",
+                message: "No se pudo generar un Backup de la base de datos. Ver los Logs.",
+                animation: 2
+            }))
+        }
+        dispatch(setConfigurationReducer({ ...config, dbBackupLastDate: services.getCurrentLocalDate() }))
+    }
+
     useEffect(() => services.goToTop(), [])
 
     return (<>
@@ -127,7 +142,12 @@ export const Config = () => {
             <button className={`btn btn-general-blue ${btnClasses}`} style={btnStyles} onClick={() => setShowSetGoogleBoardUrl(true)}>
                 {!!config.googleBoardUrl ? "Modificar dirección de Tablero Google" : "Cargar dirección de Tablero Google"}
             </button>
-            
+
+            <button className={`btn btn-general-blue ${btnClasses}`} style={btnStyles} onClick={downloadBackupHandler}>
+                Generar y descargar una copia de seguridad de la base de datos (
+                    {config.dbBackupLastDate ? `última: ${config.dbBackupLastDate}` : "nunca se hizo una"})
+            </button>
+
             {/* <h5 className={isDarkMode ? 'text-white' : ''}> Establecer localidad </h5>
 
             <h5 className={isDarkMode ? 'text-white' : ''}> Duración de cookie de acceso: 3 meses </h5> */}
@@ -233,7 +253,7 @@ export const Config = () => {
                         </div>
                     </div>
                 </div>
-                <div className={'d-flex justify-content-center'}>
+                {/* <div className={'d-flex justify-content-center'}>
                     <div className={'row'} style={rowStyles}>
                         <div className={'col-2 pt-1'}>
                             <select className={'custom-select bg-light py-3 px-4 h5'} size={2}
@@ -250,7 +270,7 @@ export const Config = () => {
                             </h5>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             {/* <button className={`btn ${config.isDisabledEditHthMaps ? 'btn-general-red' : 'btn-general-blue'} ${btnClasses}`}

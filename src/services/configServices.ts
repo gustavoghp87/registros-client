@@ -1,9 +1,42 @@
-import { getHeaders } from '.'
+import { getCurrentLocalDate, getHeaders } from '.'
 import { getTokenFromLSService } from './localStorageServices'
 import { pointer } from '../app-config'
 import { typeResponseData } from '../models'
+import JSZip from 'jszip';
 
 const base: string = pointer.config
+
+export const downloadDbBackupService = async (): Promise<boolean> => {
+    if (!getTokenFromLSService()) return false
+    try {
+        const response = await fetch(`${base}/db-backup`, {
+            method: 'GET',
+            headers: getHeaders()
+        })
+        const data: typeResponseData = await response.json()
+        if (!data?.dbBackup) return false
+        const zip = new JSZip()
+        const name = `backup_${getCurrentLocalDate()}_MisericordiaWeb`
+        zip.folder(name)?.file('Config.json', JSON.stringify(data.dbBackup.config, null, 4))
+        zip.folder(name)?.file('HouseToHouseTerritories.json', JSON.stringify(data.dbBackup.houseToHouseTerritories, null, 4))
+        zip.folder(name)?.file('Logs.json', JSON.stringify(data.dbBackup.logs, null, 4))
+        zip.folder(name)?.file('TelephonicTerritories.json', JSON.stringify(data.dbBackup.telephonicTerritories, null, 4))
+        zip.folder(name)?.file('Users.json', JSON.stringify(data.dbBackup.users, null, 4))
+        zip.generateAsync({ type: 'blob' }).then((content) => {
+            const a = document.createElement('a')
+            a.href = URL.createObjectURL(content)
+            a.download = `${name}.zip`
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+        })
+        return !!data?.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
 
 export const sendInvitationForNewUserService = async (email: string, newCongregation: boolean = false): Promise<typeResponseData|null> => {
     if (!getTokenFromLSService()) return null

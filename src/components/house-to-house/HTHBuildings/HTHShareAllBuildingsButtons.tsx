@@ -64,7 +64,7 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
             }
         })
         return currentUrl
-    }, [config.congregation, config.usingLettersForBlocks, territoryHTH.map.polygons, territoryNumber])
+    }, [config.congregation, config.usingLettersForBlocks, territoryHTH.map.polygons, territoryHTH.mapUrl, territoryNumber])
 
     const shareHandler = async () => {
         if (!territoryHTH.map.polygons.some(f => f.buildings?.length)) return

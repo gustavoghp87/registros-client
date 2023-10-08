@@ -14,6 +14,7 @@ export type typeResponseData = {                           //  =>  UPDATE MOCKED
     config?: type.typeConfig
     coordinates?: type.typeCoords
     dataError?: boolean
+    dbBackup?: type.typeDbBackup
     email?: string
     emailSuccess?: boolean
     expired?: boolean
