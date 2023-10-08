@@ -27,13 +27,15 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
 
     const shareUrl = useMemo(() => {
         let currentUrl = `${separator}\n####  *TERRITORIO ${territoryNumber}*  ####\n${separator}\n\n*Fecha: ${getCurrentLocalDate()}*\n\n`
+        if (territoryHTH.mapUrl) {
+            currentUrl += `\nMapa:\n${territoryHTH.mapUrl}\n\n`
+        }
         const doNotCalls = territoryHTH.map.polygons.map(p =>
                 p.doNotCalls.map(d => ({ ...d, street: p.street, block: p.block }))
             )
             .filter(x => x.length).flat()
             .sort((a, b) => parseInt(a.block) - parseInt(b.block))
         const facesWithBuildingsOrDnt = territoryHTH.map.polygons.map(p => p).filter(p => p.buildings?.length || p.doNotCalls?.length)
-        // cambiar para que se muestren también los No Tocar de las manzanas sin edificios
         const blocksNumbers = [...new Set(facesWithBuildingsOrDnt.map(f => f.block))].sort((a, b) => parseInt(a) - parseInt(b))
         blocksNumbers.forEach(b => {
             currentUrl += `\n${separator1}\n *MANZANA ${maskTheBlock(b, config.usingLettersForBlocks)}*\n${separator1}\n\n`

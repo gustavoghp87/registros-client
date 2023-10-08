@@ -90,14 +90,15 @@ export type typeHTHMap = {
 export type typeHTHTerritory = {
     congregation: number;
     map: typeHTHMap
+    mapUrl?: string
     territoryNumber: typeTerritoryNumber
 }
 
 // export type typeCallingHTHState = 'Atendido' | 'No atendido' | 'No tocado' | 'Carta dejada'
 
 export type typeHthComplexBuildingItem = {
-    id: string
     household: typeHTHHousehold | null
+    id: string
 }
 
 export type typeHthNewComplexBuildingItem = {
