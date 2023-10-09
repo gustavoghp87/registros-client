@@ -26,7 +26,7 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
     const dispatch = useDispatch()
 
     const shareUrl = useMemo(() => {
-        let currentUrl = `${separator}\n####  *TERRITORIO ${territoryNumber}*  ####\n${separator}\n\n*Fecha: ${getCurrentLocalDate()}*\n\n`
+        let currentUrl = `${separator}\n####  *TERRITORIO ${territoryNumber}*   ###\n${separator}\n\n*Fecha: ${getCurrentLocalDate()}*\n\n`
         if (territoryHTH.mapUrl) {
             currentUrl += `\nMapa:\n${territoryHTH.mapUrl}\n\n`
         }
