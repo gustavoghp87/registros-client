@@ -85,7 +85,10 @@ export const HTHAllBuildings: FC<propsType> = ({ refreshHTHTerritoryHandler, ter
                 <ListGroup as={'ul'}>
                     {allBuildings.map(b =>
                         <Fragment key={b.face.street + "-" + b.streetNumber}>
-                            {`${b.face.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) && (
+                            {(`${b.face.street} ${b.streetNumber}`.toLowerCase().includes(buildingAddress.toLowerCase()) ||
+                                `${b.face.street} ${b.streetNumber2}`.toLowerCase().includes(buildingAddress.toLowerCase()) ||
+                                `${b.face.street} ${b.streetNumber3}`.toLowerCase().includes(buildingAddress.toLowerCase())
+                            ) && (
                                 () => {
                                     const lastTime = b.households
                                         .map(h => h.onDates?.length ? h.onDates[h.onDates.length - 1] : 0)
@@ -103,7 +106,7 @@ export const HTHAllBuildings: FC<propsType> = ({ refreshHTHTerritoryHandler, ter
                                         >
                                             <div className='row py-2'>
                                                 <h5 className='text-center'>
-                                                    {b.face.street} {b.streetNumber}
+                                                    {b.face.street} {b.streetNumber}{b.streetNumber2 ? `/${b.streetNumber2}` : ''}{b.streetNumber3 ? `/${b.streetNumber3}` : ''}
                                                 </h5>
                                             </div>
                                             <div className='row text-center'>

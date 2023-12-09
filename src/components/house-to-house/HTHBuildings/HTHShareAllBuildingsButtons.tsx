@@ -53,7 +53,7 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
                 const faces = territoryHTH.map.polygons.filter(p => p.block === b)
                 faces.forEach(f => {
                     f.buildings?.sort((a, b) => a.streetNumber - b.streetNumber).forEach(b => {
-                        currentUrl += `${f.street} ${b.streetNumber}`
+                        currentUrl += `${f.street} ${b.streetNumber}${b.streetNumber2 ? `/${b.streetNumber2}` : ''}${b.streetNumber3 ? `/${b.streetNumber3}` : ''}`
                         currentUrl += `\n`
                         currentUrl += `${DOMAIN}/edificio/${config.congregation}/${territoryNumber}/${faces[0].block}/${f.face}/${b.streetNumber}`
                         currentUrl += `\n\n`

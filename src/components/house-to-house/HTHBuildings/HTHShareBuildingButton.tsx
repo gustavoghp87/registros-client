@@ -28,9 +28,9 @@ export const HTHShareBuildingButton: FC<propsType> = ({ currentFace, refreshHTHT
         const buildings: number[] = []
         checkboxes.forEach((checkbox: HTMLInputElement) => {
             if (checkbox.checked) {
-                const streetNumber: number = parseInt(checkbox.value)
+                const streetNumber: number = parseInt(checkbox.value.includes('/') ? checkbox.value.split('/')[0] : checkbox.value)
                 if (territoryNumber && currentFace && currentFace.block && currentFace.face && currentFace.street && streetNumber && !isNaN(streetNumber)) {
-                    currentUrl += `Edificio ${currentFace.street} ${streetNumber} (Territorio ${territoryNumber})`
+                    currentUrl += `Edificio ${currentFace.street} ${checkbox.value} (Territorio ${territoryNumber})`
                     currentUrl += `\n\n`
                     currentUrl += `${DOMAIN}/edificio/${user.congregation}/${territoryNumber}/${currentFace.block}/${currentFace.face}/${streetNumber}`
                     currentUrl += `\n\n`

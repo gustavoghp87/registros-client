@@ -12,6 +12,8 @@ export const HTHAddBuilding: FC<propsType> = ({ currentFace, refreshHTHTerritory
     const [showComplex, setShowComplex] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [streetNumber, setStreetNumber] = useState(0)
+    const [streetNumber2, setStreetNumber2] = useState(0)
+    const [streetNumber3, setStreetNumber3] = useState(0)
 
     const closeHTHModalHandler = () => {
         setShowModal(false)
@@ -35,7 +37,11 @@ export const HTHAddBuilding: FC<propsType> = ({ currentFace, refreshHTHTerritory
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     setShowComplex={setShowComplex}
                     setStreetNumber={setStreetNumber}
+                    setStreetNumber2={setStreetNumber2}
+                    setStreetNumber3={setStreetNumber3}
                     streetNumber={streetNumber}
+                    streetNumber2={streetNumber2}
+                    streetNumber3={streetNumber3}
                     territoryNumber={territoryNumber}
                 />
                 :
@@ -45,7 +51,11 @@ export const HTHAddBuilding: FC<propsType> = ({ currentFace, refreshHTHTerritory
                     refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
                     setShowComplex={setShowComplex}
                     setStreetNumber={setStreetNumber}
+                    setStreetNumber2={setStreetNumber2}
+                    setStreetNumber3={setStreetNumber3}
                     streetNumber={streetNumber}
+                    streetNumber2={streetNumber2}
+                    streetNumber3={streetNumber3}
                     territoryNumber={territoryNumber}
                 />
             }

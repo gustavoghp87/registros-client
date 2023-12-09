@@ -13,12 +13,18 @@ type propsType = {
     refreshHTHTerritoryHandler: () => void
     setShowComplex: Dispatch<SetStateAction<boolean>>
     setStreetNumber: Dispatch<SetStateAction<number>>
+    setStreetNumber2: Dispatch<SetStateAction<number>>
+    setStreetNumber3: Dispatch<SetStateAction<number>>
     streetNumber: number
+    streetNumber2: number
+    streetNumber3: number
     territoryNumber: typeTerritoryNumber
 }
 
 export const HTHAddBuildingModalSimple: FC<propsType> = ({
-    closeHTHModalHandler, currentFace, refreshHTHTerritoryHandler, setShowComplex, setStreetNumber, streetNumber, territoryNumber
+    closeHTHModalHandler, currentFace, refreshHTHTerritoryHandler,
+    setShowComplex, setStreetNumber, setStreetNumber2, setStreetNumber3,
+    streetNumber, streetNumber2, streetNumber3, territoryNumber
 }) => {
     const { isDarkMode, isMobile } = useSelector((state: typeRootState) => ({
         isDarkMode: state.darkMode.isDarkMode,
@@ -29,8 +35,9 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({
     const [hasLowLevel, setHasLowLevel] = useState(true)
     const [hasManager, setHasManager] = useState(false)
     const [hasNn, setHasNn] = useState(false)
-    const [numberOfLevels, setNumberOfLevels] = useState<number>(4)
-    const [numberPerLevel, setNumberPerLevel] = useState<number>(2)
+    const [numberOfLevels, setNumberOfLevels] = useState(4)
+    const [numberOfNumbers, setNumberOfNumbers] = useState(1)
+    const [numberPerLevel, setNumberPerLevel] = useState(2)
     const [reverseOrderX, setReverseOrderX] = useState(false)
     const [reverseOrderY, setReverseOrderY] = useState(false)
 
@@ -58,7 +65,9 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({
             numberPerLevel,
             reverseOrderX,
             reverseOrderY,
-            streetNumber
+            streetNumber,
+            streetNumber2: numberOfNumbers > 1 ? streetNumber2 : undefined,
+            streetNumber3: numberOfNumbers > 2 ? streetNumber3 : undefined
         }
         if (hasManager) building.manager = {
             doorName: '',
@@ -117,7 +126,7 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({
                     <div className={'row d-flex align-self-center justify-content-center mt-2 mb-3'}>
 
                         <Form.Group
-                            className={'font-weight-bolder m-2'}
+                            className={'fw-bolder m-2'}
                             style={{ width: '170px' }}
                         >
                             <Form.Label> Calle </Form.Label>
@@ -128,23 +137,55 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({
                             />
                         </Form.Group>
 
-                        <Form.Group
-                            className={'font-weight-bolder m-2'}
-                            style={{ width: '120px' }}
-                        >
-                            <Form.Label> Número </Form.Label>
-                            <Form.Control
-                                type={'number'}
-                                max={'100000'}
-                                min={'1'}
-                                value={streetNumber ? streetNumber : ""}
-                                onChange={e => setStreetNumber(parseInt(e.target.value))}
-                                autoFocus
-                            />
-                        </Form.Group>
+                        <div className={'col-auto'}>
+                            <Form.Group
+                                className={'fw-bolder m-2'}
+                                style={{ width: '120px' }}
+                            >
+                                <Form.Label> Número </Form.Label>
+                                <Form.Control
+                                    type={'number'}
+                                    max={'100000'}
+                                    min={'1'}
+                                    value={streetNumber ? streetNumber : ""}
+                                    onChange={e => setStreetNumber(parseInt(e.target.value))}
+                                    autoFocus
+                                />
+                            </Form.Group>
+                            {numberOfNumbers > 1 && <>
+                                <Form.Group
+                                    className={'fw-bolder m-2'}
+                                    style={{ width: '120px' }}
+                                >
+                                    <Form.Label> Número 2 </Form.Label>
+                                    <Form.Control
+                                        type={'number'}
+                                        max={'100000'}
+                                        min={'1'}
+                                        value={streetNumber2 ? streetNumber2 : ""}
+                                        onChange={e => setStreetNumber2(parseInt(e.target.value))}
+                                    />
+                                </Form.Group>
+                                {numberOfNumbers > 2 &&
+                                    <Form.Group
+                                        className={'fw-bolder m-2'}
+                                        style={{ width: '120px' }}
+                                    >
+                                        <Form.Label> Número 3 </Form.Label>
+                                        <Form.Control
+                                            type={'number'}
+                                            max={'100000'}
+                                            min={'1'}
+                                            value={streetNumber3 ? streetNumber3 : ""}
+                                            onChange={e => setStreetNumber3(parseInt(e.target.value))}
+                                        />
+                                    </Form.Group>
+                                }
+                            </>}
+                        </div>
 
                         <Form.Group
-                            className={'font-weight-bolder m-2'}
+                            className={'fw-bolder m-2'}
                             style={{ width: '130px' }}
                         >
                             <Form.Label> Pisos </Form.Label>
@@ -160,7 +201,7 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({
                         </Form.Group>
 
                         <Form.Group
-                            className={'font-weight-bolder m-2'}
+                            className={'fw-bolder m-2'}
                             style={{ width: '160px' }}
                         >
                             <Form.Label> Deptos. por piso </Form.Label>
@@ -242,12 +283,23 @@ export const HTHAddBuildingModalSimple: FC<propsType> = ({
                                     onChange={() => {}}
                                 />
                             </Form.Group>
+                            <div className={'mt-4'}>
+                                <label className={'mb-1'}>Cantidad de números:</label>
+                                <select className={'form-select'} style={{ maxWidth: '80px' }}
+                                    value={numberOfNumbers}
+                                    onChange={e => setNumberOfNumbers(parseInt(e.target.value))}
+                                >
+                                    <option value={1}> 1 </option>
+                                    <option value={2}> 2 </option>
+                                    <option value={3}> 3 </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <div className={`card my-4 ${streetNumber ? '' : 'd-none'}`}>
 
-                        <h1 className={'bg-dark text-white text-center font-weight-bolder mt-4 mb-2 py-2'}
+                        <h1 className={'bg-dark text-white text-center fw-bolder mt-4 mb-2 py-2'}
                             style={{ border: isDarkMode ? '' : '1px solid lightgray', fontSize: '1.6rem' }}
                         >
                             Esquema del Edificio:
