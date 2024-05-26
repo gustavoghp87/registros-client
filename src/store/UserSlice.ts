@@ -13,6 +13,7 @@ const unauthenticatedUser: typeUser = {
     isActive: false,
     isAdmin: false,
     isAuth: false,
+    isBuildingManager: false,
     phoneAssignments: [],
     role: 0
 }

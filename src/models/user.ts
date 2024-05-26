@@ -7,6 +7,7 @@ export type typeUser = {
     isActive: boolean
     isAdmin: boolean
     isAuth: boolean
+    isBuildingManager: boolean
     phoneAssignments: number[]
     role: number
 }

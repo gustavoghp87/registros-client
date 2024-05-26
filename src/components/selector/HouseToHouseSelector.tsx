@@ -38,7 +38,7 @@ export const HouseToHouseSelector = () => {
                 Dónde Estoy
             </button>
 
-            {(user.isAdmin || !config.isDisabledHthBuildingsForUnassignedUsers) &&
+            {(!!user.role || !config.isDisabledHthBuildingsForUnassignedUsers) &&
                 !(!!user.hthAssignments?.length && user.hthAssignments.length === config.numberOfTerritories) &&
                 <button className={`btn btn-general-blue d-block mx-auto my-4 ${isMobile ? 'w-75' : 'w-25'}`}
                     onClick={() => setShowAll(x => !x)}

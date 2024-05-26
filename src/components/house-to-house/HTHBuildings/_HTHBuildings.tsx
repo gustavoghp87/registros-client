@@ -13,7 +13,10 @@ type propsType = {
 }
 
 export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHandler, territoryNumber }) => {
-    const isMobile = useSelector((state: typeRootState) => state.mobileMode.isMobile)
+    const { isMobile, user } = useSelector((state: typeRootState) => ({
+        isMobile: state.mobileMode.isMobile,
+        user: state.user
+    }))
     const [show, setShow] = useState(false)
 
     return (
@@ -32,11 +35,13 @@ export const HTHBuildings: FC<propsType> = ({ currentFace, refreshHTHTerritoryHa
             </h1>
 
             {show && <>
-                <HTHAddBuilding
-                    currentFace={currentFace}
-                    refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
-                    territoryNumber={territoryNumber}
-                />
+                {!!user.role && 
+                    <HTHAddBuilding
+                        currentFace={currentFace}
+                        refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}
+                        territoryNumber={territoryNumber}
+                    />
+                }
 
                 <Hr classes={'mx-auto my-4'} styles={{ maxWidth: '500px' }} />
 

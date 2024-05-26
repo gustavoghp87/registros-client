@@ -413,10 +413,18 @@ export const UsersCard: FC<propsType> = ({ currentUser, setIsLoading, socket }) 
 
                     <br/>
 
+                    <button className={`col-12 btn ${currentUser.role === 2 ? 'btn-general-red' : 'btn-general-blue'} my-2`}
+                        onClick = {() => editUserHandler(currentUser.email, currentUser.isActive, currentUser.role === 2 ? 0 : 2)}
+                    >
+                        {currentUser.role === 2 ? "QUITAR COMO MANAGER DE EDIFICIOS" : "HACER MANAGER DE EDIFICIOS"}
+                    </button>
+
+                    <br/>
+
                     <button className={`col-12 btn ${currentUser.role === 1 ? 'btn-general-red' : 'btn-general-blue'} my-2`}
                         onClick = {() => editUserHandler(currentUser.email, currentUser.isActive, currentUser.role === 1 ? 0 : 1)}
                     >
-                        {currentUser.role === 1 ? "QUITAR ADMIN" : "HACER ADMIN"}
+                        {currentUser.role === 1 ? "QUITAR COMO ADMIN GENERAL" : "HACER ADMIN GENERAL"}
                     </button>
 
                     <br/>

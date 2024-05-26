@@ -127,7 +127,7 @@ export const HouseToHousePage = () => {
             </div>
         }
 
-        {(user.isAdmin || user.hthAssignments?.includes(parseInt(territoryNumber))) &&
+        {(user.isAdmin || user.isBuildingManager || user.hthAssignments?.includes(parseInt(territoryNumber))) &&
             <HTHMapSection
                 currentFace={currentFace}
                 refreshHTHTerritoryHandler={refreshHTHTerritoryHandler}

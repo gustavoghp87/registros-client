@@ -7,6 +7,7 @@ import { Socket, io } from 'socket.io-client'
 import { typeBlock, typeFace, typeHTHBuilding, typePolygon, typeRootState, typeTerritoryNumber } from '../../models'
 import { useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
+import { useIdleTimer } from '../commons/custom-hooks/UseIdleTimer'
 import { useNavigate, useParams } from 'react-router'
 import { useSelector } from 'react-redux'
 
@@ -65,6 +66,8 @@ export const HTHBuildingPage = () => {
             setCurrentBuilding(currentBuilding0)
         })
     }
+
+    useIdleTimer(5*60*1000, () => closeBuildingModalHandler())
 
     useEffect(() => {
         refreshHTHTerritoryHandler()

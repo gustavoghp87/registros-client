@@ -31,7 +31,7 @@ export const HTHAddBuildingCheckbox: FC<propsType> = ({ doorName, doorNumber, is
             value={JSON.stringify(inputValue)}
         />
         <Form.Group
-            className={`d-flex align-items-center my-2 ${level !== undefined && doorName !== undefined ? 'bg-dark text-white' : ''}`}
+            className={`d-flex align-items-center pointer my-2 ${level !== undefined && doorName !== undefined ? 'bg-dark text-white' : ''}`}
             onClick={() => setIsChecked(x => !x)}
             style={{
                 border: level !== undefined && doorName !== undefined ? '1px solid black' : '',

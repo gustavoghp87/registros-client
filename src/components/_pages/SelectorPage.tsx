@@ -31,7 +31,7 @@ export const SelectorPage = () => {
 
     return (
         <>
-            {!(config.isDisabledHthBuildingsForUnassignedUsers && !user.isAdmin && !user.hthAssignments?.length) &&
+            {!(config.isDisabledHthBuildingsForUnassignedUsers && !user.role && !user.hthAssignments?.length) &&
                 <>
                     <HouseToHouseSelector />
 

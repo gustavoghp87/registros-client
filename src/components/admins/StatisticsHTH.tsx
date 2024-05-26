@@ -35,7 +35,7 @@ export const StatisticsHTH = () => {
     if (isLoading) return <Loading mt={'50px'} />
 
     return (
-        <div className='container text-center'>
+        <div className='container'>
             <H2 title={'ESTADÍSTICAS DE CASA EN CASA'} mb={'40px'} />
             {!!hthTerritories?.length ?
                 <div>
@@ -51,6 +51,22 @@ export const StatisticsHTH = () => {
                             <h5 className={isDarkMode ? 'text-white' : ''}>
                                 Cantidad de edificios: {t.map.polygons.map(x => x.buildings?.length || 0).reduce((a, n) => a + n, 0)}
                             </h5>
+                            {/* {t.map.polygons.sort((a, b) => parseInt(a.block) - parseInt(b.block) || a.face.localeCompare(b.face)).map(manzana =>
+                                <>
+                                    {!!manzana.buildings?.length && <>
+                                        {(manzana.face === 'A'
+                                            || (manzana.face === 'B' && !t.map.polygons.find(x => x.block === manzana.block && x.face === 'A' && !!x.buildings?.length))
+                                            || (manzana.face === 'C' && !t.map.polygons.find(x => x.block === manzana.block && ['A', 'B'].includes(x.face) && !!x.buildings?.length))
+                                            || (manzana.face === 'D' && !t.map.polygons.find(x => x.block === manzana.block && ['A', 'B', 'C'].includes(x.face) && !!x.buildings?.length))
+                                        ) && <h4 className='mt-3'>Manzana {manzana.block}</h4>}
+                                        {manzana.buildings?.sort((a, b) => a.streetNumber - b.streetNumber).map(edificio =>
+                                            <>
+                                                <h5>{manzana.street} {edificio.streetNumber} {edificio.streetNumber2 ? `- ${edificio.streetNumber2}` : ''} {edificio.streetNumber3 ? `- ${edificio.streetNumber3}` : ''}</h5>
+                                            </>
+                                        )}
+                                    </>}
+                                </>
+                            )} */}
                         </div>
                     )}
                 </div>
