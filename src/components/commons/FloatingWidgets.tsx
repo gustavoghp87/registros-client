@@ -64,6 +64,11 @@ export const FloatingWidgets = () => {
                             {isMobile ? "Admin" : "Administrador"}
                         </p>
                     }
+                    {user.isBuildingManager &&
+                        <p className={'text-end'}>
+                            {isMobile ? "Admin de Ed." : "Administrador de Ed."}
+                        </p>
+                    }
                 </div>
             }
         </div>

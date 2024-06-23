@@ -42,7 +42,7 @@ export const HTHShareAllBuildingsButtons: FC<propsType> = ({ refreshHTHTerritory
             if (doNotCalls.some(d => d.block === b)) {
                 currentUrl += "*NO TOCAR:*\n"
                 doNotCalls.filter(d => d.block === b).forEach(d => {
-                    currentUrl += `${d.street} ${d.streetNumber} (${d.date})\n`
+                    currentUrl += `${d.street} ${d.streetNumber} ${d.doorBell ?? ''} (${d.date})\n`
                 })
                 currentUrl += "\n"
             } else {

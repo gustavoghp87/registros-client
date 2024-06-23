@@ -65,8 +65,6 @@ export const HTHMapSection: FC<propsType> = ({
                 />
             }
 
-            {/* <h2> Compartir No Tocar del territorio por WhatsApp </h2> */}
-
             <Container>
                 <h1 className={'container pointer btn-general-blue text-white py-3'}
                     style={{

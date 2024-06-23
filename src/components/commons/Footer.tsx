@@ -3,6 +3,7 @@ import { generalBlue } from '../../constants'
 import { Link } from 'react-router-dom'
 import { typeRootState } from '../../models'
 import { useSelector } from 'react-redux'
+import buildInfo from '../../build-timestamp.json';
 
 export const Footer = () => {
     const { isMobile } = useSelector((state: typeRootState) => state.mobileMode)
@@ -29,7 +30,7 @@ export const Footer = () => {
                     <a href={DOMAIN} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
                         Misericordia Web
                         <span className={'text-white ms-2'} style={{ fontSize: isMobile ? '0.7rem' : '0.9rem', fontWeight: 'normal' }}>
-                            v 6.8
+                            v. {buildInfo?.buildTimestamp ? <>{new Date(buildInfo.buildTimestamp).toLocaleString()}</> : '-'}
                         </span>
                     </a>
                 </div>
@@ -47,8 +48,6 @@ export const Footer = () => {
                     {isMobile && <br/>}
                     
                     <Link to={'/servicio'} className={`${isMobile ? '' : 'ms-2'} text-white`}> Términos de Uso </Link>
-
-                    
 
                 </div>
             </div>
