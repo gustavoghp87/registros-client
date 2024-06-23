@@ -13,7 +13,7 @@ export const Footer = () => {
             <div className={'main-footer'}
                 style={{
                     backgroundColor: generalBlue,
-                    height: isMobile ? '180px' : '170px',
+                    height: isMobile ? '180px' : '190px',
                     marginTop: '200px',
                     paddingBottom: '20px',
                     paddingTop: isMobile ? '10px' : '20px'
@@ -29,14 +29,14 @@ export const Footer = () => {
                 }}>
                     <a href={DOMAIN} style={{ color: 'white', fontWeight: 'bolder', textDecorationLine: 'none' }}>
                         Misericordia Web
-                        <span className={'text-white ms-2'} style={{ fontSize: isMobile ? '0.7rem' : '0.9rem', fontWeight: 'normal' }}>
-                            v. {buildInfo?.buildTimestamp ? <>{new Date(buildInfo.buildTimestamp).toLocaleString()}</> : '-'}
-                        </span>
                     </a>
+                </div>
+                <div className={'text-center text-white ms-2'} style={{ fontSize: isMobile ? '0.7rem' : '0.9rem', fontWeight: 'normal' }}>
+                    versión {buildInfo?.buildTimestamp ? <>{new Date(buildInfo.buildTimestamp).toLocaleString()}</> : '-'}
                 </div>
 
                 <h5 className={'text-center text-white mt-2 mb-3'}>
-                    <span style={{ fontSize: isMobile ? '1.2rem' : '1.5rem' }}>
+                    <span style={{ fontSize: isMobile ? '1.1rem' : '1.5rem' }}>
                         Comunicación: misericordiawebapp@gmail.com
                     </span>
                 </h5>

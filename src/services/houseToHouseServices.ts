@@ -334,3 +334,19 @@ export const setHTHIsSharedBuildingsService = async (territoryNumber: types.type
         return false
     }
 }
+
+export const shareHTHBuildingForAMonthService = async (territoryNumber: types.typeTerritoryNumber,
+ block: types.typeBlock, face: types.typeFace, streetNumber: number): Promise<boolean> => {
+    if (!getTokenFromLSService()) return false
+    try {
+        const response = await fetch(`${base}/building/${territoryNumber}?block=${block}&face=${face}&streetNumber=${streetNumber}`, {
+            method: 'PATCH',
+            headers: getHeaders()
+        })
+        const data: types.typeResponseData|null = await response.json()
+        return !!data && !!data.success
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
